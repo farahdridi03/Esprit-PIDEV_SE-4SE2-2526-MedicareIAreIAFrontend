@@ -1,0 +1,33 @@
+
+> medi-care-ai@0.0.0 build
+> ng build
+
+[33m❯[39m Building...
+[32m✔[39m Building...
+[1mInitial chunk files[22m  [2m | [22m[1mNames[22m              [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-2XEZBBPX.js[39m    [2m | [22m[2m-[22m                  [2m | [22m[36m215.74 kB[39m[2m | [22m               [36m57.91 kB[39m
+[32mpolyfills-FFHMD2TL.js[39m[2m | [22m[2mpolyfills[22m          [2m | [22m [36m34.52 kB[39m[2m | [22m               [36m11.28 kB[39m
+[32mmain-UZW5FKKY.js[39m     [2m | [22m[2mmain[22m               [2m | [22m[36m977 bytes[39m[2m | [22m              [36m977 bytes[39m
+[32mstyles-JO3AMOCX.css[39m  [2m | [22m[2mstyles[22m             [2m | [22m [36m79 bytes[39m[2m | [22m               [36m79 bytes[39m
+
+[1m [22m                    [2m | [22m[1mInitial total[22m      [2m | [22m[1m251.31 kB[22m[2m | [22m               [1m70.25 kB[22m
+
+[1mLazy chunk files[22m     [2m | [22m[1mNames[22m              [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-IP4F2TO6.js[39m    [2m | [22m[2mauth-module[22m        [2m | [22m [36m52.70 kB[39m[2m | [22m               [36m10.95 kB[39m
+[32mchunk-DVF77KHY.js[39m    [2m | [22m[2mfront-office-module[22m[2m | [22m [36m19.52 kB[39m[2m | [22m                [36m4.27 kB[39m
+[32mchunk-O2STWIGU.js[39m    [2m | [22m[2mback-office-module[22m [2m | [22m[36m620 bytes[39m[2m | [22m              [36m620 bytes[39m
+
+Application bundle generation failed. [3.370 seconds]
+
+[1m[33m[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1msrc/app/features/auth/pages/login/login.component.scss exceeded maximum budget. Budget 2.05 kB was not met by 1.25 kB with a total of 3.29 kB.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1msrc/app/features/auth/pages/register/register.component.scss exceeded maximum budget. Budget 2.05 kB was not met by 638 bytes with a total of 2.69 kB.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1msrc/app/features/front-office/patient/pages/dashboard/dashboard.component.scss exceeded maximum budget. Budget 2.05 kB was not met by 2.48 kB with a total of 4.53 kB.[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1msrc/app/features/front-office/patient/pages/dashboard/dashboard.component.scss exceeded maximum budget. Budget 4.10 kB was not met by 432 bytes with a total of 4.53 kB.[0m
+
+[39m[22m

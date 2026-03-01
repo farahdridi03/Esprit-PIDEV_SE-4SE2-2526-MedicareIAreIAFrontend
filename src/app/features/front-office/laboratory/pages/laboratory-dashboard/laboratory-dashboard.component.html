@@ -1,0 +1,113 @@
+<div class="laboratory-wrapper">
+    <!-- Sidebar -->
+    <app-laboratory-sidebar></app-laboratory-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-laboratory-topbar></app-laboratory-topbar>
+
+        <div class="content-area">
+            <!-- Header -->
+            <div class="page-header">
+                <h1>Laboratory Dashboard</h1>
+            </div>
+
+            <!-- Stats Cards -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="card-header">
+                        <span>Pending Tests</span>
+                        <span>⏳</span>
+                    </div>
+                    <h2>15</h2>
+                    <p>Awaiting processing</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="card-header">
+                        <span>In Progress</span>
+                        <span>🧪</span>
+                    </div>
+                    <h2>8</h2>
+                    <p>Currently testing</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="card-header">
+                        <span>Completed Today</span>
+                        <span>✔</span>
+                    </div>
+                    <h2>42</h2>
+                    <p>Results uploaded</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="card-header">
+                        <span>Urgent Tests</span>
+                        <span>⚠</span>
+                    </div>
+                    <h2>3</h2>
+                    <p>High priority</p>
+                </div>
+            </section>
+
+            <!-- Content Grid -->
+            <section class="content-grid">
+
+                <!-- Urgent Tests -->
+                <div class="box urgent">
+                    <div class="box-header">
+                        <h3>Urgent Tests</h3>
+                        <a>View All</a>
+                    </div>
+
+                    <div class="urgent-item">
+                        <div>
+                            <h4>Mike Johnson</h4>
+                            <span>HbA1c</span>
+                            <small>10:00 AM</small>
+                        </div>
+                        <button class="danger">Process Now</button>
+                    </div>
+                </div>
+
+                <!-- Test Queue -->
+                <div class="box">
+                    <div class="box-header">
+                        <h3>Test Queue</h3>
+                        <a>View All</a>
+                    </div>
+
+                    <div class="queue-item">
+                        <div>
+                            <h4>John Doe</h4>
+                            <span>Complete Blood Count</span>
+                            <small>09:00 AM</small>
+                        </div>
+                        <button>Process</button>
+                    </div>
+
+                    <div class="queue-item">
+                        <div>
+                            <h4>Mike Johnson</h4>
+                            <span>HbA1c</span>
+                            <small>10:00 AM</small>
+                        </div>
+                        <button>Process</button>
+                    </div>
+
+                    <div class="queue-item">
+                        <div>
+                            <h4>Sarah Williams</h4>
+                            <span>Thyroid Function</span>
+                            <small>10:30 AM</small>
+                        </div>
+                        <button>Process</button>
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+    </div>
+</div>

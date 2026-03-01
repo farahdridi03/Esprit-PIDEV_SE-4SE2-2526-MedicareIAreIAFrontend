@@ -1,0 +1,8 @@
+﻿
+> medi-care-ai@0.0.0 build
+> ng build
+
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+Application bundle generation failed. [8.855 seconds]
+

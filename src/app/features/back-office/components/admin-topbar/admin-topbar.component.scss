@@ -1,0 +1,168 @@
+/* Topbar */
+.topbar {
+    height: var(--topbar-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 1px 0 var(--border);
+}
+
+.toggle-menu {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-sm);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-2);
+    transition: all 0.18s;
+    flex-shrink: 0;
+}
+
+.toggle-menu:hover {
+    border-color: var(--indigo-light);
+    color: var(--indigo);
+}
+
+.toggle-menu svg {
+    width: 16px;
+    height: 16px;
+}
+
+.search-bar {
+    flex: 1;
+    max-width: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 13px;
+    width: 16px;
+    height: 16px;
+    color: var(--text-3);
+}
+
+.search-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.search-bar input {
+    width: 100%;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    color: var(--text-1);
+    font-family: var(--font-h);
+    font-size: 0.85rem;
+    padding: 0.52rem 1rem 0.52rem 2.4rem;
+    border-radius: 99px;
+    outline: none;
+    transition: all 0.18s;
+}
+
+.search-bar input::placeholder {
+    color: var(--text-3);
+}
+
+.search-bar input:focus {
+    border-color: var(--indigo-light);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-left: auto;
+}
+
+.tb-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-2);
+    transition: all 0.18s;
+    position: relative;
+}
+
+.tb-icon-btn:hover {
+    border-color: var(--indigo-light);
+    color: var(--indigo);
+    background: white;
+}
+
+.tb-icon-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.notif-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--rose);
+    border: 2px solid var(--surface);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.3rem 0.75rem 0.3rem 0.38rem;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s;
+}
+
+.user-profile:hover {
+    border-color: var(--indigo-light);
+    background: white;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--indigo), var(--violet));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.7rem;
+    color: white;
+    box-shadow: 0 3px 8px rgba(79, 70, 229, 0.3);
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--text-1);
+    line-height: 1.2;
+}
+
+.user-role {
+    font-size: 0.67rem;
+    color: var(--text-2);
+}

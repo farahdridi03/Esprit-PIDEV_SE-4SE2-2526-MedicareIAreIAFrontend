@@ -1,0 +1,113 @@
+<div class="home-care-wrapper">
+    <!-- Sidebar -->
+    <app-home-care-sidebar></app-home-care-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-home-care-topbar></app-home-care-topbar>
+
+        <div class="content-area">
+            <!-- Stats Section -->
+            <section class="stats">
+                <div class="card">
+                    <div class="card-header">
+                        <span>Today's Visits</span>
+                        <span>📅</span>
+                    </div>
+                    <h2>5</h2>
+                    <p>3 completed, 2 pending</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Active Patients</span>
+                        <span>👥</span>
+                    </div>
+                    <h2>18</h2>
+                    <p>Under care</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Pending Requests</span>
+                        <span>⏳</span>
+                    </div>
+                    <h2>3</h2>
+                    <p>Awaiting response</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Urgent Cases</span>
+                        <span>⚠</span>
+                    </div>
+                    <h2>1</h2>
+                    <p>Requires immediate attention</p>
+                </div>
+            </section>
+
+            <!-- Content Grid -->
+            <section class="content-grid">
+                <!-- Today's Schedule -->
+                <div class="box">
+                    <div class="box-header">
+                        <h3>Today's Schedule</h3>
+                        <a>View All</a>
+                    </div>
+
+                    <div class="schedule-item">
+                        <div>
+                            <h4>John Doe</h4>
+                            <span>Nursing Care</span>
+                            <small>10:00 AM - 11:30 AM</small>
+                            <small>123 Oak Street</small>
+                        </div>
+                        <button class="start-visit">Start Visit</button>
+                    </div>
+
+                    <div class="schedule-item">
+                        <div>
+                            <h4>Mary Johnson</h4>
+                            <span>Physical Therapy</span>
+                            <small>2:00 PM - 3:00 PM</small>
+                            <small>456 Elm Avenue</small>
+                        </div>
+                        <button class="start-visit">Start Visit</button>
+                    </div>
+                </div>
+
+                <!-- New Requests -->
+                <div class="box">
+                    <div class="box-header">
+                        <h3>New Requests</h3>
+                        <a>View All</a>
+                    </div>
+
+                    <div class="request-item">
+                        <div>
+                            <h4>John Doe <span class="badge high">High</span></h4>
+                            <span>Nursing Care</span>
+                            <small>123 Oak Street, Boston</small>
+                        </div>
+                        <div class="actions">
+                            <button class="accept">Accept</button>
+                            <button class="details">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="request-item urgent">
+                        <div>
+                            <h4>Robert Smith <span class="badge urgent">Urgent</span></h4>
+                            <span>Wound Care</span>
+                            <small>789 Pine Road, Boston</small>
+                        </div>
+                        <div class="actions">
+                            <button class="accept">Accept</button>
+                            <button class="details">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

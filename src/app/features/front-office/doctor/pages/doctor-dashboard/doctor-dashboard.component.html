@@ -1,0 +1,68 @@
+<div class="doctor-wrapper">
+    <!-- Sidebar -->
+    <app-doctor-sidebar></app-doctor-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-doctor-topbar></app-doctor-topbar>
+
+        <div class="content-area">
+            <!-- Header -->
+            <div class="page-header">
+                <h1>Welcome, Dr. Johnson</h1>
+                <button class="update-profile-btn" routerLink="/front/doctor/profile">Update Profile</button>
+            </div>
+
+            <!-- Stats Rows -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Today's Appointments</div>
+                    <div class="value">8</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Total Patients</div>
+                    <div class="value">245</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Pending Reviews</div>
+                    <div class="value">12</div>
+                </div>
+            </div>
+
+            <!-- Schedule Section -->
+            <div class="schedule-section">
+                <h3>Today's Schedule</h3>
+
+                <div class="schedule-list">
+                    <!-- Item 1 -->
+                    <div class="schedule-item">
+                        <div class="patient-info">
+                            <div class="name">John Doe</div>
+                            <div class="details">10:00 AM • In-Person</div>
+                        </div>
+                        <button class="view-btn">View</button>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="schedule-item">
+                        <div class="patient-info">
+                            <div class="name">Jane Smith</div>
+                            <div class="details">11:30 AM • Teleconsultation</div>
+                        </div>
+                        <button class="view-btn">View</button>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="schedule-item">
+                        <div class="patient-info">
+                            <div class="name">Mike Johnson</div>
+                            <div class="details">2:00 PM • In-Person</div>
+                        </div>
+                        <button class="view-btn">View</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+{
+    "fullName": "Test Patient",
+    "email": "test4@test.com",
+    "password": "password123",
+    "phone": "12345678",
+    "birthDate": "2000-01-01",
+    "role": "PATIENT",
+    "gender": "FEMALE",
+    "bloodType": "B+",
+    "emergencyContactName": "Test Contact",
+    "emergencyContactPhone": "87654321"
+}

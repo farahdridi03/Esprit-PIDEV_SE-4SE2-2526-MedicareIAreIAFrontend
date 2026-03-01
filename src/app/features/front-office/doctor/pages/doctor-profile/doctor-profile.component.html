@@ -1,0 +1,45 @@
+<div class="doctor-wrapper">
+    <!-- Sidebar -->
+    <app-doctor-sidebar></app-doctor-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-doctor-topbar></app-doctor-topbar>
+
+        <div class="content-area">
+            <!-- Header -->
+            <div class="page-header">
+                <h1>My Profile</h1>
+            </div>
+
+            <!-- Profile Form -->
+            <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+            <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+            <div class="profile-section">
+                <form (ngSubmit)="onSubmit()" class="profile-form">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" [(ngModel)]="fullName" class="form-control"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" [(ngModel)]="email" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">New Password (leave empty to keep current)</label>
+                        <input type="password" id="password" name="password" [(ngModel)]="password"
+                            class="form-control">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
