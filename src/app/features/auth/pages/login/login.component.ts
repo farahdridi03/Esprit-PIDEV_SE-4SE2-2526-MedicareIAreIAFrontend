@@ -80,11 +80,16 @@ export class LoginComponent {
       case 'NUTRITIONIST':
         targetRoute = '/front/nutritionist/dashboard';
         break;
+      case 'LABORATORYSTAFF':
       case 'LABORATORY':
-        targetRoute = '/front/laboratory';
+        targetRoute = '/front/laboratorystaff';
         break;
       case 'PHARMACIST':
+        targetRoute = '/front/pharmacist';
+        break;
       case 'CLINIC':
+        targetRoute = '/front/clinic';
+        break;
       case 'VISITOR':
         targetRoute = '/front';
         break;

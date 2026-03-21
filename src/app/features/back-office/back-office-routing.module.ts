@@ -14,6 +14,12 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'users', component: UserManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'emergency', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'forum', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'donations', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'home-care', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'profile', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

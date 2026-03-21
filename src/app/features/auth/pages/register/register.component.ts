@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 
@@ -8,19 +8,17 @@ import { Router } from '@angular/router';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
 
   registerForm: FormGroup;
   errorMessage: string = '';
 
   roles = [
-    { value: 'ADMIN', label: 'Administrator' },
     { value: 'DOCTOR', label: 'Doctor' },
     { value: 'CLINIC', label: 'Clinic' },
     { value: 'PHARMACIST', label: 'Pharmacist' },
-    { value: 'LABORATORY', label: 'Laboratory' },
+    { value: 'LABORATORYSTAFF', label: 'Laboratory Staff' },
     { value: 'NUTRITIONIST', label: 'Nutritionist' },
-    { value: 'VISITOR', label: 'Visitor' },
     { value: 'PATIENT', label: 'Patient' },
     { value: 'HOME_CARE_PROVIDER', label: 'Home Care Provider' }
   ];
@@ -41,11 +39,25 @@ export class RegisterComponent {
     { value: 'FEMALE', label: 'Female' }
   ];
 
+  medicalHistoryTypes = [
+    { value: 'ALLERGY', label: 'Allergy' },
+    { value: 'CHRONIC_DISEASE', label: 'Chronic Disease' },
+    { value: 'SURGERY', label: 'Surgery' },
+    { value: 'FAMILY_HISTORY', label: 'Family History' }
+  ];
+
+  consultationModes = [
+    { value: 'ONLINE', label: 'Online' },
+    { value: 'IN_PERSON', label: 'In Person' },
+    { value: 'BOTH', label: 'Both' }
+  ];
+
+  homeCareServicesList: any[] = [];
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
-    // ✅ PatientService supprimé — on utilise authService pour tout
   ) {
     this.registerForm = this.fb.group({
       fullName: ['', Validators.required],
@@ -57,13 +69,51 @@ export class RegisterComponent {
       bloodType: ['O_POS'],
       emergencyContactName: [''],
       emergencyContactPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
-      chronicDiseases: [''],
-      drugAllergies: [''],
-      hereditaryDiseases: [''],
+      medicalHistories: this.fb.array([]),
+      specialty: [''],
+      licenseNumber: [''],
+      consultationFee: [0],
+      consultationMode: ['BOTH'],
+      // Clinic fields
+      clinicName: [''],
+      clinicAddress: [''],
+      clinicPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
+      emergencyPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
+      ambulancePhone: ['', [Validators.pattern('^[0-9]{8}$')]],
+      // Pharmacist fields
+      pharmacyName: [''],
+      pharmacyAddress: [''],
+      pharmacyPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
+      pharmacyEmail: ['', [Validators.email]],
+      // Laboratory fields
+      labName: [''],
+      labAddress: [''],
+      labPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
+      // Home Care Provider fields
+      certificationDocument: [''],
+      selectedServices: this.fb.array([]),
       password: ['', [Validators.required, Validators.minLength(8)]],
       terms: [false, Validators.requiredTrue]
     });
+  }
 
+  ngOnInit() {
+    this.onRoleChange();
+    this.loadHomeCareServices();
+  }
+
+  loadHomeCareServices() {
+    this.authService.getHomeCareServices().subscribe({
+      next: (services) => {
+        this.homeCareServicesList = services;
+      },
+      error: (err) => {
+        console.error('Error loading home care services', err);
+      }
+    });
+  }
+
+  onRoleChange() {
     this.registerForm.get('role')?.valueChanges.subscribe(role => {
       const isPatient = role === 'PATIENT';
       const genderCtrl = this.registerForm.get('gender');
@@ -71,46 +121,154 @@ export class RegisterComponent {
       const emNameCtrl = this.registerForm.get('emergencyContactName');
       const emPhoneCtrl = this.registerForm.get('emergencyContactPhone');
 
-      // Pour l'instant on laisse les maladies comme optionnelles même pour les patients.
+      const isDoctor = role === 'DOCTOR';
+      const isNutritionist = role === 'NUTRITIONIST';
+      const specialtyCtrl = this.registerForm.get('specialty');
+      const licenseCtrl = this.registerForm.get('licenseNumber');
+      const feeCtrl = this.registerForm.get('consultationFee');
+      const modeCtrl = this.registerForm.get('consultationMode');
+
+      const isClinic = role === 'CLINIC';
+      const clinicNameCtrl = this.registerForm.get('clinicName');
+      const clinicAddressCtrl = this.registerForm.get('clinicAddress');
+      const clinicPhoneCtrl = this.registerForm.get('clinicPhone');
+      const clinicEmergencyCtrl = this.registerForm.get('emergencyPhone');
+      const clinicAmbulanceCtrl = this.registerForm.get('ambulancePhone');
+
+      const isPharmacist = role === 'PHARMACIST';
+      const pharmacyNameCtrl = this.registerForm.get('pharmacyName');
+      const pharmacyAddressCtrl = this.registerForm.get('pharmacyAddress');
+      const pharmacyPhoneCtrl = this.registerForm.get('pharmacyPhone');
+      const pharmacyEmailCtrl = this.registerForm.get('pharmacyEmail');
+
+      const isLabStaff = role === 'LABORATORYSTAFF';
+      const labNameCtrl = this.registerForm.get('labName');
+      const labAddressCtrl = this.registerForm.get('labAddress');
+      const labPhoneCtrl = this.registerForm.get('labPhone');
+
+      const isHomeCare = role === 'HOME_CARE_PROVIDER';
+      const certDocCtrl = this.registerForm.get('certificationDocument');
+      const servicesCtrl = this.registerForm.get('selectedServices');
+
+      // Reset validators
+      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
+        clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
+        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
+        labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
+      ].forEach(ctrl => {
+        ctrl?.clearValidators();
+        ctrl?.updateValueAndValidity();
+      });
+
       if (isPatient) {
         genderCtrl?.setValidators([Validators.required]);
         bloodTypeCtrl?.setValidators([Validators.required]);
-        emNameCtrl?.setValidators([Validators.required]);
-        emPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
-      } else {
-        genderCtrl?.clearValidators();
-        bloodTypeCtrl?.clearValidators();
-        emNameCtrl?.clearValidators();
-        emPhoneCtrl?.clearValidators();
+      } else if (isDoctor || isNutritionist) {
+        specialtyCtrl?.setValidators([Validators.required]);
+        licenseCtrl?.setValidators([Validators.required]);
+        feeCtrl?.setValidators([Validators.required, Validators.min(0)]);
+        modeCtrl?.setValidators([Validators.required]);
+      } else if (isClinic) {
+        clinicNameCtrl?.setValidators([Validators.required]);
+        clinicAddressCtrl?.setValidators([Validators.required]);
+        clinicPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        clinicEmergencyCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        clinicAmbulanceCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+      } else if (isPharmacist) {
+        pharmacyNameCtrl?.setValidators([Validators.required]);
+        pharmacyAddressCtrl?.setValidators([Validators.required]);
+        pharmacyPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        pharmacyEmailCtrl?.setValidators([Validators.required, Validators.email]);
+      } else if (isLabStaff) {
+        labNameCtrl?.setValidators([Validators.required]);
+        labAddressCtrl?.setValidators([Validators.required]);
+        labPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+      } else if (isHomeCare) {
+        certDocCtrl?.setValidators([Validators.required]);
+        servicesCtrl?.setValidators([Validators.required, Validators.minLength(1)]);
       }
 
-      genderCtrl?.updateValueAndValidity();
-      bloodTypeCtrl?.updateValueAndValidity();
-      emNameCtrl?.updateValueAndValidity();
-      emPhoneCtrl?.updateValueAndValidity();
+      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
+        clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
+        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
+        labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
+      ].forEach(ctrl => ctrl?.updateValueAndValidity());
     });
   }
 
-  get isPatient(): boolean {
-    return this.registerForm.get('role')?.value === 'PATIENT';
+  get isPatient(): boolean { return this.registerForm.get('role')?.value === 'PATIENT'; }
+  get isDoctor(): boolean { return this.registerForm.get('role')?.value === 'DOCTOR'; }
+  get isClinic(): boolean { return this.registerForm.get('role')?.value === 'CLINIC'; }
+  get isPharmacist(): boolean { return this.registerForm.get('role')?.value === 'PHARMACIST'; }
+  get isLabStaff(): boolean { return this.registerForm.get('role')?.value === 'LABORATORYSTAFF'; }
+  get isHomeCareProvider(): boolean { return this.registerForm.get('role')?.value === 'HOME_CARE_PROVIDER'; }
+  get isNutritionist(): boolean { return this.registerForm.get('role')?.value === 'NUTRITIONIST'; }
+
+  get selectedServices(): FormArray {
+    return this.registerForm.get('selectedServices') as FormArray;
+  }
+
+  onServiceChange(e: any) {
+    const checkArray: FormArray = this.registerForm.get('selectedServices') as FormArray;
+    if (e.target.checked) {
+      checkArray.push(this.fb.control(e.target.value));
+    } else {
+      let i: number = 0;
+      checkArray.controls.forEach((item: any) => {
+        if (item.value == e.target.value) {
+          checkArray.removeAt(i);
+          return;
+        }
+        i++;
+      });
+    }
+    checkArray.updateValueAndValidity();
+  }
+
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.registerForm.patchValue({
+          certificationDocument: reader.result as string
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  get medicalHistories(): FormArray {
+    return this.registerForm.get('medicalHistories') as FormArray;
+  }
+
+  addMedicalHistory() {
+    const historyGroup = this.fb.group({
+      type: ['ALLERGY', Validators.required],
+      description: ['', Validators.required]
+    });
+    this.medicalHistories.push(historyGroup);
+  }
+
+  removeMedicalHistory(index: number) {
+    this.medicalHistories.removeAt(index);
   }
 
   onSubmit() {
     if (this.registerForm.valid) {
-      const { terms, ...payload } = this.registerForm.value;
-
-      // ✅ Un seul endpoint pour tous les rôles → /api/auth/register
-      this.authService.register(payload).subscribe({
+      const { terms, selectedServices, ...payload } = this.registerForm.value;
+      const finalPayload = {
+        ...payload,
+        homeCareServices: selectedServices
+      };
+      this.authService.register(finalPayload).subscribe({
         next: () => {
-          console.log('Registration successful');
           this.router.navigate(['/auth/login']);
         },
         error: (err: any) => {
-          console.error('Registration error:', err);
           this.errorMessage = err.error?.message || 'Erreur lors de l\'inscription';
         }
       });
-
     } else {
       this.registerForm.markAllAsTouched();
     }

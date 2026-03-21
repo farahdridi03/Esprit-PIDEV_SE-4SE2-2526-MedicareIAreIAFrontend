@@ -103,4 +103,28 @@ export class AuthService {
             return null;
         }
     }
+
+    getHomeCareServices(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
+    }
+
+    getUserFullName(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+
+        try {
+            const decoded: any = jwtDecode(token);
+            // On essaie plusieurs clés communes dans un JWT Spring Security + fallback sur sub (email)
+            const name = decoded.fullName || decoded.fullname || decoded.name || decoded.fullName;
+            if (name) return name;
+
+            const sub = decoded.sub || decoded.email;
+            if (sub && sub.includes('@')) {
+                return sub.split('@')[0];
+            }
+            return sub || null;
+        } catch (error) {
+            return null;
+        }
+    }
 }
