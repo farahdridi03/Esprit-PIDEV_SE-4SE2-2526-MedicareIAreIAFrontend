@@ -14,8 +14,8 @@ import { RegisterRequest } from '../models/register-request.model';
 })
 export class AuthService {
     private readonly baseUrl = 'http://localhost:8081/springsecurity/auth';
-    private readonly TOKEN_KEY = 'auth_token';
-
+    private readonly TOKEN_K
+    EY = 'auth_token';
     private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
     public authStatus$ = this.authStatusSubject.asObservable();
 
