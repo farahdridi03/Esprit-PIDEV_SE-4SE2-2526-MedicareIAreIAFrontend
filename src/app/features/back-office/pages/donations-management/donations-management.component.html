@@ -1,0 +1,189 @@
+<div class="page-header">
+    <div>
+        <h1>Donations <em>Management</em></h1>
+        <p>Oversee all patient donations and requests, assign available resources</p>
+    </div>
+</div>
+
+<div class="tabs-container" style="margin-bottom: 1.5rem; display: flex; gap: 1rem;">
+    <button class="btn-tab" [class.active-tab]="currentTab === 'DONATIONS'" (click)="switchTab('DONATIONS')">
+        Donations Inventory
+    </button>
+    <button class="btn-tab" [class.active-tab]="currentTab === 'REQUESTS'" (click)="switchTab('REQUESTS')">
+        Patient Aid Requests
+    </button>
+</div>
+
+<!-- ============================================== TAB: DONATIONS INVENTORY ============================================== -->
+<div class="panel" *ngIf="currentTab === 'DONATIONS'">
+    <div class="panel-head">
+        <div class="panel-title">All Donations</div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <select class="role-filter" [(ngModel)]="filterStatus">
+                <option value="ALL">All Statuses</option>
+                <option [value]="DonationStatus.AVAILABLE">Available</option>
+                <option [value]="DonationStatus.ASSIGNED">Assigned</option>
+            </select>
+            <button class="panel-action" (click)="refresh()">Refresh List ⭮</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loader">Loading donations...</div>
+
+    <table class="tbl" *ngIf="!loading && filteredDonations.length > 0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Donor Details</th>
+                <th>Type & Asset</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let d of filteredDonations">
+                <td>{{ d.id }}</td>
+                <td>
+                    <div class="ucell">
+                        <div class="mav ma1">{{ getInitials(d.donorName) }}</div>
+                        <div>
+                            <div class="cn">{{ d.donorName }}</div>
+                            <div class="cs">Created on {{ d.createdAt || 'unknown' }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="chip" [ngClass]="d.type === DonationType.MONEY ? 'ck-emerald' : 'ck-indigo'">
+                        {{ d.type }}
+                    </span>
+                    <div class="cs" style="margin-top: 4px;" *ngIf="d.type === 'MONEY'">
+                        Amount: ${{ d.amount }}
+                    </div>
+                    <div class="cs" style="margin-top: 4px;" *ngIf="d.type === 'MATERIEL'">
+                        {{ d.categorie }} (Qty: {{ d.quantite }})
+                    </div>
+                </td>
+                <td>
+                    <button class="status-btn"
+                        [ngClass]="d.status === DonationStatus.AVAILABLE ? 'ck-teal' : 'ck-violet'"
+                        (click)="updateStatus(d, d.status === DonationStatus.AVAILABLE ? DonationStatus.ASSIGNED : DonationStatus.AVAILABLE)">
+                        {{ d.status }}
+                    </button>
+                </td>
+                <td style="text-align: right;">
+                    <button class="action-btn text-rose" (click)="deleteDonation(d.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && filteredDonations.length === 0" class="no-data">
+        No donations match the current filter.
+    </div>
+</div>
+
+<!-- ============================================== TAB: AID REQUESTS ============================================== -->
+<div class="panel" *ngIf="currentTab === 'REQUESTS'">
+    <div class="panel-head">
+        <div class="panel-title">Received Requests</div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <select class="role-filter" [(ngModel)]="reqFilterStatus">
+                <option value="ALL">All Statuses</option>
+                <option [value]="AidRequestStatus.PENDING">Pending</option>
+                <option [value]="AidRequestStatus.APPROVED">Approved</option>
+                <option [value]="AidRequestStatus.REJECTED">Rejected</option>
+            </select>
+            <button class="panel-action" (click)="refreshRequests()">Refresh List ⭮</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loader">Loading requests...</div>
+
+    <table class="tbl" *ngIf="!loading && filteredRequests.length > 0">
+        <thead>
+            <tr>
+                <th>Req ID</th>
+                <th>Patient Details</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let req of filteredRequests">
+                <td>{{ req.id }}</td>
+                <td>
+                    <div class="ucell">
+                        <div class="mav ck-violet">{{ getInitials(req.patientName) }}</div>
+                        <div>
+                            <div class="cn">{{ req.patientName || 'Unknown Patient' }}</div>
+                            <div class="cs">Request #{{ req.id }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="font-size: 0.8rem; color: var(--text-2); max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        [title]="req.description">
+                        {{ req.description }}
+                    </div>
+                </td>
+                <td>
+                    <span class="chip"
+                        [ngClass]="{'ck-amber': req.status === AidRequestStatus.PENDING, 'ck-emerald': req.status === AidRequestStatus.APPROVED, 'ck-rose': req.status === AidRequestStatus.REJECTED}">
+                        {{ req.status }}
+                    </span>
+                </td>
+                <td style="text-align: right;">
+                    <button *ngIf="req.status === AidRequestStatus.PENDING" class="action-btn text-indigo"
+                        style="font-weight: bold;" (click)="openAssignModal(req)">Assign Donation</button>
+                    <button *ngIf="req.status === AidRequestStatus.PENDING" class="action-btn text-rose"
+                        (click)="updateReqStatus(req, AidRequestStatus.REJECTED)">Reject</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && filteredRequests.length === 0" class="no-data">
+        No aid requests found.
+    </div>
+</div>
+
+<!-- ============================================== MODAL: ASSIGN DONATION ============================================== -->
+<div class="modal-overlay" *ngIf="showAssignModal">
+    <div class="modal-content"
+        style="max-width: 500px; width: 100%; background: white; border-radius: var(--r); padding: 1.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.2rem; color: var(--text-1);">Assign Donation</h3>
+            <button (click)="closeAssignModal()"
+                style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-3);">&times;</button>
+        </div>
+
+        <div style="margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-2);">
+            Assigning a resource to <strong>{{ selectedReq?.patientName }}</strong> for request #{{ selectedReq?.id }}.
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label>Select Available Donation</label>
+            <select [(ngModel)]="selectedDonationId"
+                style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--border); border-radius: var(--r-sm); margin-top: 0.5rem;">
+                <option [ngValue]="null" disabled>-- Choose a Resource --</option>
+                <option *ngFor="let d of availableDonations" [ngValue]="d.id">
+                    #{{ d.id }} - {{ d.type === 'MONEY' ? '$' + d.amount : d.categorie + ' (Qty: ' + d.quantite + ')' }}
+                    from {{ d.donorName }}
+                </option>
+            </select>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.8rem;">
+            <button class="btn-tab"
+                style="padding: 0.5rem 1rem; border: 1px solid var(--border); background: var(--surface); cursor: pointer; border-radius: var(--r-sm);"
+                (click)="closeAssignModal()">Cancel</button>
+            <button class="action-btn text-indigo"
+                style="font-weight: 700; padding: 0.5rem 1rem; background: var(--indigo); color: white; border-radius: var(--r-sm); border: none; cursor: pointer;"
+                (click)="confirmAssignment()" [disabled]="loading || !selectedDonationId">
+                Confirm Assignment
+            </button>
+        </div>
+    </div>
+</div>

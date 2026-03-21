@@ -103,4 +103,28 @@ export class AuthService {
             return null;
         }
     }
+
+    getUserId(): number | null {
+        const token = this.getToken();
+        if (!token) return null;
+
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.userId || decoded.id || null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    getUserFullName(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.fullName || decoded.name || null;
+        } catch (error) {
+            return null;
+        }
+    }
 }

@@ -13,22 +13,25 @@ export class DashboardComponent implements OnInit {
   constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit() {
-    // Initial load from token
-    const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.firstName = fullName.split(' ')[0];
+    // 1. Try to get name directly from JWT token
+    const fullNameFromToken = this.authService.getUserFullName();
+    if (fullNameFromToken) {
+      this.firstName = fullNameFromToken.trim().split(' ')[0];
+      return;
     }
 
-    // Refresh from profile API
-    this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          this.firstName = user.fullName.split(' ')[0];
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching user profile', err);
-      }
-    });
+    // 2. Fallback: find user by email
+    const email = this.authService.getUserEmail();
+    if (email) {
+      this.userService.getAll().subscribe({
+        next: (users) => {
+          const user = users.find(u => u.email === email);
+          if (user && user.fullName) {
+            this.firstName = user.fullName.trim().split(' ')[0];
+          }
+        },
+        error: (err: any) => console.error('Error fetching users for dashboard', err)
+      });
+    }
   }
 }

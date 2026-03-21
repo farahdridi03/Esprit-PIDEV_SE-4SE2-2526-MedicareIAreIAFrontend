@@ -1,0 +1,56 @@
+﻿src/app/features/front-office/clinic/components/clinic-topbar/clinic-topbar.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/clinic/components/clinic-topbar/clinic-topbar.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/clinic/components/clinic-topbar/clinic-topbar.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/clinic/components/clinic-topbar/clinic-topbar.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/clinic/pages/clinic-dashboard/clinic-dashboard.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/clinic/pages/clinic-dashboard/clinic-dashboard.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/clinic/pages/clinic-dashboard/clinic-dashboard.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/clinic/pages/clinic-dashboard/clinic-dashboard.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/doctor/components/doctor-topbar/doctor-topbar.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/doctor/components/doctor-topbar/doctor-topbar.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/doctor/components/doctor-topbar/doctor-topbar.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/doctor/components/doctor-topbar/doctor-topbar.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/doctor/pages/doctor-dashboard/doctor-dashboard.component.ts(17,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/doctor/pages/doctor-dashboard/doctor-dashboard.component.ts(23,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/doctor/pages/doctor-dashboard/doctor-dashboard.component.ts(24,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/doctor/pages/doctor-dashboard/doctor-dashboard.component.ts(29,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/home-care/components/home-care-topbar/home-care-topbar.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/home-care/components/home-care-topbar/home-care-topbar.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/home-care/components/home-care-topbar/home-care-topbar.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/home-care/components/home-care-topbar/home-care-topbar.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/home-care/pages/home-care-dashboard/home-care-dashboard.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/home-care/pages/home-care-dashboard/home-care-dashboard.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/home-care/pages/home-care-dashboard/home-care-dashboard.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/home-care/pages/home-care-dashboard/home-care-dashboard.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/laboratory/components/laboratory-topbar/laboratory-topbar.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/laboratory/components/laboratory-topbar/laboratory-topbar.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/laboratory/components/laboratory-topbar/laboratory-topbar.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/laboratory/components/laboratory-topbar/laboratory-topbar.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/laboratory/pages/laboratory-dashboard/laboratory-dashboard.component.ts(17,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/laboratory/pages/laboratory-dashboard/laboratory-dashboard.component.ts(23,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/laboratory/pages/laboratory-dashboard/laboratory-dashboard.component.ts(24,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/laboratory/pages/laboratory-dashboard/laboratory-dashboard.component.ts(29,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/nutritionist/components/nutritionist-topbar/nutritionist-topbar.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/nutritionist/components/nutritionist-topbar/nutritionist-topbar.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/nutritionist/components/nutritionist-topbar/nutritionist-topbar.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/nutritionist/components/nutritionist-topbar/nutritionist-topbar.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/nutritionist/pages/nutritionist-dashboard/nutritionist-dashboard.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/nutritionist/pages/nutritionist-dashboard/nutritionist-dashboard.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/nutritionist/pages/nutritionist-dashboard/nutritionist-dashboard.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/nutritionist/pages/nutritionist-dashboard/nutritionist-dashboard.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/patient/components/topbar/topbar.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/patient/components/topbar/topbar.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/patient/components/topbar/topbar.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/patient/components/topbar/topbar.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/patient/pages/dashboard/dashboard.component.ts(17,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/patient/pages/dashboard/dashboard.component.ts(23,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/patient/pages/dashboard/dashboard.component.ts(24,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/patient/pages/dashboard/dashboard.component.ts(29,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/pharmacist/components/pharmacist-topbar/pharmacist-topbar.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/pharmacist/components/pharmacist-topbar/pharmacist-topbar.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/pharmacist/components/pharmacist-topbar/pharmacist-topbar.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/pharmacist/components/pharmacist-topbar/pharmacist-topbar.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.
+src/app/features/front-office/pharmacist/pages/pharmacist-dashboard/pharmacist-dashboard.component.ts(18,22): error TS2339: Property 'getProfile' does not exist on type 'UserService'.
+src/app/features/front-office/pharmacist/pages/pharmacist-dashboard/pharmacist-dashboard.component.ts(19,14): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/app/features/front-office/pharmacist/pages/pharmacist-dashboard/pharmacist-dashboard.component.ts(24,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/app/features/front-office/pharmacist/pages/pharmacist-dashboard/pharmacist-dashboard.component.ts(31,39): error TS2339: Property 'getUserFullName' does not exist on type 'AuthService'.

@@ -22,6 +22,10 @@ export class UserService {
         return this.http.put(`${this.baseUrlLegacy}/profile`, request);
     }
 
+    getProfile(): Observable<any> {
+        return this.http.get(`${this.baseUrlLegacy}/profile`);
+    }
+
     create(dto: UserRequestDTO): Observable<UserResponseDTO> {
         return this.http.post<UserResponseDTO>(this.apiUrl, dto);
     }

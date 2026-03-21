@@ -14,29 +14,31 @@ export class TopbarComponent implements OnInit {
   constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit() {
-    this.loadUserInfo();
-    this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          this.setNames(user.fullName);
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching user profile', err);
-      }
-    });
-  }
+    // 1. Try to get name directly from JWT token
+    const fullNameFromToken = this.authService.getUserFullName();
+    if (fullNameFromToken) {
+      this.setNames(fullNameFromToken);
+      return;
+    }
 
-  private loadUserInfo() {
-    const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.setNames(fullName);
+    // 2. Fallback: find user by email, then use their fullName
+    const email = this.authService.getUserEmail();
+    if (email) {
+      this.userService.getAll().subscribe({
+        next: (users) => {
+          const user = users.find(u => u.email === email);
+          if (user && user.fullName) {
+            this.setNames(user.fullName);
+          }
+        },
+        error: (err: any) => console.error('Error fetching users for topbar', err)
+      });
     }
   }
 
   private setNames(fullName: string) {
     if (!fullName) return;
-    const parts = fullName.split(' ');
+    const parts = fullName.trim().split(' ');
     this.firstName = parts[0];
     this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
     if (!this.initials) this.initials = this.firstName[0].toUpperCase();

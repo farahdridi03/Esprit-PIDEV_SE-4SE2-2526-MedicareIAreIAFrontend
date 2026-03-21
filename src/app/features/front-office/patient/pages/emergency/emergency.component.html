@@ -1,0 +1,102 @@
+<div class="dashboard-wrapper">
+    <app-sidebar></app-sidebar>
+
+    <div class="main-body">
+        <app-topbar></app-topbar>
+
+        <div class="content-area">
+            <main class="page">
+
+                <div class="page-hero">
+                    <div class="hero-label">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+                            <path
+                                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                        Emergency Alerts
+                    </div>
+                    <h1 class="hero-title">Emergency Alerts</h1>
+                    <p class="hero-sub">Monitor and manage your emergency alerts and ambulance requests.</p>
+
+                    <div
+                        style="position: absolute; right: 44px; top: 50%; transform: translateY(-50%); display: flex; gap: 1rem; z-index: 2;">
+                        <button class="add-btn" (click)="loadAlerts()" [disabled]="loading">
+                            <span class="plus">↻</span> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="loading" class="loading-state">
+                    <div class="spinner"></div>
+                    <span>Loading alerts...</span>
+                </div>
+
+                <div *ngIf="!loading && alerts.length === 0" class="empty-state">
+                    <div class="empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                        </svg>
+                    </div>
+                    <h3>No Emergency Alerts</h3>
+                    <p>You have no active or past emergency alerts.</p>
+                </div>
+
+                <div *ngIf="!loading && alerts.length > 0" class="cards-grid">
+                    <div class="don-card" *ngFor="let alert of alerts" [class.resolved]="alert.status === 'RESOLVED'">
+
+                        <div class="card-accent" [ngClass]="getSeverityClass(alert.severity)"></div>
+
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="donor-info">
+                                    <div class="donor-avatar">{{ alert.patientName?.substring(0,2)?.toUpperCase() }}</div>
+                                    <div>
+                                        <div class="donor-name">{{ alert.patientName }}</div>
+                                        <div class="donor-date">{{ alert.createdAt | date:'dd MMM yyyy, HH:mm' }}</div>
+                                    </div>
+                                </div>
+                                <span class="status-badge" [ngClass]="getStatusClass(alert.status)">
+                                    {{ alert.status | titlecase }}
+                                </span>
+                            </div>
+
+                            <div class="type-chip" [ngClass]="getSeverityClass(alert.severity)">
+                                {{ alert.severity | titlecase }}
+                            </div>
+
+                            <div class="location-row" *ngIf="alert.latitude && alert.longitude">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 0 1 6 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                                </svg>
+                                <span>{{ alert.latitude | number:'1.4-4' }}, {{ alert.longitude | number:'1.4-4' }}</span>
+                            </div>
+
+                            <div class="canceled-note" *ngIf="alert.canceledByPatient">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                Canceled by patient
+                            </div>
+
+                            <div class="card-actions">
+                                <button *ngIf="alert.status !== 'RESOLVED' && !alert.canceledByPatient" class="cancel-btn"
+                                    (click)="cancelAlert(alert.id)" [disabled]="cancelingId === alert.id">
+                                    {{ cancelingId === alert.id ? 'Canceling...' : 'Cancel Alert' }}
+                                </button>
+                                <span *ngIf="alert.status === 'RESOLVED'" class="resolved-label">
+                                    ✓ Resolved
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>

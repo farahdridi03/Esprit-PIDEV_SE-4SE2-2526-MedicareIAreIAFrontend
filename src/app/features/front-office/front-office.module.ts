@@ -13,7 +13,8 @@ import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
 import { FormsModule } from '@angular/forms';
-
+import { DonationsComponent } from './patient/pages/donations/donations.component';
+import { EmergencyComponent } from './patient/pages/emergency/emergency.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,9 @@ import { FormsModule } from '@angular/forms';
     DoctorSidebarComponent,
     DoctorTopbarComponent,
     DoctorDashboardComponent,
-    DoctorProfileComponent
+    DoctorProfileComponent,
+    DonationsComponent,
+    EmergencyComponent
   ],
   imports: [
     CommonModule,

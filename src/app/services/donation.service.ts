@@ -1,0 +1,68 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Donation, AidRequest, DonationAssignment } from '../models/donation.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DonationService {
+  private apiUrl = 'http://localhost:8081/springsecurity/api/donations';
+  private aidApiUrl = 'http://localhost:8081/springsecurity/api/aid-requests';
+
+  constructor(private http: HttpClient) { }
+
+  getAllDonations(): Observable<Donation[]> {
+    return this.http.get<Donation[]>(this.apiUrl);
+  }
+
+  createDonation(donation: Donation, file?: File): Observable<Donation> {
+    const formData = new FormData();
+    formData.append('donation', new Blob([JSON.stringify(donation)], { type: 'application/json' }));
+    if (file) {
+      formData.append('image', file);  // backend @RequestPart("image")
+    }
+    return this.http.post<Donation>(this.apiUrl, formData);
+  }
+
+  updateDonation(id: number, donation: Partial<Donation>, file?: File): Observable<Donation> {
+    const formData = new FormData();
+    formData.append('donation', new Blob([JSON.stringify(donation)], { type: 'application/json' }));
+    if (file) {
+      formData.append('image', file);  // backend @RequestPart("image")
+    }
+    return this.http.put<Donation>(`${this.apiUrl}/${id}`, formData);
+  }
+
+  deleteDonation(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getAidRequestsByPatient(patientId: number): Observable<AidRequest[]> {
+    return this.http.get<AidRequest[]>(`${this.aidApiUrl}/patient/${patientId}`);
+  }
+
+  getAllAidRequests(): Observable<AidRequest[]> {
+    return this.http.get<AidRequest[]>(this.aidApiUrl);
+  }
+
+  createAidRequest(request: Partial<AidRequest>): Observable<AidRequest> {
+    return this.http.post<AidRequest>(this.aidApiUrl, request);
+  }
+
+  deleteAidRequest(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.aidApiUrl}/${id}`);
+  }
+
+  updateAidRequestStatus(id: number, status: string): Observable<AidRequest> {
+    // backend: PUT /api/aid-requests/{id}/status?status=REJECTED
+    return this.http.put<AidRequest>(`${this.aidApiUrl}/${id}/status`, null, {
+      params: { status }
+    });
+  }
+
+  assignDonation(assignment: { donationId: number; aidRequestId: number }): Observable<DonationAssignment> {
+    // backend endpoint: POST /api/donations/assign
+    return this.http.post<DonationAssignment>(`${this.apiUrl}/assign`, assignment);
+  }
+}
