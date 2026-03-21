@@ -49,4 +49,8 @@ export class UserService {
     getByRole(role: string): Observable<UserResponseDTO[]> {
         return this.http.get<UserResponseDTO[]>(`${this.apiUrl}/role/${role}`);
     }
+
+    getProfile(): Observable<UserResponseDTO> {
+        return this.http.get<UserResponseDTO>(`${this.baseUrlLegacy}/profile`);
+    }
 }
