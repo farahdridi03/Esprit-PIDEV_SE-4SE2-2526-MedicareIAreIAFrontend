@@ -42,16 +42,28 @@ const routes: Routes = [
         .then(m => m.NutritionistModule)
   },
   {
-    path: 'laboratory',
+    path: 'laboratorystaff',
     loadChildren: () =>
       import('./laboratory/laboratory.module')
-        .then(m => m.LaboratoryModule)
+        .then(m => m.LaboratoryStaffModule)
   },
   {
     path: 'home-care',
     loadChildren: () =>
       import('./home-care/home-care.module')
         .then(m => m.HomeCareModule)
+  },
+  {
+    path: 'pharmacist',
+    loadChildren: () =>
+      import('./pharmacist/pharmacist.module')
+        .then(m => m.PharmacistModule)
+  },
+  {
+    path: 'clinic',
+    loadChildren: () =>
+      import('./clinic/clinic.module')
+        .then(m => m.ClinicModule)
   }
 ];
 

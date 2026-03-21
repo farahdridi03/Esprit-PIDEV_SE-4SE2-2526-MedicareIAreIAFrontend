@@ -1,26 +1,37 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { LaboratorySidebarComponent } from './components/laboratory-sidebar/laboratory-sidebar.component';
-import { LaboratoryTopbarComponent } from './components/laboratory-topbar/laboratory-topbar.component';
-import { LaboratoryDashboardComponent } from './pages/laboratory-dashboard/laboratory-dashboard.component';
+import { LaboratoryStaffSidebarComponent } from './components/laboratory-sidebar/laboratory-sidebar.component';
+import { LaboratoryStaffTopbarComponent } from './components/laboratory-topbar/laboratory-topbar.component';
+import { LaboratoryStaffDashboardComponent } from './pages/laboratory-dashboard/laboratory-dashboard.component';
 
 const routes: Routes = [
     {
         path: '',
-        component: LaboratoryDashboardComponent
-    }
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+    },
+    {
+        path: 'dashboard',
+        component: LaboratoryStaffDashboardComponent
+    },
+    { path: 'requests', component: LaboratoryStaffDashboardComponent },
+    { path: 'results', component: LaboratoryStaffDashboardComponent },
+    { path: 'events', component: LaboratoryStaffDashboardComponent },
+    { path: 'forum', component: LaboratoryStaffDashboardComponent },
+    { path: 'donations', component: LaboratoryStaffDashboardComponent },
+    { path: 'profile', component: LaboratoryStaffDashboardComponent }
 ];
 
 @NgModule({
     declarations: [
-        LaboratorySidebarComponent,
-        LaboratoryTopbarComponent,
-        LaboratoryDashboardComponent
+        LaboratoryStaffSidebarComponent,
+        LaboratoryStaffTopbarComponent,
+        LaboratoryStaffDashboardComponent
     ],
     imports: [
         CommonModule,
         RouterModule.forChild(routes)
     ]
 })
-export class LaboratoryModule { }
+export class LaboratoryStaffModule { }

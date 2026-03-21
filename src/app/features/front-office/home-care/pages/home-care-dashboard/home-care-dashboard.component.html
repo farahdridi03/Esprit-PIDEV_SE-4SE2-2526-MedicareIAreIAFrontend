@@ -7,107 +7,100 @@
         <app-home-care-topbar></app-home-care-topbar>
 
         <div class="content-area">
-            <!-- Stats Section -->
-            <section class="stats">
-                <div class="card">
-                    <div class="card-header">
-                        <span>Today's Visits</span>
-                        <span>📅</span>
-                    </div>
-                    <h2>5</h2>
-                    <p>3 completed, 2 pending</p>
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="banner-text">
+                    <h1>Welcome back, {{ firstName || 'Provider' }}!</h1>
+                    <p>Check your route and scheduled visits for today.</p>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <span>Active Patients</span>
-                        <span>👥</span>
+                <div class="banner-stats">
+                    <div class="stat-card">
+                        <div class="label">Today's Visits</div>
+                        <div class="value"></div>
                     </div>
-                    <h2>18</h2>
-                    <p>Under care</p>
+                    <div class="stat-card">
+                        <div class="label">Active Patients</div>
+                        <div class="value"> </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Urgent cases</div>
+                        <div class="value"></div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <span>Pending Requests</span>
-                        <span>⏳</span>
-                    </div>
-                    <h2>3</h2>
-                    <p>Awaiting response</p>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <span>Urgent Cases</span>
-                        <span>⚠</span>
-                    </div>
-                    <h2>1</h2>
-                    <p>Requires immediate attention</p>
-                </div>
-            </section>
-
-            <!-- Content Grid -->
-            <section class="content-grid">
-                <!-- Today's Schedule -->
-                <div class="box">
-                    <div class="box-header">
-                        <h3>Today's Schedule</h3>
-                        <a>View All</a>
-                    </div>
-
-                    <div class="schedule-item">
-                        <div>
-                            <h4>John Doe</h4>
-                            <span>Nursing Care</span>
-                            <small>10:00 AM - 11:30 AM</small>
-                            <small>123 Oak Street</small>
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid">
+                
+                <!-- Left Column (2/3) -->
+                <div class="left-column">
+                    <!-- Today's Schedule -->
+                    <div class="schedule-section">
+                        <div class="section-header">
+                            <h3>Today's Schedule</h3>
+                            <a href="#">See map route →</a>
                         </div>
-                        <button class="start-visit">Start Visit</button>
-                    </div>
 
-                    <div class="schedule-item">
-                        <div>
-                            <h4>Mary Johnson</h4>
-                            <span>Physical Therapy</span>
-                            <small>2:00 PM - 3:00 PM</small>
-                            <small>456 Elm Avenue</small>
-                        </div>
-                        <button class="start-visit">Start Visit</button>
-                    </div>
-                </div>
-
-                <!-- New Requests -->
-                <div class="box">
-                    <div class="box-header">
-                        <h3>New Requests</h3>
-                        <a>View All</a>
-                    </div>
-
-                    <div class="request-item">
-                        <div>
-                            <h4>John Doe <span class="badge high">High</span></h4>
-                            <span>Nursing Care</span>
-                            <small>123 Oak Street, Boston</small>
-                        </div>
-                        <div class="actions">
-                            <button class="accept">Accept</button>
-                            <button class="details">View Details</button>
+                        <div class="schedule-list">
+                        
                         </div>
                     </div>
 
-                    <div class="request-item urgent">
-                        <div>
-                            <h4>Robert Smith <span class="badge urgent">Urgent</span></h4>
-                            <span>Wound Care</span>
-                            <small>789 Pine Road, Boston</small>
+                    <!-- Monitoring Row (New Requests & Alerts) -->
+                    <div class="monitoring-row">
+                        <!-- New Requests -->
+                        <div class="monitoring-card">
+                            <div class="section-header">
+                                <h3>New Requests</h3>
+                            </div>
+                            <div class="request-list">
+                               
+                            </div>
                         </div>
-                        <div class="actions">
-                            <button class="accept">Accept</button>
-                            <button class="details">View Details</button>
+
+                        <!-- Alerts & Monitoring -->
+                        <div class="monitoring-card alerts-card">
+                            <div class="section-header">
+                                <h3>Alerts</h3>
+                            </div>
+                            <div class="alerts-list">
+                               
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
+
+                <!-- Right Column (1/3) -->
+                <div class="right-column">
+                    <!-- Calendar Section -->
+                    <div class="calendar-section">
+                        <div class="section-header">
+                            <h3>Calendar</h3>
+                        </div>
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <span class="month-year">March 2026</span>
+                                <div class="calendar-nav">
+                                    <button>&lt;</button>
+                                    <button>&gt;</button>
+                                </div>
+                            </div>
+                            <div class="days-header">
+                                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                            </div>
+                            <div class="days-grid">
+                                <span class="muted">23</span><span class="muted">24</span><span class="muted">25</span><span class="muted">26</span><span class="muted">27</span><span class="muted">28</span><span>1</span>
+                                <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+                                <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+                                <span>16</span><span>17</span><span>18</span><span>19</span><span class="active-today">20</span><span>21</span><span>22</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
     </div>
 </div>

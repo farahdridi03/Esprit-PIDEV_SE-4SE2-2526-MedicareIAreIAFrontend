@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
     selector: 'app-home-care-sidebar',
@@ -6,7 +7,9 @@ import { Component } from '@angular/core';
     styleUrls: ['./home-care-sidebar.component.scss']
 })
 export class HomeCareSidebarComponent {
+    constructor(private authService: AuthService) {}
+
     logout() {
-        console.log('Logout clicked');
+        this.authService.logout();
     }
 }

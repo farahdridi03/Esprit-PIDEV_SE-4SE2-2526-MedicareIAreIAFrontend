@@ -1,112 +1,73 @@
 <div class="laboratory-wrapper">
     <!-- Sidebar -->
-    <app-laboratory-sidebar></app-laboratory-sidebar>
+    <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
 
     <!-- Main Content -->
     <div class="main-body">
-        <app-laboratory-topbar></app-laboratory-topbar>
+        <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
 
         <div class="content-area">
-            <!-- Header -->
-            <div class="page-header">
-                <h1>Laboratory Dashboard</h1>
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="banner-text">
+                    <h1>Welcome back, {{ firstName || 'User' }}!</h1>
+                    <p>You have new test requests awaiting your review.</p>
+                </div>
+
+                <div class="banner-stats">
+                    <div class="stat-card">
+                        <div class="label">Incoming Requests</div>
+                        <div class="value"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Completed Today</div>
+                        <div class="value"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Urgent</div>
+                        <div class="value" style="color: #ef4444;"></div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Stats Cards -->
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <div class="card-header">
-                        <span>Pending Tests</span>
-                        <span>⏳</span>
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Tests Section -->
+                <div class="tests-section">
+                    <div class="section-header">
+                        <h3>Today's Tests</h3>
+                        <a href="#">View All →</a>
                     </div>
-                    <h2>15</h2>
-                    <p>Awaiting processing</p>
+
+                    <div class="test-list">
+                    </div>
                 </div>
 
-                <div class="stat-card">
-                    <div class="card-header">
-                        <span>In Progress</span>
-                        <span>🧪</span>
+                <!-- Calendar Section -->
+                <div class="calendar-section">
+                    <div class="section-header">
+                        <h3>Calendar</h3>
                     </div>
-                    <h2>8</h2>
-                    <p>Currently testing</p>
-                </div>
-
-                <div class="stat-card">
-                    <div class="card-header">
-                        <span>Completed Today</span>
-                        <span>✔</span>
-                    </div>
-                    <h2>42</h2>
-                    <p>Results uploaded</p>
-                </div>
-
-                <div class="stat-card">
-                    <div class="card-header">
-                        <span>Urgent Tests</span>
-                        <span>⚠</span>
-                    </div>
-                    <h2>3</h2>
-                    <p>High priority</p>
-                </div>
-            </section>
-
-            <!-- Content Grid -->
-            <section class="content-grid">
-
-                <!-- Urgent Tests -->
-                <div class="box urgent">
-                    <div class="box-header">
-                        <h3>Urgent Tests</h3>
-                        <a>View All</a>
-                    </div>
-
-                    <div class="urgent-item">
-                        <div>
-                            <h4>Mike Johnson</h4>
-                            <span>HbA1c</span>
-                            <small>10:00 AM</small>
+                    <div class="calendar-placeholder">
+                        <div class="calendar-header">
+                            <span class="month">March 2026</span>
+                            <div class="nav-btns">
+                                <button>&lt;</button>
+                                <button>&gt;</button>
+                            </div>
                         </div>
-                        <button class="danger">Process Now</button>
+                        <div class="calendar-days">
+                            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                        </div>
+                        <div class="calendar-grid">
+                            <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>1</span>
+                            <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+                            <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+                            <span>16</span><span>17</span><span>18</span><span>19</span><span class="today">20</span><span>21</span><span>22</span>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Test Queue -->
-                <div class="box">
-                    <div class="box-header">
-                        <h3>Test Queue</h3>
-                        <a>View All</a>
-                    </div>
-
-                    <div class="queue-item">
-                        <div>
-                            <h4>John Doe</h4>
-                            <span>Complete Blood Count</span>
-                            <small>09:00 AM</small>
-                        </div>
-                        <button>Process</button>
-                    </div>
-
-                    <div class="queue-item">
-                        <div>
-                            <h4>Mike Johnson</h4>
-                            <span>HbA1c</span>
-                            <small>10:00 AM</small>
-                        </div>
-                        <button>Process</button>
-                    </div>
-
-                    <div class="queue-item">
-                        <div>
-                            <h4>Sarah Williams</h4>
-                            <span>Thyroid Function</span>
-                            <small>10:30 AM</small>
-                        </div>
-                        <button>Process</button>
-                    </div>
-                </div>
-
-            </section>
+            </div>
 
         </div>
     </div>

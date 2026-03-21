@@ -7,124 +7,100 @@
         <app-nutritionist-topbar></app-nutritionist-topbar>
 
         <div class="content-area">
-            <!-- Header -->
-            <div class="page-header">
-                <h1>Nutritionist Dashboard</h1>
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="banner-text">
+                    <h1>Welcome back, {{ firstName || 'Nutritionist' }}!</h1>
+                    <p>Track your patients' dietary progress and upcoming sessions today.</p>
+                </div>
+
+                <div class="banner-stats">
+                    <div class="stat-card">
+                        <div class="label">Total Patients</div>
+                        <div class="value"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Consultations</div>
+                        <div class="value"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Meal Plans</div>
+                        <div class="value"></div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Stats Cards -->
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <div class="card-header">
-                        <span>Active Patients</span>
-                        <span>👥</span>
-                    </div>
-                    <h2>68</h2>
-                    <p>+5 this month</p>
-                </div>
-
-                <div class="stat-card">
-                    <div class="card-header">
-                        <span>Meal Plans</span>
-                        <span>🍏</span>
-                    </div>
-                    <h2>42</h2>
-                    <p>Currently active</p>
-                </div>
-
-                <div class="stat-card">
-                    <div class="card-header">
-                        <span>Today's Consultations</span>
-                        <span>📅</span>
-                    </div>
-                    <h2>7</h2>
-                    <p>3 completed</p>
-                </div>
-
-                <div class="stat-card">
-                    <div class="card-header">
-                        <span>Success Rate</span>
-                        <span>⏱</span>
-                    </div>
-                    <h2>87%</h2>
-                    <p>Goal achievement</p>
-                </div>
-            </section>
-
-            <!-- Content Grid -->
-            <section class="content-grid">
-
-                <!-- Schedule -->
-                <div class="schedule box">
-                    <div class="box-header">
-                        <h3>Today's Schedule</h3>
-                        <a>View All</a>
-                    </div>
-
-                    <div class="item">
-                        <div>
-                            <h4>John Doe</h4>
-                            <span>10:00 AM - In-Person</span>
-                            <small>Follow-up Assessment</small>
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid">
+                
+                <!-- Left Column (2/3) -->
+                <div class="left-column">
+                    <!-- Today's Schedule -->
+                    <div class="schedule-section">
+                        <div class="section-header">
+                            <h3>Today's Schedule</h3>
+                            <a href="#">View All sessions →</a>
                         </div>
-                        <button>Start</button>
+
+                        <div class="schedule-list">
+                            
+                        </div>
                     </div>
 
-                    <div class="item">
-                        <div>
-                            <h4>Jane Smith</h4>
-                            <span>11:30 AM - Virtual</span>
-                            <small>Progress Review</small>
+                    <!-- Monitoring Row (Average Progress & Alerts) -->
+                    <div class="monitoring-row">
+                        <!-- Average Progress -->
+                        <div class="monitoring-card">
+                            <div class="section-header">
+                                <h3>Average Progress</h3>
+                            </div>
+                            <div class="progress-box">
+                                
+                            </div>
                         </div>
-                        <button>Start</button>
-                    </div>
 
-                    <div class="item">
-                        <div>
-                            <h4>Mike Johnson</h4>
-                            <span>2:00 PM - In-Person</span>
-                            <small>Initial Consultation</small>
+                        <!-- Alerts & Monitoring -->
+                        <div class="monitoring-card alerts-card">
+                            <div class="section-header">
+                                <h3>Alerts & Monitoring</h3>
+                                <div class="badge-count">3 New</div>
+                            </div>
+                            <div class="alerts-list">
+                                
+                            </div>
                         </div>
-                        <button>Start</button>
                     </div>
                 </div>
 
-                <!-- Recent Patients -->
-                <div class="patients box">
-                    <div class="box-header">
-                        <h3>Recent Patients</h3>
-                        <a>View All</a>
-                    </div>
-
-                    <div class="patient-item">
-                        <div class="avatar-circle">JD</div>
-                        <div class="info">
-                            <h4>John Doe</h4>
-                            <span>Type 2 Diabetes</span>
+                <!-- Right Column (1/3) -->
+                <div class="right-column">
+                    <!-- Calendar Section -->
+                    <div class="calendar-section">
+                        <div class="section-header">
+                            <h3>Calendar</h3>
                         </div>
-                        <a class="view">View</a>
-                    </div>
-
-                    <div class="patient-item">
-                        <div class="avatar-circle">JS</div>
-                        <div class="info">
-                            <h4>Jane Smith</h4>
-                            <span>Weight Management</span>
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <span class="month-year">March 2026</span>
+                                <div class="calendar-nav">
+                                    <button>&lt;</button>
+                                    <button>&gt;</button>
+                                </div>
+                            </div>
+                            <div class="days-header">
+                                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                            </div>
+                            <div class="days-grid">
+                                <span class="muted">23</span><span class="muted">24</span><span class="muted">25</span><span class="muted">26</span><span class="muted">27</span><span class="muted">28</span><span>1</span>
+                                <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+                                <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+                                <span>16</span><span>17</span><span>18</span><span>19</span><span class="active-today">20</span><span>21</span><span>22</span>
+                            </div>
                         </div>
-                        <a class="view">View</a>
-                    </div>
-
-                    <div class="patient-item">
-                        <div class="avatar-circle">MJ</div>
-                        <div class="info">
-                            <h4>Mike Johnson</h4>
-                            <span>Cardiovascular</span>
-                        </div>
-                        <a class="view">View</a>
                     </div>
                 </div>
 
-            </section>
+            </div>
 
         </div>
     </div>
