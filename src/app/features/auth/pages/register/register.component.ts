@@ -17,8 +17,7 @@ export class RegisterComponent implements OnInit {
     { value: 'DOCTOR', label: 'Doctor' },
     { value: 'CLINIC', label: 'Clinic' },
     { value: 'PHARMACIST', label: 'Pharmacist' },
-    { value: 'LABORATORYSTAFF', label: 'Laboratory Staff' },
-    { value: 'NUTRITIONIST', label: 'Nutritionist' },
+  { value: 'LABORATORY_STAFF', label: 'Laboratory Staff' }, // ✅ corrigé
     { value: 'PATIENT', label: 'Patient' },
     { value: 'HOME_CARE_PROVIDER', label: 'Home Care Provider' }
   ];
@@ -141,7 +140,7 @@ export class RegisterComponent implements OnInit {
       const pharmacyPhoneCtrl = this.registerForm.get('pharmacyPhone');
       const pharmacyEmailCtrl = this.registerForm.get('pharmacyEmail');
 
-      const isLabStaff = role === 'LABORATORYSTAFF';
+      const isLabStaff = role === 'LABORATORY_STAFF';
       const labNameCtrl = this.registerForm.get('labName');
       const labAddressCtrl = this.registerForm.get('labAddress');
       const labPhoneCtrl = this.registerForm.get('labPhone');
@@ -200,7 +199,7 @@ export class RegisterComponent implements OnInit {
   get isDoctor(): boolean { return this.registerForm.get('role')?.value === 'DOCTOR'; }
   get isClinic(): boolean { return this.registerForm.get('role')?.value === 'CLINIC'; }
   get isPharmacist(): boolean { return this.registerForm.get('role')?.value === 'PHARMACIST'; }
-  get isLabStaff(): boolean { return this.registerForm.get('role')?.value === 'LABORATORYSTAFF'; }
+  get isLabStaff(): boolean {return this.registerForm.get('role')?.value === 'LABORATORY_STAFF'; }
   get isHomeCareProvider(): boolean { return this.registerForm.get('role')?.value === 'HOME_CARE_PROVIDER'; }
   get isNutritionist(): boolean { return this.registerForm.get('role')?.value === 'NUTRITIONIST'; }
 
@@ -253,24 +252,73 @@ export class RegisterComponent implements OnInit {
   removeMedicalHistory(index: number) {
     this.medicalHistories.removeAt(index);
   }
+onSubmit() {
+  console.log('=== SUBMIT ===');
+  console.log('Valid:', this.registerForm.valid);
+  
+  // ✅ Afficher les champs invalides
+  Object.keys(this.registerForm.controls).forEach(key => {
+    const ctrl = this.registerForm.get(key);
+    if (ctrl?.invalid) console.log('❌ INVALID:', key, ctrl.errors);
+  });
 
-  onSubmit() {
-    if (this.registerForm.valid) {
-      const { terms, selectedServices, ...payload } = this.registerForm.value;
-      const finalPayload = {
-        ...payload,
-        homeCareServices: selectedServices
-      };
-      this.authService.register(finalPayload).subscribe({
-        next: () => {
-          this.router.navigate(['/auth/login']);
-        },
-        error: (err: any) => {
-          this.errorMessage = err.error?.message || 'Erreur lors de l\'inscription';
-        }
-      });
-    } else {
-      this.registerForm.markAllAsTouched();
-    }
+  if (!this.registerForm.valid) {
+    this.registerForm.markAllAsTouched();
+    return;
   }
+
+  const formValue = this.registerForm.value;
+  const role = formValue.role;
+
+  let finalPayload: any = {
+    fullName: formValue.fullName,
+    email: formValue.email,
+    password: formValue.password,
+    role: role,
+    phone: formValue.phone,
+    birthDate: formValue.birthDate,
+  };
+
+  if (role === 'LABORATORY_STAFF') {
+    finalPayload = { ...finalPayload,
+      labName: formValue.labName,
+      labAddress: formValue.labAddress,
+      labPhone: formValue.labPhone,
+    };
+  } else if (role === 'PATIENT') {
+    finalPayload = { ...finalPayload,
+      gender: formValue.gender,
+      bloodType: formValue.bloodType,
+      emergencyContactName: formValue.emergencyContactName,
+      emergencyContactPhone: formValue.emergencyContactPhone,
+    };
+  } else if (role === 'DOCTOR' || role === 'NUTRITIONIST') {
+    finalPayload = { ...finalPayload,
+      specialty: formValue.specialty,
+      licenseNumber: formValue.licenseNumber,
+      consultationFee: formValue.consultationFee,
+      consultationMode: formValue.consultationMode,
+    };
+  } else if (role === 'PHARMACIST') {
+    finalPayload = { ...finalPayload,
+      pharmacyName: formValue.pharmacyName,
+      pharmacyAddress: formValue.pharmacyAddress,
+      pharmacyPhone: formValue.pharmacyPhone,
+      pharmacyEmail: formValue.pharmacyEmail,
+    };
+  }
+
+  console.log('✅ PAYLOAD:', JSON.stringify(finalPayload));
+
+  this.authService.register(finalPayload).subscribe({
+    next: (res) => {
+      console.log('✅ SUCCESS:', res);
+      this.router.navigate(['/auth/login']);
+    },
+    error: (err: any) => {
+      console.log('❌ ERROR:', err);
+      this.errorMessage = err.error || err.message || 'Erreur inscription';
+    }
+  });
+}
 }
