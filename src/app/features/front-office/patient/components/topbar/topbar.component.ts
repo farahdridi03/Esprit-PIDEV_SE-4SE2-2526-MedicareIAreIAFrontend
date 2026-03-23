@@ -3,11 +3,11 @@ import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
-  selector: 'app-topbar',
+  selector: 'app-patient-topbar',
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.scss']
 })
-export class TopbarComponent implements OnInit {
+export class PatientTopbarComponent implements OnInit {
   firstName: string = 'User';
   initials: string = 'U';
 

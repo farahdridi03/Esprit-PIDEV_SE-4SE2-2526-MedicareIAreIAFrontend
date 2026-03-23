@@ -1,6 +1,6 @@
 <div class="doctor-wrapper">
     <!-- Sidebar -->
-    <app-doctor-sidebar></app-doctor-sidebar>
+    <app-doctor-sidebar [currentView]="currentView" (viewChange)="setView($event)"></app-doctor-sidebar>
 
     <!-- Main Content -->
     <div class="main-body">
@@ -20,7 +20,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="label">Today's Appointments</div>
-                        <div class="value"></div>
+                        <div class="value">{{ todayAppointments.length }}</div>
                     </div>
                     <div class="stat-card">
                         <div class="label">Pending Reviews</div>
@@ -29,8 +29,8 @@
                 </div>
             </div>
 
-            <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
+            <!-- Dashboard Grid (Overview) -->
+            <div class="dashboard-grid" *ngIf="currentView === 'overview'">
                 <!-- Schedule Section -->
                 <div class="schedule-section">
                     <div class="section-header">
@@ -39,7 +39,26 @@
                     </div>
 
                     <div class="schedule-list">
-                      
+                        <div *ngIf="isLoadingAppointments" class="loader">Loading schedule...</div>
+                        
+                        <div *ngIf="!isLoadingAppointments && todayAppointments.length === 0" class="no-appointments">
+                            <p>No appointments today</p>
+                        </div>
+
+                        <div class="schedule-item" *ngFor="let app of todayAppointments">
+                            <div class="time-col">
+                                <span class="start">{{ app.startTime }}</span>
+                                <span class="end">{{ app.endTime }}</span>
+                            </div>
+                            <div class="info-col">
+                                <div class="top">
+                                    <h4>{{ app.patientName }}</h4>
+                                    <span class="mode-badge" [class]="app.mode.toLowerCase()">{{ app.mode }}</span>
+                                </div>
+                                <p class="notes" *ngIf="app.notes">"{{ app.notes }}"</p>
+                                <a *ngIf="app.mode === 'ONLINE' && app.status === 'BOOKED'" [href]="app.meetingLink" target="_blank" class="join-link">Join Video Call</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -68,6 +87,21 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Main Calendar View -->
+            <div class="calendar-main-view" *ngIf="currentView === 'calendar'">
+                <app-doctor-calendar-calendar></app-doctor-calendar-calendar>
+            </div>
+
+            <!-- Calendar Settings View -->
+            <div class="calendar-settings-view" *ngIf="currentView === 'settings'">
+                <app-doctor-calendar-settings></app-doctor-calendar-settings>
+            </div>
+
+            <!-- Calendar Exceptions View -->
+            <div class="calendar-exceptions-view" *ngIf="currentView === 'exceptions'">
+                <app-doctor-calendar-exceptions></app-doctor-calendar-exceptions>
             </div>
 
         </div>

@@ -206,6 +206,25 @@
             </div>
           </div>
 
+        </div>
+      </ng-container>
+
+      <!-- DOCTOR FIELDS -->
+      <ng-container *ngIf="isDoctor">
+        <div class="patient-fields"> <!-- Reuse same styling container -->
+          <h3 class="section-title" style="margin-bottom: 1rem;">Professional Information</h3>
+          
+          <div class="form-group">
+            <label for="specialty">Specialty</label>
+            <div class="input-wrapper">
+              <select id="specialty" formControlName="specialty" class="role-select"
+                [ngClass]="{'is-invalid': registerForm.get('specialty')?.invalid && (registerForm.get('specialty')?.dirty || registerForm.get('specialty')?.touched)}">
+                <option value="" disabled>Select your specialty</option>
+                <option *ngFor="let s of doctorSpecialties" [value]="s.value">{{ s.label }}</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Drug Allergies -->
           <div class="form-group margin-top">
             <label for="drugAllergies">Drug Allergies</label>
@@ -235,6 +254,222 @@
               </span>
               <input type="text" id="hereditaryDiseases" formControlName="hereditaryDiseases"
                 placeholder="e.g. Hemophilia (Optional)">
+            </div>
+          </div>
+
+
+          <div class="form-group margin-top">
+            <label for="consultationMode">Consultation Mode</label>
+            <div class="input-wrapper">
+              <select id="consultationMode" formControlName="consultationMode" class="role-select">
+                <option *ngFor="let m of consultationModes" [value]="m.value">{{ m.label }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group margin-top" *ngIf="registerForm.get('consultationMode')?.value !== 'ONLINE'">
+            <label for="doctorClinicSelect">Clinique d'exercice</label>
+            <div class="input-wrapper">
+              <select id="doctorClinicSelect" formControlName="clinicId" class="role-select"
+                [ngClass]="{'is-invalid': registerForm.get('clinicId')?.invalid && (registerForm.get('clinicId')?.dirty || registerForm.get('clinicId')?.touched)}">
+                <option value="">-- Sélectionnez votre clinique --</option>
+                <option *ngFor="let c of clinics" [value]="c.id">{{ c.name }} — {{ c.address }}</option>
+              </select>
+            </div>
+            <small *ngIf="clinics.length === 0" class="helper-text">
+              Aucune clinique partenaire disponible pour le moment.
+            </small>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- CLINIC FIELDS -->
+      <ng-container *ngIf="isClinic">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Clinic Information</h3>
+          
+          <div class="form-group">
+            <label for="clinicName">Clinic Name</label>
+            <div class="input-wrapper">
+              <input type="text" id="clinicName" formControlName="clinicName" placeholder="Clinic Name"
+                [ngClass]="{'is-invalid': registerForm.get('clinicName')?.invalid && (registerForm.get('clinicName')?.dirty || registerForm.get('clinicName')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="clinicAddress">Address</label>
+            <div class="input-wrapper">
+              <input type="text" id="clinicAddress" formControlName="clinicAddress" placeholder="Clinic Address"
+                [ngClass]="{'is-invalid': registerForm.get('clinicAddress')?.invalid && (registerForm.get('clinicAddress')?.dirty || registerForm.get('clinicAddress')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="clinicPhone">Phone Number</label>
+            <div class="input-wrapper">
+              <input type="tel" id="clinicPhone" formControlName="clinicPhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('clinicPhone')?.invalid && (registerForm.get('clinicPhone')?.dirty || registerForm.get('clinicPhone')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="emergencyPhone">Emergency Phone</label>
+            <div class="input-wrapper">
+              <input type="tel" id="emergencyPhone" formControlName="emergencyPhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('emergencyPhone')?.invalid && (registerForm.get('emergencyPhone')?.dirty || registerForm.get('emergencyPhone')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="ambulancePhone">Ambulance Phone</label>
+            <div class="input-wrapper">
+              <input type="tel" id="ambulancePhone" formControlName="ambulancePhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('ambulancePhone')?.invalid && (registerForm.get('ambulancePhone')?.dirty || registerForm.get('ambulancePhone')?.touched)}">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- PHARMACIST FIELDS -->
+      <ng-container *ngIf="isPharmacist">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Pharmacy</h3>
+          
+          <div class="form-group">
+            <label for="pharmacyName">Pharmacy Name</label>
+            <div class="input-wrapper">
+              <input type="text" id="pharmacyName" formControlName="pharmacyName" placeholder="Pharmacy Name"
+                [ngClass]="{'is-invalid': registerForm.get('pharmacyName')?.invalid && (registerForm.get('pharmacyName')?.dirty || registerForm.get('pharmacyName')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="pharmacyAddress">Address</label>
+            <div class="input-wrapper">
+              <input type="text" id="pharmacyAddress" formControlName="pharmacyAddress" placeholder="Pharmacy Address"
+                [ngClass]="{'is-invalid': registerForm.get('pharmacyAddress')?.invalid && (registerForm.get('pharmacyAddress')?.dirty || registerForm.get('pharmacyAddress')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="pharmacyPhone">Phone Number</label>
+            <div class="input-wrapper">
+              <input type="tel" id="pharmacyPhone" formControlName="pharmacyPhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('pharmacyPhone')?.invalid && (registerForm.get('pharmacyPhone')?.dirty || registerForm.get('pharmacyPhone')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="pharmacyEmail">Pharmacy Email</label>
+            <div class="input-wrapper">
+              <input type="email" id="pharmacyEmail" formControlName="pharmacyEmail" placeholder="pharmacy@example.com"
+                [ngClass]="{'is-invalid': registerForm.get('pharmacyEmail')?.invalid && (registerForm.get('pharmacyEmail')?.dirty || registerForm.get('pharmacyEmail')?.touched)}">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- NUTRITIONIST FIELDS -->
+      <ng-container *ngIf="isNutritionist">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Nutritionist Information</h3>
+          
+          <div class="form-group">
+            <label for="specialties">Specialties</label>
+            <div class="input-wrapper">
+              <select id="specialties" formControlName="specialty" class="role-select"
+                [ngClass]="{'is-invalid': registerForm.get('specialty')?.invalid && (registerForm.get('specialty')?.dirty || registerForm.get('specialty')?.touched)}">
+                <option value="" disabled>Select specialty</option>
+                <option *ngFor="let s of doctorSpecialties" [value]="s.value">{{ s.label }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="n-licenseNumber">License Number</label>
+            <div class="input-wrapper">
+              <input type="text" id="n-licenseNumber" formControlName="licenseNumber" placeholder="Professional license number"
+                [ngClass]="{'is-invalid': registerForm.get('licenseNumber')?.invalid && (registerForm.get('licenseNumber')?.dirty || registerForm.get('licenseNumber')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="n-consultationFee">Consultation Fee</label>
+            <div class="input-wrapper">
+              <input type="number" id="n-consultationFee" formControlName="consultationFee" placeholder="0.00"
+                [ngClass]="{'is-invalid': registerForm.get('consultationFee')?.invalid && (registerForm.get('consultationFee')?.dirty || registerForm.get('consultationFee')?.touched)}">
+              <span class="currency-suffix">DT</span>
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="n-consultationMode">Consultation Mode</label>
+            <div class="input-wrapper">
+              <select id="n-consultationMode" formControlName="consultationMode" class="role-select">
+                <option *ngFor="let m of consultationModes" [value]="m.value">{{ m.label }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- LABORATORY STAFF FIELDS -->
+      <ng-container *ngIf="isLabStaff">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Laboratory</h3>
+          
+          <div class="form-group">
+            <label for="labName">Name</label>
+            <div class="input-wrapper">
+              <input type="text" id="labName" formControlName="labName" placeholder="Laboratory Name"
+                [ngClass]="{'is-invalid': registerForm.get('labName')?.invalid && (registerForm.get('labName')?.dirty || registerForm.get('labName')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="labAddress">Address</label>
+            <div class="input-wrapper">
+              <input type="text" id="labAddress" formControlName="labAddress" placeholder="Address"
+                [ngClass]="{'is-invalid': registerForm.get('labAddress')?.invalid && (registerForm.get('labAddress')?.dirty || registerForm.get('labAddress')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="labPhone">Phone</label>
+            <div class="input-wrapper">
+              <input type="tel" id="labPhone" formControlName="labPhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('labPhone')?.invalid && (registerForm.get('labPhone')?.dirty || registerForm.get('labPhone')?.touched)}">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- HOME CARE PROVIDER FIELDS -->
+      <ng-container *ngIf="isHomeCareProvider">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Home Care Provider Details</h3>
+          
+          <div class="form-group">
+            <label for="certificationDocument">Certification Document (PDF, Image)</label>
+            <div class="input-wrapper">
+              <input type="file" id="certificationDocument" (change)="onFileChange($event)" accept=".pdf,image/*">
+            </div>
+            <small *ngIf="registerForm.get('certificationDocument')?.value" class="success-message">Document attached ✓</small>
+            <div *ngIf="registerForm.get('certificationDocument')?.invalid && registerForm.get('certificationDocument')?.touched">
+              <small class="error-message">Document is required.</small>
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label>services</label>
+            <div class="services-selection-grid">
+              <label *ngFor="let service of homeCareServicesList" class="checkbox-item">
+                <input type="checkbox" [value]="service.name || service" (change)="onServiceChange($event)">
+                <span class="checkbox-label">{{ service.name || service }}</span>
+              </label>
+            </div>
+            <div *ngIf="registerForm.get('selectedServices')?.invalid && registerForm.get('selectedServices')?.touched">
+              <small class="error-message">Please select at least one service.</small>
             </div>
           </div>
 

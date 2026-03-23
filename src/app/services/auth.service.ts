@@ -16,6 +16,7 @@ export class AuthService {
     private readonly baseUrl = 'http://localhost:8081/springsecurity/auth';
     private readonly TOKEN_KEY = 'auth_token';
 
+
     private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
     public authStatus$ = this.authStatusSubject.asObservable();
 
@@ -101,6 +102,43 @@ export class AuthService {
             return decoded.sub || decoded.email || null;
         } catch (error) {
             return null;
+        }
+    }
+    getHomeCareServices(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
+    }
+
+    getUserFullName(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+
+        try {
+            const decoded: any = jwtDecode(token);
+            // On essaie plusieurs clés communes dans un JWT Spring Security + fallback sur sub (email)
+            const name = decoded.fullName || decoded.fullname || decoded.name || decoded.fullName;
+            if (name) return name;
+
+            const sub = decoded.sub || decoded.email;
+            if (sub && sub.includes('@')) {
+                return sub.split('@')[0];
+            }
+            return sub || null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    getUserId(): number {
+        const token = this.getToken();
+        if (!token) return 1;
+
+        try {
+            const decoded: any = jwtDecode(token);
+            // The backend now includes 'id' in the token claims
+            const id = decoded.id || decoded.userId || decoded.providerId;
+            return id ? Number(id) : 1;
+        } catch (error) {
+            return 1;
         }
     }
 }

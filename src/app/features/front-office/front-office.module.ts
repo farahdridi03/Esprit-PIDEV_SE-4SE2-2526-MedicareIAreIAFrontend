@@ -1,37 +1,64 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { FrontOfficeRoutingModule } from './front-office-routing.module';
+
+// Patient components
+import { DashboardComponent } from './patient/pages/dashboard/dashboard.component';
+import { PatientSidebarComponent } from './patient/components/sidebar/sidebar.component';
+import { PatientTopbarComponent } from './patient/components/topbar/topbar.component';
+import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-list/patient-doctors-list.component';
+import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
+import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
+
+// Doctor components
+import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
+import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
+import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/doctor-sidebar.component';
+import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
+import { DoctorCalendarSettingsComponent } from './doctor/pages/doctor-calendar-settings/doctor-calendar-settings.component';
+import { DoctorCalendarExceptionsComponent } from './doctor/pages/doctor-calendar-exceptions/doctor-calendar-exceptions.component';
+import { DoctorCalendarCalendarComponent } from './doctor/pages/doctor-calendar-calendar/doctor-calendar-calendar.component';
+
+// Layout & Static components
 import { HomeComponent } from './pages/home/home.component';
 import { FrontLayoutComponent } from './layout/front-layout/front-layout.component';
 import { ContactComponent } from './pages/contact/contact.component';
-import { DashboardComponent } from './patient/pages/dashboard/dashboard.component';
-import { SidebarComponent } from './patient/components/sidebar/sidebar.component';
-import { TopbarComponent } from './patient/components/topbar/topbar.component';
-import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/doctor-sidebar.component';
-import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
-import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
-import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
-import { FormsModule } from '@angular/forms';
-
 
 @NgModule({
   declarations: [
-    FrontLayoutComponent,
-    HomeComponent,
-    ContactComponent,
     DashboardComponent,
-    SidebarComponent,
-    TopbarComponent,
+    PatientSidebarComponent,
+    PatientTopbarComponent,
+    PatientDoctorsListComponent,
+    PatientDoctorDetailComponent,
+    PatientAppointmentsComponent,
+    DoctorDashboardComponent,
+    DoctorProfileComponent,
     DoctorSidebarComponent,
     DoctorTopbarComponent,
-    DoctorDashboardComponent,
-    DoctorProfileComponent
+    DoctorCalendarSettingsComponent,
+    DoctorCalendarExceptionsComponent,
+    DoctorCalendarCalendarComponent,
+    HomeComponent,
+    FrontLayoutComponent,
+    ContactComponent
   ],
   imports: [
     CommonModule,
+    RouterModule,
     FrontOfficeRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  exports: [
+    DashboardComponent,
+    PatientSidebarComponent,
+    PatientTopbarComponent,
+    PatientDoctorsListComponent,
+    PatientDoctorDetailComponent,
+    PatientAppointmentsComponent
   ]
 })
 export class FrontOfficeModule { }

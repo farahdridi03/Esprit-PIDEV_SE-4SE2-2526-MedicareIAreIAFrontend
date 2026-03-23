@@ -7,6 +7,10 @@ import { DashboardComponent } from './patient/pages/dashboard/dashboard.componen
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
 import { AuthGuard } from '../../guards/auth.guard';
+import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-list/patient-doctors-list.component';
+import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
+import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
+
 
 const routes: Routes = [
   {
@@ -20,6 +24,24 @@ const routes: Routes = [
   {
     path: 'patient/dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/appointments',
+    component: PatientAppointmentsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/doctors',
+    component: PatientDoctorsListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/doctors/:id',
+    component: PatientDoctorDetailComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },

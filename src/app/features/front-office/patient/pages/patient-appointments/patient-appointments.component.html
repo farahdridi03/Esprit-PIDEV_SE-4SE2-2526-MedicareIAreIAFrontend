@@ -1,0 +1,62 @@
+<div class="appointments-container">
+  <header class="header">
+    <h1>My Appointments</h1>
+    <p>Manage your medical consultations</p>
+  </header>
+
+  <nav class="tabs">
+    <button [class.active]="activeTab === 'upcoming'" (click)="setTab('upcoming')">Upcoming</button>
+    <button [class.active]="activeTab === 'past'" (click)="setTab('past')">Past Visits</button>
+    <button [class.active]="activeTab === 'cancelled'" (click)="setTab('cancelled')">Cancelled</button>
+  </nav>
+
+  <div class="content">
+    <div *ngIf="isLoading" class="loading">Loading appointments...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    
+    <div *ngIf="!isLoading && !error && filteredAppointments.length === 0" class="no-data">
+      No {{ activeTab }} appointments found.
+    </div>
+
+    <div class="appointment-grid" *ngIf="!isLoading && filteredAppointments.length > 0">
+      <div class="appointment-card" *ngFor="let app of filteredAppointments">
+        <div class="card-header">
+          <div class="doctor-info">
+            <h3>Dr. {{ app.doctorName }}</h3>
+            <span class="specialty">{{ app.doctorSpecialty }}</span>
+          </div>
+          <span class="status-badge" [class]="app.status.toLowerCase()">{{ app.status }}</span>
+        </div>
+
+        <div class="card-body">
+          <div class="detail-row">
+            <i class="fas fa-calendar-alt"></i>
+            <span>{{ app.date }} · {{ app.startTime }} - {{ app.endTime }}</span>
+          </div>
+          <div class="detail-row">
+            <i class="fas fa-hospital"></i>
+            <span>{{ app.clinicName }} ({{ app.clinicAddress }})</span>
+          </div>
+          <div class="detail-row">
+            <i [class]="app.mode === 'ONLINE' ? 'fas fa-video' : 'fas fa-door-open'"></i>
+            <span>{{ app.mode === 'ONLINE' ? 'Online Consultation' : 'In Person (Medical Center)' }}</span>
+          </div>
+          <div class="detail-row notes" *ngIf="app.notes">
+            <i class="fas fa-comment"></i>
+            <span>"{{ app.notes }}"</span>
+          </div>
+        </div>
+
+        <div class="card-footer" *ngIf="activeTab === 'upcoming'">
+          <div *ngIf="app.mode === 'ONLINE' && app.status === 'BOOKED'" class="meeting-link">
+            <a [href]="app.meetingLink" target="_blank" class="btn-join">Join Meeting</a>
+          </div>
+          <div class="actions">
+            <button class="btn-reschedule">Reschedule</button>
+            <button class="btn-cancel" (click)="cancelAppointment(app.id)">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

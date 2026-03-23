@@ -1,0 +1,51 @@
+<div class="calendar-viewport">
+  <div class="calendar-header">
+    <div class="view-controls">
+      <h2>Aperçu des disponibilités</h2>
+      <p>Voici comment vos patients voient votre planning cette semaine.</p>
+    </div>
+    <div class="date-navigator">
+      <button class="nav-btn" (click)="prevWeek()">‹</button>
+      <span class="current-range">Semaine du {{ daysInWeek[0] | date:'dd MMM' }} au {{ daysInWeek[6] | date:'dd MMM
+        yyyy' }}</span>
+      <button class="nav-btn" (click)="nextWeek()">›</button>
+    </div>
+  </div>
+
+  <div class="calendar-grid">
+    <div *ngFor="let date of daysInWeek" class="day-column" [class.today]="isToday(date)">
+      <div class="day-header">
+        <span class="day-name">{{ date | date:'EEE' }}</span>
+        <span class="day-number">{{ date | date:'dd' }}</span>
+      </div>
+
+      <div class="slots-container">
+        <div *ngIf="isLoading" class="loader-mini"></div>
+
+        <ng-container *ngIf="!isLoading && getDaySchedule(date) as schedule">
+          <div *ngIf="!schedule.active" class="closed-badge">Fermé</div>
+
+          <ng-container *ngIf="schedule.active">
+            <div *ngFor="let slot of schedule.timeSlots" class="slot-card" [class]="slot.mode.toLowerCase()">
+              <div class="slot-time">{{ slot.startTime }} - {{ slot.endTime }}</div>
+              <div class="slot-mode">
+                <span *ngIf="slot.mode === 'OFFICE'">🏢 Cabinet</span>
+                <span *ngIf="slot.mode === 'ONLINE'">💻 Vidéo</span>
+                <span *ngIf="slot.mode === 'BOTH'">🔄 Mixte</span>
+              </div>
+              <div class="slot-status">Disponible</div>
+            </div>
+
+            <div *ngIf="schedule.timeSlots.length === 0" class="no-slots">
+              Aucun créneau
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <div *ngIf="!isLoading && !getDaySchedule(date)" class="no-data">
+          Pas de config
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

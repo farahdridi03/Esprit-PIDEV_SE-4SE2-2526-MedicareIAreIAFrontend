@@ -1,0 +1,252 @@
+<div class="patient-layout">
+  <app-patient-sidebar></app-patient-sidebar>
+  <div class="main-content">
+    <app-patient-topbar></app-patient-topbar>
+    
+    <div class="content-wrapper">
+      
+      <div class="loading-state" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading profile...</p>
+      </div>
+
+      <div class="error-state" *ngIf="error">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>{{ error }}</p>
+      </div>
+
+      <div *ngIf="!isLoading && !error && doctor" class="doctor-detail-container">
+        <!-- Elegant Header -->
+        <div class="hero-header">
+          <!-- Optional Actions overlay in top -->
+          <div class="top-actions">
+             <button class="icon-btn" (click)="goBack()"><i class="fas fa-arrow-left"></i></button>
+             <div style="flex:1"></div>
+             <button class="icon-btn"><i class="fas fa-heart" style="color: #ff8a65;"></i></button>
+             <button class="icon-btn"><i class="fas fa-share-alt"></i></button>
+          </div>
+
+          <div class="hero-image-wrapper">
+            <img *ngIf="doctor.profilePicture" [src]="doctor.profilePicture" alt="Doctor profile" class="hero-image">
+            <div *ngIf="!doctor.profilePicture" class="hero-image-placeholder">
+              {{ doctor.fullName ? doctor.fullName.charAt(0).toUpperCase() : 'D' }}
+            </div>
+          </div>
+          
+          <div class="header-info-card">
+            <h2>{{ doctor.fullName.startsWith('Dr') ? '' : 'Dr. ' }}{{ doctor.fullName }}</h2>
+            <p class="specialty">{{ doctor.specialty || 'General Practice' }}</p>
+            
+            <div class="stats-row">
+              <div class="stat-col">
+                <div class="val">{{ doctor.patientCount || 0 }}</div>
+                <div class="lbl">Patients</div>
+              </div>
+              <div class="divider"></div>
+              <div class="stat-col">
+                <div class="val">{{ doctor.yearsOfExperience || 0 }} yrs</div>
+                <div class="lbl">Experience</div>
+              </div>
+              <div class="divider"></div>
+              <div class="stat-col">
+                <div class="val">{{ doctor.rating || '0.0' }}</div>
+                <div class="lbl">Rating</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button [class.active]="activeTab === 'about'" (click)="setTab('about')">About</button>
+          <button [class.active]="activeTab === 'availability'" (click)="setTab('availability')">Availability</button>
+          <button [class.active]="activeTab === 'review'" (click)="setTab('review')">Review</button>
+        </div>
+
+        <!-- ABOUT TAB -->
+        <div class="tab-content" *ngIf="activeTab === 'about'">
+          <div class="section">
+            <h3>About</h3>
+            <p class="bio-text">{{ doctor.bio || 'This doctor has not provided a bio yet.' }}</p>
+          </div>
+          <div class="section">
+            <h3>Schedule &amp; Location</h3>
+            <ul class="schedule-location">
+              <li>
+                <i class="far fa-calendar-alt"></i>
+                <div>
+                  <strong>Date</strong>
+                  <p>Mon - Fri</p>
+                </div>
+              </li>
+              <li>
+                <i class="far fa-clock"></i>
+                <div>
+                  <strong>Time</strong>
+                  <p>09:00 AM - 05:00 PM</p>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-stethoscope"></i>
+                <div>
+                  <strong>Specialty</strong>
+                  <p>{{ doctor.specialty || 'General Practice' }}</p>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                  <strong>Location</strong>
+                  <p>{{ doctor.clinicName || 'Various Clinics' }}, {{ doctor.clinicAddress }}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="sticky-footer">
+            <button class="btn-primary" (click)="setTab('availability')">Book Appointment</button>
+          </div>
+        </div>
+
+        <!-- AVAILABILITY TAB -->
+        <div class="tab-content" *ngIf="activeTab === 'availability'">
+          <div class="section">
+            <h3>Select a Date &amp; Time</h3>
+            <p class="subtitle">Choose a date and time that works for you</p>
+            
+            <div class="calendar-container">
+              <div class="calendar-header">
+                <button class="nav-btn" (click)="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                <div class="month-title">{{ currentMonthDate | date:'MMMM yyyy' }}</div>
+                <button class="nav-btn" (click)="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+              </div>
+              <div class="calendar-grid">
+                <div class="weekday">SUN</div>
+                <div class="weekday">MON</div>
+                <div class="weekday">TUE</div>
+                <div class="weekday">WED</div>
+                <div class="weekday">THU</div>
+                <div class="weekday">FRI</div>
+                <div class="weekday">SAT</div>
+                
+                <div class="day" *ngFor="let day of calendarDays" 
+                     [class.inactive]="!day.isActive || !day.isCurrentMonth"
+                     [class.today]="day.isToday && !day.isSelected"
+                     [class.selected]="day.isSelected"
+                     (click)="selectDate(day)">
+                  <div class="day-number">{{ day.date | date:'d' }}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="slots-section">
+              <div class="slots-header">
+                <h4>Select Time</h4>
+                <div class="slots-stats">{{ availableSlots.length }} Slots</div>
+              </div>
+              
+              <div class="slots-container" *ngIf="!isLoadingSlots">
+                <div class="no-slots" *ngIf="availableSlots.length === 0">No available slots for this date.</div>
+                
+                <button class="slot-pill" *ngFor="let slot of availableSlots"
+                        [class.booked]="slot.status === 'BOOKED'"
+                        [class.selected]="selectedSlot === slot"
+                        (click)="selectSlot(slot)"
+                        [disabled]="slot.status === 'BOOKED'">
+                  {{ slot.startTime | date:'shortTime' }}
+                </button>
+              </div>
+              <div class="loading-slots" *ngIf="isLoadingSlots">
+                <div class="spinner small"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sticky-footer">
+            <button class="btn-primary" [disabled]="!selectedSlot" (click)="openBookingModal()">Book Appointment</button>
+          </div>
+        </div>
+
+        <!-- REVIEW TAB -->
+        <div class="tab-content" *ngIf="activeTab === 'review'">
+          <div class="section">
+            <h3>Leave a Review</h3>
+            <div class="add-review">
+              <div class="stars-input">
+                <i class="fas fa-star" *ngFor="let star of [1,2,3,4,5]" 
+                   [class.active]="star <= newReviewRating" 
+                   (click)="setRating(star)"></i>
+              </div>
+              <textarea placeholder="Write your review here..." [(ngModel)]="newReviewComment"></textarea>
+              <button class="btn-primary small" (click)="submitReview()" [disabled]="isSubmittingReview">Submit Review</button>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Patient Reviews</h3>
+            <div class="no-reviews" *ngIf="reviews.length === 0">No reviews yet.</div>
+            
+            <div class="review-item" *ngFor="let review of reviews">
+              <div class="review-header">
+                <strong>{{ review.patientName }}</strong>
+                <span class="review-date">{{ review.createdAt | date:'mediumDate' }}</span>
+              </div>
+              <div class="stars">
+                <i class="fas fa-star" *ngFor="let star of [1,2,3,4,5]" [class.filled]="star <= review.rating"></i>
+              </div>
+              <p class="review-comment">{{ review.comment }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOOKING CONFIRMATION MODAL -->
+  <div class="modal-overlay" *ngIf="showBookingModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirm Appointment</h3>
+        <button class="close-btn" (click)="closeBookingModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p *ngIf="doctor"><strong>Doctor:</strong> {{ doctor.fullName.startsWith('Dr') ? '' : 'Dr. ' }}{{ doctor.fullName }}</p>
+        <p><strong>Date:</strong> {{ selectedDate | date:'fullDate' }}</p>
+        <p><strong>Time:</strong> {{ selectedSlot?.startTime | date:'shortTime' }} - {{ selectedSlot?.endTime | date:'shortTime' }}</p>
+        <p><strong>Mode:</strong> {{ selectedSlot?.mode === 'ONLINE' ? 'Online Consultation' : 'In Office' }}</p>
+        
+        <div class="reason-section">
+          <label class="reason-label">
+            Reason for visit
+            <span class="optional">( Optional )</span>
+          </label>
+        
+          <div class="reason-chips">
+            <span
+              *ngFor="let r of predefinedReasons"
+              class="chip"
+              [class.selected]="selectedReason === r"
+              (click)="selectReason(r)">
+              {{ r }}
+            </span>
+          </div>
+        
+          <textarea
+            [(ngModel)]="customReason"
+            placeholder="Or briefly describe your symptoms..."
+            rows="3"
+            class="reason-textarea">
+          </textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeBookingModal()">Cancel</button>
+        <button class="btn-primary" (click)="confirmBooking()" [disabled]="isBooking">
+          {{ isBooking ? 'Confirming...' : 'Confirm' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

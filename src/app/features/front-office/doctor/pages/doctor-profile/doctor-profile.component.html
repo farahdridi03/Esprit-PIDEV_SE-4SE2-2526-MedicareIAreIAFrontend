@@ -9,34 +9,124 @@
         <div class="content-area">
             <!-- Header -->
             <div class="page-header">
-                <h1>My Profile</h1>
+                <h1>Paramètres du Profil</h1>
+                <p>Gérez vos informations personnelles et professionnelles</p>
             </div>
 
-            <!-- Profile Form -->
             <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
             <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
-            <div class="profile-section">
-                <form (ngSubmit)="onSubmit()" class="profile-form">
-                    <div class="form-group">
-                        <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" name="fullName" [(ngModel)]="fullName" class="form-control"
-                            required>
+            <!-- Profile Form -->
+            <div class="profile-card">
+                <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
+                    
+                    <!-- Photo de profil -->
+                    <div class="settings-section">
+                        <h3 class="section-title">Photo de profil</h3>
+                        <div class="photo-section">
+                            <div class="avatar-wrapper">
+                                <img *ngIf="profilePicture" [src]="profilePicture" alt="Profile Picture" class="avatar-img">
+                                <div *ngIf="!profilePicture" class="avatar-placeholder">
+                                    {{ (fullName && fullName.length > 0) ? fullName.charAt(0).toUpperCase() : 'D' }}
+                                </div>
+                            </div>
+                            <div class="avatar-actions">
+                                <label for="profilePicInput" class="btn-upload">Choisir une image</label>
+                                <input type="file" id="profilePicInput" accept="image/*" (change)="onFileSelected($event)" hidden>
+                                <p class="help-text">Formats acceptés: JPG, PNG. Ratio 1:1 recommandé.</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" [(ngModel)]="email" class="form-control" required>
+                    <div class="section-divider"></div>
+
+                    <!-- Section 1: Informations de compte -->
+                    <div class="settings-section">
+                        <h3 class="section-title">Informations de compte</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullName">Nom complet</label>
+                                <input type="text" id="fullName" name="fullName" [(ngModel)]="fullName" class="form-control" placeholder="Ex: Dr. Sarah Johnson" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Adresse Email</label>
+                                <input type="email" id="email" name="email" [(ngModel)]="email" class="form-control" placeholder="exemple@medicare.tn" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                                <input type="password" id="password" name="password" [(ngModel)]="password" class="form-control" placeholder="••••••••">
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="password">New Password (leave empty to keep current)</label>
-                        <input type="password" id="password" name="password" [(ngModel)]="password"
-                            class="form-control">
+                    <div class="section-divider"></div>
+
+                    <!-- Section 2: Informations professionnelles -->
+                    <div class="settings-section">
+                        <h3 class="section-title">Informations professionnelles</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="specialty">Spécialité</label>
+                                <select id="specialty" name="specialty" [(ngModel)]="specialty" class="form-control" required>
+                                    <option value="" disabled>Choisir une spécialité...</option>
+                                    <option value="CARDIOLOGY">Cardiologie</option>
+                                    <option value="DERMATOLOGY">Dermatologie</option>
+                                    <option value="PEDIATRICS">Pédiatrie</option>
+                                    <option value="GENERAL_PRACTICE">Médecine Générale</option>
+                                    <option value="GYNECOLOGY">Gynécologie</option>
+                                    <option value="OPHTHALMOLOGY">Ophtalmologie</option>
+                                    <option value="DENTISTRY">Dentaire</option>
+                                    <option value="NUTRITION">Nutrition</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="consultationMode">Mode de consultation</label>
+                                <select id="consultationMode" name="consultationMode" [(ngModel)]="consultationMode" class="form-control" required>
+                                    <option value="ONLINE">En ligne uniquement</option>
+                                    <option value="IN_PERSON">Au cabinet uniquement</option>
+                                    <option value="BOTH">Les deux</option>
+                                </select>
+                            </div>
+
+                            <!-- Affiché si pas ONLINE -->
+                            <div class="form-group full-width" *ngIf="consultationMode !== 'ONLINE'">
+                                <label for="clinic">Clinique / Cabinet d'exercice</label>
+                                <select id="clinic" name="clinic" [(ngModel)]="clinicId" class="form-control" required>
+                                    <option [ngValue]="null" disabled>Sélectionner une clinique...</option>
+                                    <option *ngFor="let clinic of clinics" [ngValue]="clinic.id">
+                                        {{ clinic.name }} - {{ clinic.address }}
+                                    </option>
+                                </select>
+                                <p class="help-text" *ngIf="clinicId && currentClinicAddress">
+                                    Adresse actuelle: {{ currentClinicAddress }}
+                                </p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="consultationFee">Tarif de consultation (DT)</label>
+                                <input type="number" id="consultationFee" name="consultationFee" [(ngModel)]="consultationFee" class="form-control" placeholder="Ex: 80" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="licenseNumber">Numéro de licence</label>
+                                <input type="text" id="licenseNumber" name="licenseNumber" [(ngModel)]="licenseNumber" class="form-control" placeholder="FR123456" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="yearsOfExperience">Années d'expérience</label>
+                                <input type="number" id="yearsOfExperience" name="yearsOfExperience" [(ngModel)]="yearsOfExperience" class="form-control" placeholder="10" required>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="save-btn">Update Profile</button>
+                        <button type="submit" class="save-btn" [disabled]="isLoading">
+                            <span *ngIf="!isLoading">Mettre à jour le profil</span>
+                            <span *ngIf="isLoading" class="loader"></span>
+                        </button>
                     </div>
                 </form>
             </div>

@@ -1,0 +1,299 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { DoctorService, DoctorProfile } from '../../../../../services/doctor.service';
+import { ReviewService } from '../../../../../services/review.service';
+import { Review } from '../../../../../models/review.model';
+import { AvailableSlot } from '../../../../../models/available-slot.model';
+
+@Component({
+  selector: 'app-patient-doctor-detail',
+  templateUrl: './patient-doctor-detail.component.html',
+  styleUrls: ['./patient-doctor-detail.component.scss']
+})
+export class PatientDoctorDetailComponent implements OnInit {
+  activeTab: 'about' | 'availability' | 'review' = 'about';
+  doctorId: number = 0;
+  doctor: DoctorProfile | null = null;
+  isLoading: boolean = true;
+  error: string = '';
+
+  // Reviews
+  reviews: Review[] = [];
+  newReviewRating: number = 0;
+  newReviewComment: string = '';
+  isSubmittingReview: boolean = false;
+
+  // Availability & Calendar
+  currentMonthDate: Date = new Date();
+  calendarDays: { date: Date, isActive: boolean, isToday: boolean, isSelected: boolean, isCurrentMonth: boolean }[] = [];
+  selectedDate: Date = new Date();
+  availableSlots: AvailableSlot[] = [];
+  isLoadingSlots: boolean = false;
+  selectedSlot: AvailableSlot | null = null;
+
+  // Booking Modal
+  showBookingModal: boolean = false;
+  bookingReason: string = '';
+  isBooking: boolean = false;
+
+  predefinedReasons: string[] = [
+    'Routine checkup',
+    'Follow-up visit',
+    'Test results',
+    'Back pain',
+    'Headache',
+    'Fever',
+    'Chest pain',
+    'Fatigue',
+    'Other'
+  ];
+  selectedReason: string = '';
+  customReason: string = '';
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private doctorService: DoctorService,
+    private reviewService: ReviewService,
+    private http: HttpClient
+  ) { }
+
+  availableDates: Set<string> = new Set<string>();
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.doctorId = +params['id'];
+      if (this.doctorId) {
+        this.loadDoctorProfile();
+        this.loadReviews();
+        this.loadMonthAvailabilities(); 
+        this.loadSlotsForDate(this.selectedDate);
+      }
+    });
+  }
+
+  goBack() {
+    this.router.navigate(['/front/patient/doctors']);
+  }
+
+  loadDoctorProfile() {
+    this.doctorService.getDoctor(this.doctorId).subscribe({
+      next: (data) => {
+        this.doctor = data;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.error = 'Failed to load doctor profile';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  loadReviews() {
+    this.reviewService.getReviews(this.doctorId).subscribe({
+      next: (data) => this.reviews = data,
+      error: (err) => console.error('Error fetching reviews', err)
+    });
+  }
+
+  setTab(tab: 'about' | 'availability' | 'review') {
+    this.activeTab = tab;
+  }
+
+  loadMonthAvailabilities() {
+    const year = this.currentMonthDate.getFullYear();
+    const month = this.currentMonthDate.getMonth();
+    
+    // We fetch a bit wider range (-10 days, +40 days) to cover the calendar grid
+    const start = new Date(year, month, -7);
+    const end = new Date(year, month + 1, 7);
+    
+    this.doctorService.getMonthAvailabilities(this.doctorId, this.formatDate(start), this.formatDate(end)).subscribe({
+      next: (slots) => {
+        this.availableDates.clear();
+        slots.forEach(slot => {
+          // Extrait la date YYYY-MM-DD depuis la dateTime '2026-03-25T09:00:00'
+          const dateStr = slot.startTime.split('T')[0];
+          this.availableDates.add(dateStr);
+        });
+        this.buildCalendar();
+      },
+      error: () => {
+        // En cas d'erreur on construit quand même le calendrier mais rien ne sera cliquable
+        this.buildCalendar();
+      }
+    });
+  }
+
+  // --- Calendar Logic ---
+  buildCalendar() {
+    this.calendarDays = [];
+    const year = this.currentMonthDate.getFullYear();
+    const month = this.currentMonthDate.getMonth();
+    
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    
+    const startDate = new Date(firstDayOfMonth);
+    startDate.setDate(startDate.getDate() - startDate.getDay()); // Start from Sunday
+    
+    const endDate = new Date(lastDayOfMonth);
+    if (endDate.getDay() !== 6) {
+      endDate.setDate(endDate.getDate() + (6 - endDate.getDay())); // End on Saturday
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      const d = new Date(currentDate);
+      d.setHours(0, 0, 0, 0);
+      
+      const isToday = d.getTime() === today.getTime();
+      const isSelected = d.getTime() === new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate()).getTime();
+      const isCurrentMonth = d.getMonth() === month;
+      const isFutureOrToday = d >= today;
+      const hasSlotStr = this.formatDate(d);
+      const isAvailable = this.availableDates.has(hasSlotStr);
+      
+      this.calendarDays.push({
+        date: d,
+        isActive: isFutureOrToday && isAvailable, // Vrai seulement si >= aujourd'hui et s'il a au moins un slot
+        isToday,
+        isSelected,
+        isCurrentMonth
+      });
+      
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  }
+
+  prevMonth() {
+    this.currentMonthDate = new Date(this.currentMonthDate.getFullYear(), this.currentMonthDate.getMonth() - 1, 1);
+    this.loadMonthAvailabilities();
+  }
+
+  nextMonth() {
+    this.currentMonthDate = new Date(this.currentMonthDate.getFullYear(), this.currentMonthDate.getMonth() + 1, 1);
+    this.loadMonthAvailabilities();
+  }
+
+  selectDate(day: any) {
+    if (!day.isActive) return;
+    this.selectedDate = day.date;
+    this.selectedSlot = null; // reset
+    this.buildCalendar(); // refresh selected state
+    this.loadSlotsForDate(this.selectedDate);
+  }
+
+  loadSlotsForDate(date: Date) {
+    this.isLoadingSlots = true;
+    const dateString = this.formatDate(date);
+    this.doctorService.getAvailableSlots(this.doctorId, dateString).subscribe({
+      next: (slots) => {
+        this.availableSlots = slots;
+        this.isLoadingSlots = false;
+      },
+      error: () => {
+        this.availableSlots = [];
+        this.isLoadingSlots = false;
+      }
+    });
+  }
+
+  formatDate(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  selectSlot(slot: AvailableSlot) {
+    if (slot.status === 'AVAILABLE') {
+      this.selectedSlot = slot;
+    }
+  }
+
+  // --- Booking ---
+  openBookingModal() {
+    if (!this.selectedSlot) return;
+    this.showBookingModal = true;
+  }
+
+  closeBookingModal() {
+    this.showBookingModal = false;
+    this.selectedReason = '';
+    this.customReason = '';
+  }
+
+  selectReason(reason: string): void {
+    this.selectedReason = this.selectedReason === reason ? '' : reason;
+  }
+
+  get finalReason(): string {
+    if (this.customReason.trim()) return this.customReason.trim();
+    return this.selectedReason;
+  }
+
+  confirmBooking() {
+    if (!this.selectedSlot || !this.doctor) return;
+    this.isBooking = true;
+    
+    // Assuming backend endpoint /api/v1/appointments
+    // Extraire date et times depuis les ISO strings "YYYY-MM-DDTHH:mm:ss"
+    const date = this.selectedSlot.startTime.split('T')[0];
+    const startTimeTime = this.selectedSlot.startTime.split('T')[1].substring(0, 5); // "09:00"
+    const endTimeTime = this.selectedSlot.endTime.split('T')[1].substring(0, 5);     // "09:30"
+
+    const payload = {
+      doctorId: this.doctor.id,
+      patientId: 1, 
+      date: date,
+      startTime: startTimeTime,
+      endTime: endTimeTime,
+      mode: this.selectedSlot.mode,
+      notes: this.finalReason
+    };
+
+    console.log('[DEBUG] Payload envoyé:', JSON.stringify(payload));
+
+    this.http.post('http://localhost:8081/springsecurity/api/v1/appointments', payload).subscribe({
+      next: () => {
+        this.isBooking = false;
+        this.closeBookingModal();
+        alert('Appointment booked successfully!');
+        this.router.navigate(['/front/patient/dashboard']);
+      },
+      error: (err) => {
+        console.error('Booking error', err);
+        alert('Error booking appointment.');
+        this.isBooking = false;
+      }
+    });
+  }
+
+  // --- Reviews ---
+  setRating(val: number) {
+    this.newReviewRating = val;
+  }
+
+  submitReview() {
+    if (this.newReviewRating === 0 || !this.newReviewComment.trim()) return;
+    
+    this.isSubmittingReview = true;
+    this.reviewService.addReview(this.doctorId, this.newReviewRating, this.newReviewComment).subscribe({
+      next: (rev) => {
+        this.reviews.unshift(rev);
+        this.newReviewRating = 0;
+        this.newReviewComment = '';
+        this.isSubmittingReview = false;
+      },
+      error: () => {
+        alert('Failed to submit review');
+        this.isSubmittingReview = false;
+      }
+    });
+  }
+}

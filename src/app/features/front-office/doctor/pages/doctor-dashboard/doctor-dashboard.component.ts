@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { AuthService } from '../../../../../services/auth.service';
+import { AppointmentService, Appointment } from '../../../../../services/appointment.service';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -8,27 +8,43 @@ import { AuthService } from '../../../../../services/auth.service';
   styleUrls: ['./doctor-dashboard.component.scss']
 })
 export class DoctorDashboardComponent implements OnInit {
-  firstName: string = 'Doctor';
+  currentView: 'overview' | 'settings' | 'exceptions' | 'calendar' = 'calendar';
+  firstName: string = '';
+  todayAppointments: Appointment[] = [];
+  isLoadingAppointments: boolean = true;
 
-  constructor(private userService: UserService, private authService: AuthService) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private appointmentService: AppointmentService
+  ) {}
 
-  ngOnInit() {
-    // Initial load from token
-    const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.firstName = fullName.split(' ')[0];
+  ngOnInit(): void {
+    this.firstName = this.authService.getUserFullName() || 'Docteur';
+    const doctorId = this.authService.getUserId();
+    if (doctorId) {
+      this.loadTodayAppointments(doctorId);
     }
+  }
 
-    // Refresh from profile API
-    this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          this.firstName = user.fullName.split(' ')[0];
-        }
+  loadTodayAppointments(doctorId: number): void {
+    const today = new Date().toISOString().split('T')[0];
+    this.isLoadingAppointments = true;
+    this.appointmentService.getDoctorAppointments(doctorId, today).subscribe({
+      next: (data) => {
+        this.todayAppointments = data.sort((a, b) => a.startTime.localeCompare(b.startTime));
+        this.isLoadingAppointments = false;
+        this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Error fetching doctor profile', err);
+      error: () => {
+        this.isLoadingAppointments = false;
+        this.cdr.detectChanges();
       }
     });
+  }
+
+  setView(view: 'overview' | 'settings' | 'exceptions' | 'calendar') {
+    this.currentView = view;
+    this.cdr.detectChanges();
   }
 }
