@@ -30,6 +30,7 @@ export interface PatientResponseDTO {
     emergencyContactName?: string;
     emergencyContactPhone?: string;
     glucoseRate?: number | string;
+    hasMedicalRecord?: boolean;
     allergies?: string[];
     diseases?: string[];
     consultations?: any[];

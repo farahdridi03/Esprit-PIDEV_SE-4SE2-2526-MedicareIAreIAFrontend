@@ -23,19 +23,27 @@
     .back-btn {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        background: #0e7c66;
-        border: none;
-        color: white;
-        font-weight: 600;
+        gap: 0.4rem;
+        background: transparent;
+        border: 1.5px solid #0e7c66;
+        color: #0e7c66;
+        font-weight: 700;
         cursor: pointer;
-        padding: 0.75rem 1.25rem;
-        border-radius: 0.75rem;
-        transition: background-color 0.2s, transform 0.1s;
+        padding: 0.4rem 0.9rem;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+
+        svg {
+            width: 1.1rem;
+            height: 1.1rem;
+        }
 
         &:hover {
-            background-color: #0a6352;
+            background-color: #0e7c66;
+            color: white;
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(14, 124, 102, 0.15);
         }
 
         &:active {

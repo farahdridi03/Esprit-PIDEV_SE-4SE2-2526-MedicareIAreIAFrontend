@@ -56,7 +56,7 @@
                     </div>
                     <div class="patient-footer">
                         <button class="btn btn-outline" *ngIf="patient.hasMedicalRecord === true" [routerLink]="['/front/doctor/patient', patient.id, 'record']">View Record</button>
-                        <button class="btn btn-primary" *ngIf="patient.hasMedicalRecord === false" (click)="createMedicalRecord(patient.id)" [disabled]="creatingRecordForId === patient.id" style="background: #3182ce; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 500; cursor: pointer;">
+                        <button class="btn btn-primary" *ngIf="patient.hasMedicalRecord === false" (click)="createMedicalRecord(patient.id)" [disabled]="creatingRecordForId === patient.id" style="background: #0e7c66; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 500; cursor: pointer;">
                             {{ creatingRecordForId === patient.id ? 'Creating...' : 'Create Medical Record' }}
                         </button>
                     </div>

@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
-$primary-color: #3182ce;
-$secondary-color: #2c5282;
+$primary-color: #0e7c66;
+$secondary-color: #0c6a57;
 $bg-color: #f7fafc;
 $card-bg: rgba(255, 255, 255, 0.9);
 $text-dark: #1a202c;
 $text-muted: #718096;
 $border-color: #e2e8f0;
 
-$blue: #3182ce;
+$blue: #0e7c66;
 $purple: #805ad5;
 $orange: #ed8936;
 $red: #e53e3e;
@@ -231,7 +231,7 @@ $green: #38a169;
             .btn-view-all {
               background: #fff;
               border: 1px solid $border-color;
-              color: $primary-color;
+              color: #0e7c66;
               padding: 8px 16px;
               border-radius: 10px;
               font-size: 13px;
@@ -241,9 +241,9 @@ $green: #38a169;
               text-decoration: none;
 
               &:hover {
-                background: $primary-color;
+                background: #0e7c66;
                 color: #fff;
-                border-color: $primary-color;
+                border-color: #0e7c66;
                 transform: scale(1.05);
               }
             }
