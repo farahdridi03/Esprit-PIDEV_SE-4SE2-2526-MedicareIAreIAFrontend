@@ -19,6 +19,14 @@ export class PatientService {
         return this.http.get<PatientResponseDTO>(`${this.apiUrl}/${id}`);
     }
 
+    getMe(): Observable<PatientResponseDTO> {
+        return this.http.get<PatientResponseDTO>(`${this.apiUrl}/me`);
+    }
+
+    getMyPatients(): Observable<PatientResponseDTO[]> {
+        return this.http.get<PatientResponseDTO[]>(`${this.apiUrl}/my-patients`);
+    }
+
     getAll(): Observable<PatientResponseDTO[]> {
         return this.http.get<PatientResponseDTO[]>(this.apiUrl);
     }

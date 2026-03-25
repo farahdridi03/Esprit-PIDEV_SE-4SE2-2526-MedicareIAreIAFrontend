@@ -18,17 +18,5 @@ export class DashboardComponent implements OnInit {
     if (fullName) {
       this.firstName = fullName.split(' ')[0];
     }
-
-    // Refresh from profile API
-    this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          this.firstName = user.fullName.split(' ')[0];
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching user profile', err);
-      }
-    });
   }
 }

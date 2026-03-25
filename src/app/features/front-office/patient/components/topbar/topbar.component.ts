@@ -15,16 +15,6 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserInfo();
-    this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          this.setNames(user.fullName);
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching user profile', err);
-      }
-    });
   }
 
   private loadUserInfo() {

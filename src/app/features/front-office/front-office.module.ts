@@ -12,7 +12,20 @@ import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/docto
 import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
+import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
+import { DoctorMedicalRecordComponent } from './doctor/pages/doctor-medical-record/doctor-medical-record.component';
+import { DoctorConsultationsComponent } from './doctor/pages/doctor-consultations/doctor-consultations.component';
+import { DoctorTreatmentsComponent } from './doctor/pages/doctor-treatments/doctor-treatments.component';
+import { DoctorPrescriptionsComponent } from './doctor/pages/doctor-prescriptions/doctor-prescriptions.component';
+import { DoctorDiagnosesComponent } from './doctor/pages/doctor-diagnoses/doctor-diagnoses.component';
+import { MedicalRecordComponent } from './patient/pages/medical-record/medical-record.component';
 import { FormsModule } from '@angular/forms';
+import { DoctorConsultationDetailsComponent } from './doctor/pages/doctor-consultation-details/doctor-consultation-details.component';
+import { DoctorPatientConsultationsComponent } from './doctor/pages/doctor-patient-consultations/doctor-patient-consultations.component';
+import { DoctorPatientTreatmentsComponent } from './doctor/pages/doctor-patient-treatments/doctor-patient-treatments.component';
+import { DoctorPatientPrescriptionsComponent } from './doctor/pages/doctor-patient-prescriptions/doctor-patient-prescriptions.component';
+import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-diagnoses/doctor-patient-diagnoses.component';
+import { PatientRecordListComponent } from './patient/pages/patient-record-list/patient-record-list.component';
 
 
 @NgModule({
@@ -26,7 +39,20 @@ import { FormsModule } from '@angular/forms';
     DoctorSidebarComponent,
     DoctorTopbarComponent,
     DoctorDashboardComponent,
-    DoctorProfileComponent
+    DoctorProfileComponent,
+    DoctorPatientsComponent,
+    DoctorMedicalRecordComponent,
+    DoctorConsultationsComponent,
+    DoctorTreatmentsComponent,
+    DoctorPrescriptionsComponent,
+    DoctorDiagnosesComponent,
+    MedicalRecordComponent,
+    DoctorConsultationDetailsComponent,
+    DoctorPatientConsultationsComponent,
+    DoctorPatientTreatmentsComponent,
+    DoctorPatientPrescriptionsComponent,
+    DoctorPatientDiagnosesComponent,
+    PatientRecordListComponent
   ],
   imports: [
     CommonModule,

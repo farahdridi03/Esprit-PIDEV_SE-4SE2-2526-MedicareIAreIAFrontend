@@ -1,0 +1,67 @@
+<div class="doctor-wrapper">
+    <!-- Sidebar -->
+    <app-doctor-sidebar></app-doctor-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-doctor-topbar></app-doctor-topbar>
+
+        <div class="content-area">
+            <div class="page-header">
+                <h2>My Patients</h2>
+                <p>List of patients who have an appointment with you.</p>
+            </div>
+
+            <div *ngIf="loading" class="loading-state">
+                <p>Loading patients...</p>
+            </div>
+
+            <div *ngIf="error" class="error-state">
+                <p>{{ error }}</p>
+                <button (click)="fetchPatients()" class="btn btn-primary">Retry</button>
+            </div>
+
+            <div *ngIf="!loading && !error && patients.length === 0" class="empty-state">
+                <p>No patients found. It seems you don't have any appointments scheduled.</p>
+            </div>
+
+            <div *ngIf="!loading && !error && patients.length > 0" class="patients-grid">
+                <div class="patient-card" *ngFor="let patient of patients">
+                    <div class="patient-header">
+                        <div class="patient-avatar">
+                            {{ patient.fullName ? patient.fullName.charAt(0).toUpperCase() : 'U' }}
+                        </div>
+                        <div class="patient-info">
+                            <h3>{{ patient.fullName }}</h3>
+                            <span class="blood-type">Blood Type: {{ patient.bloodType || 'N/A' }}</span>
+                        </div>
+                    </div>
+                    <div class="patient-body">
+                        <div class="info-row">
+                            <span class="label">Gender:</span>
+                            <span class="value">{{ patient.gender || 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Date of Birth:</span>
+                            <span class="value">{{ patient.birthDate | date:'mediumDate' || 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Email:</span>
+                            <span class="value">{{ patient.email || 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Phone:</span>
+                            <span class="value">{{ patient.phone || 'N/A' }}</span>
+                        </div>
+                    </div>
+                    <div class="patient-footer">
+                        <button class="btn btn-outline" *ngIf="patient.hasMedicalRecord === true" [routerLink]="['/front/doctor/patient', patient.id, 'record']">View Record</button>
+                        <button class="btn btn-primary" *ngIf="patient.hasMedicalRecord === false" (click)="createMedicalRecord(patient.id)" [disabled]="creatingRecordForId === patient.id" style="background: #3182ce; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 500; cursor: pointer;">
+                            {{ creatingRecordForId === patient.id ? 'Creating...' : 'Create Medical Record' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

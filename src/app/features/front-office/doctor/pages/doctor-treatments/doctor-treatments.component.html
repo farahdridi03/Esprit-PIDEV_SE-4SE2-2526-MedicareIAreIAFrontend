@@ -1,0 +1,84 @@
+<div class="embedded-crud-card box mt-3">
+    <div class="header-flex">
+        <h3>Treatments</h3>
+        <button (click)="openAddForm()" *ngIf="!showForm" style="background: #38a169; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">+ Add Treatment</button>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+        <p>Loading treatments...</p>
+    </div>
+
+    <div class="data-table-container" *ngIf="!loading && !showForm">
+        <table class="data-table" *ngIf="treatments.length > 0; else noData">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of treatments">
+                    <td><strong>{{ item.treatmentType }}</strong></td>
+                    <td>{{ item.description }}</td>
+                    <td><span class="badge" [ngClass]="item.status.toLowerCase()">{{ item.status }}</span></td>
+                    <td>{{ item.startDate | date:'mediumDate' }}</td>
+                    <td>{{ item.endDate ? (item.endDate | date:'mediumDate') : 'Ongoing' }}</td>
+                    <td class="action-cells">
+                        <button class="btn-icon edit" (click)="openEditForm(item)">Edit</button>
+                        <button class="btn-icon delete" (click)="deleteTreatment(item.id!)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ng-template #noData>
+            <div class="empty-state">
+                <p>No treatments found for this consultation.</p>
+            </div>
+        </ng-template>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container" *ngIf="showForm">
+        <h4>{{ currentTreatment.id ? 'Edit Treatment' : 'Add New Treatment' }}</h4>
+        <form (ngSubmit)="saveTreatment()" #treatmentForm="ngForm">
+            <div class="form-group">
+                <label>Treatment Type</label>
+                <input type="text" name="treatmentType" [(ngModel)]="currentTreatment.treatmentType" required class="form-control" placeholder="e.g. Physical Therapy">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" [(ngModel)]="currentTreatment.description" required class="form-control" rows="2"></textarea>
+            </div>
+            
+            <div class="form-row" style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Start Date</label>
+                    <input type="date" name="startDate" [(ngModel)]="currentTreatment.startDate" required class="form-control">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>End Date (Optional)</label>
+                    <input type="date" name="endDate" [(ngModel)]="currentTreatment.endDate" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select name="status" [(ngModel)]="currentTreatment.status" required class="form-control">
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="COMPLETED">COMPLETED</option>
+                    <option value="PAUSED">PAUSED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+                </select>
+            </div>
+            
+            <div class="form-actions mt-3">
+                <button type="button" class="btn btn-sm btn-secondary" (click)="cancelForm()">Cancel</button>
+                <button type="submit" [disabled]="!treatmentForm.valid" style="background: #38a169; color: white; padding: 10px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;" [style.opacity]="treatmentForm.valid ? '1' : '0.5'">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

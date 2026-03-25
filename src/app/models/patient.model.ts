@@ -9,6 +9,12 @@ export interface PatientRequestDTO {
     bloodType?: string;
     emergencyContactName?: string;
     emergencyContactPhone?: string;
+    glucoseRate?: number | string;
+    allergies?: string[];
+    diseases?: string[];
+    consultations?: any[];
+    treatments?: any[];
+    prescriptions?: any[];
 }
 
 export interface PatientResponseDTO {
@@ -23,4 +29,11 @@ export interface PatientResponseDTO {
     bloodType?: string;
     emergencyContactName?: string;
     emergencyContactPhone?: string;
+    glucoseRate?: number | string;
+    allergies?: string[];
+    diseases?: string[];
+    consultations?: any[];
+    treatments?: any[];
+    prescriptions?: any[];
+    diagnoses?: any[];
 }

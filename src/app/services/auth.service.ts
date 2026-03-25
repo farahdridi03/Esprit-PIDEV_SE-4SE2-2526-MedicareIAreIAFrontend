@@ -104,6 +104,19 @@ export class AuthService {
         }
     }
 
+    getUserId(): number | null {
+        const token = this.getToken();
+        if (!token) return null;
+
+        try {
+            const decoded: any = jwtDecode(token);
+            const userId = decoded.id || decoded.userId;
+            return userId ? parseInt(userId, 10) : null;
+        } catch (error) {
+            return null;
+        }
+    }
+
     getHomeCareServices(): Observable<any[]> {
         return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
     }

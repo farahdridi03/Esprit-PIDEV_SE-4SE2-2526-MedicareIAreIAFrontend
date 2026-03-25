@@ -1,0 +1,91 @@
+<div class="embedded-crud-card box mt-3">
+    <div class="header-flex">
+        <h3>Prescriptions</h3>
+        <button (click)="openAddForm()" *ngIf="!showForm" style="background: #38a169; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">+ Add Prescription</button>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+        <p>Loading prescriptions...</p>
+    </div>
+
+    <div class="data-table-container" *ngIf="!loading && !showForm">
+        <table class="data-table" *ngIf="prescriptions.length > 0; else noData">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of prescriptions">
+                    <td>{{ p.date | date:'mediumDate' }}</td>
+                    <td>
+                        <ul style="margin: 0; padding-left: 1rem;">
+                            <li *ngFor="let item of p.items">
+                                <strong>{{ item.medicationName }}</strong> - {{ item.dosage }}, {{ item.frequency }} for {{ item.duration }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td class="action-cells">
+                        <button class="btn-icon edit" (click)="openEditForm(p)">Edit</button>
+                        <button class="btn-icon delete" (click)="deletePrescription(p.id!)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ng-template #noData>
+            <div class="empty-state">
+                <p>No prescriptions found for this consultation.</p>
+            </div>
+        </ng-template>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container" *ngIf="showForm">
+        <h4>{{ currentPrescription.id ? 'Edit Prescription' : 'Add New Prescription' }}</h4>
+        <form (ngSubmit)="savePrescription()" #prescriptionForm="ngForm">
+            <div class="form-group mb-3">
+                <label>Date Prescribed</label>
+                <input type="date" name="date" [(ngModel)]="currentPrescription.date" required class="form-control">
+            </div>
+            
+            <div class="items-list">
+                <h5 class="mb-2">Medications</h5>
+                <div class="prescription-item mb-3 p-3 border rounded relative" *ngFor="let item of currentPrescription.items; let i = index">
+                    <button type="button" class="btn btn-sm btn-danger position-absolute" style="top: 10px; right: 10px;" 
+                            (click)="removeItem(i)" *ngIf="currentPrescription.items && currentPrescription.items.length > 1">
+                        X
+                    </button>
+                    
+                    <div class="form-group">
+                        <label>Medication Name</label>
+                        <input type="text" [name]="'medName_'+i" [(ngModel)]="item.medicationName" required class="form-control" placeholder="e.g. Amoxicillin">
+                    </div>
+                    
+                    <div class="form-row" style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Dosage</label>
+                            <input type="text" [name]="'dosage_'+i" [(ngModel)]="item.dosage" required class="form-control" placeholder="e.g. 500mg">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Frequency</label>
+                            <input type="text" [name]="'frequency_'+i" [(ngModel)]="item.frequency" required class="form-control" placeholder="e.g. Twice a day">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Duration</label>
+                            <input type="text" [name]="'duration_'+i" [(ngModel)]="item.duration" required class="form-control" placeholder="e.g. 7 days">
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn btn-sm btn-outline-primary" (click)="addItem()">+ Add Medication</button>
+            </div>
+            
+            <div class="form-actions mt-4">
+                <button type="button" class="btn btn-sm btn-secondary" (click)="cancelForm()">Cancel</button>
+                <button type="submit" [disabled]="!prescriptionForm.valid" style="background: #38a169; color: white; padding: 12px 30px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;" [style.opacity]="prescriptionForm.valid ? '1' : '0.5'">Save Prescription</button>
+            </div>
+        </form>
+    </div>
+</div>

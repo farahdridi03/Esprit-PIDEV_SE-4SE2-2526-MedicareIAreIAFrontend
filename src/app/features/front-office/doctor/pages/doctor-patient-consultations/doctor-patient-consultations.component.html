@@ -1,0 +1,131 @@
+<div class="doctor-wrapper">
+    <app-doctor-sidebar></app-doctor-sidebar>
+    <div class="main-body">
+        <app-doctor-topbar></app-doctor-topbar>
+        
+        <div class="content-area">
+            <!-- Header Section -->
+            <div class="embedded-crud-card box mt-3" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #edf2f7;">
+                <div class="header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: #2d3748; font-weight: 700;">Patient Consultations</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-sm" (click)="openAddForm()" *ngIf="!showForm && !viewMode" style="background: #38a169; color: white; padding: 10px 20px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s;">+ New Consultation</button>
+                        <button class="btn btn-sm btn-secondary" routerLink="../record" *ngIf="!showForm && !viewMode" style="background: #f1f5f9; color: #475569; padding: 10px 20px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Back to Record</button>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" *ngIf="loading" style="text-align: center; padding: 60px; color: #718096;">
+                    <p>Loading records...</p>
+                </div>
+
+                <!-- List Table -->
+                <div class="data-table-container" *ngIf="!loading && !showForm && !viewMode" style="overflow-x: auto;">
+                    <table class="data-table" *ngIf="consultations.length > 0; else noData" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; background: #f8fafc; border-bottom: 2px solid #edf2f7;">
+                                <th style="padding: 16px; color: #4a5568; font-weight: 700; font-size: 14px;">Date</th>
+                                <th style="padding: 16px; color: #4a5568; font-weight: 700; font-size: 14px;">Doctor</th>
+                                <th style="padding: 16px; color: #4a5568; font-weight: 700; font-size: 14px;">Observations</th>
+                                <th style="padding: 16px; color: #4a5568; font-weight: 700; font-size: 14px; text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of consultations" style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+                                <td style="padding: 16px;">
+                                    <div style="display: flex; flex-direction: column;">
+                                        <strong style="color: #2d3748;">{{ item.date | date:'mediumDate' }}</strong>
+                                        <span style="font-size: 12px; color: #a0aec0;">{{ item.date | date:'shortTime' }}</span>
+                                    </div>
+                                </td>
+                                <td style="padding: 16px; color: #4a5568;">Dr. {{ item.doctorId }}</td>
+                                <td style="padding: 16px;">
+                                    <div style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #4a5568;">
+                                        {{ item.observations || 'No observations recorded' }}
+                                    </div>
+                                </td>
+                                <td class="action-cells" style="padding: 16px; display: flex; gap: 8px; justify-content: center; align-items: center;">
+                                    <button (click)="openView(item)" style="background: #ebf8ff; border: none; color: #3182ce; cursor: pointer; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px;">View</button>
+                                    <button (click)="openEditForm(item)" style="background: #f0fff4; border: none; color: #38a169; cursor: pointer; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px;">Edit</button>
+                                    <button (click)="deleteConsultation(item.id!)" style="background: #fff5f5; border: none; color: #e53e3e; cursor: pointer; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px;">Delete</button>
+                                    <a [routerLink]="['../consultation', item.id]" style="background: #faf5ff; color: #805ad5; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; text-decoration: none;">Manage</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ng-template #noData>
+                        <div class="empty-state" style="padding: 80px; text-align: center; color: #a0aec0;">
+                            <p style="font-size: 18px; font-weight: 500;">No consultations found.</p>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <!-- Detail View Card -->
+                <div class="detail-view" *ngIf="viewMode && currentViewItem" style="background: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; animation: fadeIn 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px;">
+                        <div>
+                            <h4 style="margin: 0; font-size: 22px; color: #1a202c;">Consultation Details</h4>
+                            <p style="margin: 5px 0 0 0; color: #718096;">ID: #{{ currentViewItem.id }} • Verified Record</p>
+                        </div>
+                        <button (click)="closeView()" style="background: white; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">Close View</button>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px;">
+                        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <label style="display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #a0aec0; font-weight: 700; margin-bottom: 10px;">General Information</label>
+                            <p style="margin: 8px 0;"><strong>Date:</strong> {{ currentViewItem.date | date:'fullDate' }}</p>
+                            <p style="margin: 8px 0;"><strong>Time:</strong> {{ currentViewItem.date | date:'shortTime' }}</p>
+                            <p style="margin: 8px 0;"><strong>Doctor:</strong> Dr. {{ currentViewItem.doctorId }}</p>
+                        </div>
+                        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <label style="display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #a0aec0; font-weight: 700; margin-bottom: 10px;">Primary Observations</label>
+                            <p style="margin: 0; line-height: 1.6; color: #4a5568;">{{ currentViewItem.observations || 'No observations recorded for this session.' }}</p>
+                        </div>
+                        <div style="grid-column: span 2; background: #fffaf0; padding: 20px; border-radius: 12px; border: 1px dashed #fbd38d;">
+                            <label style="display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #dd6b20; font-weight: 700; margin-bottom: 10px;">Clinical Notes</label>
+                            <p style="margin: 0; line-height: 1.6; color: #744210;">{{ currentViewItem.notes || 'No additional clinical notes.' }}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px; display: flex; gap: 12px; justify-content: flex-end;">
+                        <button (click)="openEditForm(currentViewItem)" style="background: #38a169; color: white; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Edit Consultation</button>
+                        <a [routerLink]="['../consultation', currentViewItem.id]" style="background: #805ad5; color: white; padding: 12px 24px; border-radius: 10px; font-weight: 600; text-decoration: none; display: inline-block;">Manage Consultation Content</a>
+                    </div>
+                </div>
+
+                <!-- Form Section -->
+                <div class="form-container" *ngIf="showForm" style="background: #fff; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; margin-top: 20px;">
+                    <h4 style="margin-top: 0; margin-bottom: 25px; color: #2d3748; font-size: 20px; font-weight: 700;">{{ isEdit ? 'Edit Consultation' : 'New Consultation Record' }}</h4>
+                    <form (ngSubmit)="saveConsultation()" #consultationForm="ngForm">
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #4a5568; font-size: 14px;">Date & Time <span style="color: #e53e3e;">*</span></label>
+                            <input type="datetime-local" name="date" [(ngModel)]="currentConsultation.date" required class="form-control" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px;">
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #4a5568; font-size: 14px;">Observations <span style="color: #e53e3e;">*</span></label>
+                            <textarea name="observations" [(ngModel)]="currentConsultation.observations" required class="form-control" rows="5" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px;"></textarea>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 30px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #4a5568; font-size: 14px;">Internal Notes (Optional)</label>
+                            <textarea name="notes" [(ngModel)]="currentConsultation.notes" class="form-control" rows="3" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px; background: #f8fafc;"></textarea>
+                        </div>
+                        
+                        <div class="form-actions" style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 25px; border-top: 1px solid #edf2f7;">
+                            <button type="button" class="btn btn-secondary" (click)="cancelForm()" style="padding: 12px 24px; background: #f1f5f9; color: #475569; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Discard</button>
+                            <button type="submit" class="btn" [disabled]="!consultationForm.valid" style="padding: 12px 30px; background: #38a169; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;" [style.opacity]="consultationForm.valid ? '1' : '0.5'">Save Consultation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>

@@ -15,16 +15,7 @@ export class DoctorTopbarComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserInfo();
-    this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          this.setNames(user.fullName);
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching doctor profile', err);
-      }
-    });
+    // The profile endpoint is optional/missing on backend, names are loaded from authService token
   }
 
   private loadUserInfo() {

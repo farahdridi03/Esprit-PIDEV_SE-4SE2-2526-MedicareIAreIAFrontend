@@ -1,0 +1,141 @@
+.doctor-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f7f6;
+}
+
+.main-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-area {
+    padding: 25px;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+    h2 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    p {
+        color: #7f8c8d;
+        font-size: 1rem;
+    }
+}
+
+.patients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.patient-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+
+    .patient-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .patient-info {
+            h3 {
+                margin: 0 0 0.3rem 0;
+                font-size: 1.2rem;
+                color: #2c3e50;
+            }
+            .blood-type {
+                font-size: 0.85rem;
+                color: #e74c3c;
+                font-weight: 500;
+                background: #fadbd8;
+                padding: 0.2rem 0.6rem;
+                border-radius: 20px;
+            }
+        }
+    }
+
+    .patient-body {
+        margin-bottom: 1.5rem;
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+
+            .label {
+                color: #7f8c8d;
+            }
+            .value {
+                color: #34495e;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .patient-footer {
+        text-align: right;
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #3498db;
+            color: #3498db;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &:hover {
+                background: #3498db;
+                color: white;
+            }
+        }
+    }
+}
+
+.loading-state, .error-state, .empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    color: #7f8c8d;
+
+    .btn {
+        margin-top: 1rem;
+    }
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+}

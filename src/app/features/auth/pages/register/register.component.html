@@ -503,13 +503,17 @@
       <!-- Terms Checkbox -->
       <div class="terms-row">
         <label class="checkbox-container">
-          <input type="checkbox" formControlName="terms">
+          <input type="checkbox" formControlName="terms"
+                 [ngClass]="{'is-invalid': registerForm.get('terms')?.invalid && registerForm.get('terms')?.touched}">
           <span>I accept the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
         </label>
       </div>
+      <div *ngIf="registerForm.get('terms')?.invalid && registerForm.get('terms')?.touched" style="margin-left: 2rem; margin-bottom: 1rem;">
+        <small class="error-message" style="color: #dc3545;">You must accept the terms and conditions.</small>
+      </div>
 
       <!-- Submit Button -->
-      <button type="submit" class="submit-btn" [disabled]="registerForm.invalid">Create Account</button>
+      <button type="submit" class="submit-btn">Create Account</button>
     </form>
 
     <!-- Footer Link -->

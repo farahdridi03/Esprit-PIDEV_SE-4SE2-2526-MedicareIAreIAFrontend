@@ -1,0 +1,62 @@
+<div class="embedded-crud-card box">
+    <div class="header-flex">
+        <h3>Diagnoses</h3>
+        <button (click)="openAddForm()" *ngIf="!showForm" style="background: #38a169; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">+ Add Diagnosis</button>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+        <p>Loading diagnoses...</p>
+    </div>
+
+    <div class="data-table-container" *ngIf="!loading && !showForm">
+        <table class="data-table" *ngIf="diagnoses.length > 0; else noData">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of diagnoses">
+                    <td><span class="badge" [ngClass]="item.type === 'PRIMARY' ? 'bg-danger' : 'bg-secondary'">{{ item.type }}</span></td>
+                    <td>{{ item.description }}</td>
+                    <td class="action-cells">
+                        <button class="btn-icon edit" (click)="openEditForm(item)">Edit</button>
+                        <button class="btn-icon delete" (click)="deleteDiagnosis(item.id!)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ng-template #noData>
+            <div class="empty-state">
+                <p>No diagnoses found for this consultation.</p>
+            </div>
+        </ng-template>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container" *ngIf="showForm">
+        <h4>{{ currentDiagnosis.id ? 'Edit Diagnosis' : 'Add New Diagnosis' }}</h4>
+        <form (ngSubmit)="saveDiagnosis()" #diagnosisForm="ngForm">
+            <div class="form-group">
+                <label>Diagnosis Type</label>
+                <select name="type" [(ngModel)]="currentDiagnosis.type" required class="form-control">
+                    <option value="PRIMARY">PRIMARY</option>
+                    <option value="SECONDARY">SECONDARY</option>
+                    <option value="PRELIMINARY">PRELIMINARY</option>
+                    <option value="FINAL">FINAL</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description (Details)</label>
+                <textarea name="description" [(ngModel)]="currentDiagnosis.description" required class="form-control" rows="3" placeholder="Condition details..."></textarea>
+            </div>
+            
+            <div class="form-actions mt-3">
+                <button type="button" class="btn btn-sm btn-secondary" (click)="cancelForm()">Cancel</button>
+                <button type="submit" [disabled]="!diagnosisForm.valid" style="background: #38a169; color: white; padding: 10px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;" [style.opacity]="diagnosisForm.valid ? '1' : '0.5'">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
