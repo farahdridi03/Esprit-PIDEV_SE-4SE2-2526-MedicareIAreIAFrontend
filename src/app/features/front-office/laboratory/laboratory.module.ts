@@ -8,6 +8,8 @@ import { LaboratoryStaffTopbarComponent } from './components/laboratory-topbar/l
 import { LaboratoryStaffDashboardComponent } from './pages/laboratory-dashboard/laboratory-dashboard.component';
 import { LabManagementListComponent } from './pages/lab-management-list/lab-management-list.component';
 import { LabManagementFormComponent } from './pages/lab-management-form/lab-management-form.component';
+import { LabTestsComponent } from './lab-tests/lab-tests.component';
+import { LabTestFormComponent } from './lab-tests/lab-test-form.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -18,7 +20,7 @@ const routes: Routes = [
     { path: 'forum', component: LaboratoryStaffDashboardComponent },
     { path: 'donations', component: LaboratoryStaffDashboardComponent },
     { path: 'profile', component: LaboratoryStaffDashboardComponent },
-    { path: 'lab-tests', component: LaboratoryStaffDashboardComponent },
+    { path: 'lab-tests', component: LabTestsComponent },
     { path: 'lab-requests', component: LaboratoryStaffDashboardComponent },
     { path: 'lab-results', component: LaboratoryStaffDashboardComponent },
     {
@@ -37,13 +39,20 @@ const routes: Routes = [
         LaboratoryStaffTopbarComponent,
         LaboratoryStaffDashboardComponent,
         LabManagementListComponent,
-        LabManagementFormComponent
+        LabManagementFormComponent,
+        LabTestsComponent,
+        LabTestFormComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
         RouterModule.forChild(routes)
+    ],
+    exports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule
     ]
 })
 export class LaboratoryStaffModule { }

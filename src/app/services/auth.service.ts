@@ -147,4 +147,31 @@ export class AuthService {
             { responseType: 'text' }
         ) as Observable<string>;
     }
+
+    getLaboratoryId(): number | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.laboratoryId ?? null;
+        } catch { return null; }
+    }
+
+    getFullName(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.fullName ?? null;
+        } catch { return null; }
+    }
+
+    getRole(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.role ?? null;
+        } catch { return null; }
+    }
 }
