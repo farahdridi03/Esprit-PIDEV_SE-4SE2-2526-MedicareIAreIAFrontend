@@ -12,7 +12,8 @@ import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/docto
 import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
 
 
 @NgModule({
@@ -26,12 +27,14 @@ import { FormsModule } from '@angular/forms';
     DoctorSidebarComponent,
     DoctorTopbarComponent,
     DoctorDashboardComponent,
-    DoctorProfileComponent
+    DoctorProfileComponent,
+    LabRequestsComponent
   ],
   imports: [
     CommonModule,
     FrontOfficeRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class FrontOfficeModule { }

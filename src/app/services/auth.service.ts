@@ -48,6 +48,20 @@ export class AuthService {
         return localStorage.getItem(this.TOKEN_KEY);
     }
 
+    // ✅ CORRIGÉ — lit "patientId" depuis le JWT
+    getPatientId(): number {
+        const token = this.getToken();
+        if (!token) return 0;
+        try {
+            const decoded: any = jwtDecode(token);
+            console.log('JWT payload:', decoded); // debug — supprime après fix
+            return decoded.patientId || 0;
+        } catch (e) {
+            console.error('JWT decode error:', e);
+            return 0;
+        }
+    }
+
     isAuthenticated(): boolean {
         const token = this.getToken();
         if (!token) return false;
@@ -95,12 +109,6 @@ export class AuthService {
         }
     }
 
-    getHomeCareServices(): Observable<any[]> {
-        return this.http.get<any[]>(
-            `http://localhost:8081/springsecurity/api/home-care-services`
-        );
-    }
-
     getUserFullName(): string | null {
         const token = this.getToken();
         if (!token) return null;
@@ -118,7 +126,12 @@ export class AuthService {
         }
     }
 
-    // ✅ Forgot Password
+    getHomeCareServices(): Observable<any[]> {
+        return this.http.get<any[]>(
+            `http://localhost:8081/springsecurity/api/home-care-services`
+        );
+    }
+
     forgotPassword(email: string): Observable<string> {
         return this.http.post(
             `${this.baseUrl}/forgot-password`,
@@ -127,7 +140,6 @@ export class AuthService {
         ) as Observable<string>;
     }
 
-    // ✅ Reset Password
     resetPassword(token: string, newPassword: string): Observable<string> {
         return this.http.post(
             `${this.baseUrl}/reset-password`,

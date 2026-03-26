@@ -6,6 +6,7 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { DashboardComponent } from './patient/pages/dashboard/dashboard.component';
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
+import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
 import { AuthGuard } from '../../guards/auth.guard';
 
 const routes: Routes = [
@@ -20,6 +21,12 @@ const routes: Routes = [
   {
     path: 'patient/dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lab-requests',
+    component: LabRequestsComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
