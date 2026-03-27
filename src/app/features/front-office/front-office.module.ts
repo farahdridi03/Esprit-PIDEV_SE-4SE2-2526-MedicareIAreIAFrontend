@@ -26,6 +26,10 @@ import { DoctorPatientTreatmentsComponent } from './doctor/pages/doctor-patient-
 import { DoctorPatientPrescriptionsComponent } from './doctor/pages/doctor-patient-prescriptions/doctor-patient-prescriptions.component';
 import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-diagnoses/doctor-patient-diagnoses.component';
 import { PatientRecordListComponent } from './patient/pages/patient-record-list/patient-record-list.component';
+import { LifestyleWellnessComponent } from './patient/pages/lifestyle-wellness/lifestyle-wellness.component';
+import { LifestyleListComponent } from './patient/pages/lifestyle-list/lifestyle-list.component';
+import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle-form.component';
+import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
 
 
 @NgModule({
@@ -52,12 +56,16 @@ import { PatientRecordListComponent } from './patient/pages/patient-record-list/
     DoctorPatientTreatmentsComponent,
     DoctorPatientPrescriptionsComponent,
     DoctorPatientDiagnosesComponent,
-    PatientRecordListComponent
+    PatientRecordListComponent,
+    LifestyleWellnessComponent,
+    LifestyleListComponent,
+    LifestyleFormComponent
   ],
   imports: [
     CommonModule,
     FrontOfficeRoutingModule,
-    FormsModule
+    FormsModule,
+    LifestyleSharedModule
   ]
 })
 export class FrontOfficeModule { }

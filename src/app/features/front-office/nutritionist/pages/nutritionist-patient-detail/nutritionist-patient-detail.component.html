@@ -1,0 +1,184 @@
+<div class="nutritionist-wrapper">
+    <!-- Sidebar -->
+    <app-nutritionist-sidebar></app-nutritionist-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-nutritionist-topbar></app-nutritionist-topbar>
+
+        <div class="content-area" *ngIf="!loading && patient">
+            <!-- Header Section -->
+            <div class="record-header">
+                <div class="patient-profile">
+                    <div class="avatar">
+                        {{ patient.fullName ? patient.fullName.charAt(0).toUpperCase() : 'U' }}
+                    </div>
+                    <div class="info">
+                        <h2>{{ patient.fullName }}</h2>
+                        <span class="id-badge">Patient ID: #{{ patient.id }}</span>
+                    </div>
+                </div>
+                <button class="back-link" routerLink="/front/nutritionist/patients">
+                    <span>←</span> Back to Patients
+                </button>
+            </div>
+
+            <!-- Health Information Grid -->
+            <div class="health-summary">
+                <!-- Personal Info Pills -->
+                <div class="info-pills">
+                    <div class="pill">
+                        <span class="label">Gender</span>
+                        <span class="value">{{ patient.gender || 'N/A' }}</span>
+                    </div>
+                    <div class="pill border-green">
+                        <span class="label">Blood Type</span>
+                        <span class="value">{{ patient.bloodType || 'N/A' }}</span>
+                    </div>
+                    <div class="pill">
+                        <span class="label">Birth Date</span>
+                        <span class="value">{{ patient.birthDate | date:'longDate' || 'N/A' }}</span>
+                    </div>
+                    <div class="pill">
+                        <span class="label">Phone</span>
+                        <span class="value">{{ patient.phone || 'N/A' }}</span>
+                    </div>
+                </div>
+
+                <!-- Medical Alerts (Allergies/Diseases) -->
+                <div class="medical-alerts">
+                    <div class="alert-card allergies">
+                        <div class="card-title">
+                            <span class="icon">🚫</span>
+                            <h4>Allergies</h4>
+                        </div>
+                        <div class="tag-cloud" *ngIf="patient.allergies && patient.allergies.length > 0; else noAllergies">
+                            <span class="tag" *ngFor="let allergy of patient.allergies">{{ allergy }}</span>
+                        </div>
+                        <ng-template #noAllergies><p class="muted">No known allergies recorded.</p></ng-template>
+                    </div>
+
+                    <div class="alert-card diseases">
+                        <div class="card-title">
+                            <span class="icon">🚑</span>
+                            <h4>Chronic Conditions</h4>
+                        </div>
+                        <div class="tag-cloud" *ngIf="patient.diseases && patient.diseases.length > 0; else noDiseases">
+                            <span class="tag" *ngFor="let disease of patient.diseases">{{ disease }}</span>
+                        </div>
+                        <ng-template #noDiseases><p class="muted">No chronic conditions recorded.</p></ng-template>
+                    </div>
+                </div>
+
+                <!-- Section Divider -->
+                <div class="section-divider">
+                    <hr>
+                    <span>Lifestyle & Progress</span>
+                    <hr>
+                </div>
+
+                <!-- Lifestyle Management Grid -->
+                <div class="lifestyle-grid">
+                    
+                    <!-- Lifestyle Goals Card -->
+                    <div class="lifestyle-card goals">
+                        <div class="card-header">
+                            <div class="title-with-icon">
+                                <span class="icon">🎯</span>
+                                <h3>Lifestyle Goals</h3>
+                            </div>
+                            <button class="view-all-btn" [routerLink]="['lifestyle/goals']">View All</button>
+                        </div>
+                        <div class="card-content">
+                            <div class="goal-list" *ngIf="patient.lifestyleGoals && patient.lifestyleGoals.length > 0; else noGoals">
+                                <div class="goal-item" *ngFor="let goal of patient.lifestyleGoals">
+                                    <div class="goal-main">
+                                        <span class="goal-icon">{{ getGoalIcon(goal.category) }}</span>
+                                        <div class="goal-info">
+                                            <strong>{{ formatLabel(goal.category) }}</strong>
+                                            <span class="goal-values">Target: {{ goal.targetValue }} (Baseline: {{ goal.baselineValue }})</span>
+                                        </div>
+                                    </div>
+                                    <span class="status-badge" [ngClass]="getStatusClass(goal.status)">{{ formatLabel(goal.status) }}</span>
+                                </div>
+                            </div>
+                            <ng-template #noGoals><p class="empty-msg">No lifestyle goals defined yet.</p></ng-template>
+                        </div>
+                    </div>
+
+                    <!-- Lifestyle Plans Card -->
+                    <div class="lifestyle-card plans">
+                        <div class="card-header">
+                            <div class="title-with-icon">
+                                <span class="icon">📝</span>
+                                <h3>Dietary & Wellness Plans</h3>
+                            </div>
+                            <div class="header-actions">
+                                <button class="view-all-btn" [routerLink]="['lifestyle/plans']">View All</button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="plan-list" *ngIf="patient.lifestylePlans && patient.lifestylePlans.length > 0; else noPlans">
+                                <div class="plan-item" *ngFor="let plan of patient.lifestylePlans">
+                                    <div class="plan-info">
+                                        <strong>{{ plan.title }}</strong>
+                                        <p class="desc">{{ plan.description }}</p>
+                                        <span class="dates">📅 {{ plan.startDate | date:'shortDate' }} — {{ plan.endDate ? (plan.endDate | date:'shortDate') : 'Until target' }}</span>
+                                    </div>
+                                    <div class="plan-actions-wrapper">
+                                        <span class="status-badge" [ngClass]="getStatusClass(plan.status)">{{ formatLabel(plan.status) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-template #noPlans><p class="empty-msg">No active dietary plans.</p></ng-template>
+                        </div>
+                    </div>
+
+                    <!-- Progress Tracking Card -->
+                    <div class="lifestyle-card trackings">
+                        <div class="card-header">
+                            <div class="title-with-icon">
+                                <span class="icon">📈</span>
+                                <h3>Health Metrics Tracking</h3>
+                            </div>
+                            <button class="view-all-btn" [routerLink]="['lifestyle/tracking']">View All</button>
+                        </div>
+                        <div class="card-content tracking-layout">
+                            <div class="tracking-list" *ngIf="patient.progressTrackings && patient.progressTrackings.length > 0; else noTrackings">
+                                <div class="tracking-item" *ngFor="let track of patient.progressTrackings">
+                                    <div class="track-date">
+                                        <span class="day">{{ track.recordedAt | date:'dd' }}</span>
+                                        <span class="month">{{ track.recordedAt | date:'MMM' }}</span>
+                                    </div>
+                                    <div class="track-info">
+                                        <div class="track-type">{{ track.trackingType | titlecase }}</div>
+                                        <div class="track-metric">{{ track.metric }}: <strong>{{ track.value }}</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-box" *ngIf="patient.progressTrackings && patient.progressTrackings.length > 0">
+                                <app-progress-chart [data]="patient.progressTrackings" title="Growth & Metrics"></app-progress-chart>
+                            </div>
+                            <ng-template #noTrackings><p class="empty-msg">No progress metrics recorded recently.</p></ng-template>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="content-area centered" *ngIf="loading">
+            <div class="loader"></div>
+            <p>Gathering patient health profile...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="content-area centered" *ngIf="!loading && error">
+            <span class="error-icon">⚠️</span>
+            <h3>Data Not Available</h3>
+            <p>{{ error }}</p>
+            <button class="btn btn-primary" (click)="router.navigate(['/front/nutritionist/patients'])">Back to Dashboard</button>
+        </div>
+    </div>
+</div>

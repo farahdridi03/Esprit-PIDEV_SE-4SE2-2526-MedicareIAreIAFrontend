@@ -1,0 +1,60 @@
+<div class="nutritionist-wrapper">
+    <!-- Sidebar -->
+    <app-nutritionist-sidebar></app-nutritionist-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-nutritionist-topbar></app-nutritionist-topbar>
+
+        <div class="content-area">
+            <div class="page-header">
+                <h2>My Patients</h2>
+                <p>Track the health and lifestyle progress of your assigned patients.</p>
+            </div>
+
+            <div *ngIf="loading" class="loading-state">
+                <p>Loading patients...</p>
+            </div>
+
+            <div *ngIf="error" class="error-state">
+                <p>{{ error }}</p>
+                <button (click)="fetchPatients()" class="btn btn-primary">Retry</button>
+            </div>
+
+            <div *ngIf="!loading && !error && patients.length === 0" class="empty-state">
+                <p>No patients found. Ensure appointments are scheduled via the portal.</p>
+            </div>
+
+            <div *ngIf="!loading && !error && patients.length > 0" class="patients-grid">
+                <div class="patient-card" *ngFor="let patient of patients">
+                    <div class="patient-header">
+                        <div class="patient-avatar">
+                            {{ patient.fullName ? patient.fullName.charAt(0).toUpperCase() : 'U' }}
+                        </div>
+                        <div class="patient-info">
+                            <h3>{{ patient.fullName }}</h3>
+                            <span class="blood-type">Blood Type: {{ patient.bloodType || 'N/A' }}</span>
+                        </div>
+                    </div>
+                    <div class="patient-body">
+                        <div class="info-row">
+                            <span class="label">Gender:</span>
+                            <span class="value">{{ patient.gender || 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Age:</span>
+                            <span class="value">{{ patient.birthDate ? (patient.birthDate | date:'mediumDate') : 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Email:</span>
+                            <span class="value">{{ patient.email || 'N/A' }}</span>
+                        </div>
+                    </div>
+                    <div class="patient-footer">
+                        <button class="btn btn-view" (click)="viewPatient(patient.id)">View</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

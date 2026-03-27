@@ -1,0 +1,71 @@
+<div class="lifestyle-detail-wrapper">
+    <app-nutritionist-sidebar></app-nutritionist-sidebar>
+    <div class="main-body">
+        <app-nutritionist-topbar></app-nutritionist-topbar>
+        <div class="content-area">
+            <div class="detail-container" *ngIf="!isLoading && data">
+                
+                <header class="detail-header">
+                    <div class="header-text">
+                        <h1>{{ type === 'plans' ? 'Dietary Plan Details' : (type === 'goals' ? 'Lifestyle Goal Details' : 'Progress Tracking Details') }}</h1>
+                        <p class="subtitle" *ngIf="type === 'plans'">{{ data.title }}</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-back" (click)="goBack()">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                            </svg>
+                            Back to List
+                        </button>
+                        <button class="btn-edit-header" *ngIf="userRole === 'NUTRITIONIST' && type === 'plans'" (click)="onEdit()">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                            </svg>
+                            Edit Plan
+                        </button>
+                    </div>
+                </header>
+
+                <div class="detail-card">
+                    <!-- Plan Details -->
+                    <div *ngIf="type === 'plans'" class="info-grid">
+                        <div class="info-item full-width">
+                            <span class="label">Plan Title</span>
+                            <span class="value title">{{ data.title }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Start Date</span>
+                            <span class="value">{{ data.startDate | date:'fullDate' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">End Date</span>
+                            <span class="value">{{ data.endDate ? (data.endDate | date:'fullDate') : 'No end date' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Status</span>
+                            <span class="badge" [ngClass]="data.status.toLowerCase()">{{ data.status }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Linked Goal</span>
+                            <span class="value">Goal #{{ data.goalId }}</span>
+                        </div>
+                        <div class="info-item full-width">
+                            <span class="label">Description & Instructions</span>
+                            <div class="description-box">
+                                {{ data.description }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add other types if needed later -->
+                </div>
+
+            </div>
+
+            <div class="loading-state" *ngIf="isLoading">
+                <div class="spinner"></div>
+                <p>Loading details...</p>
+            </div>
+        </div>
+    </div>
+</div>

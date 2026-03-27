@@ -19,6 +19,9 @@ import { DoctorPatientTreatmentsComponent } from './doctor/pages/doctor-patient-
 import { DoctorPatientPrescriptionsComponent } from './doctor/pages/doctor-patient-prescriptions/doctor-patient-prescriptions.component';
 import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-diagnoses/doctor-patient-diagnoses.component';
 import { PatientRecordListComponent } from './patient/pages/patient-record-list/patient-record-list.component';
+import { LifestyleWellnessComponent } from './patient/pages/lifestyle-wellness/lifestyle-wellness.component';
+import { LifestyleListComponent } from './patient/pages/lifestyle-list/lifestyle-list.component';
+import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle-form.component';
 import { AuthGuard } from '../../guards/auth.guard';
 
 const routes: Routes = [
@@ -45,6 +48,36 @@ const routes: Routes = [
   {
     path: 'patient/medical-record/:type',
     component: PatientRecordListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lifestyle-wellness',
+    component: LifestyleWellnessComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lifestyle-wellness/:type',
+    component: LifestyleListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lifestyle-wellness/:type/new',
+    component: LifestyleFormComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lifestyle-wellness/:type/edit/:id',
+    component: LifestyleFormComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lifestyle-wellness/:type',
+    component: LifestyleListComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },

@@ -37,4 +37,7 @@ export interface PatientResponseDTO {
     treatments?: any[];
     prescriptions?: any[];
     diagnoses?: any[];
+    lifestyleGoals?: any[];
+    lifestylePlans?: any[];
+    progressTrackings?: any[];
 }
