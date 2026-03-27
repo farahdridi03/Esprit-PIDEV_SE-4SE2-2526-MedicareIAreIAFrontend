@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ScheduleService } from '../../../../../services/schedule.service';
 import { AuthService } from '../../../../../services/auth.service';
-import { WeeklySchedule, ScheduleException, DaySchedule } from '../../../../../models/schedule.model';
+import { WeeklySchedule, ScheduleException, DaySchedule, CalendarAvailability } from '../../../../../models/schedule.model';
+import { AvailabilityService } from '../../../../../services/availability.service';
 
 @Component({
   selector: 'app-doctor-calendar-calendar',
@@ -18,10 +19,12 @@ export class DoctorCalendarCalendarComponent implements OnInit, OnChanges {
   daysInWeek: Date[] = [];
   isLoading = false;
   exceptions: ScheduleException[] = [];
+  availabilities: CalendarAvailability[] = [];
 
   constructor(
     private scheduleService: ScheduleService,
-    private authService: AuthService
+    private authService: AuthService,
+    private availabilityService: AvailabilityService
   ) {}
 
   ngOnInit(): void {
@@ -43,10 +46,10 @@ export class DoctorCalendarCalendarComponent implements OnInit, OnChanges {
 
   loadSchedule(): void {
     this.isLoading = true;
-    this.scheduleService.getWeeklySchedule(this.providerId).subscribe({
-      next: (schedule) => {
-        this.weeklySchedule = schedule;
-        this.loadExceptions();
+    this.availabilityService.getAvailabilitiesByDoctor(this.providerId).subscribe({
+      next: (slots) => {
+        this.availabilities = slots;
+        this.isLoading = false;
       },
       error: () => this.isLoading = false
     });
@@ -87,25 +90,72 @@ export class DoctorCalendarCalendarComponent implements OnInit, OnChanges {
   }
 
   getDaySchedule(date: Date): DaySchedule | undefined {
-    // 1. Check exceptions first (Specific date override)
+    if (this.isPreview) {
+      // 1. Fallback to weekly template for preview mode
+      const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+      return this.weeklySchedule?.days.find(d => d.dayOfWeek === dayNames[date.getDay()]);
+    }
+
+    // 2. Real Availabilities Mode
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const dateStr = `${year}-${month}-${day}`;
-    
-    const exception = this.exceptions.find(ex => dateStr >= ex.startDate && dateStr <= ex.endDate);
-    
-    if (exception) {
+
+    // Helper function to safely extract YYYY-MM-DD from either Array or String
+    const getDatePart = (timeValue: any): string | null => {
+      if (!timeValue) return null;
+      if (Array.isArray(timeValue)) {
+        // Jackson array [2026, 3, 26, 9, 0] -> "2026-03-26"
+        const y = timeValue[0];
+        const m = String(timeValue[1]).padStart(2, '0');
+        const d = String(timeValue[2]).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+      // String "2026-03-26T09:00:00"
+      return typeof timeValue === 'string' ? timeValue.split('T')[0] : null;
+    };
+
+    // Filter availabilities for the exact date
+    const dayAvailabilities = this.availabilities.filter(a => getDatePart(a.startTime) === dateStr);
+
+    if (dayAvailabilities.length === 0) {
+      // closed
       return {
-        dayOfWeek: 'MONDAY', // Dummy value not used for rendering
-        active: exception.isAvailable,
-        timeSlots: exception.timeSlots || []
+        dayOfWeek: 'MONDAY', 
+        active: false,
+        timeSlots: []
       };
     }
 
-    // 2. Fallback to weekly template
-    const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-    return this.weeklySchedule?.days.find(d => d.dayOfWeek === dayNames[date.getDay()]);
+    const getTimePart = (timeValue: any): string => {
+      if (Array.isArray(timeValue)) {
+        // [2026, 3, 26, 9, 30] -> "09:30"
+        const h = String(timeValue[3] || 0).padStart(2, '0');
+        const min = String(timeValue[4] || 0).padStart(2, '0');
+        return `${h}:${min}`;
+      }
+      return typeof timeValue === 'string' ? timeValue.split('T')[1]?.substring(0, 5) || '00:00' : '00:00';
+    };
+
+    const timeSlots = dayAvailabilities.map(a => {
+      const start = getTimePart(a.startTime);
+      const end = getTimePart(a.endTime);
+      
+      return {
+        id: a.id,
+        startTime: start,
+        endTime: end,
+        mode: a.mode,
+        status: a.status // assuming CalendarAvailability has status
+      } as any;
+    });
+
+    return {
+      dayOfWeek: 'MONDAY', 
+      active: true,
+      timeSlots: timeSlots
+    };
   }
 
   isToday(date: Date): boolean {

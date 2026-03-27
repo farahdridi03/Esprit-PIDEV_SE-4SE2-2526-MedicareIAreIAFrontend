@@ -4,6 +4,7 @@ export interface TimeSlot {
   startTime: string; // "09:00"
   endTime: string;   // "12:00"
   mode: ConsultationMode;
+  status?: string;
 }
 
 export interface DaySchedule {

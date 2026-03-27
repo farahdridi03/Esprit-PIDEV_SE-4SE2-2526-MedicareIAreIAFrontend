@@ -31,33 +31,33 @@
 
             <!-- Dashboard Grid (Overview) -->
             <div class="dashboard-grid" *ngIf="currentView === 'overview'">
-                <!-- Schedule Section -->
+                <!-- Schedule Highlights (Summary) -->
                 <div class="schedule-section">
                     <div class="section-header">
-                        <h3>Today's Schedule</h3>
-                        <a href="#">View All →</a>
+                        <h3>Schedule Highlights</h3>
+                        <a (click)="setView('overview')" style="cursor:pointer;" routerLink="/front/doctor/patients">Manage All →</a>
                     </div>
 
-                    <div class="schedule-list">
-                        <div *ngIf="isLoadingAppointments" class="loader">Loading schedule...</div>
+                    <div class="summary-content">
+                        <div *ngIf="isLoadingAppointments" class="loader">Calculating...</div>
                         
-                        <div *ngIf="!isLoadingAppointments && todayAppointments.length === 0" class="no-appointments">
-                            <p>No appointments today</p>
+                        <div *ngIf="!isLoadingAppointments" class="stats-row">
+                            <div class="summary-item">
+                                <span class="num">{{ todayAppointments.length }}</span>
+                                <span class="lbl">Total Today</span>
+                            </div>
+                            <div class="summary-item highlight-orange">
+                                <span class="num">{{ getPendingCount() }}</span>
+                                <span class="lbl">To Confirm</span>
+                            </div>
+                            <div class="summary-item highlight-green">
+                                <span class="num">{{ getLiveCount() }}</span>
+                                <span class="lbl">Live Sessions</span>
+                            </div>
                         </div>
 
-                        <div class="schedule-item" *ngFor="let app of todayAppointments">
-                            <div class="time-col">
-                                <span class="start">{{ app.startTime }}</span>
-                                <span class="end">{{ app.endTime }}</span>
-                            </div>
-                            <div class="info-col">
-                                <div class="top">
-                                    <h4>{{ app.patientName }}</h4>
-                                    <span class="mode-badge" [class]="app.mode.toLowerCase()">{{ app.mode }}</span>
-                                </div>
-                                <p class="notes" *ngIf="app.notes">"{{ app.notes }}"</p>
-                                <a *ngIf="app.mode === 'ONLINE' && app.status === 'BOOKED'" [href]="app.meetingLink" target="_blank" class="join-link">Join Video Call</a>
-                            </div>
+                        <div class="quick-notif" *ngIf="getPendingCount() > 0">
+                            🔔 You have <strong>{{ getPendingCount() }}</strong> appointments waiting for your confirmation in the Patients section.
                         </div>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
 
             <!-- Calendar Settings View -->
             <div class="calendar-settings-view" *ngIf="currentView === 'settings'">
-                <app-doctor-calendar-settings></app-doctor-calendar-settings>
+                <app-doctor-calendar-settings (navigateToCalendar)="setView('calendar')"></app-doctor-calendar-settings>
             </div>
 
             <!-- Calendar Exceptions View -->

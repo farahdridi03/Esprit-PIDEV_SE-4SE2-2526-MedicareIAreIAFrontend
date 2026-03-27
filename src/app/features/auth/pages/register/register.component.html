@@ -206,25 +206,6 @@
             </div>
           </div>
 
-        </div>
-      </ng-container>
-
-      <!-- DOCTOR FIELDS -->
-      <ng-container *ngIf="isDoctor">
-        <div class="patient-fields"> <!-- Reuse same styling container -->
-          <h3 class="section-title" style="margin-bottom: 1rem;">Professional Information</h3>
-          
-          <div class="form-group">
-            <label for="specialty">Specialty</label>
-            <div class="input-wrapper">
-              <select id="specialty" formControlName="specialty" class="role-select"
-                [ngClass]="{'is-invalid': registerForm.get('specialty')?.invalid && (registerForm.get('specialty')?.dirty || registerForm.get('specialty')?.touched)}">
-                <option value="" disabled>Select your specialty</option>
-                <option *ngFor="let s of doctorSpecialties" [value]="s.value">{{ s.label }}</option>
-              </select>
-            </div>
-          </div>
-
           <!-- Drug Allergies -->
           <div class="form-group margin-top">
             <label for="drugAllergies">Drug Allergies</label>
@@ -254,6 +235,43 @@
               </span>
               <input type="text" id="hereditaryDiseases" formControlName="hereditaryDiseases"
                 placeholder="e.g. Hemophilia (Optional)">
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+
+      <!-- DOCTOR FIELDS -->
+      <ng-container *ngIf="isDoctor">
+        <div class="patient-fields"> <!-- Reuse same styling container -->
+          <h3 class="section-title" style="margin-bottom: 1rem;">Professional Information</h3>
+          
+          <div class="form-group">
+            <label for="specialty">Specialty</label>
+            <div class="input-wrapper">
+              <select id="specialty" formControlName="specialty" class="role-select"
+                [ngClass]="{'is-invalid': registerForm.get('specialty')?.invalid && (registerForm.get('specialty')?.dirty || registerForm.get('specialty')?.touched)}">
+                <option value="" disabled>Select your specialty</option>
+                <option *ngFor="let s of doctorSpecialties" [value]="s.value">{{ s.label }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row-splits">
+            <div class="form-group margin-top">
+              <label for="licenseNumber">License Number</label>
+              <div class="input-wrapper">
+                <input type="text" id="licenseNumber" formControlName="licenseNumber" placeholder="FR123456"
+                  [ngClass]="{'is-invalid': registerForm.get('licenseNumber')?.invalid && (registerForm.get('licenseNumber')?.dirty || registerForm.get('licenseNumber')?.touched)}">
+              </div>
+            </div>
+
+            <div class="form-group margin-top">
+              <label for="consultationFee">Consultation Fee (DT)</label>
+              <div class="input-wrapper">
+                <input type="number" id="consultationFee" formControlName="consultationFee" placeholder="80"
+                  [ngClass]="{'is-invalid': registerForm.get('consultationFee')?.invalid && (registerForm.get('consultationFee')?.dirty || registerForm.get('consultationFee')?.touched)}">
+              </div>
             </div>
           </div>
 

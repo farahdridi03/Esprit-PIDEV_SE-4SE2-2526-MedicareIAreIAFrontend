@@ -22,8 +22,8 @@ export class ScheduleService {
     return this.http.put<WeeklySchedule>(`${this.apiUrl}/${providerId}/weekly-schedule`, schedule);
   }
 
-  saveSpecificWeek(providerId: number, weekDays: ScheduleException[]): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${providerId}/specific-week`, weekDays);
+  saveSpecificWeek(providerId: number, startDate: string, weekDays: ScheduleException[]): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${providerId}/specific-week?startDate=${startDate}`, weekDays);
   }
 
   // Exceptions

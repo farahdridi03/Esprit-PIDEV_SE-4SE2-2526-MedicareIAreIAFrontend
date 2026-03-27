@@ -1,6 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { AuthService } from '../../../../../services/auth.service';
-import { AppointmentService, Appointment } from '../../../../../services/appointment.service';
+import { AppointmentService } from '../../../../../services/appointment.service';
+import { AppointmentDTO } from '../../../../../models/appointment.model';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -8,9 +9,9 @@ import { AppointmentService, Appointment } from '../../../../../services/appoint
   styleUrls: ['./doctor-dashboard.component.scss']
 })
 export class DoctorDashboardComponent implements OnInit {
-  currentView: 'overview' | 'settings' | 'exceptions' | 'calendar' = 'calendar';
+  currentView: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients' = 'calendar';
   firstName: string = '';
-  todayAppointments: Appointment[] = [];
+  todayAppointments: AppointmentDTO[] = [];
   isLoadingAppointments: boolean = true;
 
   constructor(
@@ -32,7 +33,7 @@ export class DoctorDashboardComponent implements OnInit {
     this.isLoadingAppointments = true;
     this.appointmentService.getDoctorAppointments(doctorId, today).subscribe({
       next: (data) => {
-        this.todayAppointments = data.sort((a, b) => a.startTime.localeCompare(b.startTime));
+        this.todayAppointments = data || [];
         this.isLoadingAppointments = false;
         this.cdr.detectChanges();
       },
@@ -43,7 +44,15 @@ export class DoctorDashboardComponent implements OnInit {
     });
   }
 
-  setView(view: 'overview' | 'settings' | 'exceptions' | 'calendar') {
+  getPendingCount(): number {
+    return this.todayAppointments.filter(a => a.status === 'BOOKED').length;
+  }
+
+  getLiveCount(): number {
+    return this.todayAppointments.filter(a => a.status === 'LIVE').length;
+  }
+
+  setView(view: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients') {
     this.currentView = view;
     this.cdr.detectChanges();
   }

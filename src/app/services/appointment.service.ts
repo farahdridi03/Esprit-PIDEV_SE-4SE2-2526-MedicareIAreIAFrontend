@@ -1,46 +1,43 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface Appointment {
-  id: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: 'BOOKED' | 'CANCELLED' | 'COMPLETED' | 'RESCHEDULED';
-  mode: 'ONLINE' | 'IN_PERSON';
-  notes?: string;
-  patientId: number;
-  patientName: string;
-  doctorId: number;
-  doctorName: string;
-  doctorSpecialty?: string;
-  clinicName?: string;
-  clinicAddress?: string;
-  meetingLink?: string;
-}
+import { AppointmentDTO } from '../models/appointment.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppointmentService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/v1/appointments';
+  private baseUrl = 'http://localhost:8081/springsecurity/api/v1';
 
   constructor(private http: HttpClient) {}
 
-  getPatientAppointments(patientId: number): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`http://localhost:8081/springsecurity/api/v1/appointments/patients/${patientId}`);
+  getPatientAppointments(patientId: number): Observable<AppointmentDTO[]> {
+    return this.http.get<AppointmentDTO[]>(
+      `${this.baseUrl}/appointments/patients/${patientId}/appointments`
+    );
   }
 
-  getDoctorAppointments(doctorId: number, date?: string): Observable<Appointment[]> {
+  getDoctorAppointments(doctorId: number, date?: string): Observable<any[]> {
     let params = new HttpParams();
     if (date) {
       params = params.set('date', date);
     }
-    return this.http.get<Appointment[]>(`http://localhost:8081/springsecurity/api/v1/appointments/doctors/${doctorId}`, { params });
+    return this.http.get<any[]>(`${this.baseUrl}/appointments/doctors/${doctorId}`, { params });
   }
 
-  cancelAppointment(id: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${id}/cancel`, {});
+  bookAppointment(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/appointments`, payload);
+  }
+
+  cancelAppointment(id: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/appointments/${id}/cancel`, {});
+  }
+
+  confirmAppointment(id: number): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/appointments/${id}/confirm`, {});
+  }
+
+  startTeleconsultation(id: number): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/appointments/${id}/start-live`, {});
   }
 }

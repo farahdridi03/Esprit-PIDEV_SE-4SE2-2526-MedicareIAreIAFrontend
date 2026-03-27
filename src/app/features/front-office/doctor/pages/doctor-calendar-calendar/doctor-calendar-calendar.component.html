@@ -33,7 +33,11 @@
                 <span *ngIf="slot.mode === 'ONLINE'">💻 Vidéo</span>
                 <span *ngIf="slot.mode === 'BOTH'">🔄 Mixte</span>
               </div>
-              <div class="slot-status">Disponible</div>
+              <div class="slot-status">
+                <span *ngIf="!slot.status || slot.status === 'AVAILABLE'" class="badge-av">Disponible</span>
+                <span *ngIf="slot.status === 'BOOKED'" class="badge-bk" style="color:red;">Réservé</span>
+                <span *ngIf="slot.status === 'BLOCKED'" class="badge-bl" style="color:gray;">Bloqué</span>
+              </div>
             </div>
 
             <div *ngIf="schedule.timeSlots.length === 0" class="no-slots">

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { AppointmentService, Appointment } from '../../../../../services/appointment.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AppointmentService } from '../../../../../services/appointment.service';
+import { AppointmentDTO } from '../../../../../models/appointment.model';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
@@ -7,12 +8,17 @@ import { AuthService } from '../../../../../services/auth.service';
   templateUrl: './patient-appointments.component.html',
   styleUrls: ['./patient-appointments.component.scss']
 })
-export class PatientAppointmentsComponent implements OnInit {
-  activeTab: 'upcoming' | 'past' | 'cancelled' = 'upcoming';
-  appointments: Appointment[] = [];
-  filteredAppointments: Appointment[] = [];
-  isLoading: boolean = true;
-  error: string = '';
+export class PatientAppointmentsComponent implements OnInit, OnDestroy {
+  appointments: AppointmentDTO[] = [];
+  upcomingAppointments: AppointmentDTO[] = [];
+  pastAppointments: AppointmentDTO[] = [];
+  cancelledAppointments: AppointmentDTO[] = [];
+  activeTab: string = 'upcoming';
+  isLoading = false;
+  error: string | null = null;
+  refreshInterval: any;
+  
+  selectedAppointment: AppointmentDTO | null = null;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -20,66 +26,177 @@ export class PatientAppointmentsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadAppointments();
+    // Start polling every 10s to see if doctor started the live consult or confirmed
+    this.refreshInterval = setInterval(() => {
+      this.loadAppointments(false); // Silent refresh
+    }, 10000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshInterval) clearInterval(this.refreshInterval);
+  }
+
+  loadAppointments(showLoader: boolean = true): void {
+    if (showLoader) this.isLoading = true;
+    this.error = null;
     const patientId = this.authService.getUserId();
-    if (patientId) {
-      this.loadAppointments(patientId);
-    } else {
-      this.error = 'User not authenticated';
-      this.isLoading = false;
-    }
-  }
-
-  loadAppointments(patientId: number): void {
-    this.isLoading = true;
-    this.appointmentService.getPatientAppointments(patientId).subscribe({
-      next: (data) => {
-        this.appointments = data;
-        this.filterByTab();
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to load appointments';
-        this.isLoading = false;
-        console.error(err);
-      }
-    });
-  }
-
-  setTab(tab: 'upcoming' | 'past' | 'cancelled'): void {
-    this.activeTab = tab;
-    this.filterByTab();
-  }
-
-  filterByTab(): void {
-    const todayStr = new Date().toISOString().split('T')[0];
     
-    switch (this.activeTab) {
-      case 'upcoming':
-        this.filteredAppointments = this.appointments.filter(a => 
-          (a.status === 'BOOKED' || a.status === 'RESCHEDULED') && a.date >= todayStr
-        );
-        break;
-      case 'past':
-        this.filteredAppointments = this.appointments.filter(a => 
-          (a.status === 'COMPLETED' || a.date < todayStr) && a.status !== 'CANCELLED'
-        );
-        break;
-      case 'cancelled':
-        this.filteredAppointments = this.appointments.filter(a => a.status === 'CANCELLED');
-        break;
+    if (!patientId) {
+      if (showLoader) {
+        this.error = "Utilisateur non identifié. Veuillez vous reconnecter.";
+        this.isLoading = false;
+      }
+      return;
     }
+
+    this.appointmentService.getPatientAppointments(patientId)
+      .subscribe({
+        next: (data) => {
+          this.appointments = [...data].sort((a,b) => {
+            const dateComp = (a.date || '').localeCompare(b.date || '');
+            if (dateComp !== 0) return dateComp;
+            return (a.startTime || '').localeCompare(b.startTime || '');
+          });
+          
+          const now = new Date();
+          const today = now.getFullYear() + '-' + 
+                        String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                        String(now.getDate()).padStart(2, '0');
+
+          // UPCOMING: Includes BOOKED, CONFIRMED and LIVE (important for joining the room)
+          this.upcomingAppointments = this.appointments.filter(a => {
+            const isFutureOrToday = (a.date || '') >= today;
+            const isActiveStatus = ['BOOKED', 'CONFIRMED', 'LIVE', 'RESCHEDULED'].includes(a.status || '');
+            return isFutureOrToday && isActiveStatus;
+          });
+
+          // PAST: Everything strictly before today, or COMPLETED
+          this.pastAppointments = this.appointments.filter(a => {
+            const isPast = (a.date || '') < today;
+            const isCompleted = (a.status === 'COMPLETED');
+            return (isPast && a.status !== 'CANCELLED' && a.status !== 'LIVE') || isCompleted;
+          });
+
+          this.cancelledAppointments = this.appointments.filter(a => a.status === 'CANCELLED');
+          
+          if (showLoader) this.isLoading = false;
+
+          // Update selectedAppointment if open to reflect new status (meetingLink, etc)
+          if (this.selectedAppointment) {
+            const updated = this.appointments.find(a => a.id === this.selectedAppointment?.id);
+            if (updated) this.selectedAppointment = updated;
+          }
+        },
+        error: (err) => {
+          console.error('[ERROR]', err);
+          if (showLoader) {
+            this.error = "Erreur lors du chargement des rendez-vous.";
+            this.isLoading = false;
+          }
+        }
+      });
+  }
+
+  viewDetails(appt: AppointmentDTO): void {
+    this.selectedAppointment = appt;
+  }
+
+  closeDetails(): void {
+    this.selectedAppointment = null;
+  }
+
+  isTeleconsultationActive(appt: AppointmentDTO): boolean {
+    if (!appt || appt.mode !== 'ONLINE') return false;
+    return appt.status === 'LIVE';
+  }
+
+  getTeleconsultationState(appt: AppointmentDTO): 'WAITING_CONFIRMATION' | 'WAITING_TIME' | 'WAITING_DOCTOR' | 'LIVE' | 'OTHER' {
+    if (!appt || appt.mode !== 'ONLINE') return 'OTHER';
+    if (appt.status === 'LIVE') return 'LIVE';
+    if (appt.status === 'BOOKED') return 'WAITING_CONFIRMATION';
+    if (appt.status !== 'CONFIRMED') return 'OTHER';
+
+    // It is CONFIRMED, check time
+    const now = new Date();
+    const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    
+    if (appt.date !== todayStr) {
+        return (appt.date || '') > todayStr ? 'WAITING_TIME' : 'OTHER';
+    }
+
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const [startH, startM] = (appt.startTime || '00:00').split(':').map(Number);
+    const startMinutes = startH * 60 + startM;
+
+    if (currentMinutes < startMinutes - 5) {
+        return 'WAITING_TIME';
+    }
+
+    return 'WAITING_DOCTOR';
+  }
+
+  openMaps(address: string | undefined): void {
+    if (!address) return;
+    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
+  }
+
+  openMeeting(link: string | undefined): void {
+    if (link) {
+      const patientName = this.authService.getUserFullName() || 'Patient';
+      const fullLink = `${link}#userInfo.displayName="${patientName}"`;
+      window.open(fullLink, '_blank');
+    }
+  }
+
+  getDoctorPhoto(appt: AppointmentDTO): string {
+    if (!appt.doctorProfilePicture) return '';
+    if (appt.doctorProfilePicture.startsWith('data:') || appt.doctorProfilePicture.startsWith('http')) {
+      return appt.doctorProfilePicture;
+    }
+    return `data:image/png;base64,${appt.doctorProfilePicture}`;
+  }
+
+  getFallbackAvatar(name: string): string {
+    const lowName = (name || '').toLowerCase();
+    if (lowName.includes('bouthaina') || lowName.includes('sarah')) return '👩‍⚕️'; 
+    return (lowName.startsWith('dr') || lowName.includes('mme')) ? '👩‍⚕️' : '👨‍⚕️';
+  }
+
+  formatName(name: string): string {
+    if (!name) return '';
+    if (name === name.toUpperCase()) {
+      return name.split(' ')
+                 .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+                 .join(' ');
+    }
+    return name;
+  }
+
+  formatStatus(status: string): string {
+    if (!status) return '';
+    return status.split('_')
+                 .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+                 .join(' ');
+  }
+
+  formatSpecialty(specialty: string): string {
+    if (!specialty) return 'General Practice';
+    return this.formatStatus(specialty);
   }
 
   cancelAppointment(id: number): void {
-    if (confirm('Are you sure you want to cancel this appointment?')) {
-      this.appointmentService.cancelAppointment(id).subscribe({
-        next: () => {
-          alert('Appointment cancelled successfully');
-          const patientId = this.authService.getUserId();
-          if (patientId) this.loadAppointments(patientId);
-        },
-        error: () => alert('Failed to cancel appointment')
-      });
-    }
+    if (!confirm('Voulez-vous vraiment annuler ce rendez-vous ?')) return;
+    this.isLoading = true;
+    this.appointmentService.cancelAppointment(id).subscribe({
+      next: () => {
+        this.selectedAppointment = null;
+        this.loadAppointments();
+      },
+      error: (err) => {
+        console.error('Cancel error:', err);
+        this.isLoading = false;
+      }
+    });
   }
 }

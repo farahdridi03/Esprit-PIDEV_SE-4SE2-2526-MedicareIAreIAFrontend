@@ -10,6 +10,7 @@ import { AuthGuard } from '../../guards/auth.guard';
 import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-list/patient-doctors-list.component';
 import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
 import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
+import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 
 
 const routes: Routes = [
@@ -54,6 +55,12 @@ const routes: Routes = [
   {
     path: 'doctor/profile',
     component: DoctorProfileComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['DOCTOR'] }
+  },
+  {
+    path: 'doctor/patients',
+    component: DoctorPatientsComponent,
     canActivate: [AuthGuard],
     data: { roles: ['DOCTOR'] }
   },

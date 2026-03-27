@@ -49,12 +49,12 @@ export class DoctorService {
     // date should be 'YYYY-MM-DD'
     const from = `${date}T00:00:00`;
     const to = `${date}T23:59:59`;
-    return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/v1/providers/${doctorId}/availabilities?from=${from}&to=${to}&status=AVAILABLE`);
+    return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/v1/providers/${doctorId}/availabilities?from=${from}&to=${to}`);
   }
 
   getMonthAvailabilities(doctorId: number, fromDate: string, toDate: string): Observable<any[]> {
     const from = `${fromDate}T00:00:00`;
     const to = `${toDate}T23:59:59`;
-    return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/v1/providers/${doctorId}/availabilities?from=${from}&to=${to}&status=AVAILABLE`);
+    return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/v1/providers/${doctorId}/availabilities?from=${from}&to=${to}`);
   }
 }

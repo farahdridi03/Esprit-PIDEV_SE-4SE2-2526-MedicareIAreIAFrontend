@@ -25,6 +25,7 @@ import { DoctorCalendarCalendarComponent } from './doctor/pages/doctor-calendar-
 import { HomeComponent } from './pages/home/home.component';
 import { FrontLayoutComponent } from './layout/front-layout/front-layout.component';
 import { ContactComponent } from './pages/contact/contact.component';
+import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { ContactComponent } from './pages/contact/contact.component';
     DoctorCalendarCalendarComponent,
     HomeComponent,
     FrontLayoutComponent,
-    ContactComponent
+    ContactComponent,
+    DoctorPatientsComponent
   ],
   imports: [
     CommonModule,

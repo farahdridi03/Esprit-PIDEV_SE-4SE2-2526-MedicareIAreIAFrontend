@@ -261,9 +261,26 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      const { terms, ...payload } = this.registerForm.value;
+      const { terms, chronicDiseases, drugAllergies, hereditaryDiseases, ...rest } = this.registerForm.value;
+      
+      const payload = { ...rest };
+      
+      if (this.isPatient) {
+        const medicalHistories = [];
+        if (chronicDiseases) medicalHistories.push({ type: 'CHRONIC_DISEASE', description: chronicDiseases });
+        if (drugAllergies) medicalHistories.push({ type: 'ALLERGY', description: drugAllergies });
+        if (hereditaryDiseases) medicalHistories.push({ type: 'FAMILY_HISTORY', description: hereditaryDiseases });
+        
+        if (medicalHistories.length > 0) {
+          (payload as any).medicalHistories = medicalHistories;
+        }
+      }
 
-      // ✅ Un seul endpoint pour tous les rôles → /api/auth/register
+      if (this.isHomeCareProvider && rest.selectedServices) {
+        (payload as any).homeCareServices = rest.selectedServices;
+        delete (payload as any).selectedServices;
+      }
+
       this.authService.register(payload).subscribe({
         next: () => {
           console.log('Registration successful');

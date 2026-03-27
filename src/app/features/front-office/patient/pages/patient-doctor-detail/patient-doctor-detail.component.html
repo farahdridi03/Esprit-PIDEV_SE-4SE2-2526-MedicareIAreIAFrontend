@@ -72,18 +72,18 @@
           <div class="section">
             <h3>Schedule &amp; Location</h3>
             <ul class="schedule-location">
-              <li>
-                <i class="far fa-calendar-alt"></i>
+              <li *ngIf="formattedSchedule.length === 0">
+                <i class="far fa-calendar-times"></i>
                 <div>
-                  <strong>Date</strong>
-                  <p>Mon - Fri</p>
+                  <strong>Schedule</strong>
+                  <p>Not provided / On leave</p>
                 </div>
               </li>
-              <li>
-                <i class="far fa-clock"></i>
+              <li *ngFor="let s of formattedSchedule">
+                <i class="far fa-calendar-alt"></i>
                 <div>
-                  <strong>Time</strong>
-                  <p>09:00 AM - 05:00 PM</p>
+                  <strong>{{ s.label }}</strong>
+                  <p>{{ s.time }}</p>
                 </div>
               </li>
               <li>

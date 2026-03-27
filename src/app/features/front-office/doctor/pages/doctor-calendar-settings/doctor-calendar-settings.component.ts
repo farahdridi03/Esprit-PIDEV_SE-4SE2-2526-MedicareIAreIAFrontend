@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ScheduleService } from '../../../../../services/schedule.service';
 import { AvailabilityService } from '../../../../../services/availability.service';
@@ -12,6 +12,8 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./doctor-calendar-settings.component.scss']
 })
 export class DoctorCalendarSettingsComponent implements OnInit {
+  @Output() navigateToCalendar = new EventEmitter<void>();
+
   scheduleForm!: FormGroup;
   providerId!: number;
   isLoading = false;
@@ -186,9 +188,11 @@ export class DoctorCalendarSettingsComponent implements OnInit {
     this.errorMessage = '';
 
     const weekDays: any[] = [];
+    const weekStartDate = this.formatDateStr(this.daysInWeek[0]); // Lundi
 
     const formDays = this.scheduleForm.value.days;
     formDays.forEach((day: any, i: number) => {
+      // N'envoyer SEULEMENT que les jours actifs
       if (day.active) {
         const dateStr = this.formatDateStr(this.daysInWeek[i]);
         weekDays.push({
@@ -198,31 +202,23 @@ export class DoctorCalendarSettingsComponent implements OnInit {
           type: 'PARTIAL_AVAILABILITY',
           reason: 'Semaine Spécifique',
           isAvailable: true,
-          timeSlots: day.timeSlots
-        });
-      } else {
-        // Also push an inactive template so backend deletes the existing ones for those dates
-        const dateStr = this.formatDateStr(this.daysInWeek[i]);
-        weekDays.push({
-          providerId: this.providerId,
-          startDate: dateStr,
-          endDate: dateStr,
-          type: 'PARTIAL_AVAILABILITY', // deleted if isAvailable false
-          reason: 'Semaine Spécifique',
-          isAvailable: false,
-          timeSlots: []
+          timeSlots: day.timeSlots.map(({ id, ...slot }: any) => slot)
         });
       }
     });
 
     console.log('[DEBUG] Saving clean schedule specific week:', weekDays);
 
-    this.scheduleService.saveSpecificWeek(this.providerId, weekDays).subscribe({
+    this.scheduleService.saveSpecificWeek(this.providerId, weekStartDate, weekDays).subscribe({
       next: () => {
         this.successMessage = 'Votre planning a été enregistré avec succès (seulement pour cette semaine spécifique).';
         this.isSaving = false;
-        this.loadSchedule();
-        setTimeout(() => this.successMessage = '', 4000);
+        
+        // Wait briefly to let the user see the success message, then redirect
+        setTimeout(() => {
+          this.successMessage = '';
+          this.navigateToCalendar.emit();
+        }, 1500);
       },
       error: (err) => {
         console.error('[ERROR] Failed to save schedule', err);

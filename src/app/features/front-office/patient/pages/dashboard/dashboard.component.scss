@@ -329,17 +329,85 @@ $text-light: #6b7280;
     }
 }
 
+// New Dynamic Styles
+.stat-card {
+    .value {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        .time { font-size: 1.5rem; display: block; }
+        .date { font-size: 0.9rem; opacity: 0.9; display: block; }
+        .sub { font-size: 0.8rem; opacity: 0.7; margin-top: 4px; }
+        &.large { font-size: 2.5rem; }
+        &.small { font-size: 1rem; }
+    }
+    .value-empty {
+        .no-data { font-size: 0.9rem; opacity: 0.6; font-style: italic; }
+    }
+    &.highlight { border: 1px solid rgba(255,255,255,0.3); }
+}
+
+.next-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 12px;
+
+    .detail-row {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        .icon { font-size: 1.5rem; }
+        .txt {
+            display: flex;
+            flex-direction: column;
+            strong { font-size: 1rem; color: $text-dark; }
+            span { font-size: 0.85rem; color: $text-light; }
+        }
+    }
+}
+
+.empty-details {
+    padding: 2rem;
+    text-align: center;
+    p { color: $text-light; margin-bottom: 1rem; }
+    .book-now-btn {
+        background: $primary-green;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 99px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    .action-item {
+        background: #f9fafb;
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s;
+        &:hover { transform: scale(1.05); background: #f0fdf4; }
+        .icon { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
+        span { font-size: 0.85rem; font-weight: 600; color: $text-dark; }
+    }
+}
+
 // Responsive Tweaks
 @media (max-width: 1024px) {
     .banner-stats {
         grid-template-columns: 1fr;
     }
 
-    .quick-actions-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
     .bottom-grid {
         grid-template-columns: 1fr;
     }
-}
+}

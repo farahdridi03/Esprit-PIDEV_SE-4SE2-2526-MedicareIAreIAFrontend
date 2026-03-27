@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DoctorService, DoctorProfile } from '../../../../../services/doctor.service';
+import { ScheduleService } from '../../../../../services/schedule.service';
 import { ReviewService } from '../../../../../services/review.service';
+import { AuthService } from '../../../../../services/auth.service';
+import { AppointmentService } from '../../../../../services/appointment.service';
 import { Review } from '../../../../../models/review.model';
 import { AvailableSlot } from '../../../../../models/available-slot.model';
 
@@ -17,6 +20,9 @@ export class PatientDoctorDetailComponent implements OnInit {
   doctor: DoctorProfile | null = null;
   isLoading: boolean = true;
   error: string = '';
+  successMessage: string = '';
+
+  formattedSchedule: { label: string, time: string }[] = [];
 
   // Reviews
   reviews: Review[] = [];
@@ -38,15 +44,8 @@ export class PatientDoctorDetailComponent implements OnInit {
   isBooking: boolean = false;
 
   predefinedReasons: string[] = [
-    'Routine checkup',
-    'Follow-up visit',
-    'Test results',
-    'Back pain',
-    'Headache',
-    'Fever',
-    'Chest pain',
-    'Fatigue',
-    'Other'
+    'Routine checkup', 'Follow-up visit', 'Test results', 'Back pain', 
+    'Headache', 'Fever', 'Chest pain', 'Fatigue', 'Other'
   ];
   selectedReason: string = '';
   customReason: string = '';
@@ -55,7 +54,10 @@ export class PatientDoctorDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private doctorService: DoctorService,
+    private scheduleService: ScheduleService,
     private reviewService: ReviewService,
+    private authService: AuthService,
+    private appointmentService: AppointmentService,
     private http: HttpClient
   ) { }
 
@@ -67,6 +69,7 @@ export class PatientDoctorDetailComponent implements OnInit {
       if (this.doctorId) {
         this.loadDoctorProfile();
         this.loadReviews();
+        // Le chargement du calendrier extraira aussi les dispos pour le Profile
         this.loadMonthAvailabilities(); 
         this.loadSlotsForDate(this.selectedDate);
       }
@@ -88,6 +91,91 @@ export class PatientDoctorDetailComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  private extractScheduleOverview(slots: any[]) {
+    const todayStr = this.formatDate(new Date());
+    
+    // 1. Filtrer pour ne garder que les dates >= aujourd'hui
+    const upcomingSlots = slots.filter(s => {
+      let d = typeof s.startTime === 'string' ? s.startTime.split('T')[0] : '';
+      if (Array.isArray(s.startTime)) {
+        d = `${s.startTime[0]}-${String(s.startTime[1]).padStart(2, '0')}-${String(s.startTime[2]).padStart(2, '0')}`;
+      }
+      return d >= todayStr;
+    });
+
+    if (upcomingSlots.length === 0) {
+      this.formattedSchedule = [];
+      return;
+    }
+
+    // 2. Grouper par Date YYYY-MM-DD
+    const groupedByDate: { [date: string]: { min: string, max: string } } = {};
+
+    upcomingSlots.forEach(slot => {
+      let dateStr = '';
+      let startT = '';
+      if (typeof slot.startTime === 'string') {
+        const parts = slot.startTime.split('T');
+        dateStr = parts[0];
+        startT = parts[1].substring(0, 5);
+      } else if (Array.isArray(slot.startTime)) {
+        dateStr = `${slot.startTime[0]}-${String(slot.startTime[1]).padStart(2, '0')}-${String(slot.startTime[2]).padStart(2, '0')}`;
+        startT = `${String(slot.startTime[3] || 0).padStart(2, '0')}:${String(slot.startTime[4] || 0).padStart(2, '0')}`;
+      }
+
+      let endT = '';
+      if (typeof slot.endTime === 'string') {
+        endT = slot.endTime.split('T')[1].substring(0, 5);
+      } else if (Array.isArray(slot.endTime)) {
+        endT = `${String(slot.endTime[3] || 0).padStart(2, '0')}:${String(slot.endTime[4] || 0).padStart(2, '0')}`;
+      }
+
+      if (!groupedByDate[dateStr]) {
+        groupedByDate[dateStr] = { min: startT, max: endT };
+      } else {
+        if (startT < groupedByDate[dateStr].min) groupedByDate[dateStr].min = startT;
+        if (endT > groupedByDate[dateStr].max) groupedByDate[dateStr].max = endT;
+      }
+    });
+
+    // 3. Convertir au format lisible
+    const sortedDates = Object.keys(groupedByDate).sort();
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    // On affiche les 5 ou 7 prochains jours d'ouverture par exemple, ou tout
+    this.formattedSchedule = sortedDates.slice(0, 7).map(dStr => {
+      const parts = dStr.split('-');
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      const dateObj = new Date(y, m, d);
+      
+      const dayName = days[dateObj.getDay()];
+      const monthName = months[dateObj.getMonth()];
+      const dNum = String(dateObj.getDate()).padStart(2, '0');
+      
+      const minT = this.formatTime(groupedByDate[dStr].min);
+      const maxT = this.formatTime(groupedByDate[dStr].max);
+      
+      return {
+        label: `${dayName} ${dNum} ${monthName}`,
+        time: `${minT} - ${maxT}`
+      };
+    });
+  }
+
+  private formatTime(timeStr: string): string {
+    if (!timeStr) return '';
+    const parts = timeStr.split(':');
+    let h = parseInt(parts[0], 10);
+    const m = parts[1];
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    if (h === 0) h = 12;
+    return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
   }
 
   loadReviews() {
@@ -117,6 +205,10 @@ export class PatientDoctorDetailComponent implements OnInit {
           const dateStr = slot.startTime.split('T')[0];
           this.availableDates.add(dateStr);
         });
+        
+        // --- EXTRAIRE LES DISPONIBILITES POUR LE PROFIL ---
+        this.extractScheduleOverview(slots);
+        
         this.buildCalendar();
       },
       error: () => {
@@ -249,7 +341,7 @@ export class PatientDoctorDetailComponent implements OnInit {
 
     const payload = {
       doctorId: this.doctor.id,
-      patientId: 1, 
+      patientId: this.authService.getUserId(), 
       date: date,
       startTime: startTimeTime,
       endTime: endTimeTime,
@@ -257,18 +349,25 @@ export class PatientDoctorDetailComponent implements OnInit {
       notes: this.finalReason
     };
 
-    console.log('[DEBUG] Payload envoyé:', JSON.stringify(payload));
-
-    this.http.post('http://localhost:8081/springsecurity/api/v1/appointments', payload).subscribe({
-      next: () => {
+    console.log('[DEBUG] PatientDoctorDetailComponent: Submitting booking with payload:', JSON.stringify(payload));
+    this.appointmentService.bookAppointment(payload).subscribe({
+      next: (response) => {
+        console.log('[DEBUG] PatientDoctorDetailComponent: Booking success response:', response);
         this.isBooking = false;
-        this.closeBookingModal();
-        alert('Appointment booked successfully!');
-        this.router.navigate(['/front/patient/dashboard']);
+        this.successMessage = 'Rendez-vous réservé avec succès !';
+        
+        // Refresh local availability so the slot appears greyed out before redirection
+        this.loadMonthAvailabilities();
+        this.loadSlotsForDate(this.selectedDate);
+
+        setTimeout(() => {
+          this.closeBookingModal();
+          this.router.navigate(['/front/patient/appointments']);
+        }, 1000);
       },
       error: (err) => {
-        console.error('Booking error', err);
-        alert('Error booking appointment.');
+        console.error('[ERROR] PatientDoctorDetailComponent: Booking failed:', err);
+        alert('Erreur lors de la réservation. Veuillez réessayer.');
         this.isBooking = false;
       }
     });
