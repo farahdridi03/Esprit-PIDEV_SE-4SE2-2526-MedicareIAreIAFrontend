@@ -91,34 +91,6 @@
             vertical-align: middle;
           }
 
-          .action-cells {
-            display: flex;
-            gap: 10px;
-
-            .btn-icon {
-              padding: 6px 12px;
-              border-radius: 6px;
-              border: 1px solid transparent;
-              font-size: 13px;
-              font-weight: 600;
-              cursor: pointer;
-              transition: 0.3s;
-
-              &.edit {
-                color: #d69e2e;
-                background-color: #faf089;
-                border-color: #f6e05e;
-                &:hover { background-color: #f6e05e; }
-              }
-
-              &.delete {
-                color: #c53030;
-                background-color: #fed7d7;
-                border-color: #feb2b2;
-                &:hover { background-color: #feb2b2; }
-              }
-            }
-          }
         }
 
         .empty-state {

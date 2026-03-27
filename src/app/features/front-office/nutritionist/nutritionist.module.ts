@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NutritionistSidebarComponent } from './components/nutritionist-sidebar/nutritionist-sidebar.component';
 import { NutritionistTopbarComponent } from './components/nutritionist-topbar/nutritionist-topbar.component';
+import { LayoutModule } from '../layout/layout.module';
 import { NutritionistDashboardComponent } from './pages/nutritionist-dashboard/nutritionist-dashboard.component';
 import { NutritionistPatientsComponent } from './pages/nutritionist-patients/nutritionist-patients.component';
 import { NutritionistPatientDetailComponent } from './pages/nutritionist-patient-detail/nutritionist-patient-detail.component';
@@ -46,12 +47,9 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [
-        NutritionistSidebarComponent,
-        NutritionistTopbarComponent,
         NutritionistDashboardComponent,
         NutritionistPatientsComponent,
         NutritionistPatientDetailComponent,
-        LifestyleDetailComponent,
         NutritionistLifestyleListComponent,
         NutritionistLifestyleFormComponent
     ],
@@ -60,7 +58,8 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         FormsModule,
         ReactiveFormsModule,
-        LifestyleSharedModule
+        LifestyleSharedModule,
+        LayoutModule
     ]
 })
 export class NutritionistModule { }

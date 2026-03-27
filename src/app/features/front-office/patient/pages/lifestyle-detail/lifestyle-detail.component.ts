@@ -35,7 +35,10 @@ export class LifestyleDetailComponent implements OnInit {
   }
 
   loadData(): void {
-    if (!this.id) return;
+    if (!this.id || isNaN(this.id)) {
+      this.isLoading = false;
+      return;
+    }
     this.isLoading = true;
 
     let fetchObs: Observable<any> | null = null;

@@ -11,6 +11,7 @@ import { ConsultationService } from '../../../../../services/consultation.servic
 })
 export class DoctorPatientTreatmentsComponent implements OnInit {
   patientId!: number;
+  patient: any = null;
   consultations: any[] = [];
   treatments: any[] = [];
   loading = true;
@@ -49,11 +50,13 @@ export class DoctorPatientTreatmentsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.patientId = +idParam;
-      this.loadData();
-    }
+    this.route.params.subscribe(params => {
+      const id = +params['id'];
+      if (id) {
+        this.patientId = id;
+        this.loadData();
+      }
+    });
   }
 
   loadData(): void {
@@ -63,17 +66,10 @@ export class DoctorPatientTreatmentsComponent implements OnInit {
     // but honestly we can just fetch consultations and filter by patientId
     this.consultationService.getAll().subscribe({
       next: (allConsultations: any[]) => {
-        // Find consultations that belong to this patient (c.medicalRecord.patient.id or c.medicalRecordId mapping logic from earlier)
-        // Since we don't have medicalRecordId here, let's fetch it through patientService as a fallback just for the IDs:
         this.patientService.getById(this.patientId).subscribe({
           next: (res) => {
-            // Use res.consultations just to get the valid IDs!
+            this.patient = res;
             const validConsultationIds = (res.consultations || []).map((c: any) => c.id);
-            
-            // Actually, because of JPA caching, res.consultations might be missing NEW consultations.
-            // But we know newly created consultations have doctorId and maybe some patient linkage.
-            // If the backend doesn't link them, we must fetch the medicalRecordId.
-            // Let's just use the res.consultations for the dropdown, but add a warning if it's empty.
             this.consultations = res.consultations || [];
             
             this.treatmentService.getAll().subscribe({

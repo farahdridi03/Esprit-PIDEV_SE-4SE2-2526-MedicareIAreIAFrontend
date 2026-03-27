@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { LifestyleService } from '../../../../../services/lifestyle.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { PatientService } from '../../../../../services/patient.service';
 import { LifestyleGoal, LifestylePlan, ProgressTracking } from '../../../../../models/lifestyle.model';
+import { PatientResponseDTO } from '../../../../../models/patient.model';
 
 @Component({
   selector: 'app-lifestyle-wellness',
@@ -15,13 +17,15 @@ export class LifestyleWellnessComponent implements OnInit {
   recentGoals: LifestyleGoal[] = [];
   recentPlans: LifestylePlan[] = [];
   recentTrackings: ProgressTracking[] = [];
+  patient: PatientResponseDTO | null = null;
 
 
   isLoading: boolean = true;
 
   constructor(
     private lifestyleService: LifestyleService,
-    private authService: AuthService
+    private authService: AuthService,
+    private patientService: PatientService
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +37,13 @@ export class LifestyleWellnessComponent implements OnInit {
   loadData(): void {
     this.isLoading = true;
     // In a real scenario, we'd filter by userId if the backend doesn't handle it via token
+    this.patientService.getMe().subscribe({
+      next: (profile) => {
+        this.patient = profile;
+        console.log('DEBUG: Patient profile loaded in lifestyle-wellness:', this.patient);
+      }
+    });
+
     this.lifestyleService.getGoals().subscribe({
       next: (goals) => {
         this.recentGoals = goals.slice(0, 3);

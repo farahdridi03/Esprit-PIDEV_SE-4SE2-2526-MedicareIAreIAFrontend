@@ -129,6 +129,10 @@ export class LifestyleListComponent implements OnInit {
     return this.type === 'goals' || this.type === 'tracking';
   }
 
+  canView(id: number | undefined): boolean {
+    return true; // Everyone can view
+  }
+
   canEditDelete(): boolean {
     if (this.userRole === 'NUTRITIONIST') {
       return this.type === 'plans';

@@ -1,14 +1,20 @@
 <div class="lifestyle-detail-wrapper">
-    <app-nutritionist-sidebar></app-nutritionist-sidebar>
+    <app-sidebar *ngIf="userRole === 'PATIENT'"></app-sidebar>
+    <app-nutritionist-sidebar *ngIf="userRole === 'NUTRITIONIST'"></app-nutritionist-sidebar>
+    
     <div class="main-body">
-        <app-nutritionist-topbar></app-nutritionist-topbar>
+        <app-topbar *ngIf="userRole === 'PATIENT'"></app-topbar>
+        <app-nutritionist-topbar *ngIf="userRole === 'NUTRITIONIST'"></app-nutritionist-topbar>
+        
         <div class="content-area">
             <div class="detail-container" *ngIf="!isLoading && data">
                 
                 <header class="detail-header">
                     <div class="header-text">
                         <h1>{{ type === 'plans' ? 'Dietary Plan Details' : (type === 'goals' ? 'Lifestyle Goal Details' : 'Progress Tracking Details') }}</h1>
-                        <p class="subtitle" *ngIf="type === 'plans'">{{ data.title }}</p>
+                        <p class="subtitle" *ngIf="type === 'plans'">{{ data?.title }}</p>
+                        <p class="subtitle" *ngIf="type === 'goals' && data">{{ data.category.replace('_', ' ') | titlecase }} Goal</p>
+                        <p class="subtitle" *ngIf="type === 'tracking' && data">Dated: {{ data.date | date:'fullDate' }}</p>
                     </div>
                     <div class="header-actions">
                         <button class="btn-back" (click)="goBack()">
@@ -28,7 +34,7 @@
 
                 <div class="detail-card">
                     <!-- Plan Details -->
-                    <div *ngIf="type === 'plans'" class="info-grid">
+                    <div *ngIf="type === 'plans' && data" class="info-grid">
                         <div class="info-item full-width">
                             <span class="label">Plan Title</span>
                             <span class="value title">{{ data.title }}</span>
@@ -43,7 +49,7 @@
                         </div>
                         <div class="info-item">
                             <span class="label">Status</span>
-                            <span class="badge" [ngClass]="data.status.toLowerCase()">{{ data.status }}</span>
+                            <span class="badge" [ngClass]="data.status?.toLowerCase() || ''">{{ data.status }}</span>
                         </div>
                         <div class="info-item">
                             <span class="label">Linked Goal</span>
@@ -57,9 +63,69 @@
                         </div>
                     </div>
 
+                    <!-- Goal Details -->
+                    <div *ngIf="type === 'goals' && data" class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Goal Category</span>
+                            <span class="value title">{{ data.category.replace('_', ' ') | titlecase }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Status</span>
+                            <span class="badge" [ngClass]="data.status?.toLowerCase() || ''">{{ data.status }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Baseline Value</span>
+                            <span class="value">{{ data.baselineValue }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Target Value</span>
+                            <span class="value">{{ data.targetValue }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Target Date</span>
+                            <span class="value">{{ data.targetDate | date:'fullDate' }}</span>
+                        </div>
+                        <div class="info-item" *ngIf="data.plans?.length">
+                            <span class="label">Linked Plans</span>
+                            <span class="value">{{ data.plans.length }} Plan(s)</span>
+                        </div>
+                    </div>
+
+                    <!-- Tracking Details -->
+                    <div *ngIf="type === 'tracking' && data" class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Tracking Date</span>
+                            <span class="value">{{ data.date | date:'fullDate' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Recorded Value</span>
+                            <span class="value">{{ data.value }}</span>
+                        </div>
+                        <div class="info-item full-width">
+                            <span class="label">Notes</span>
+                            <div class="description-box">
+                                {{ data.notes || 'No notes provided.' }}
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Goal ID</span>
+                            <span class="value">#{{ data.goalId }}</span>
+                        </div>
+                    </div>
+
                     <!-- Add other types if needed later -->
                 </div>
 
+            </div>
+
+            <!-- Empty / Not Found State -->
+            <div class="empty-state" *ngIf="!isLoading && !data">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="empty-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m9 11H3V5h18v16z" />
+                </svg>
+                <h3>No Details Found</h3>
+                <p>The requested {{ type === 'plans' ? 'plan' : 'item' }} could not be retrieved.</p>
+                <button (click)="goBack()">Go Back</button>
             </div>
 
             <div class="loading-state" *ngIf="isLoading">

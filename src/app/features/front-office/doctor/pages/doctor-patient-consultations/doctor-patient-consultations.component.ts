@@ -4,6 +4,7 @@ import { PatientService } from '../../../../../services/patient.service';
 import { ConsultationService } from '../../../../../services/consultation.service';
 import { MedicalRecordService } from '../../../../../services/medical-record.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { PatientResponseDTO } from '../../../../../models/patient.model';
 
 @Component({
   selector: 'app-doctor-patient-consultations',
@@ -12,6 +13,7 @@ import { AuthService } from '../../../../../services/auth.service';
 })
 export class DoctorPatientConsultationsComponent implements OnInit {
   patientId!: number;
+  patient: PatientResponseDTO | null = null;
   consultations: any[] = [];
   loading = true;
   
@@ -49,29 +51,39 @@ export class DoctorPatientConsultationsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.patientId = +idParam;
-      this.loadData();
-    }
+    this.route.params.subscribe(params => {
+      const id = +params['id'];
+      if (id) {
+        this.patientId = id;
+        this.doctorId = this.authService.getUserId();
+        this.loadData();
+      }
+    });
   }
 
   loadData(): void {
     this.loading = true;
     
-    // Fetch doctor ID from JWT (now including 'id' claim)
-    const userId = this.authService.getUserId();
-    this.doctorId = userId; 
-    console.log('DEBUG: Current Doctor ID from AuthService:', this.doctorId);
+    // Fetch patient details for photo
+    this.patientService.getById(this.patientId).subscribe({
+      next: (data) => {
+        this.patient = data;
+        this.fetchMedicalRecordAndConsultations();
+      },
+      error: (err) => {
+        console.error('Error fetching patient details', err);
+        this.loading = false;
+      }
+    });
+  }
 
+  private fetchMedicalRecordAndConsultations(): void {
     // Fetch medical record directly for patient
     this.medicalRecordService.getByPatientId(this.patientId).subscribe({
       next: (record) => {
         if (record) {
           this.medicalRecordId = record.id;
-          console.log('DEBUG: Found Medical Record ID:', this.medicalRecordId);
         } else {
-          console.warn("No medical record found for patient " + this.patientId);
           this.medicalRecordId = null;
         }
 
@@ -121,6 +133,7 @@ export class DoctorPatientConsultationsComponent implements OnInit {
       this.currentConsultation.date = new Date(this.currentConsultation.date).toISOString().slice(0, 16);
     }
     this.showForm = true;
+    this.viewMode = false;
   }
 
   cancelForm(): void {
@@ -134,7 +147,8 @@ export class DoctorPatientConsultationsComponent implements OnInit {
     }
     
     if (!this.doctorId) {
-      this.doctorId = 1;
+       alert("Error: Could not identify the current doctor. Please try logging out and back in.");
+       return;
     }
 
     // Prepare payload that satisfies both flat DTO and strict Entity relations

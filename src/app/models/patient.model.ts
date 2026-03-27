@@ -10,11 +10,14 @@ export interface PatientRequestDTO {
     emergencyContactName?: string;
     emergencyContactPhone?: string;
     glucoseRate?: number | string;
+    height?: number;
+    weight?: number;
     allergies?: string[];
     diseases?: string[];
     consultations?: any[];
     treatments?: any[];
     prescriptions?: any[];
+    photo?: string;
 }
 
 export interface PatientResponseDTO {
@@ -30,6 +33,8 @@ export interface PatientResponseDTO {
     emergencyContactName?: string;
     emergencyContactPhone?: string;
     glucoseRate?: number | string;
+    height?: number;
+    weight?: number;
     hasMedicalRecord?: boolean;
     allergies?: string[];
     diseases?: string[];
@@ -40,4 +45,5 @@ export interface PatientResponseDTO {
     lifestyleGoals?: any[];
     lifestylePlans?: any[];
     progressTrackings?: any[];
+    photo?: string;
 }

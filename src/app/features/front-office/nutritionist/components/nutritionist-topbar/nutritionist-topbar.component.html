@@ -20,7 +20,10 @@
     <div class="topbar-right">
 
         <div class="user-profile">
-            <div class="avatar">{{ initials || 'N' }}</div>
+            <div class="avatar">
+                <img [src]="photo!" *ngIf="photo" class="topbar-photo" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                <span *ngIf="!photo">{{ initials || 'N' }}</span>
+            </div>
             <div class="user-info">
                 <span class="user-name">{{ firstName || 'User' }}</span>
                 <span class="user-id">Nutritionist</span>

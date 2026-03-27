@@ -42,4 +42,8 @@ export class PatientService {
     toggleEnabled(id: number): Observable<void> {
         return this.http.patch<void>(`${this.apiUrl}/${id}/toggle`, {});
     }
+
+    updateProfile(dto: PatientRequestDTO): Observable<PatientResponseDTO> {
+        return this.http.put<PatientResponseDTO>(`${this.apiUrl}/profile`, dto);
+    }
 }

@@ -188,56 +188,49 @@
             </div>
           </div>
 
-          <!-- Medical History Section -->
-          <div class="medical-history-container margin-top">
-            <div class="section-header">
-              <h3 class="section-title">Medical History</h3>
-              <button type="button" class="add-history-btn" (click)="addMedicalHistory()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                  stroke="currentColor" class="size-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                Add Entry
-              </button>
+          <h3 class="section-title" style="margin-top: 1.5rem; margin-bottom: 1rem;">Health Information</h3>
+
+          <!-- Height and Weight -->
+          <div class="row-splits margin-top">
+            <div class="form-group">
+              <label for="height">Height (cm)</label>
+              <div class="input-wrapper">
+                <input type="number" id="height" formControlName="height" placeholder="e.g. 175"
+                  [ngClass]="{'is-invalid': registerForm.get('height')?.invalid && (registerForm.get('height')?.dirty || registerForm.get('height')?.touched)}">
+              </div>
+              <div *ngIf="registerForm.get('height')?.invalid && (registerForm.get('height')?.dirty || registerForm.get('height')?.touched)">
+                <small class="error-message" *ngIf="registerForm.get('height')?.errors?.['required']">Height is required.</small>
+              </div>
             </div>
-
-            <div formArrayName="medicalHistories" class="medical-history-list">
-              <div *ngFor="let history of medicalHistories.controls; let i=index" [formGroupName]="i"
-                class="history-card">
-                <div class="history-card-header">
-                  <span class="entry-number">Entry #{{i + 1}}</span>
-                  <button type="button" class="remove-entry-btn" (click)="removeMedicalHistory(i)" title="Remove">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                      stroke="currentColor" class="size-4">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-
-                <div class="history-fields">
-                  <div class="form-group no-margin">
-                    <label [for]="'type-' + i">Type</label>
-                    <div class="input-wrapper">
-                      <select [id]="'type-' + i" formControlName="type" class="role-select">
-                        <option *ngFor="let type of medicalHistoryTypes" [value]="type.value">{{ type.label }}</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="form-group no-margin">
-                    <label [for]="'desc-' + i">Description</label>
-                    <div class="input-wrapper">
-                      <input type="text" [id]="'desc-' + i" formControlName="description"
-                        placeholder="e.g. Penicillin allergy, Previous surgery">
-                    </div>
-                  </div>
-                </div>
+            <div class="form-group">
+              <label for="weight">Weight (kg)</label>
+              <div class="input-wrapper">
+                <input type="number" id="weight" formControlName="weight" placeholder="e.g. 70"
+                  [ngClass]="{'is-invalid': registerForm.get('weight')?.invalid && (registerForm.get('weight')?.dirty || registerForm.get('weight')?.touched)}">
               </div>
-
-              <!-- Empty state -->
-              <div *ngIf="medicalHistories.length === 0" class="empty-history">
-                <p>No medical history entries added yet.</p>
+              <div *ngIf="registerForm.get('weight')?.invalid && (registerForm.get('weight')?.dirty || registerForm.get('weight')?.touched)">
+                <small class="error-message" *ngIf="registerForm.get('weight')?.errors?.['required']">Weight is required.</small>
               </div>
+            </div>
+          </div>
+
+          <!-- Allergies -->
+          <div class="form-group margin-top">
+            <label for="allergies">Allergies</label>
+            <div class="input-wrapper">
+              <textarea id="allergies" formControlName="allergies" placeholder="List any allergies (e.g. Penicillin, Peanuts)"
+                rows="2" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;"
+                onfocus="this.style.borderColor='#0e7c66'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+            </div>
+          </div>
+
+          <!-- Chronic Diseases -->
+          <div class="form-group margin-top">
+            <label for="diseases">Chronic Conditions</label>
+            <div class="input-wrapper">
+              <textarea id="diseases" formControlName="diseases" placeholder="List any chronic conditions (e.g. Diabetes, Hypertension)"
+                rows="2" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;"
+                onfocus="this.style.borderColor='#0e7c66'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
             </div>
           </div>
 

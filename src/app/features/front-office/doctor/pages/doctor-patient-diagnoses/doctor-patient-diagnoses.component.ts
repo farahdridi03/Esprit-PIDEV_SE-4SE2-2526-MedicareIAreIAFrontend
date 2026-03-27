@@ -11,6 +11,7 @@ import { ConsultationService } from '../../../../../services/consultation.servic
 })
 export class DoctorPatientDiagnosesComponent implements OnInit {
   patientId!: number;
+  patient: any = null;
   consultations: any[] = [];
   diagnoses: any[] = [];
   loading = true;
@@ -47,11 +48,13 @@ export class DoctorPatientDiagnosesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.patientId = +idParam;
-      this.loadData();
-    }
+    this.route.params.subscribe(params => {
+      const id = +params['id'];
+      if (id) {
+        this.patientId = id;
+        this.loadData();
+      }
+    });
   }
 
   loadData(): void {
@@ -61,6 +64,7 @@ export class DoctorPatientDiagnosesComponent implements OnInit {
       next: (allConsultations: any[]) => {
         this.patientService.getById(this.patientId).subscribe({
           next: (res) => {
+            this.patient = res;
             const validConsultationIds = (res.consultations || []).map((c: any) => c.id);
             this.consultations = res.consultations || [];
             

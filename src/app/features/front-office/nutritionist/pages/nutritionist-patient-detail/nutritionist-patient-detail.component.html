@@ -10,8 +10,9 @@
             <!-- Header Section -->
             <div class="record-header">
                 <div class="patient-profile">
-                    <div class="avatar">
-                        {{ patient.fullName ? patient.fullName.charAt(0).toUpperCase() : 'U' }}
+                    <div class="avatar" [class.has-photo]="patient.photo">
+                        <img [src]="patient.photo" *ngIf="patient.photo" class="profile-photo" alt="Profile">
+                        <span *ngIf="!patient.photo">{{ patient.fullName ? patient.fullName.charAt(0).toUpperCase() : 'U' }}</span>
                     </div>
                     <div class="info">
                         <h2>{{ patient.fullName }}</h2>
@@ -42,6 +43,14 @@
                     <div class="pill">
                         <span class="label">Phone</span>
                         <span class="value">{{ patient.phone || 'N/A' }}</span>
+                    </div>
+                    <div class="pill">
+                        <span class="label">Height</span>
+                        <span class="value">{{ patient.height ? patient.height + ' cm' : 'N/A' }}</span>
+                    </div>
+                    <div class="pill">
+                        <span class="label">Weight</span>
+                        <span class="value">{{ patient.weight ? patient.weight + ' kg' : 'N/A' }}</span>
                     </div>
                 </div>
 

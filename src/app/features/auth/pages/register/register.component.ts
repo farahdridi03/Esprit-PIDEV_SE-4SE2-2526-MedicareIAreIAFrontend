@@ -39,13 +39,6 @@ export class RegisterComponent implements OnInit {
     { value: 'FEMALE', label: 'Female' }
   ];
 
-  medicalHistoryTypes = [
-    { value: 'ALLERGY', label: 'Allergy' },
-    { value: 'CHRONIC_DISEASE', label: 'Chronic Disease' },
-    { value: 'SURGERY', label: 'Surgery' },
-    { value: 'FAMILY_HISTORY', label: 'Family History' }
-  ];
-
   consultationModes = [
     { value: 'ONLINE', label: 'Online' },
     { value: 'IN_PERSON', label: 'In Person' },
@@ -69,7 +62,10 @@ export class RegisterComponent implements OnInit {
       bloodType: ['O_POS'],
       emergencyContactName: [''],
       emergencyContactPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
-      medicalHistories: this.fb.array([]),
+      height: [null],
+      weight: [null],
+      allergies: [''],
+      diseases: [''],
       specialty: [''],
       licenseNumber: [''],
       consultationFee: [0],
@@ -120,6 +116,10 @@ export class RegisterComponent implements OnInit {
       const bloodTypeCtrl = this.registerForm.get('bloodType');
       const emNameCtrl = this.registerForm.get('emergencyContactName');
       const emPhoneCtrl = this.registerForm.get('emergencyContactPhone');
+      const heightCtrl = this.registerForm.get('height');
+      const weightCtrl = this.registerForm.get('weight');
+      const allergiesCtrl = this.registerForm.get('allergies');
+      const diseasesCtrl = this.registerForm.get('diseases');
 
       const isDoctor = role === 'DOCTOR';
       const isNutritionist = role === 'NUTRITIONIST';
@@ -151,7 +151,8 @@ export class RegisterComponent implements OnInit {
       const servicesCtrl = this.registerForm.get('selectedServices');
 
       // Reset validators
-      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
+      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, allergiesCtrl, diseasesCtrl,
+        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
         pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
         labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
@@ -163,6 +164,8 @@ export class RegisterComponent implements OnInit {
       if (isPatient) {
         genderCtrl?.setValidators([Validators.required]);
         bloodTypeCtrl?.setValidators([Validators.required]);
+        heightCtrl?.setValidators([Validators.required, Validators.min(0)]);
+        weightCtrl?.setValidators([Validators.required, Validators.min(0)]);
       } else if (isDoctor || isNutritionist) {
         specialtyCtrl?.setValidators([Validators.required]);
         licenseCtrl?.setValidators([Validators.required]);
@@ -188,7 +191,8 @@ export class RegisterComponent implements OnInit {
         servicesCtrl?.setValidators([Validators.required, Validators.minLength(1)]);
       }
 
-      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
+      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, allergiesCtrl, diseasesCtrl, 
+        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
         pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
         labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
@@ -236,22 +240,6 @@ export class RegisterComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
-  }
-
-  get medicalHistories(): FormArray {
-    return this.registerForm.get('medicalHistories') as FormArray;
-  }
-
-  addMedicalHistory() {
-    const historyGroup = this.fb.group({
-      type: ['ALLERGY', Validators.required],
-      description: ['', Validators.required]
-    });
-    this.medicalHistories.push(historyGroup);
-  }
-
-  removeMedicalHistory(index: number) {
-    this.medicalHistories.removeAt(index);
   }
 
   onSubmit() {

@@ -22,6 +22,9 @@ import { PatientRecordListComponent } from './patient/pages/patient-record-list/
 import { LifestyleWellnessComponent } from './patient/pages/lifestyle-wellness/lifestyle-wellness.component';
 import { LifestyleListComponent } from './patient/pages/lifestyle-list/lifestyle-list.component';
 import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle-form.component';
+import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
+import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
+import { LifestyleDetailComponent } from './patient/pages/lifestyle-detail/lifestyle-detail.component';
 import { AuthGuard } from '../../guards/auth.guard';
 
 const routes: Routes = [
@@ -36,6 +39,18 @@ const routes: Routes = [
   {
     path: 'patient/dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/profile',
+    component: PatientProfileSettingsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/profile/edit',
+    component: PatientProfileEditComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
@@ -60,6 +75,12 @@ const routes: Routes = [
   {
     path: 'patient/lifestyle-wellness/:type',
     component: LifestyleListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lifestyle-wellness/:type/view/:itemid',
+    component: LifestyleDetailComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },

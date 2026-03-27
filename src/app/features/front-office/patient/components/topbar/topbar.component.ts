@@ -10,6 +10,7 @@ import { AuthService } from '../../../../../services/auth.service';
 export class TopbarComponent implements OnInit {
   firstName: string = 'User';
   initials: string = 'U';
+  photo: string | null = null;
 
   constructor(private userService: UserService, private authService: AuthService) {}
 
@@ -18,10 +19,16 @@ export class TopbarComponent implements OnInit {
   }
 
   private loadUserInfo() {
-    const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.setNames(fullName);
-    }
+    this.userService.profile$.subscribe(user => {
+      if (user) {
+        if (user.fullName) {
+          this.setNames(user.fullName);
+        }
+        this.photo = (user as any).photo || null;
+      }
+    });
+    // Trigger initial load if not already loaded
+    this.userService.refreshProfile();
   }
 
   private setNames(fullName: string) {

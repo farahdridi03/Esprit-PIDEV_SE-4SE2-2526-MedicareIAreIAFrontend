@@ -8,6 +8,7 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { DashboardComponent } from './patient/pages/dashboard/dashboard.component';
 import { SidebarComponent } from './patient/components/sidebar/sidebar.component';
 import { TopbarComponent } from './patient/components/topbar/topbar.component';
+import { LayoutModule } from './layout/layout.module';
 import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/doctor-sidebar.component';
 import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
@@ -30,6 +31,10 @@ import { LifestyleWellnessComponent } from './patient/pages/lifestyle-wellness/l
 import { LifestyleListComponent } from './patient/pages/lifestyle-list/lifestyle-list.component';
 import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle-form.component';
 import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
+import { ReactiveFormsModule } from '@angular/forms';
+import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
+import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
+import { PasswordModalComponent } from './patient/components/password-modal/password-modal.component';
 
 
 @NgModule({
@@ -38,8 +43,6 @@ import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
     HomeComponent,
     ContactComponent,
     DashboardComponent,
-    SidebarComponent,
-    TopbarComponent,
     DoctorSidebarComponent,
     DoctorTopbarComponent,
     DoctorDashboardComponent,
@@ -59,13 +62,18 @@ import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
     PatientRecordListComponent,
     LifestyleWellnessComponent,
     LifestyleListComponent,
-    LifestyleFormComponent
+    LifestyleFormComponent,
+    PatientProfileSettingsComponent,
+    PatientProfileEditComponent,
+    PasswordModalComponent
   ],
   imports: [
     CommonModule,
     FrontOfficeRoutingModule,
     FormsModule,
-    LifestyleSharedModule
+    ReactiveFormsModule,
+    LifestyleSharedModule,
+    LayoutModule
   ]
 })
 export class FrontOfficeModule { }
