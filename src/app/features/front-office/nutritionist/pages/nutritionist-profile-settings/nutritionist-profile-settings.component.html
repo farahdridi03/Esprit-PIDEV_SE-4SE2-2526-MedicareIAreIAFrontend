@@ -1,8 +1,8 @@
 <div class="dashboard-wrapper">
-    <app-sidebar></app-sidebar>
+    <app-nutritionist-sidebar></app-nutritionist-sidebar>
 
     <div class="main-body">
-        <app-topbar></app-topbar>
+        <app-nutritionist-topbar></app-nutritionist-topbar>
 
         <div class="content-area">
             <div class="profile-container" *ngIf="!loading; else loadingTpl">
@@ -10,28 +10,28 @@
                     <!-- Basic Info Card -->
                     <div class="profile-card basic-info-card">
                         <div class="photo-section">
-                            <div class="photo-placeholder" *ngIf="!patient?.photo">
+                            <div class="photo-placeholder" *ngIf="!nutritionist?.photo">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                                 </svg>
                             </div>
-                            <img [src]="patient?.photo" *ngIf="patient?.photo" class="profile-photo" alt="Profile Photo">
+                            <img [src]="nutritionist?.photo" *ngIf="nutritionist?.photo" class="profile-photo" alt="Profile Photo">
                         </div>
 
                         <div class="user-details">
-                            <h2 class="user-name">{{ patient?.fullName }}</h2>
+                            <h2 class="user-name">{{ nutritionist?.fullName }}</h2>
                             <div class="detail-item">
                                 <span class="label">Birth Date</span>
-                                <span class="value">{{ patient?.birthDate || 'Not specified' }}</span>
+                                <span class="value">{{ nutritionist?.birthDate || 'Not specified' }}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="label">Phone Number</span>
-                                <span class="value">{{ patient?.phone || 'Not specified' }}</span>
+                                <span class="value">{{ nutritionist?.phone || 'Not specified' }}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="label">Email</span>
-                                <span class="value">{{ patient?.email }}</span>
+                                <span class="value">{{ nutritionist?.email }}</span>
                             </div>
                         </div>
 
@@ -44,68 +44,35 @@
                         </button>
                     </div>
 
-                    <!-- Health Info Card -->
-                    <div class="profile-card health-info-card">
+                    <!-- Professional Info Card -->
+                    <div class="profile-card Professional-info-card">
                         <div class="card-header">
-                            <h3>Health Information</h3>
+                            <h3>Professional Information</h3>
                         </div>
 
                         <div class="info-grid">
                             <div class="info-item">
-                                <span class="label">Gender</span>
-                                <span class="value pill">{{ patient?.gender || 'N/A' }}</span>
+                                <span class="label">License Number</span>
+                                <span class="value">{{ nutritionist?.licenseNumber || 'N/A' }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="label">Blood Type</span>
-                                <span class="value pill danger">{{ patient?.bloodType || 'N/A' }}</span>
+                                <span class="label">Specialties</span>
+                                <div class="tags-container" *ngIf="nutritionist?.specialties; else noSpecialties">
+                                    <span class="tag info" *ngFor="let specialty of nutritionist?.specialties?.split(',')">{{ specialty.trim() }}</span>
+                                </div>
+                                <ng-template #noSpecialties><span class="no-data">No specialties specified</span></ng-template>
                             </div>
                             <div class="info-item">
-                                <span class="label">Height</span>
-                                <span class="value pill info">{{ patient?.height ? patient?.height + ' cm' : 'N/A' }}</span>
+                                <span class="label">Consultation Fee</span>
+                                <span class="value pill info">{{ nutritionist?.consultationFee ? nutritionist?.consultationFee + ' DT' : 'N/A' }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="label">Weight</span>
-                                <span class="value pill info">{{ patient?.weight ? patient?.weight + ' kg' : 'N/A' }}</span>
+                                <span class="label">Consultation Mode</span>
+                                <span class="value pill">{{ nutritionist?.consultationMode || 'N/A' }}</span>
                             </div>
                         </div>
 
-                        <hr class="separator">
-
-                        <div class="emergency-section">
-                            <h4>Emergency Contact</h4>
-                            <div class="info-grid half">
-                                <div class="info-item">
-                                    <span class="label">Name</span>
-                                    <span class="value">{{ patient?.emergencyContactName || 'Not specified' }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="label">Phone</span>
-                                    <span class="value">{{ patient?.emergencyContactPhone || 'Not specified' }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr class="separator">
-
-                        <div class="medical-section info-grid half">
-                            <div class="medical-item">
-                                <span class="label">Allergies</span>
-                                <div class="tags-container" *ngIf="patient?.allergies?.length; else noAllergies">
-                                    <span class="tag warning" *ngFor="let allergy of patient?.allergies">{{ allergy }}</span>
-                                </div>
-                                <ng-template #noAllergies><span class="no-data">No allergies reported</span></ng-template>
-                            </div>
-
-                            <div class="medical-item">
-                                <span class="label">Chronic Conditions</span>
-                                <div class="tags-container" *ngIf="patient?.diseases?.length; else noDiseases">
-                                    <span class="tag danger" *ngFor="let disease of patient?.diseases">{{ disease }}</span>
-                                </div>
-                                <ng-template #noDiseases><span class="no-data">No chronic conditions reported</span></ng-template>
-                            </div>
-                        </div>
-
-                        <div class="card-footer">
+                        <div class="card-footer mt-5">
                             <button class="btn-password" (click)="openPasswordModal()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round"

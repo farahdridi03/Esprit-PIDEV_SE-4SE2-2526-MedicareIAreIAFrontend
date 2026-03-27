@@ -6,8 +6,6 @@ import { HomeComponent } from './pages/home/home.component';
 import { FrontLayoutComponent } from './layout/front-layout/front-layout.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { DashboardComponent } from './patient/pages/dashboard/dashboard.component';
-import { SidebarComponent } from './patient/components/sidebar/sidebar.component';
-import { TopbarComponent } from './patient/components/topbar/topbar.component';
 import { LayoutModule } from './layout/layout.module';
 import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/doctor-sidebar.component';
 import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
@@ -34,7 +32,6 @@ import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
-import { PasswordModalComponent } from './patient/components/password-modal/password-modal.component';
 
 
 @NgModule({
@@ -64,8 +61,7 @@ import { PasswordModalComponent } from './patient/components/password-modal/pass
     LifestyleListComponent,
     LifestyleFormComponent,
     PatientProfileSettingsComponent,
-    PatientProfileEditComponent,
-    PasswordModalComponent
+    PatientProfileEditComponent
   ],
   imports: [
     CommonModule,

@@ -13,6 +13,8 @@ import { LifestyleDetailComponent } from '../patient/pages/lifestyle-detail/life
 import { NutritionistLifestyleListComponent } from './pages/nutritionist-lifestyle-list/nutritionist-lifestyle-list.component';
 import { NutritionistLifestyleFormComponent } from './pages/nutritionist-lifestyle-form/nutritionist-lifestyle-form.component';
 import { LifestyleSharedModule } from '../patient/lifestyle-shared.module';
+import { NutritionistProfileEditComponent } from './pages/nutritionist-profile-edit/nutritionist-profile-edit.component';
+import { NutritionistProfileSettingsComponent } from './pages/nutritionist-profile-settings/nutritionist-profile-settings.component';
 
 const routes: Routes = [
     {
@@ -42,6 +44,14 @@ const routes: Routes = [
     {
         path: 'patient/:id/lifestyle/:type/view/:itemid',
         component: LifestyleDetailComponent
+    },
+    {
+        path: 'profile',
+        component: NutritionistProfileSettingsComponent
+    },
+    {
+        path: 'profile/edit',
+        component: NutritionistProfileEditComponent
     }
 ];
 
@@ -51,7 +61,9 @@ const routes: Routes = [
         NutritionistPatientsComponent,
         NutritionistPatientDetailComponent,
         NutritionistLifestyleListComponent,
-        NutritionistLifestyleFormComponent
+        NutritionistLifestyleFormComponent,
+        NutritionistProfileEditComponent,
+        NutritionistProfileSettingsComponent
     ],
     imports: [
         CommonModule,
