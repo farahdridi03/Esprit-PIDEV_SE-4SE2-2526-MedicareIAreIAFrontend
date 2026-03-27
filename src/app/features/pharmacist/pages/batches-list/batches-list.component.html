@@ -1,0 +1,48 @@
+<div class="page-header">
+    <div>
+        <h1>Stock <em>Batches</em></h1>
+        <p>Details for Stock ID: {{ stockId }}</p>
+    </div>
+    <button class="action-btn" style="background:#fff; border:1px solid #ddd; padding:8px 16px; border-radius:4px; cursor:pointer;" routerLink="../../inventory">
+        ← Back to Inventory
+    </button>
+</div>
+
+<div class="panel">
+    <div class="panel-head">
+        <div class="panel-title">Received Lots / Batches</div>
+        <button class="panel-action" (click)="loadBatches()">Refresh ⭮</button>
+    </div>
+    
+    <div class="loader" *ngIf="loading">Loading...</div>
+
+    <table class="tbl" *ngIf="!loading && batches.length > 0">
+        <thead>
+            <tr>
+                <th>Batch Number</th>
+                <th>Quantity</th>
+                <th>Expiration Date</th>
+                <th>Purchase/Selling Price</th>
+                <th>Received At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let b of batches">
+                <td><strong>{{ b.batchNumber }}</strong></td>
+                <td>{{ b.quantity }}</td>
+                <td>
+                    <span [ngStyle]="{'color': (b.expirationDate | date:'yyyy-MM-dd')! < ('now' | date:'yyyy-MM-dd')! ? '#e74c3c' : 'inherit'}">
+                        {{ b.expirationDate | date }}
+                    </span>
+                </td>
+                <td>
+                    <span class="cs">In: {{ b.purchasePrice | currency }}</span><br/>
+                    <span class="cn">Out: {{ b.sellingPrice | currency }}</span>
+                </td>
+                <td>{{ b.receivedAt | date:'medium' }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div *ngIf="!loading && batches.length === 0" class="no-data">No batches found for this stock.</div>
+</div>

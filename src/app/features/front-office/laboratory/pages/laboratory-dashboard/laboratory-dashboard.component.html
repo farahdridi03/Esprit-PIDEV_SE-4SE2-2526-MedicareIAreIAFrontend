@@ -1,0 +1,74 @@
+<div class="laboratory-wrapper">
+    <!-- Sidebar -->
+    <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
+
+        <div class="content-area">
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="banner-text">
+                    <h1>Welcome back, {{ firstName || 'User' }}!</h1>
+                    <p>You have new test requests awaiting your review.</p>
+                </div>
+
+                <div class="banner-stats">
+                    <div class="stat-card">
+                        <div class="label">Incoming Requests</div>
+                        <div class="value"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Completed Today</div>
+                        <div class="value"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Urgent</div>
+                        <div class="value" style="color: #ef4444;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Tests Section -->
+                <div class="tests-section">
+                    <div class="section-header">
+                        <h3>Today's Tests</h3>
+                        <a href="#">View All →</a>
+                    </div>
+
+                    <div class="test-list">
+                    </div>
+                </div>
+
+                <!-- Calendar Section -->
+                <div class="calendar-section">
+                    <div class="section-header">
+                        <h3>Calendar</h3>
+                    </div>
+                    <div class="calendar-placeholder">
+                        <div class="calendar-header">
+                            <span class="month">March 2026</span>
+                            <div class="nav-btns">
+                                <button>&lt;</button>
+                                <button>&gt;</button>
+                            </div>
+                        </div>
+                        <div class="calendar-days">
+                            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                        </div>
+                        <div class="calendar-grid">
+                            <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>1</span>
+                            <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+                            <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+                            <span>16</span><span>17</span><span>18</span><span>19</span><span class="today">20</span><span>21</span><span>22</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

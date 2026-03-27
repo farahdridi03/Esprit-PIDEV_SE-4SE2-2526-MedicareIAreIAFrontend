@@ -1,0 +1,65 @@
+<div class="page-header">
+    <div>
+        <h1>Inventory <em>Overview</em></h1>
+        <p>Monitor current stock levels per pharmacy</p>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-head">
+        <div class="panel-title">Pharmacy Stock</div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <select class="role-filter" [(ngModel)]="selectedPharmacyId" (change)="onPharmacyChange()">
+                <option *ngFor="let p of pharmacies" [value]="p.id">{{ p.name }}</option>
+            </select>
+            <button class="panel-action" (click)="loadInventory()">Refresh List ⭮</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loader">Loading inventory...</div>
+
+    <table class="tbl" *ngIf="!loading && stocks.length > 0">
+        <thead>
+            <tr>
+                <th>Stock ID</th>
+                <th>Product</th>
+                <th>Total Quantity & Threshold</th>
+                <th>Product Type & Unit</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let s of stocks">
+                <td>{{ s.id }}</td>
+                <td>
+                    <div class="ucell">
+                        <div class="mav ma1">{{ s.product.name.substring(0,2).toUpperCase() }}</div>
+                        <div>
+                            <div class="cn">{{ s.product.name }}</div>
+                            <div class="cs">{{ s.product.barcode || 'N/A' }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="cn" [ngStyle]="{'color': s.totalQuantity <= s.minQuantityThreshold ? '#e74c3c' : '#2c3e50'}">
+                        <strong>{{ s.totalQuantity }}</strong>
+                        <span *ngIf="s.totalQuantity <= s.minQuantityThreshold" style="margin-left:8px; font-size:12px; font-weight:normal; background: #fee2e2; color:#b91c1c; padding:2px 6px; border-radius:4px;">Low Stock</span>
+                    </div>
+                    <div class="cs">Min. Threshold: {{ s.minQuantityThreshold }}</div>
+                </td>
+                <td>
+                    <span class="chip ck-teal">{{ s.product.type }}</span>
+                    <span style="font-size: 0.85rem; color: #666; margin-left: 8px;">{{ s.product.unit }}</span>
+                </td>
+                <td style="text-align: right;">
+                    <button class="action-btn text-indigo" (click)="viewBatches(s.id)">Batches</button>
+                    <button class="action-btn" style="color: #0e7c66;" (click)="viewMovements(s.id)">Movements</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && stocks.length === 0" class="no-data">
+        No products found in this pharmacy's stock. Please receive batches to initialize stock.
+    </div>
+</div>

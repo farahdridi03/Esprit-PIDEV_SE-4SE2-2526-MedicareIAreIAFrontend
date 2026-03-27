@@ -1,0 +1,231 @@
+$primary-green: #0e7c66;
+$text-dark: #111827;
+$text-light: #6b7280;
+
+.doctor-wrapper {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #f9fafb;
+}
+
+.main-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    background-color: #f9fafb;
+}
+
+/* Welcome Banner */
+.welcome-banner {
+    background-color: $primary-green;
+    border-radius: 16px;
+    padding: 2.5rem;
+    color: white;
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    .banner-text {
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+        }
+
+        p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+    }
+
+    .banner-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 1.25rem;
+            border-radius: 12px;
+
+            .label {
+                font-size: 0.85rem;
+                opacity: 0.8;
+                margin-bottom: 0.5rem;
+            }
+
+            .value {
+                font-size: 1.25rem;
+                font-weight: 700;
+            }
+        }
+    }
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.schedule-section, .calendar-section {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: $text-dark;
+        }
+
+        a {
+            color: $primary-green;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    }
+}
+
+/* Schedule List */
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+
+    .schedule-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem 0;
+        border-bottom: 1px solid #f3f4f6;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .patient-info {
+            .name {
+                font-size: 1rem;
+                font-weight: 600;
+                color: $text-dark;
+                margin-bottom: 0.25rem;
+            }
+
+            .details {
+                font-size: 0.875rem;
+                color: $text-light;
+            }
+        }
+
+        .view-btn {
+            background-color: #f3f4f6;
+            color: $text-dark;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &:hover {
+                background-color: #e5e7eb;
+                color: $primary-green;
+            }
+        }
+    }
+}
+
+/* Calendar Placeholder */
+.calendar-placeholder {
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        .month {
+            font-weight: 600;
+            color: $text-dark;
+        }
+
+        .nav-btns button {
+            background: none;
+            border: none;
+            color: $text-light;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            font-size: 1rem;
+
+            &:hover {
+                color: $primary-green;
+            }
+        }
+    }
+
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: $text-light;
+        margin-bottom: 0.75rem;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.5rem;
+        text-align: center;
+
+        span {
+            font-size: 0.875rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            color: $text-dark;
+
+            &.muted {
+                color: #d1d5db;
+            }
+
+            &.today {
+                background-color: $primary-green;
+                color: white;
+                font-weight: 600;
+            }
+
+            &:hover:not(.muted):not(.today) {
+                background-color: #f3f4f6;
+                cursor: pointer;
+            }
+        }
+    }
+}

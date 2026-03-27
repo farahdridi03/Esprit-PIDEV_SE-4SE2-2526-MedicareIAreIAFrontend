@@ -1,0 +1,46 @@
+<div class="page-header">
+    <div>
+        <h1>Stock <em>Alerts</em></h1>
+        <p>Low stock warnings and expiring batch alerts</p>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-head">
+        <div class="panel-title">Open Alerts</div>
+        <button class="panel-action" (click)="loadAlerts()">Refresh ⭮</button>
+    </div>
+    
+    <div class="loader" *ngIf="loading">Loading alerts...</div>
+
+    <table class="tbl" *ngIf="!loading && alerts.length > 0">
+        <thead>
+            <tr>
+                <th>Alert ID</th>
+                <th>Type</th>
+                <th>Message</th>
+                <th>Created At</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let a of alerts">
+                <td>{{ a.id }}</td>
+                <td>
+                    <span class="chip" [ngClass]="a.alertType === 'EXPIRING_BATCH' ? 'ck-amber' : 'ck-rose'">
+                        {{ a.alertType }}
+                    </span>
+                </td>
+                <td><div class="cn">{{ a.message }}</div></td>
+                <td>{{ a.createdAt | date:'medium' }}</td>
+                <td style="text-align: right;">
+                    <button class="action-btn" style="color: #0e7c66;" (click)="resolveAlert(a.id)">Resolve ✓</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div *ngIf="!loading && alerts.length === 0" class="no-data" style="color:#0e7c66; font-weight:bold;">
+        🎉 All good! No open alerts.
+    </div>
+</div>

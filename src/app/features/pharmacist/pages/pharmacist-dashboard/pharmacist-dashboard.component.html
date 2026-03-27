@@ -1,0 +1,42 @@
+<div class="page-header">
+  <div>
+      <h1>Pharmacist <em>Dashboard</em></h1>
+      <p>Overview of pharmacies, products, and global generic stocks.</p>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon ck-teal">🏥</div>
+    <div class="stat-details">
+      <h3>{{ pharmaciesCount }}</h3>
+      <p>Partner Pharmacies</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon ck-indigo">💊</div>
+    <div class="stat-details">
+      <h3>{{ productsCount }}</h3>
+      <p>Catalog Products</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon ck-rose">⚠️</div>
+    <div class="stat-details">
+      <h3>{{ alertsCount }}</h3>
+      <p>Open Alerts</p>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+      <div class="panel-title">Quick Actions</div>
+  </div>
+  <div class="actions-grid">
+    <button class="btn-primary" (click)="navigate('pharmacies')">Manage Pharmacies</button>
+    <button class="btn-primary" (click)="navigate('products')">Manage Products</button>
+    <button class="btn-secondary" (click)="navigate('inventory')">View Inventory</button>
+    <button class="btn-secondary text-rose" (click)="navigate('alerts')">Check Alerts</button>
+  </div>
+</div>

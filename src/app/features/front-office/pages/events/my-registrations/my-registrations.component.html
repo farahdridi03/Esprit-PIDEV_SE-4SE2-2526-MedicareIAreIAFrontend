@@ -1,0 +1,39 @@
+<div class="my-registrations-container">
+    <div class="header">
+        <h1>My Event Registrations</h1>
+        <p>Track your enrolled medical conferences, webinars, and workshops.</p>
+    </div>
+
+    <div class="loader" *ngIf="loading">Fetching your data...</div>
+
+    <div class="registrations-grid" *ngIf="!loading && registrations.length > 0">
+        <div class="reg-card" *ngFor="let reg of registrations">
+            <div class="reg-status" [ngClass]="reg.status === 'VALIDATED' ? 'bg-success' : 'bg-warning'">
+                <span class="dot"></span>
+                {{ reg.status === 'VALIDATED' ? 'Validated & Approved' : 'Registration Pending' }}
+            </div>
+            
+            <div class="reg-body">
+                <h3>{{ reg.eventTitle }}</h3>
+                <div class="reg-meta" *ngIf="reg.eventDate">
+                    📅 Schedule: {{ reg.eventDate | date:'medium' }}
+                </div>
+                <div class="reg-meta">
+                    🏷️ Registered on: {{ reg.createdAt | date:'shortDate' }}
+                </div>
+            </div>
+
+            <div class="reg-footer">
+                <div class="reg-id">ID: #{{ reg.id }}</div>
+                <button class="view-btn" (click)="viewEvent(reg.eventId)">Event Details →</button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && registrations.length === 0" class="no-data">
+        <div class="empty-icon">🎫</div>
+        <h3>No Registrations Found</h3>
+        <p>You haven't registered for any medical events yet.</p>
+        <button class="browse-btn" routerLink="/front/events">Discover Events</button>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+/* You can add global styles to this file, and also import other style files */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --sidebar-w: 256px;
+  --topbar-h: 64px;
+  --font-h: 'Outfit', sans-serif;
+  --font-serif: 'Fraunces', serif;
+  --indigo: #4f46e5;
+  --indigo-dark: #3730a3;
+  --indigo-light: #818cf8;
+  --violet: #7c3aed;
+  --pink: #ec4899;
+  --teal: #0d9488;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+  --emerald: #10b981;
+  --sky: #0ea5e9;
+  --bg: #f8f7ff;
+  --surface: #ffffff;
+  --text-1: #0f0a2e;
+  --text-2: #6b6b8a;
+  --text-3: #a8a8c0;
+  --border: #ebebf5;
+  --r: 16px;
+  --r-sm: 10px;
+  --r-lg: 22px;
+}
+
+body {
+  font-family: var(--font-h);
+  background: var(--bg);
+  color: var(--text-1);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+}
+
+app-root {
+  width: 100%;
+}

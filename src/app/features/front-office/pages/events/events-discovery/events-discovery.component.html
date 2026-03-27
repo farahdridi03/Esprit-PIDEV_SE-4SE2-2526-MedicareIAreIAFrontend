@@ -1,0 +1,57 @@
+<div class="events-discovery-container">
+    <div class="hero-section">
+        <h1>Discover Medical Events</h1>
+        <p>Join conferences, webinars, and specialized physical workshops tailored for medical professionals and patients.</p>
+        
+        <div class="hero-actions">
+            <button class="btn-primary suggest-btn" (click)="suggestEvent()">
+                💡 Suggest Event Idea
+            </button>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <div class="search-box">
+            <input type="text" placeholder="Search events..." [(ngModel)]="searchTerm" (input)="applyFilters()">
+        </div>
+        
+        <div class="toggles">
+            <button [class.active]="viewMode === 'ALL'" (click)="setViewMode('ALL')">All Events</button>
+            <button [class.active]="viewMode === 'UPCOMING'" (click)="setViewMode('UPCOMING')">Upcoming Only</button>
+        </div>
+
+        <select [(ngModel)]="typeFilter" (change)="applyFilters()">
+            <option value="ALL">All Types</option>
+            <option value="ONLINE">Online</option>
+            <option value="PHYSICAL">Physical</option>
+        </select>
+    </div>
+
+    <div *ngIf="loading" class="loader">Loading events...</div>
+
+    <div class="events-grid" *ngIf="!loading && filteredEvents.length > 0">
+        <div class="event-card" *ngFor="let ev of filteredEvents">
+            <div class="card-header" [ngClass]="ev.eventType === 'ONLINE' ? 'bg-teal' : 'bg-indigo'">
+                <span class="event-type-badge">{{ ev.eventType }}</span>
+                <span class="event-date">{{ ev.date | date:'mediumDate' }}</span>
+            </div>
+            <div class="card-body">
+                <h3>{{ ev.title }}</h3>
+                <p class="desc">{{ ev.description | slice:0:80 }}...</p>
+                
+                <div class="location-info">
+                    <span *ngIf="ev.eventType === 'PHYSICAL'">📍 {{ ev.city }}, {{ ev.country }}</span>
+                    <span *ngIf="ev.eventType === 'ONLINE'">💻 {{ ev.platformName || 'Virtual Meeting' }}</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="view-btn" (click)="viewDetails(ev.id)">View Details</button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && filteredEvents.length === 0" class="no-data">
+        <h3>No Events Found</h3>
+        <p>Try adjusting your search filters or check back later for upcoming schedules.</p>
+    </div>
+</div>

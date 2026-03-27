@@ -1,0 +1,140 @@
+<div class="page-header">
+    <div>
+        <h1>Product <em>Management</em></h1>
+        <p>Catalog exactly what you sell or distribute</p>
+    </div>
+    <button class="btn-primary" *ngIf="viewState === 'list'" (click)="viewAdd()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Add Product
+    </button>
+</div>
+
+<!-- List View -->
+<div class="panel" *ngIf="viewState === 'list'">
+    <div class="panel-head">
+        <div class="panel-title">All Products</div>
+        <button class="panel-action" (click)="refresh()">Refresh List ⭮</button>
+    </div>
+
+    <!-- Loader -->
+    <div *ngIf="loading" class="loader">Loading products...</div>
+
+    <table class="tbl" *ngIf="!loading && products.length > 0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Product Details</th>
+                <th>Brand / Mfg</th>
+                <th>Category</th>
+                <th>Unit & Type</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of products">
+                <td>{{ p.id }}</td>
+                <td>
+                    <div class="ucell">
+                        <div class="mav ma1" *ngIf="!p.imageUrl">{{ p.name.substring(0,2).toUpperCase() }}</div>
+                        <img *ngIf="p.imageUrl" [src]="p.imageUrl" alt="{{p.name}}" style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover; margin-right: 12px;" />
+                        <div>
+                            <div class="cn">{{ p.name }}</div>
+                            <div class="cs">{{ p.barcode || 'No barcode' }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="cn">{{ p.brand || '-' }}</div>
+                    <div class="cs">{{ p.manufacturer || '-' }}</div>
+                </td>
+                <td>
+                    <div class="cn">{{ p.category || '-' }}</div>
+                </td>
+                <td>
+                    <span class="chip ck-indigo" style="margin-bottom: 4px; display: inline-block;">{{ p.type }}</span><br/>
+                    <span style="font-size: 0.85rem; color: #666;">Unit: {{ p.unit }}</span>
+                </td>
+                <td style="text-align: right;">
+                    <button class="action-btn text-indigo" (click)="viewEdit(p)">Edit</button>
+                    <button class="action-btn text-rose" (click)="deleteProduct(p.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && products.length === 0" class="no-data">
+        No products found.
+    </div>
+</div>
+
+<!-- Add/Edit View -->
+<div class="panel" *ngIf="viewState !== 'list'">
+    <div class="panel-head">
+        <div class="panel-title">{{ viewState === 'add' ? 'Create New Product' : 'Edit Product' }}</div>
+        <button class="panel-action text-rose" (click)="cancelForm()">Cancel ✕</button>
+    </div>
+
+    <div class="form-container">
+        <form (ngSubmit)="saveProduct()" #productForm="ngForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" [(ngModel)]="formModel.name" name="name" required placeholder="Paracetamol">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" [(ngModel)]="formModel.description" name="description" placeholder="Pain relief medication">
+                </div>
+
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="url" [(ngModel)]="formModel.imageUrl" name="imageUrl" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label>Manufacturer</label>
+                    <input type="text" [(ngModel)]="formModel.manufacturer" name="manufacturer">
+                </div>
+
+                <div class="form-group">
+                    <label>Brand</label>
+                    <input type="text" [(ngModel)]="formModel.brand" name="brand">
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" [(ngModel)]="formModel.category" name="category">
+                </div>
+
+                <div class="form-group">
+                    <label>Type</label>
+                    <select [(ngModel)]="formModel.type" name="type" required>
+                        <option *ngFor="let t of productTypes" [value]="t">{{ t }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Unit</label>
+                    <select [(ngModel)]="formModel.unit" name="unit" required>
+                        <option *ngFor="let u of productUnits" [value]="u">{{ u }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Barcode</label>
+                    <input type="text" [(ngModel)]="formModel.barcode" name="barcode">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" (click)="cancelForm()">Cancel</button>
+                <button type="submit" class="btn-primary" [disabled]="productForm.invalid || loading">
+                    {{ viewState === 'add' ? 'Create Product' : 'Save Changes' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

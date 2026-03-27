@@ -1,0 +1,136 @@
+<div class="page-header">
+    <div>
+        <h1>User <em>Management</em></h1>
+        <p>Manage all platform users, roles, and access controls</p>
+    </div>
+    <button class="btn-primary" *ngIf="viewState === 'list'" (click)="viewAdd()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Add User
+    </button>
+</div>
+
+<!-- List View -->
+<div class="panel" *ngIf="viewState === 'list'">
+    <div class="panel-head">
+        <div class="panel-title">All Users</div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <select class="role-filter" [(ngModel)]="filterRole" (change)="onFilterChange($event)">
+                <option value="ALL">All Roles</option>
+                <option value="PATIENT">Patient</option>
+                <option value="DOCTOR">Doctor</option>
+                <option value="ADMIN">Admin</option>
+                <option value="MODERATOR">Moderator</option>
+            </select>
+            <button class="panel-action" (click)="refresh()">Refresh List ⭮</button>
+        </div>
+    </div>
+
+    <!-- Loader -->
+    <div *ngIf="loading" class="loader">Loading users...</div>
+
+    <table class="tbl" *ngIf="!loading && users.length > 0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User Details</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let u of users">
+                <td>{{ u.id }}</td>
+                <td>
+                    <div class="ucell">
+                        <div class="mav ma1">{{ u.fullName.substring(0,2).toUpperCase() }}</div>
+                        <div>
+                            <div class="cn">{{ u.fullName }}</div>
+                            <div class="cs">{{ u.email }} | {{ u.phone || 'N/A' }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="chip"
+                        [ngClass]="{'ck-indigo': u.role === 'DOCTOR', 'ck-violet': u.role === 'PATIENT', 'ck-teal': u.role === 'MODERATOR', 'ck-amber': u.role === 'ADMIN'}">
+                        {{ u.role }}
+                    </span>
+                </td>
+                <td>
+                    <button class="status-btn" [ngClass]="u.enabled ? 'ck-emerald' : 'ck-rose'"
+                        (click)="toggleEnabled(u)">
+                        {{ u.enabled ? 'Enabled' : 'Disabled' }}
+                    </button>
+                </td>
+                <td style="text-align: right;">
+                    <button class="action-btn text-indigo" (click)="viewEdit(u)">Edit</button>
+                    <button class="action-btn text-rose" (click)="deleteUser(u.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && users.length === 0" class="no-data">
+        No users found.
+    </div>
+</div>
+
+<!-- Add/Edit View -->
+<div class="panel" *ngIf="viewState !== 'list'">
+    <div class="panel-head">
+        <div class="panel-title">{{ viewState === 'add' ? 'Create New User' : 'Edit User' }}</div>
+        <button class="panel-action text-rose" (click)="cancelForm()">Cancel ✕</button>
+    </div>
+
+    <div class="form-container">
+        <form (ngSubmit)="saveUser()" #userForm="ngForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" [(ngModel)]="formModel.fullName" name="fullName" required placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" [(ngModel)]="formModel.email" name="email" required
+                        placeholder="john&#64;example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Password {{ viewState === 'edit' ? '(Leave empty to keep)' : '' }}</label>
+                    <input type="password" [(ngModel)]="formModel.password" name="password"
+                        [required]="viewState === 'add'">
+                </div>
+
+                <div class="form-group">
+                    <label>Role</label>
+                    <select [(ngModel)]="formModel.role" name="role" required>
+                        <option value="PATIENT">Patient</option>
+                        <option value="DOCTOR">Doctor</option>
+                        <option value="ADMIN">Admin</option>
+                        <option value="MODERATOR">Moderator</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" [(ngModel)]="formModel.phone" name="phone">
+                </div>
+
+                <div class="form-group">
+                    <label>Birth Date</label>
+                    <input type="date" [(ngModel)]="formModel.birthDate" name="birthDate">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" (click)="cancelForm()">Cancel</button>
+                <button type="submit" class="btn-primary" [disabled]="userForm.invalid || loading">
+                    {{ viewState === 'add' ? 'Create User' : 'Save Changes' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

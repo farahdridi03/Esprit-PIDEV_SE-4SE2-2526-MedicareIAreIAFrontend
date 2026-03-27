@@ -1,0 +1,1051 @@
+﻿node.exe : Node.js version 
+v25.6.1 detected.
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Node.js  
+   version v25.6.1 detecte   
+ d.:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+Odd numbered Node.js 
+versions will not enter LTS 
+status and should not be 
+used for production. For 
+more information, please see 
+https://nodejs.org/en/about/p
+revious-releases/.
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+Application bundle generation failed. [4.966 seconds]
+
+[1m[31m[31mX [41;31m[[41
+;97mERROR[41;31m][0m 
+[1mTS2339: Property 
+'getProfile' does not exist 
+on type 'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/clinic/components/clinic
+-topbar/clinic-topbar.compone
+nt.ts:18:21:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/clinic/components/clinic
+-topbar/clinic-topbar.compone
+nt.ts:19:13:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/clinic/components/clinic
+-topbar/clinic-topbar.compone
+nt.ts:24:14:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/clinic/components/clinic
+-topbar/clinic-topbar.compone
+nt.ts:31:38:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/clinic/pages/clinic-dash
+board/clinic-dashboard.compon
+ent.ts:18:21:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/clinic/pages/clinic-dash
+board/clinic-dashboard.compon
+ent.ts:19:13:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/clinic/pages/clinic-dash
+board/clinic-dashboard.compon
+ent.ts:24:14:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/clinic/pages/clinic-dash
+board/clinic-dashboard.compon
+ent.ts:31:38:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/doctor/components/doctor
+-topbar/doctor-topbar.compone
+nt.ts:18:21:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/doctor/components/doctor
+-topbar/doctor-topbar.compone
+nt.ts:19:13:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/doctor/components/doctor
+-topbar/doctor-topbar.compone
+nt.ts:24:14:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/doctor/components/doctor
+-topbar/doctor-topbar.compone
+nt.ts:31:38:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/doctor/pages/doctor-dash
+board/doctor-dashboard.compon
+ent.ts:17:38:
+[37m      17 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/doctor/pages/doctor-dash
+board/doctor-dashboard.compon
+ent.ts:23:21:
+[37m      23 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/doctor/pages/doctor-dash
+board/doctor-dashboard.compon
+ent.ts:24:13:
+[37m      24 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/doctor/pages/doctor-dash
+board/doctor-dashboard.compon
+ent.ts:29:14:
+[37m      29 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/home-care/components/hom
+e-care-topbar/home-care-topba
+r.component.ts:18:21:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/home-care/components/hom
+e-care-topbar/home-care-topba
+r.component.ts:19:13:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/home-care/components/hom
+e-care-topbar/home-care-topba
+r.component.ts:24:14:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/home-care/components/hom
+e-care-topbar/home-care-topba
+r.component.ts:31:38:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/home-care/pages/home-car
+e-dashboard/home-care-dashboa
+rd.component.ts:18:21:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/home-care/pages/home-car
+e-dashboard/home-care-dashboa
+rd.component.ts:19:13:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/home-care/pages/home-car
+e-dashboard/home-care-dashboa
+rd.component.ts:24:14:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/home-care/pages/home-car
+e-dashboard/home-care-dashboa
+rd.component.ts:31:38:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/laboratory/components/la
+boratory-topbar/laboratory-to
+pbar.component.ts:18:21:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/laboratory/components/la
+boratory-topbar/laboratory-to
+pbar.component.ts:19:13:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/laboratory/components/la
+boratory-topbar/laboratory-to
+pbar.component.ts:24:14:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/laboratory/components/la
+boratory-topbar/laboratory-to
+pbar.component.ts:31:38:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/laboratory/pages/laborat
+ory-dashboard/laboratory-dash
+board.component.ts:17:38:
+[37m      17 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/laboratory/pages/laborat
+ory-dashboard/laboratory-dash
+board.component.ts:23:21:
+[37m      23 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/laboratory/pages/laborat
+ory-dashboard/laboratory-dash
+board.component.ts:24:13:
+[37m      24 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/laboratory/pages/laborat
+ory-dashboard/laboratory-dash
+board.component.ts:29:14:
+[37m      29 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/nutritionist/components/
+nutritionist-topbar/nutrition
+ist-topbar.component.ts:18:21
+:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/nutritionist/components/
+nutritionist-topbar/nutrition
+ist-topbar.component.ts:19:13
+:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/nutritionist/components/
+nutritionist-topbar/nutrition
+ist-topbar.component.ts:24:14
+:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/nutritionist/components/
+nutritionist-topbar/nutrition
+ist-topbar.component.ts:31:38
+:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/nutritionist/pages/nutri
+tionist-dashboard/nutritionis
+t-dashboard.component.ts:18:2
+1:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/nutritionist/pages/nutri
+tionist-dashboard/nutritionis
+t-dashboard.component.ts:19:1
+3:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/nutritionist/pages/nutri
+tionist-dashboard/nutritionis
+t-dashboard.component.ts:24:1
+4:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/nutritionist/pages/nutri
+tionist-dashboard/nutritionis
+t-dashboard.component.ts:31:3
+8:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/patient/components/topba
+r/topbar.component.ts:18:21:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/patient/components/topba
+r/topbar.component.ts:19:13:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/patient/components/topba
+r/topbar.component.ts:24:14:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/patient/components/topba
+r/topbar.component.ts:31:38:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/patient/pages/dashboard/
+dashboard.component.ts:17:38:
+[37m      17 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/patient/pages/dashboard/
+dashboard.component.ts:23:21:
+[37m      23 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/patient/pages/dashboard/
+dashboard.component.ts:24:13:
+[37m      24 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/patient/pages/dashboard/
+dashboard.component.ts:29:14:
+[37m      29 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/pharmacist/components/ph
+armacist-topbar/pharmacist-to
+pbar.component.ts:18:21:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/pharmacist/components/ph
+armacist-topbar/pharmacist-to
+pbar.component.ts:19:13:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/pharmacist/components/ph
+armacist-topbar/pharmacist-to
+pbar.component.ts:24:14:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/pharmacist/components/ph
+armacist-topbar/pharmacist-to
+pbar.component.ts:31:38:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getProfile' does 
+not exist on type 
+'UserService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/pharmacist/pages/pharmac
+ist-dashboard/pharmacist-dash
+board.component.ts:18:21:
+[37m      18 Ôöé     this.us
+erService.[32mgetProfile[37
+m().subscribe({
+         ÔòÁ                 
+     [32m~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'user' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/pharmacist/pages/pharmac
+ist-dashboard/pharmacist-dash
+board.component.ts:19:13:
+[37m      19 Ôöé       
+next: ([32muser[37m) => {
+         ÔòÁ              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/pharmacist/pages/pharmac
+ist-dashboard/pharmacist-dash
+board.component.ts:24:14:
+[37m      24 Ôöé       
+error: ([32merr[37m) => {
+         ÔòÁ               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getUserFullName' 
+does not exist on type 
+'AuthService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-of
+fice/pharmacist/pages/pharmac
+ist-dashboard/pharmacist-dash
+board.component.ts:31:38:
+[37m      31 Ôöé     const 
+fullName = this.authService.
+[32mgetUserFullName[37m();
+         ÔòÁ                 
+                      
+[32m~~~~~~~~~~~~~~~[0m
+
+[39m[22m

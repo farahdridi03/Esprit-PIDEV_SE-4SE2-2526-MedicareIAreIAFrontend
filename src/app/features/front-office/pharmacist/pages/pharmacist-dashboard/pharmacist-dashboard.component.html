@@ -1,0 +1,101 @@
+<div class="pharmacist-wrapper">
+    <!-- Sidebar -->
+    <app-pharmacist-sidebar></app-pharmacist-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-pharmacist-topbar></app-pharmacist-topbar>
+
+        <div class="content-area">
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="banner-text">
+                    <h1>Welcome back, {{ firstName || 'Pharmacist' }}!</h1>
+                    <p>Manage your inventory and fulfill prescription orders efficiently.</p>
+                </div>
+
+                <div class="banner-stats">
+                    <div class="stat-card">
+                        <div class="label">Pending Orders</div>
+                        <div class="value"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Low Stock Items</div>
+                        <div class="value"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Today's Revenue</div>
+                        <div class="value"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid">
+                
+                <!-- Left Column (2/3) -->
+                <div class="left-column">
+                    <!-- Today's Orders -->
+                    <div class="section-card orders-section">
+                        <div class="section-header">
+                            <h3>Today's Orders</h3>
+                            <a href="#">Process All →</a>
+                        </div>
+
+                        <div class="orders-list">
+                        </div>
+                    </div>
+
+                    <!-- Monitoring Row (Alerts & Sales) -->
+                    <div class="monitoring-row">
+                        <!-- Alerts -->
+                        <div class="section-card alerts-section">
+                            <div class="section-header">
+                                <h3>Alerts</h3>
+                            </div>
+                            <div class="alerts-list">
+                            </div>
+                        </div>
+
+                        <!-- Sales per Category -->
+                        <div class="section-card sales-section">
+                            <div class="section-header">
+                                <h3>Sales per Category</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (1/3) -->
+                <div class="right-column">
+                    <!-- Calendar Section -->
+                    <div class="section-card calendar-section">
+                        <div class="section-header">
+                            <h3>Calendar</h3>
+                        </div>
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <span class="month-year">March 2026</span>
+                                <div class="calendar-nav">
+                                    <button>&lt;</button>
+                                    <button>&gt;</button>
+                                </div>
+                            </div>
+                            <div class="days-header">
+                                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                            </div>
+                            <div class="days-grid">
+                                <span class="muted">23</span><span class="muted">24</span><span class="muted">25</span><span class="muted">26</span><span class="muted">27</span><span class="muted">28</span><span>1</span>
+                                <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+                                <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+                                <span>16</span><span>17</span><span>18</span><span>19</span><span class="active-today">20</span><span>21</span><span>22</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

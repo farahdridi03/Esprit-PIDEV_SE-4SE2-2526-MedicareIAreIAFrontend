@@ -1,0 +1,85 @@
+<div class="dashboard-wrapper">
+
+    <!-- Sidebar -->
+    <app-sidebar></app-sidebar>
+
+    <!-- Main Body -->
+    <div class="main-body">
+
+        <!-- Topbar -->
+        <app-topbar></app-topbar>
+
+        <!-- Page Content Area -->
+        <div class="content-area">
+
+            <div class="dashboard-main-content">
+                <!-- Welcome Banner -->
+                <div class="welcome-banner">
+                    <div class="banner-text">
+                        <h1>Welcome back, {{ firstName || 'User' }}!</h1>
+                    </div>
+
+                    <div class="banner-stats">
+                        <div class="stat-card">
+                            <div class="label">Next Appointment</div>
+                            
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="label">Pending lab results </div>
+                            
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="label">Glucose Rate</div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-grid">
+                    <!-- Upcoming Appointments -->
+                    <div class="info-section">
+                        <div class="section-header">
+                            <h3>Upcoming Appointments</h3>
+                            <a href="#">View All →</a>
+                        </div>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="info-section">
+                        <div class="section-header">
+                            <h3>Notifications</h3>
+                        </div>
+
+                        <div class="notification-list">
+                            <div class="notification-item success">
+                                <div class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            
+                            </div>
+
+                            <div class="notification-item error">
+                                <div class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                                    </svg>
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

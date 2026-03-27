@@ -1,0 +1,157 @@
+// Variables (scoped to this layout)
+:host {
+    --primary: #2bb3a8;
+    --primary-dark: #2bb3a8;
+    --text-dark: #111827;
+    --text-muted: #4b5563;
+    --bg: #ffffff;
+    --border: #e5e7eb;
+    --radius-pill: 9999px;
+    --shadow: 0 4px 14px rgba(16, 185, 129, 0.18);
+    --shadow-hover: 0 6px 20px rgba(16, 185, 129, 0.25);
+
+    display: block;
+    background: #f8fafc;
+    color: var(--text-dark);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.page {
+    padding-top: 88px;
+}
+
+// -------------------
+// NAVBAR
+// -------------------
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(8px);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.55rem;
+    letter-spacing: -0.5px;
+
+    .logo-heart {
+        width: 38px;
+        height: 38px;
+    }
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2.4rem;
+
+    a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.97rem;
+        transition: color 0.18s ease;
+        position: relative;
+
+        &:hover,
+        &.active {
+            color: var(--text-dark);
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -6px;
+            left: 0;
+            background: var(--primary);
+            transition: width 0.25s ease;
+        }
+
+        &:hover::after,
+        &.active::after {
+            width: 100%;
+        }
+    }
+}
+
+.cta-button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.78rem 1.6rem;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 0.96rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+
+    &:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1.5px);
+        box-shadow: var(--shadow-hover);
+    }
+}
+
+.mobile-menu-toggle {
+    display: none;
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+// -------------------
+// Responsive
+// -------------------
+@media (max-width: 992px) {
+    .navbar {
+        padding: 1rem 6%;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .cta-button {
+        padding: 0.7rem 1.4rem;
+        font-size: 0.92rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .navbar {
+        padding: 0.9rem 5%;
+    }
+
+    .logo-container {
+        font-size: 1.4rem;
+
+        .logo-heart {
+            width: 32px;
+            height: 32px;
+        }
+    }
+}

@@ -1,0 +1,521 @@
+<div class="register-wrapper">
+  <div class="register-card">
+
+    <!-- Header / Logo -->
+    <div class="brand-header">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+          <path
+            d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+        </svg>
+      </div>
+      <span class="brand-name">MEDICAREAI</span>
+    </div>
+
+    <h1 class="welcome-title">Create your account</h1>
+    <p class="welcome-subtitle">Start your health journey with us</p>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+
+      <!-- Full Name -->
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+          </span>
+          <input type="text" id="fullName" formControlName="fullName" placeholder="John Doe"
+            [ngClass]="{'is-invalid': registerForm.get('fullName')?.invalid && (registerForm.get('fullName')?.dirty || registerForm.get('fullName')?.touched)}">
+        </div>
+        <div
+          *ngIf="registerForm.get('fullName')?.invalid && (registerForm.get('fullName')?.dirty || registerForm.get('fullName')?.touched)">
+          <small class="error-message" *ngIf="registerForm.get('fullName')?.errors?.['required']">Full Name is
+            required.</small>
+        </div>
+      </div>
+
+      <!-- Email Address -->
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+          </span>
+          <input type="email" id="email" formControlName="email" placeholder="you@example.com"
+            [ngClass]="{'is-invalid': registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)}">
+        </div>
+        <div
+          *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)">
+          <small class="error-message" *ngIf="registerForm.get('email')?.errors?.['required']">Email is
+            required.</small>
+          <small class="error-message" *ngIf="registerForm.get('email')?.errors?.['email']">Please enter a valid email
+            address.</small>
+        </div>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+            </svg>
+          </span>
+          <input type="tel" id="phone" formControlName="phone" placeholder="+1 (555) 000-0000"
+            [ngClass]="{'is-invalid': registerForm.get('phone')?.invalid && (registerForm.get('phone')?.dirty || registerForm.get('phone')?.touched)}">
+        </div>
+        <div
+          *ngIf="registerForm.get('phone')?.invalid && (registerForm.get('phone')?.dirty || registerForm.get('phone')?.touched)">
+          <small class="error-message" *ngIf="registerForm.get('phone')?.errors?.['required']">Phone number is
+            required.</small>
+          <small class="error-message" *ngIf="registerForm.get('phone')?.errors?.['pattern']">Phone number must be
+            exactly 8 digits.</small>
+        </div>
+      </div>
+
+      <!-- Date of Birth -->
+      <div class="form-group">
+        <label for="birthDate">Date of Birth</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+          </span>
+          <input type="date" id="birthDate" formControlName="birthDate" placeholder="mm/dd/yyyy"
+            [ngClass]="{'is-invalid': registerForm.get('birthDate')?.invalid && (registerForm.get('birthDate')?.dirty || registerForm.get('birthDate')?.touched)}">
+        </div>
+        <div
+          *ngIf="registerForm.get('birthDate')?.invalid && (registerForm.get('birthDate')?.dirty || registerForm.get('birthDate')?.touched)">
+          <small class="error-message" *ngIf="registerForm.get('birthDate')?.errors?.['required']">Date of Birth is
+            required.</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="role">I am a...</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+            </svg>
+          </span>
+          <select id="role" formControlName="role" class="role-select">
+            <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PATIENT FIELDS -->
+      <ng-container *ngIf="isPatient">
+        <div class="patient-fields">
+
+          <div class="row-splits">
+            <!-- Gender -->
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <div class="input-wrapper">
+                <select id="gender" formControlName="gender" class="role-select"
+                  [ngClass]="{'is-invalid': registerForm.get('gender')?.invalid && (registerForm.get('gender')?.dirty || registerForm.get('gender')?.touched)}">
+                  <option *ngFor="let g of genders" [value]="g.value">{{ g.label }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Blood Type -->
+            <div class="form-group">
+              <label for="bloodType">Blood Type</label>
+              <div class="input-wrapper">
+                <select id="bloodType" formControlName="bloodType" class="role-select"
+                  [ngClass]="{'is-invalid': registerForm.get('bloodType')?.invalid && (registerForm.get('bloodType')?.dirty || registerForm.get('bloodType')?.touched)}">
+                  <option *ngFor="let b of bloodTypes" [value]="b.value">{{ b.label }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Emergency Contact Name -->
+          <div class="form-group margin-top">
+            <label for="emergencyContactName">Emergency Contact Name</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                </svg>
+              </span>
+              <input type="text" id="emergencyContactName" formControlName="emergencyContactName"
+                placeholder="Full name of emergency contact"
+                [ngClass]="{'is-invalid': registerForm.get('emergencyContactName')?.invalid && (registerForm.get('emergencyContactName')?.dirty || registerForm.get('emergencyContactName')?.touched)}">
+            </div>
+          </div>
+
+          <!-- Emergency Contact Phone -->
+          <div class="form-group margin-top">
+            <label for="emergencyContactPhone">Emergency Contact Phone</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                </svg>
+              </span>
+              <input type="tel" id="emergencyContactPhone" formControlName="emergencyContactPhone"
+                placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('emergencyContactPhone')?.invalid && (registerForm.get('emergencyContactPhone')?.dirty || registerForm.get('emergencyContactPhone')?.touched)}">
+            </div>
+            <div
+              *ngIf="registerForm.get('emergencyContactPhone')?.invalid && (registerForm.get('emergencyContactPhone')?.dirty || registerForm.get('emergencyContactPhone')?.touched)">
+              <small class="error-message" *ngIf="registerForm.get('emergencyContactPhone')?.errors?.['pattern']">Phone
+                number must be exactly 8 digits.</small>
+            </div>
+          </div>
+
+          <!-- Medical History Section -->
+          <div class="medical-history-container margin-top">
+            <div class="section-header">
+              <h3 class="section-title">Medical History</h3>
+              <button type="button" class="add-history-btn" (click)="addMedicalHistory()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                  stroke="currentColor" class="size-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Add Entry
+              </button>
+            </div>
+
+            <div formArrayName="medicalHistories" class="medical-history-list">
+              <div *ngFor="let history of medicalHistories.controls; let i=index" [formGroupName]="i"
+                class="history-card">
+                <div class="history-card-header">
+                  <span class="entry-number">Entry #{{i + 1}}</span>
+                  <button type="button" class="remove-entry-btn" (click)="removeMedicalHistory(i)" title="Remove">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                      stroke="currentColor" class="size-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="history-fields">
+                  <div class="form-group no-margin">
+                    <label [for]="'type-' + i">Type</label>
+                    <div class="input-wrapper">
+                      <select [id]="'type-' + i" formControlName="type" class="role-select">
+                        <option *ngFor="let type of medicalHistoryTypes" [value]="type.value">{{ type.label }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group no-margin">
+                    <label [for]="'desc-' + i">Description</label>
+                    <div class="input-wrapper">
+                      <input type="text" [id]="'desc-' + i" formControlName="description"
+                        placeholder="e.g. Penicillin allergy, Previous surgery">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Empty state -->
+              <div *ngIf="medicalHistories.length === 0" class="empty-history">
+                <p>No medical history entries added yet.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+
+      <!-- DOCTOR FIELDS -->
+      <ng-container *ngIf="isDoctor">
+        <div class="patient-fields"> <!-- Reuse same styling container -->
+          <h3 class="section-title" style="margin-bottom: 1rem;">Professional Information</h3>
+          
+          <div class="form-group">
+            <label for="specialty">Specialty</label>
+            <div class="input-wrapper">
+              <input type="text" id="specialty" formControlName="specialty" placeholder="e.g. Cardiology"
+                [ngClass]="{'is-invalid': registerForm.get('specialty')?.invalid && (registerForm.get('specialty')?.dirty || registerForm.get('specialty')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="licenseNumber">License Number</label>
+            <div class="input-wrapper">
+              <input type="text" id="licenseNumber" formControlName="licenseNumber" placeholder="Professional license number"
+                [ngClass]="{'is-invalid': registerForm.get('licenseNumber')?.invalid && (registerForm.get('licenseNumber')?.dirty || registerForm.get('licenseNumber')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="consultationFee">Consultation Fee</label>
+            <div class="input-wrapper">
+              <input type="number" id="consultationFee" formControlName="consultationFee" placeholder="0.00"
+                [ngClass]="{'is-invalid': registerForm.get('consultationFee')?.invalid && (registerForm.get('consultationFee')?.dirty || registerForm.get('consultationFee')?.touched)}">
+              <span class="currency-suffix">DT</span>
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="consultationMode">Consultation Mode</label>
+            <div class="input-wrapper">
+              <select id="consultationMode" formControlName="consultationMode" class="role-select">
+                <option *ngFor="let m of consultationModes" [value]="m.value">{{ m.label }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- CLINIC FIELDS -->
+      <ng-container *ngIf="isClinic">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Clinic Information</h3>
+          
+          <div class="form-group">
+            <label for="clinicName">Clinic Name</label>
+            <div class="input-wrapper">
+              <input type="text" id="clinicName" formControlName="clinicName" placeholder="Clinic Name"
+                [ngClass]="{'is-invalid': registerForm.get('clinicName')?.invalid && (registerForm.get('clinicName')?.dirty || registerForm.get('clinicName')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="clinicAddress">Address</label>
+            <div class="input-wrapper">
+              <input type="text" id="clinicAddress" formControlName="clinicAddress" placeholder="Clinic Address"
+                [ngClass]="{'is-invalid': registerForm.get('clinicAddress')?.invalid && (registerForm.get('clinicAddress')?.dirty || registerForm.get('clinicAddress')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="clinicPhone">Phone Number</label>
+            <div class="input-wrapper">
+              <input type="tel" id="clinicPhone" formControlName="clinicPhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('clinicPhone')?.invalid && (registerForm.get('clinicPhone')?.dirty || registerForm.get('clinicPhone')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="emergencyPhone">Emergency Phone</label>
+            <div class="input-wrapper">
+              <input type="tel" id="emergencyPhone" formControlName="emergencyPhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('emergencyPhone')?.invalid && (registerForm.get('emergencyPhone')?.dirty || registerForm.get('emergencyPhone')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="ambulancePhone">Ambulance Phone</label>
+            <div class="input-wrapper">
+              <input type="tel" id="ambulancePhone" formControlName="ambulancePhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('ambulancePhone')?.invalid && (registerForm.get('ambulancePhone')?.dirty || registerForm.get('ambulancePhone')?.touched)}">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- PHARMACIST FIELDS -->
+      <ng-container *ngIf="isPharmacist">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Pharmacy</h3>
+          
+          <div class="form-group">
+            <label for="pharmacyName">Pharmacy Name</label>
+            <div class="input-wrapper">
+              <input type="text" id="pharmacyName" formControlName="pharmacyName" placeholder="Pharmacy Name"
+                [ngClass]="{'is-invalid': registerForm.get('pharmacyName')?.invalid && (registerForm.get('pharmacyName')?.dirty || registerForm.get('pharmacyName')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="pharmacyAddress">Address</label>
+            <div class="input-wrapper">
+              <input type="text" id="pharmacyAddress" formControlName="pharmacyAddress" placeholder="Pharmacy Address"
+                [ngClass]="{'is-invalid': registerForm.get('pharmacyAddress')?.invalid && (registerForm.get('pharmacyAddress')?.dirty || registerForm.get('pharmacyAddress')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="pharmacyPhone">Phone Number</label>
+            <div class="input-wrapper">
+              <input type="tel" id="pharmacyPhone" formControlName="pharmacyPhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('pharmacyPhone')?.invalid && (registerForm.get('pharmacyPhone')?.dirty || registerForm.get('pharmacyPhone')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="pharmacyEmail">Pharmacy Email</label>
+            <div class="input-wrapper">
+              <input type="email" id="pharmacyEmail" formControlName="pharmacyEmail" placeholder="pharmacy@example.com"
+                [ngClass]="{'is-invalid': registerForm.get('pharmacyEmail')?.invalid && (registerForm.get('pharmacyEmail')?.dirty || registerForm.get('pharmacyEmail')?.touched)}">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- NUTRITIONIST FIELDS -->
+      <ng-container *ngIf="isNutritionist">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Nutritionist Information</h3>
+          
+          <div class="form-group">
+            <label for="specialties">Specialties</label>
+            <div class="input-wrapper">
+              <input type="text" id="specialties" formControlName="specialty" placeholder="e.g. Weight Loss, Sports Nutrition"
+                [ngClass]="{'is-invalid': registerForm.get('specialty')?.invalid && (registerForm.get('specialty')?.dirty || registerForm.get('specialty')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="n-licenseNumber">License Number</label>
+            <div class="input-wrapper">
+              <input type="text" id="n-licenseNumber" formControlName="licenseNumber" placeholder="Professional license number"
+                [ngClass]="{'is-invalid': registerForm.get('licenseNumber')?.invalid && (registerForm.get('licenseNumber')?.dirty || registerForm.get('licenseNumber')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="n-consultationFee">Consultation Fee</label>
+            <div class="input-wrapper">
+              <input type="number" id="n-consultationFee" formControlName="consultationFee" placeholder="0.00"
+                [ngClass]="{'is-invalid': registerForm.get('consultationFee')?.invalid && (registerForm.get('consultationFee')?.dirty || registerForm.get('consultationFee')?.touched)}">
+              <span class="currency-suffix">DT</span>
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="n-consultationMode">Consultation Mode</label>
+            <div class="input-wrapper">
+              <select id="n-consultationMode" formControlName="consultationMode" class="role-select">
+                <option *ngFor="let m of consultationModes" [value]="m.value">{{ m.label }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- LABORATORY STAFF FIELDS -->
+      <ng-container *ngIf="isLabStaff">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Laboratory</h3>
+          
+          <div class="form-group">
+            <label for="labName">Name</label>
+            <div class="input-wrapper">
+              <input type="text" id="labName" formControlName="labName" placeholder="Laboratory Name"
+                [ngClass]="{'is-invalid': registerForm.get('labName')?.invalid && (registerForm.get('labName')?.dirty || registerForm.get('labName')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="labAddress">Address</label>
+            <div class="input-wrapper">
+              <input type="text" id="labAddress" formControlName="labAddress" placeholder="Address"
+                [ngClass]="{'is-invalid': registerForm.get('labAddress')?.invalid && (registerForm.get('labAddress')?.dirty || registerForm.get('labAddress')?.touched)}">
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label for="labPhone">Phone</label>
+            <div class="input-wrapper">
+              <input type="tel" id="labPhone" formControlName="labPhone" placeholder="8 digits"
+                [ngClass]="{'is-invalid': registerForm.get('labPhone')?.invalid && (registerForm.get('labPhone')?.dirty || registerForm.get('labPhone')?.touched)}">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- HOME CARE PROVIDER FIELDS -->
+      <ng-container *ngIf="isHomeCareProvider">
+        <div class="patient-fields">
+          <h3 class="section-title" style="margin-bottom: 1rem;">Home Care Provider Details</h3>
+          
+          <div class="form-group">
+            <label for="certificationDocument">Certification Document (PDF, Image)</label>
+            <div class="input-wrapper">
+              <input type="file" id="certificationDocument" (change)="onFileChange($event)" accept=".pdf,image/*">
+            </div>
+            <small *ngIf="registerForm.get('certificationDocument')?.value" class="success-message">Document attached ✓</small>
+            <div *ngIf="registerForm.get('certificationDocument')?.invalid && registerForm.get('certificationDocument')?.touched">
+              <small class="error-message">Document is required.</small>
+            </div>
+          </div>
+
+          <div class="form-group margin-top">
+            <label>services</label>
+            <div class="services-selection-grid">
+              <label *ngFor="let service of homeCareServicesList" class="checkbox-item">
+                <input type="checkbox" [value]="service.name || service" (change)="onServiceChange($event)">
+                <span class="checkbox-label">{{ service.name || service }}</span>
+              </label>
+            </div>
+            <div *ngIf="registerForm.get('selectedServices')?.invalid && registerForm.get('selectedServices')?.touched">
+              <small class="error-message">Please select at least one service.</small>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </span>
+          <input type="password" id="password" formControlName="password" placeholder="Create a password"
+            [ngClass]="{'is-invalid': registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)}">
+        </div>
+        <p class="helper-text"
+          *ngIf="!(registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched))">
+          Password must be at least 8 characters</p>
+        <div
+          *ngIf="registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)">
+          <small class="error-message" *ngIf="registerForm.get('password')?.errors?.['required']">Password is
+            required.</small>
+          <small class="error-message" *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at
+            least 8 characters.</small>
+        </div>
+      </div>
+
+      <!-- Terms Checkbox -->
+      <div class="terms-row">
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="terms">
+          <span>I accept the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+        </label>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="submit-btn" [disabled]="registerForm.invalid">Create Account</button>
+    </form>
+
+    <!-- Footer Link -->
+    <div class="footer-text">
+      Already have an account? <a routerLink="/auth/login" class="login-link">Log in</a>
+    </div>
+
+  </div>
+</div>

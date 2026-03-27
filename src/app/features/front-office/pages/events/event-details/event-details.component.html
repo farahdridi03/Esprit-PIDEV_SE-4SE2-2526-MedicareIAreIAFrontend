@@ -1,0 +1,78 @@
+<div class="event-details-container" *ngIf="event">
+    
+    <div class="back-link" routerLink="../">
+        ← Back to Events
+    </div>
+
+    <div class="event-header">
+        <div class="badges">
+            <span class="badge" [ngClass]="event.eventType === 'ONLINE' ? 'bg-teal' : 'bg-indigo'">
+                {{ event.eventType }}
+            </span>
+            <span class="badge validation-badge" *ngIf="userRegistration">
+                {{ userRegistration.status === 'VALIDATED' ? '✓ Registration Validated' : '⏳ Registration Pending' }}
+            </span>
+        </div>
+        <h1>{{ event.title }}</h1>
+        <div class="event-meta">
+            📅 {{ event.date | date:'fullDate' }} at {{ event.date | date:'shortTime' }}
+        </div>
+    </div>
+
+    <div class="event-content">
+        <div class="main-info">
+            <div class="info-section">
+                <h3>About This Event</h3>
+                <p>{{ event.description }}</p>
+            </div>
+
+            <!-- PHYSICAL LOGISTICS -->
+            <div class="info-section logistic-box" *ngIf="event.eventType === 'PHYSICAL'">
+                <h3>📍 Venue & Location</h3>
+                <p><strong>{{ event.venueName }}</strong></p>
+                <p>{{ event.address }}</p>
+                <p>{{ event.city }}, {{ event.postalCode }}</p>
+                <p>{{ event.country }}</p>
+                <p style="margin-top: 1rem; color: #6b7280; font-size: 0.9rem;">
+                    Capacity: {{ event.capacity }} attendees maximum
+                </p>
+            </div>
+
+             <!-- ONLINE LOGISTICS -->
+             <div class="info-section logistic-box online" *ngIf="event.eventType === 'ONLINE'">
+                <h3>💻 Virtual Meeting Details</h3>
+                <p><strong>Platform:</strong> {{ event.platformName }}</p>
+                
+                <div *ngIf="userRegistration?.status === 'VALIDATED'; else hiddenLink">
+                    <p style="margin-top: 1rem;"><strong>Meeting Link:</strong> <a [href]="event.meetingLink" target="_blank" class="meet-link">{{ event.meetingLink }}</a></p>
+                    <p *ngIf="event.meetingPassword"><strong>Password:</strong> <span class="pwd">{{ event.meetingPassword }}</span></p>
+                </div>
+
+                <ng-template #hiddenLink>
+                    <div class="hidden-alert">
+                       🔒 The meeting link will be visible <strong>after</strong> your registration is validated by an administrator.
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+
+        <div class="action-sidebar">
+            <div class="register-card" *ngIf="!userRegistration">
+                <h3>Join this Event</h3>
+                <p>Reserve your spot to gain access to the venue or meeting link.</p>
+                <button class="join-btn" (click)="register()" [disabled]="registering">
+                    {{ registering ? 'Processing...' : 'Register Now' }}
+                </button>
+            </div>
+
+            <div class="register-card registered" *ngIf="userRegistration">
+                <div class="success-icon">🎉</div>
+                <h3>You're enrolled!</h3>
+                <p>Your registration ID is #{{ userRegistration.id }}.</p>
+                <button class="view-regs-btn" routerLink="/front/my-event-registrations">View My Registrations</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loader" *ngIf="loading">Loading event details...</div>

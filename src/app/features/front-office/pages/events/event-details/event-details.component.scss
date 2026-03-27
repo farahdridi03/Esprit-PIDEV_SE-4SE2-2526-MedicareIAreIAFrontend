@@ -1,0 +1,198 @@
+.event-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.back-link {
+    color: #6b7280;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    display: inline-block;
+
+    &:hover { color: #4f46e5; text-decoration: underline; }
+}
+
+.event-header {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 2rem;
+
+    .badges {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .badge {
+        font-weight: 800;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        border-radius: 8px;
+        color: white;
+
+        &.bg-teal { background: #0d9488; }
+        &.bg-indigo { background: #4f46e5; }
+        
+        &.validation-badge {
+            background: #fbfbfb;
+            color: #1f2937;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+    }
+
+    h1 {
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: #111827;
+        margin: 0 0 1rem 0;
+        line-height: 1.2;
+    }
+
+    .event-meta {
+        font-size: 1.2rem;
+        color: #4b5563;
+        font-weight: 500;
+    }
+}
+
+.event-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.main-info {
+    .info-section {
+        margin-bottom: 3rem;
+
+        h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: #4b5563;
+            line-height: 1.6;
+            margin: 0 0 0.5rem 0;
+        }
+    }
+
+    .logistic-box {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 2rem;
+        border: 1px solid #e5e7eb;
+
+        &.online { background: #f5f3ff; border-color: #e0e7ff; }
+
+        .hidden-alert {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            color: #4f46e5;
+            font-size: 0.95rem;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .meet-link {
+            color: #4f46e5;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .pwd {
+            font-family: monospace;
+            background: #e5e7eb;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    }
+}
+
+.action-sidebar {
+    .register-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid #f3f4f6;
+        text-align: center;
+        position: sticky;
+        top: 2rem;
+
+        &.registered {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            
+            h3 { color: #065f46; }
+            p { color: #047857; }
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .join-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: white;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            &:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+            }
+            
+            &:disabled { opacity: 0.6; cursor: wait; }
+        }
+
+        .view-regs-btn {
+            width: 100%;
+            padding: 0.85rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #065f46;
+            background: white;
+            border: 2px solid #34d399;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &:hover { background: #34d399; color: white; }
+        }
+    }
+}
