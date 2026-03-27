@@ -10,6 +10,9 @@ import { LabManagementListComponent } from './pages/lab-management-list/lab-mana
 import { LabManagementFormComponent } from './pages/lab-management-form/lab-management-form.component';
 import { LabTestsComponent } from './lab-tests/lab-tests.component';
 import { LabTestFormComponent } from './lab-tests/lab-test-form.component';
+import { LabResultsComponent } from './pages/lab-results/lab-results.component';
+import { LabResultFormComponent } from './pages/lab-results/lab-result-form.component';
+import { LabResultService } from '../../../services/lab-result.service';
 
 const routes: Routes = [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -22,7 +25,7 @@ const routes: Routes = [
     { path: 'profile', component: LaboratoryStaffDashboardComponent },
     { path: 'lab-tests', component: LabTestsComponent },
     { path: 'lab-requests', component: LaboratoryStaffDashboardComponent },
-    { path: 'lab-results', component: LaboratoryStaffDashboardComponent },
+    { path: 'lab-results', component: LabResultsComponent },
     {
         path: 'laboratories',
         children: [
@@ -41,13 +44,18 @@ const routes: Routes = [
         LabManagementListComponent,
         LabManagementFormComponent,
         LabTestsComponent,
-        LabTestFormComponent
+        LabTestFormComponent,
+        LabResultsComponent,
+        LabResultFormComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
         RouterModule.forChild(routes)
+    ],
+    providers: [
+        LabResultService
     ],
     exports: [
         CommonModule,
