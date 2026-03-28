@@ -63,44 +63,92 @@ export class LabRequestService {
   constructor(private http: HttpClient) {}
 
   getLaboratories(): Observable<Laboratory[]> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
     return this.http
-      .get<LaboratoryRaw[]>(`${this.base}/laboratories`)
+      .get<LaboratoryRaw[]>(`${this.base}/laboratories`, { headers })
       .pipe(map(labs => labs.map(l => ({ id: l.id, name: l.name }))));
   }
 
   create(payload: LabRequestPayload): Observable<LabRequestResponse> {
-    return this.http.post<LabRequestResponse>(`${this.base}/lab-requests`, payload);
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
+    return this.http.post<LabRequestResponse>(`${this.base}/lab-requests`, payload, { headers });
   }
 
   update(id: number, payload: LabRequestPayload): Observable<LabRequestResponse> {
-    return this.http.put<LabRequestResponse>(`${this.base}/lab-requests/${id}`, payload);
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
+    return this.http.put<LabRequestResponse>(`${this.base}/lab-requests/${id}`, payload, { headers });
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.base}/lab-requests/${id}`);
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
+    return this.http.delete<void>(`${this.base}/lab-requests/${id}`, { headers });
   }
 
   getById(id: number): Observable<LabRequestResponse> {
-    return this.http.get<LabRequestResponse>(`${this.base}/lab-requests/${id}`);
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
+    return this.http.get<LabRequestResponse>(`${this.base}/lab-requests/${id}`, { headers });
   }
 
   getAll(): Observable<LabRequestResponse[]> {
-    return this.http.get<LabRequestResponse[]>(`${this.base}/lab-requests`);
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
+    return this.http.get<LabRequestResponse[]>(`${this.base}/lab-requests`, { headers });
   }
 
   getByPatient(patientId: number): Observable<LabRequestResponse[]> {
-    return this.http.get<LabRequestResponse[]>(`${this.base}/lab-requests/patient/${patientId}`);
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
+    return this.http.get<LabRequestResponse[]>(
+      `${this.base}/lab-requests/patient/${patientId}`,
+      { headers }
+    );
   }
 
   cancel(id: number): Observable<LabRequestResponse> {
-    return this.http.patch<LabRequestResponse>(`${this.base}/lab-requests/${id}/cancel`, {});
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
+    return this.http.patch<LabRequestResponse>(`${this.base}/lab-requests/${id}/cancel`, {}, { headers });
   }
 
   updateStatus(id: number, status: string): Observable<LabRequestResponse> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
     return this.http.patch<LabRequestResponse>(
       `${this.base}/lab-requests/${id}/status`,
       null,
-      { params: { status } }
+      { headers, params: { status } }
     );
   }
 
