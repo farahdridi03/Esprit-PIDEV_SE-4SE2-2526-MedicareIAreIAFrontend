@@ -26,11 +26,11 @@ export class HomecareBookComponent implements OnInit {
   minDate: string = getTodayDateString();
   maxDate: string = getMaxInterventionDateString(90);
   dateErrorMessage: string = '';
-  
+
   // ✅ Provider blocked dates
   blockedProviderDates: string[] = [];
   isLoadingBlockedDates = false;
-  
+
   // ✅ Alert message for blocked/invalid dates
   dateAlertMessage: string = '';
   dateAlertType: 'danger' | 'warning' | '' = '';
@@ -140,9 +140,9 @@ export class HomecareBookComponent implements OnInit {
       this.dateErrorMessage = '❌ Le prestataire n\'est pas disponible à cette date. Veuillez en choisir une autre.';
       this.showDateAlert = true;
       this.dateAlertType = 'danger';
-      this.dateAlertMessage = 'Date bloquée - Ce prestataire n\'est pas disponible le ' + 
-                              new Date(selectedDate).toLocaleDateString('fr-FR') + 
-                              '. Veuillez sélectionner une autre date.';
+      this.dateAlertMessage = 'Date bloquée - Ce prestataire n\'est pas disponible le ' +
+        new Date(selectedDate).toLocaleDateString('fr-FR') +
+        '. Veuillez sélectionner une autre date.';
       return;
     }
 
@@ -221,14 +221,14 @@ export class HomecareBookComponent implements OnInit {
       next: (blockedDates) => {
         this.blockedProviderDates = blockedDates || [];
         console.log('Blocked dates loaded:', this.blockedProviderDates);
-        
+
         // ✅ TEST: Add a test date if none found to verify functionality
         if (this.blockedProviderDates.length === 0) {
           const testDate = getMaxInterventionDateString(5); // 5 days from now
           this.blockedProviderDates.push(testDate);
           console.log('Added test date:', testDate);
         }
-        
+
         this.isLoadingBlockedDates = false;
         // Re-validate current date if selected
         this.updateDateErrorMessage();

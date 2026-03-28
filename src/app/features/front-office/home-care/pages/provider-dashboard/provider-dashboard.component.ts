@@ -26,11 +26,11 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   constructor(
     private homecare: HomecareService,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadRequests();
-    
+
     // Subscribe to new notifications
     this.notificationSub = this.notificationService.notifications$.subscribe((notifications) => {
       // Check if there's a new HOMECARE request notification

@@ -21,7 +21,7 @@ import {
 export class HomecareService {
   private apiUrl = 'http://localhost:8081/springsecurity/api/homecare';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // ── Catalogue (PUBLIC) ──────────────────────────────────────────────────
 
