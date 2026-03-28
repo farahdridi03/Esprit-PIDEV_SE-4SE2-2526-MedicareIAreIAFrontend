@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ForumService, Post, PostRequest } from '../../services/forum.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-forum-moderation',
@@ -23,7 +24,7 @@ export class ForumModerationComponent implements OnInit {
   newCommentContent = '';
   submittingComment = false;
 
-  constructor(private forumService: ForumService) {}
+  constructor(private forumService: ForumService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadPosts();
@@ -147,10 +148,17 @@ export class ForumModerationComponent implements OnInit {
   addComment(postId: number): void {
     if (!this.newCommentContent.trim()) return;
 
+    const userId = this.authService.getUserId();
+    if (!userId) {
+      console.error('User not authenticated');
+      return;
+    }
+
     this.submittingComment = true;
     this.forumService.createComment({
       content: this.newCommentContent,
-      postId: postId
+      postId: postId,
+      authorId: userId
     }).subscribe({
       next: (comment) => {
         if (this.selectedPost && this.selectedPost.id === postId) {

@@ -127,12 +127,78 @@ export class AuthService {
     }
 
     getUserId(): number | null {
+        // Afficher le rôle de l'utilisateur pour débogage
+        const userRole = this.getUserRole();
+        console.log('🔍 getUserId: User role:', userRole);
+        
+        // Essayer d'abord de récupérer l'ID depuis localStorage (currentUser)
+        const currentUser = localStorage.getItem('currentUser');
+        if (currentUser) {
+            try {
+                const user = JSON.parse(currentUser);
+                console.log('🔍 getUserId: Found user in localStorage:', user);
+                console.log('🔍 getUserId: user.id:', user.id);
+                console.log('🔍 getUserId: typeof user.id:', typeof user.id);
+                console.log('🔍 getUserId: user keys:', Object.keys(user));
+                if (user.id !== undefined && user.id !== null) {
+                    const userId = parseInt(user.id, 10);
+                    if (!isNaN(userId)) {
+                        console.log('🔍 getUserId: Using ID from localStorage:', userId);
+                        return userId;
+                    } else {
+                        console.log('❌ getUserId: user.id is not a valid number:', user.id);
+                    }
+                } else {
+                    console.log('❌ getUserId: user.id is undefined or null');
+                }
+            } catch (error) {
+                console.log('❌ getUserId: Error parsing currentUser from localStorage:', error);
+            }
+        } else {
+            console.log('❌ getUserId: No currentUser found in localStorage');
+        }
+
+        // Si pas dans localStorage, essayer le token JWT
         const token = this.getToken();
-        if (!token) return null;
+        if (!token) {
+            console.log('❌ getUserId: No token found');
+            return null;
+        }
         try {
             const decoded: any = jwtDecode(token);
-            return decoded.id || null;
+            console.log('🔍 getUserId: Token decoded:', decoded);
+            console.log('🔍 getUserId: Looking for id in:', Object.keys(decoded));
+            console.log('🔍 getUserId: decoded.id:', decoded.id);
+            console.log('🔍 getUserId: decoded.sub:', decoded.sub);
+            console.log('🔍 getUserId: decoded.userId:', decoded.userId);
+            console.log('🔍 getUserId: decoded.user_id:', decoded.user_id);
+            console.log('🔍 getUserId: decoded.name:', decoded.name);
+            console.log('🔍 getUserId: decoded.email:', decoded.email);
+            console.log('🔍 getUserId: decoded.role:', decoded.role);
+            console.log('🔍 getUserId: decoded.fullName:', decoded.fullName);
+            
+            let userId: number | null = null;
+
+            // Try to get ID from 'id' field first
+            if (decoded.id !== undefined) {
+                userId = parseInt(decoded.id, 10);
+            } else if (decoded.sub && !isNaN(parseInt(decoded.sub, 10))) { // Try 'sub' if it's a number
+                userId = parseInt(decoded.sub, 10);
+            } else if (decoded.userId !== undefined) { // Try 'userId' field
+                userId = parseInt(decoded.userId, 10);
+            } else if (decoded.user_id !== undefined) { // Try 'user_id' field
+                userId = parseInt(decoded.user_id, 10);
+            }
+
+            if (userId !== null && isNaN(userId)) {
+                console.log('❌ getUserId: Extracted ID is not a valid number:', userId);
+                return null;
+            }
+            
+            console.log('🔍 getUserId: Final userId:', userId);
+            return userId;
         } catch (error) {
+            console.log('❌ getUserId: Error decoding token:', error);
             return null;
         }
     }

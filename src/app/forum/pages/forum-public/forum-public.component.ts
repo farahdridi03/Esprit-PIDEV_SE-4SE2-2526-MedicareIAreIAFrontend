@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ForumService, Post, Comment, CommentRequest } from '../../services/forum.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-forum-public',
@@ -20,7 +21,7 @@ export class ForumPublicComponent implements OnInit {
   searchQuery = '';
   categoryFilter = '';
 
-  constructor(private forumService: ForumService) {}
+  constructor(private forumService: ForumService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadPosts();
@@ -129,9 +130,17 @@ export class ForumPublicComponent implements OnInit {
     }
 
     this.submittingComment = true;
+    const userId = this.authService.getUserId();
+    if (!userId) {
+      console.error('User not authenticated');
+      this.submittingComment = false;
+      return;
+    }
+    
     const commentRequest: CommentRequest = {
       content: this.newComment.trim(),
-      postId: this.selectedPost.id
+      postId: this.selectedPost.id,
+      authorId: userId
     };
 
     this.forumService.createComment(commentRequest).subscribe({

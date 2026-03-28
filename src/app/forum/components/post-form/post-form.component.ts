@@ -58,7 +58,8 @@ export class PostFormComponent {
     const postData: PostRequest = {
       title: this.postForm.value.title,
       content: this.postForm.value.content,
-      category: this.postForm.value.category
+      category: this.postForm.value.category,
+      authorId: userId
     };
 
     const action = this.isEditing && this.post

@@ -39,11 +39,13 @@ export interface PostRequest {
   title: string;
   content: string;
   category: string;
+  authorId: number;
 }
 
 export interface CommentRequest {
   content: string;
   postId: number;
+  authorId: number;
 }
 
 @Injectable({
