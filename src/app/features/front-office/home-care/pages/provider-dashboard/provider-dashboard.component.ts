@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HomecareService } from '../../../../../services/homecare.service';
+import { NotificationService } from '../../../../../services/notification.service';
 import { ServiceRequest } from '../../../../../models/homecare.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-provider-dashboard',
   templateUrl: './provider-dashboard.component.html',
   styleUrls: ['./provider-dashboard.component.scss']
 })
-export class ProviderDashboardComponent implements OnInit {
+export class ProviderDashboardComponent implements OnInit, OnDestroy {
   requests: ServiceRequest[] = [];
   isLoading = true;
   error = '';
@@ -19,10 +21,29 @@ export class ProviderDashboardComponent implements OnInit {
     completed: 0
   };
 
-  constructor(private homecare: HomecareService) {}
+  private notificationSub?: Subscription;
+
+  constructor(
+    private homecare: HomecareService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.loadRequests();
+    
+    // Subscribe to new notifications
+    this.notificationSub = this.notificationService.notifications$.subscribe((notifications) => {
+      // Check if there's a new HOMECARE request notification
+      const hasNewHomecareRequest = notifications.some(n => n.type === 'NEW_HOMECARE_REQUEST');
+      if (hasNewHomecareRequest) {
+        // Reload requests to show the new request
+        this.loadRequests();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.notificationSub?.unsubscribe();
   }
 
   loadRequests(): void {

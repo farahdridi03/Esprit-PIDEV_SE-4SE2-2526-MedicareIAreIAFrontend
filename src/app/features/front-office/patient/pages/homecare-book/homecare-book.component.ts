@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HomecareService } from '../../../../../services/homecare.service';
 import { HomeCareService, ProviderProfileDTO, CreateServiceRequestDTO } from '../../../../../models/homecare.model';
+import { interventionDateValidator, getTodayDateString, getMaxInterventionDateString, getInterventionDateErrorMessage } from '../../../../../validators/intervention-date.validator';
 
 @Component({
   selector: 'app-homecare-book',
@@ -15,33 +16,47 @@ export class HomecareBookComponent implements OnInit {
   serviceId!: number;
   serviceDetails?: HomeCareService;
   availableProviders: ProviderProfileDTO[] = [];
-  
+
   isLoading = true;
   isSubmitting = false;
   error = '';
   success = false;
+
+  // ✅ Date validation properties
+  minDate: string = getTodayDateString();
+  maxDate: string = getMaxInterventionDateString(90);
+  dateErrorMessage: string = '';
   
+  // ✅ Provider blocked dates
+  blockedProviderDates: string[] = [];
+  isLoadingBlockedDates = false;
+  
+  // ✅ Alert message for blocked/invalid dates
+  dateAlertMessage: string = '';
+  dateAlertType: 'danger' | 'warning' | '' = '';
+  showDateAlert = false;
+
   // Nouveaux états pour le workflow par créneaux
   availableSlotsSlices: { time: string, label: string }[] = [];
   selectedSlotTime: string | null = null;
   isLoadingSlots = false;
-  
+
   // Funnel Steps
   currentStep: 'PROVIDER_SELECT' | 'BOOKING_FORM' = 'PROVIDER_SELECT';
   steps = [
     { id: 'PROVIDER_SELECT', label: 'Intervenant', icon: 'bi-person-check' },
     { id: 'BOOKING_FORM', label: 'Planification', icon: 'bi-calendar-event' }
   ];
-  
+
   // Détails Profil
   selectedProviderProfile: ProviderProfileDTO | null = null;
   isLoadingProfile = false;
   showProfileModal = false;
-  
+
   // Suggestions de dates
   suggestedDates: { date: string, label: string }[] = [];
   isLoadingSuggestions = false;
-  
+
   // Nouveautés pour le filtrage initial
   commonHours: string[] = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
 
@@ -80,16 +95,60 @@ export class HomecareBookComponent implements OnInit {
 
   initForm(): void {
     this.bookingForm = this.fb.group({
-      requestedDate: ['', Validators.required],
+      requestedDate: ['', [Validators.required, interventionDateValidator(90)]],
       requestedTime: ['', Validators.required],
       address: ['', [Validators.required, Validators.minLength(10)]],
       patientNotes: [''],
       providerId: [null, Validators.required]
     });
 
-    // Écouter les changements de date/heure pour filtrer les prestataires
-    this.bookingForm.get('requestedDate')?.valueChanges.subscribe(() => this.onDateTimeChange());
+    // ✅ Monitor date changes to update error message
+    this.bookingForm.get('requestedDate')?.valueChanges.subscribe(() => {
+      this.updateDateErrorMessage();
+      this.onDateTimeChange();
+    });
     this.bookingForm.get('requestedTime')?.valueChanges.subscribe(() => this.onDateTimeChange());
+  }
+
+  /**
+   * ✅ Update the date error message based on validation errors
+   */
+  updateDateErrorMessage(): void {
+    const control = this.bookingForm.get('requestedDate');
+    const selectedDate = control?.value;
+
+    console.log('updateDateErrorMessage called. selectedDate:', selectedDate, 'blockedProviderDates:', this.blockedProviderDates);
+
+    // Reset alert
+    this.dateAlertMessage = '';
+    this.dateAlertType = '';
+    this.showDateAlert = false;
+
+    // First check validator errors
+    if (control?.invalid && (control?.dirty || control?.touched)) {
+      this.dateErrorMessage = getInterventionDateErrorMessage(control.errors);
+      console.log('Date validation error:', this.dateErrorMessage);
+      this.showDateAlert = true;
+      this.dateAlertType = 'danger';
+      this.dateAlertMessage = this.dateErrorMessage;
+      return;
+    }
+
+    // Then check if date is blocked by provider
+    if (selectedDate && this.blockedProviderDates.includes(selectedDate)) {
+      console.log('Date is blocked!', selectedDate);
+      this.dateErrorMessage = '❌ Le prestataire n\'est pas disponible à cette date. Veuillez en choisir une autre.';
+      this.showDateAlert = true;
+      this.dateAlertType = 'danger';
+      this.dateAlertMessage = 'Date bloquée - Ce prestataire n\'est pas disponible le ' + 
+                              new Date(selectedDate).toLocaleDateString('fr-FR') + 
+                              '. Veuillez sélectionner une autre date.';
+      return;
+    }
+
+    // No error - hide alert
+    this.dateErrorMessage = '';
+    this.showDateAlert = false;
   }
 
   onDateTimeChange(): void {
@@ -98,13 +157,13 @@ export class HomecareBookComponent implements OnInit {
     if (date) {
       this.isLoadingProviders = true;
       const time = this.bookingForm.get('requestedTime')?.value || '00:00';
-      const dateTimeStr = `${date}T${time}:00`; 
-      
+      const dateTimeStr = `${date}T${time}:00`;
+
       this.homecare.getAvailableProviders(this.serviceId, dateTimeStr).subscribe({
         next: (data) => {
           this.availableProviders = data;
           this.isLoadingProviders = false;
-          
+
           const currentProviderId = this.bookingForm.get('providerId')?.value;
           if (currentProviderId && data.find(p => p.id === currentProviderId)) {
             // Toujours là, on rafraîchit ses créneaux précis si besoin
@@ -144,6 +203,40 @@ export class HomecareBookComponent implements OnInit {
       },
       error: () => {
         this.isLoadingSlots = false;
+      }
+    });
+  }
+
+  /**
+   * ✅ Load blocked/unavailable dates for the selected provider (90 days window)
+   */
+  loadBlockedDates(providerId: number): void {
+    this.isLoadingBlockedDates = true;
+    const from = getTodayDateString();
+    const maxDate = getMaxInterventionDateString(90);
+
+    console.log('Loading blocked dates from', from, 'to', maxDate, 'for provider', providerId);
+
+    this.homecare.getBlockedDates(providerId, from, maxDate).subscribe({
+      next: (blockedDates) => {
+        this.blockedProviderDates = blockedDates || [];
+        console.log('Blocked dates loaded:', this.blockedProviderDates);
+        
+        // ✅ TEST: Add a test date if none found to verify functionality
+        if (this.blockedProviderDates.length === 0) {
+          const testDate = getMaxInterventionDateString(5); // 5 days from now
+          this.blockedProviderDates.push(testDate);
+          console.log('Added test date:', testDate);
+        }
+        
+        this.isLoadingBlockedDates = false;
+        // Re-validate current date if selected
+        this.updateDateErrorMessage();
+      },
+      error: (err) => {
+        console.error('Error loading blocked dates:', err);
+        this.isLoadingBlockedDates = false;
+        this.blockedProviderDates = [];
       }
     });
   }
@@ -267,14 +360,17 @@ export class HomecareBookComponent implements OnInit {
   selectProviderAndNext(id: number): void {
     // Fermer le profil s'il est ouvert
     this.closeProfileModal();
-    
-    this.isLoadingSlots = true; // Petit effet de chargement pour le "feeling" pro
+
+    this.isLoadingSlots = true;
     this.bookingForm.patchValue({ providerId: id });
-    
+
+    // ✅ Load blocked dates for this provider
+    this.loadBlockedDates(id);
+
     setTimeout(() => {
       this.currentStep = 'BOOKING_FORM';
       this.isLoadingSlots = false;
-      
+
       const date = this.bookingForm.get('requestedDate')?.value;
       if (date) {
         this.loadProviderSlots(id, date);

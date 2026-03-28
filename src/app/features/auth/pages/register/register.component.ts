@@ -5,6 +5,7 @@ import { FileUploadService } from '../../../../services/file-upload.service';
 import { HomecareService } from '../../../../services/homecare.service';
 import { HomeCareService } from '../../../../models/homecare.model';
 import { Router } from '@angular/router';
+import { birthDateValidator, getBirthDateErrorMessage, getEighteenYearsAgoDate } from '../../../../validators/birth-date.validator';
 
 @Component({
   selector: 'app-register',
@@ -16,6 +17,7 @@ export class RegisterComponent {
   registerForm: FormGroup;
   errorMessage: string = '';
   selectedFile: File | null = null;
+  eighteenYearsAgoDate: string = '';
 
   roles = [
     { value: 'ADMIN', label: 'Administrator' },
@@ -54,11 +56,14 @@ export class RegisterComponent {
     private homecareService: HomecareService,
     private router: Router
   ) {
+    // Calculer la date limite (18 ans ago)
+    this.eighteenYearsAgoDate = getEighteenYearsAgoDate();
+
     this.registerForm = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
-      birthDate: ['', Validators.required],
+      birthDate: ['', [Validators.required, birthDateValidator()]],
       role: ['PATIENT', Validators.required],
       gender: ['MALE'],
       bloodType: ['O_POS'],
@@ -159,7 +164,7 @@ export class RegisterComponent {
     if (this.registerForm.valid) {
       // Retirer les champs locaux (terms, certificationDocument brut) du payload JSON
       const { terms, certificationDocument, ...payload } = this.registerForm.value;
-      
+
       // Ensure specialtyIds is an array of numbers for HOME_CARE_PROVIDER
       if (payload.role === 'HOME_CARE_PROVIDER') {
         if (payload.specialtyIds && !Array.isArray(payload.specialtyIds)) {
@@ -174,7 +179,7 @@ export class RegisterComponent {
 
       const formData = new FormData();
       formData.append('user', JSON.stringify(payload));
-      
+
       if (this.selectedFile && (payload.role === 'HOME_CARE_PROVIDER' || payload.role === 'PHARMACIST')) {
         formData.append('document', this.selectedFile);
       }
@@ -197,7 +202,7 @@ export class RegisterComponent {
       },
       error: (err: any) => {
         console.error('Registration error details:', err.error);
-        
+
         let details = 'Erreur lors de l\'inscription';
         // Parse custom error message since the request has responseType: 'text'
         if (err.error && typeof err.error === 'string') {
@@ -214,5 +219,37 @@ export class RegisterComponent {
         this.errorMessage = details;
       }
     });
+  }
+
+  /**
+   * Get birth date error message in French
+   */
+  getBirthDateErrorMessage(): string {
+    const control = this.registerForm.get('birthDate');
+    if (!control || !control.errors) {
+      return '';
+    }
+
+    const errors = control.errors;
+
+    if (errors['required']) {
+      return 'La date de naissance est obligatoire';
+    }
+
+    if (errors['futureDate']) {
+      return 'La date de naissance ne peut pas être dans le futur';
+    }
+
+    if (errors['minAge']) {
+      const requiredAge = errors['minAge'].requiredAge;
+      const actualAge = errors['minAge'].actualAge;
+      return `Vous devez avoir au moins ${requiredAge} ans (vous avez actuellement ${actualAge} ans)`;
+    }
+
+    if (errors['maxAge']) {
+      return 'La date de naissance semble invalide';
+    }
+
+    return 'Erreur de validation de la date';
   }
 }

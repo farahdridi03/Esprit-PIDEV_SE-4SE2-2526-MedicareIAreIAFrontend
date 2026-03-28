@@ -123,12 +123,58 @@
                                     <div class="form-card">
                                         <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
                                             <div class="row mb-4">
+
+
+                                                <!-- ✅ ALERT MESSAGE FOR BLOCKED/INVALID DATES -->
+                                                <div class="col-12 mb-4" *ngIf="showDateAlert && dateAlertMessage">
+                                                    <div [ngClass]="'alert alert-' + dateAlertType + ' alert-dismissible fade show d-flex align-items-center shadow-sm'" 
+                                                         role="alert" style="border-left: 4px solid;" [style.border-left-color]="dateAlertType === 'danger' ? '#dc3545' : '#ffc107'">
+                                                        <div class="flex-grow-1">
+                                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                                <i *ngIf="dateAlertType === 'danger'" class="bi bi-exclamation-triangle-fill" style="font-size: 1.5rem; color: #dc3545;"></i>
+                                                                <i *ngIf="dateAlertType === 'warning'" class="bi bi-exclamation-circle-fill" style="font-size: 1.5rem; color: #ffc107;"></i>
+                                                                <strong style="font-size: 1.1rem;">
+                                                                    {{ dateAlertType === 'danger' ? 'Date non disponible' : 'Attention' }}
+                                                                </strong>
+                                                            </div>
+                                                            <p class="mb-0" [style.color]="dateAlertType === 'danger' ? '#721c24' : '#856404'">
+                                                                {{ dateAlertMessage }}
+                                                            </p>
+                                                        </div>
+                                                        <button type="button" class="btn-close" (click)="showDateAlert = false" aria-label="Fermer"></button>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label fw-bold d-flex align-items-center gap-2">
-                                                        <i class="bi bi-calendar-event text-primary"></i> 1. Date de l'intervention <span class="text-danger">*</span>
+                                                        <i class="bi bi-calendar-event text-primary"></i> 1. Date de
+                                                        l'intervention <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="date" class="form-control rounded-3"
-                                                        formControlName="requestedDate">
+                                                        formControlName="requestedDate" [min]="minDate" [max]="maxDate"
+                                                        [ngClass]="{'is-invalid': bookingForm.get('requestedDate')?.invalid && (bookingForm.get('requestedDate')?.dirty || bookingForm.get('requestedDate')?.touched) || (showDateAlert && dateAlertType === 'danger')}">
+
+                                                    <!-- ✅ Date Error Message -->
+                                                    <div *ngIf="dateErrorMessage && !showDateAlert" class="mt-2">
+                                                        <small class="text-danger d-block">
+                                                            <i class="bi bi-exclamation-circle me-1"></i> {{
+                                                            dateErrorMessage }}
+                                                        </small>
+                                                    </div>
+
+                                                    <!-- ✅ Show blocked dates in red with better styling -->
+                                                    <div *ngIf="blockedProviderDates && blockedProviderDates.length > 0" class="mt-3 p-3 bg-light rounded border border-danger" style="border-left: 4px solid #dc3545;">
+                                                        <p class="small text-danger mb-2 fw-bold">
+                                                            <i class="bi bi-calendar-x me-2"></i>
+                                                            Jours indisponibles pour ce prestataire:
+                                                        </p>
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            <span *ngFor="let blockedDate of blockedProviderDates" 
+                                                                class="badge bg-danger text-white" style="font-size: 0.85rem; padding: 0.5rem 0.75rem;">
+                                                                {{ blockedDate | date: 'EEE dd/MM/yyyy' | uppercase }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
 
                                                     <div class="mt-3" *ngIf="suggestedDates.length > 0">
                                                         <p class="small text-muted mb-2"><i
@@ -145,7 +191,8 @@
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label fw-bold d-flex align-items-center gap-2">
-                                                        <i class="bi bi-clock text-primary"></i> 2. Heure d'arrivée <span class="text-danger">*</span>
+                                                        <i class="bi bi-clock text-primary"></i> 2. Heure d'arrivée
+                                                        <span class="text-danger">*</span>
                                                     </label>
                                                     <div class="slots-container mt-2"
                                                         *ngIf="availableSlotsSlices.length > 0; else noSlots">
@@ -171,7 +218,8 @@
 
                                             <div class="mb-4">
                                                 <label class="form-label fw-bold d-flex align-items-center gap-2">
-                                                    <i class="bi bi-geo-alt text-primary"></i> 3. Adresse de l'intervention <span class="text-danger">*</span>
+                                                    <i class="bi bi-geo-alt text-primary"></i> 3. Adresse de
+                                                    l'intervention <span class="text-danger">*</span>
                                                 </label>
                                                 <textarea class="form-control rounded-3" rows="3"
                                                     formControlName="address"
@@ -180,7 +228,8 @@
 
                                             <div class="mb-4">
                                                 <label class="form-label fw-bold d-flex align-items-center gap-2">
-                                                    <i class="bi bi-pencil-square text-primary"></i> 4. Notes pour l'intervenant
+                                                    <i class="bi bi-pencil-square text-primary"></i> 4. Notes pour
+                                                    l'intervenant
                                                 </label>
                                                 <textarea class="form-control rounded-3" rows="2"
                                                     formControlName="patientNotes"
@@ -191,7 +240,8 @@
                                                 <button type="submit"
                                                     class="btn btn-primary rounded-pill px-5 py-3 shadow-sm d-flex align-items-center gap-2"
                                                     [disabled]="isSubmitting || bookingForm.invalid">
-                                                    VALIDER <i class="bi bi-check2-circle mb-0" style="font-size: 1.2rem;"></i>
+                                                    VALIDER <i class="bi bi-check2-circle mb-0"
+                                                        style="font-size: 1.2rem;"></i>
                                                 </button>
                                             </div>
                                         </form>
@@ -225,19 +275,19 @@
                                         <div class="service-details-card shadow-lg overflow-hidden position-relative">
                                             <div class="bg-circle-decoration"></div>
                                             <h5 class="position-relative">Récapitulatif financier</h5>
-                                            
+
                                             <div class="item-row position-relative">
                                                 <span>Montant du service</span>
                                                 <span class="fw-bold">{{ serviceDetails.price }} TND</span>
                                             </div>
-                                            
+
                                             <div class="item-row position-relative">
                                                 <span>Frais de déplacement</span>
                                                 <span class="fw-bold">Inclus</span>
                                             </div>
-                                            
+
                                             <hr class="position-relative">
-                                            
+
                                             <div class="total-row position-relative">
                                                 <span class="h6 mb-0">Total à payer</span>
                                                 <span class="h4 mb-0 fw-bold">{{ serviceDetails.price }} TND</span>
@@ -332,8 +382,7 @@
                     class="modal-footer border-0 p-4 bg-white rounded-bottom-4 shadow-top justify-content-center gap-3">
                     <button type="button" class="btn btn-profile-refined px-4"
                         (click)="$event.stopPropagation(); closeProfileModal()">Plus tard</button>
-                    <button type="button" class="btn btn-book-refined px-5"
-                        *ngIf="selectedProviderProfile"
+                    <button type="button" class="btn btn-book-refined px-5" *ngIf="selectedProviderProfile"
                         (click)="$event.stopPropagation(); selectProviderAndNext(selectedProviderProfile.id)">
                         CHOISIR CE PRESTATAIRE
                     </button>

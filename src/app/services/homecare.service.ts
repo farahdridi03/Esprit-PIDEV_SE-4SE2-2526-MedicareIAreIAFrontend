@@ -71,6 +71,18 @@ export class HomecareService {
     return this.http.get<AvailableSlot[]>(`${this.apiUrl}/providers/${providerId}/slots`, { params });
   }
 
+  /**
+   * Jours bloqués/indisponibles d'un prestataire sur une période.
+   * Retourne les dates spécifiques où available=false
+   * @param providerId - ID du prestataire
+   * @param from - Date de début (YYYY-MM-DD)
+   * @param to   - Date de fin   (YYYY-MM-DD)
+   */
+  getBlockedDates(providerId: number, from: string, to: string): Observable<string[]> {
+    const params = new HttpParams().set('from', from).set('to', to);
+    return this.http.get<string[]>(`${this.apiUrl}/providers/${providerId}/blocked-dates`, { params });
+  }
+
   // ── Patient ────────────────────────────────────────────────────────────
 
   createRequest(dto: CreateServiceRequestDTO): Observable<ServiceRequest> {
