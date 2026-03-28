@@ -31,17 +31,18 @@ export class LoginComponent {
   onSubmit() {
     console.log('onSubmit called');
     if (this.loginForm.valid) {
-      console.log('Form is valid, calling login...', this.loginForm.value);
-      this.authService.login(this.loginForm.value).subscribe({
+      const { rememberMe, ...loginData } = this.loginForm.value;
+      console.log('Form is valid, calling login with data:', loginData);
+      
+      this.authService.login(loginData).subscribe({
         next: (response) => {
           console.log('Login successful response:', response);
           const role = response.role || this.authService.getUserRole();
-          console.log('Determined role:', role);
           this.redirectBasedOnRole(role);
         },
         error: (err) => {
-          console.error('Login error:', err);
-          this.errorMessage = err.error?.message || 'Identifiants invalides';
+          console.error('Login error full response:', err);
+          this.errorMessage = err.error?.message || err.error || 'Identifiants invalides';
         }
       });
     } else {

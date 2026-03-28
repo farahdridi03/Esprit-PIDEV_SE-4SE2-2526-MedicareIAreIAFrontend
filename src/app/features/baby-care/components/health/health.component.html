@@ -1,0 +1,114 @@
+<div class="bc-page">
+
+  <div class="bc-page-header bc-page-header--amber">
+    <div class="bc-page-header__top">
+      <a routerLink="/baby-care/dashboard" class="bc-back">←</a>
+      <h1>Fever & Health</h1>
+      <span></span>
+    </div>
+    <div class="bc-chip" *ngIf="(logs$ | async)?.length as cnt">
+      <span>📋</span> {{ cnt }} logs total
+    </div>
+  </div>
+
+  <!-- Log Temperature form -->
+  <div class="bc-card bc-card--glow bc-m24">
+    <h2 class="bc-card__title">Log Temperature</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="bc-form">
+      <div class="bc-temp-input-row">
+        <input type="number" class="bc-temp-input" formControlName="temperature"
+               placeholder="37.0" step="0.1" min="30" max="45">
+        <span class="bc-temp-unit">°C</span>
+      </div>
+
+      <!-- Advice card (live) -->
+      <div *ngIf="advice" class="bc-advice-card bc-advice-card--{{statusClass(advice.status)}}">
+        <div class="bc-advice-card__title">{{ advice.label }}</div>
+        {{ advice.advice }}
+      </div>
+
+      <!-- Emergency box for high fever/fever -->
+      <div *ngIf="advice?.showEmergency" class="bc-emergency-box">
+        <div class="bc-emergency-box__icon">🚨</div>
+        <div class="bc-emergency-box__body">
+          <div class="bc-emergency-box__title">Seek Medical Attention</div>
+          Please consult your pediatrician immediately or go to the nearest emergency room.
+        </div>
+      </div>
+
+      <!-- Symptoms -->
+      <div class="bc-form-row" style="margin-top: 4px;">
+        <label>Symptoms (optional)</label>
+      </div>
+      <div class="bc-symptoms">
+        <button type="button"
+                *ngFor="let item of allSymptoms"
+                class="bc-symptom"
+                [class.bc-symptom--selected]="isSelected(item[0])"
+                (click)="toggleSymptom(item[0])">
+          {{ item[1] }}
+        </button>
+      </div>
+
+      <div class="bc-form-row">
+        <label>Notes</label>
+        <input type="text" class="bc-input" formControlName="notes" placeholder="Optional note...">
+      </div>
+
+      <button type="submit" class="bc-big-btn"
+              style="background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: 0 6px 20px rgba(251,191,36,.3);"
+              [disabled]="form.invalid">
+        💾 Save Health Log
+      </button>
+    </form>
+
+    <p class="bc-disclaimer" style="margin-top: 12px;">
+      ⚠️ This app is not a medical device. Always consult a licensed pediatrician for any health concerns. Advice shown is general guidance only.
+    </p>
+  </div>
+
+  <!-- History -->
+  <div class="bc-section-header bc-m24">
+    <h2 class="bc-section-title">Recent Logs</h2>
+  </div>
+
+  <div class="bc-empty bc-m24" *ngIf="recentLogs.length === 0">
+    <div class="bc-empty__emoji">🌡️</div>
+    <p>No health logs yet</p>
+    <p class="bc-empty__sub">Record your baby's temperature above.</p>
+  </div>
+
+  <div class="bc-m24" style="margin-top: 12px;" *ngIf="recentLogs.length > 0">
+    <div *ngFor="let log of recentLogs"
+         class="bc-health-log-item temp-card-{{ statusClass(log.status) }}">
+      <div class="bc-health-log-item__top">
+        <div>
+          <span class="bc-health-log-item__temp temp-{{ statusClass(log.status) }}">
+            {{ log.temperature }}°C
+          </span>
+          <span class="bc-health-log-item__badge" [class]="'bc-vaccine-item__badge--' + statusClass(log.status)">
+            {{ statusLabel(log.status) }}
+          </span>
+        </div>
+        <div class="bc-health-log-item__actions">
+          <button class="bc-icon-action bc-icon-action--red" (click)="confirmDelete(log.id)">🗑️</button>
+        </div>
+      </div>
+      <div class="bc-health-log-item__date">{{ formatDateTime(log.recordedAt) }}</div>
+      <div class="bc-health-log-item__symptoms" *ngIf="log.symptoms.length > 0">
+        {{ symptomLabels(log) }}
+      </div>
+      <div class="bc-health-log-item__notes" *ngIf="log.notes">{{ log.notes }}</div>
+    </div>
+  </div>
+
+  <app-bc-confirm [visible]="showConfirm"
+    title="Delete health log?"
+    message="This temperature record will be permanently removed."
+    (confirmed)="executeDelete()"
+    (cancelled)="cancelDelete()">
+  </app-bc-confirm>
+
+  <div class="bc-spacer"></div>
+</div>

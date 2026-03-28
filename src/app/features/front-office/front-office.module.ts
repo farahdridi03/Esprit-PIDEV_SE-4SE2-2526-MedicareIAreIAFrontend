@@ -11,6 +11,8 @@ import { PatientTopbarComponent } from './patient/components/topbar/topbar.compo
 import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-list/patient-doctors-list.component';
 import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
 import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
+import { PatientBabyCareComponent } from './patient/pages/patient-baby-care/patient-baby-care.component';
+import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
 
 // Doctor components
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
@@ -45,7 +47,9 @@ import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-p
     HomeComponent,
     FrontLayoutComponent,
     ContactComponent,
-    DoctorPatientsComponent
+    DoctorPatientsComponent,
+    PatientBabyCareComponent,
+    PatientProfileComponent
   ],
   imports: [
     CommonModule,
@@ -60,7 +64,9 @@ import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-p
     PatientTopbarComponent,
     PatientDoctorsListComponent,
     PatientDoctorDetailComponent,
-    PatientAppointmentsComponent
+    PatientAppointmentsComponent,
+    PatientBabyCareComponent,
+    PatientProfileComponent
   ]
 })
 export class FrontOfficeModule { }

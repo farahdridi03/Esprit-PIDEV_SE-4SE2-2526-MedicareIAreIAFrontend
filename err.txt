@@ -1,0 +1,15 @@
+﻿node.exe : Node.js version v25.6.1 detected.
+Au caractère Ligne:1 : 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Node.js ver 
+   sion v25.6.1 detected.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Odd numbered Node.js versions will not enter LTS status 
+and should not be used for production. For more 
+information, please see 
+https://nodejs.org/en/about/previous-releases/.
+Error: Unknown argument: color

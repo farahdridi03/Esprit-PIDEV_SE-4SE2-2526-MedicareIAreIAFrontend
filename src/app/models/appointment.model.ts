@@ -12,6 +12,7 @@ export interface AppointmentDTO {
   doctorProfilePicture?: string;
   clinicName?: string;
   clinicAddress?: string;
+  patientId: number;
   patientName?: string;
   meetingLink?: string;
 }

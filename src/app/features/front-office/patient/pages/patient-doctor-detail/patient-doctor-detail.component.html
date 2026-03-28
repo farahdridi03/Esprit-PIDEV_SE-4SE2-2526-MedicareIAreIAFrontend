@@ -49,7 +49,7 @@
               </div>
               <div class="divider"></div>
               <div class="stat-col">
-                <div class="val">{{ doctor.rating || '0.0' }}</div>
+                <div class="val">{{ (doctor.rating || 0) | number:'1.1-1' }}</div>
                 <div class="lbl">Rating</div>
               </div>
             </div>
@@ -148,12 +148,16 @@
               <div class="slots-container" *ngIf="!isLoadingSlots">
                 <div class="no-slots" *ngIf="availableSlots.length === 0">No available slots for this date.</div>
                 
-                <button class="slot-pill" *ngFor="let slot of availableSlots"
+                <button class="slot-card-mini" *ngFor="let slot of availableSlots"
                         [class.booked]="slot.status === 'BOOKED'"
                         [class.selected]="selectedSlot === slot"
                         (click)="selectSlot(slot)"
                         [disabled]="slot.status === 'BOOKED'">
-                  {{ slot.startTime | date:'shortTime' }}
+                  <span class="slot-time">{{ slot.startTime | date:'shortTime' }}</span>
+                  <div class="slot-badge" [ngClass]="slot.mode.toLowerCase()">
+                    <i class="fas" [ngClass]="slot.mode === 'ONLINE' ? 'fa-video' : 'fa-hospital'"></i>
+                    {{ slot.mode === 'ONLINE' ? 'En ligne' : 'Cabinet' }}
+                  </div>
                 </button>
               </div>
               <div class="loading-slots" *ngIf="isLoadingSlots">
@@ -172,13 +176,18 @@
           <div class="section">
             <h3>Leave a Review</h3>
             <div class="add-review">
-              <div class="stars-input">
+              <div class="stars-input" (mouseleave)="hoverRating = 0">
                 <i class="fas fa-star" *ngFor="let star of [1,2,3,4,5]" 
                    [class.active]="star <= newReviewRating" 
+                   [class.hovered]="star <= hoverRating"
+                   (mouseenter)="hoverRating = star"
                    (click)="setRating(star)"></i>
+                <span class="rating-label" *ngIf="newReviewRating > 0">{{ newReviewRating }}/5</span>
               </div>
-              <textarea placeholder="Write your review here..." [(ngModel)]="newReviewComment"></textarea>
-              <button class="btn-primary small" (click)="submitReview()" [disabled]="isSubmittingReview">Submit Review</button>
+              <textarea placeholder="Partagez votre expérience avec ce médecin..." [(ngModel)]="newReviewComment"></textarea>
+              <button class="btn-primary" (click)="submitReview()" [disabled]="isSubmittingReview || newReviewRating === 0">
+                {{ isSubmittingReview ? 'Envoi...' : 'Publier mon avis' }}
+              </button>
             </div>
           </div>
 
@@ -218,18 +227,19 @@
         <p><strong>Mode:</strong> {{ selectedSlot?.mode === 'ONLINE' ? 'Online Consultation' : 'In Office' }}</p>
         
         <div class="reason-section">
-          <label class="reason-label">
-            Reason for visit
-            <span class="optional">( Optional )</span>
-          </label>
-        
+          <label class="reason-label">Reason for visit</label>
           <div class="reason-chips">
-            <span
-              *ngFor="let r of predefinedReasons"
-              class="chip"
-              [class.selected]="selectedReason === r"
-              (click)="selectReason(r)">
-              {{ r }}
+            <span class="chip" *ngFor="let reason of predefinedReasons"
+                 [class.selected]="selectedReason === reason"
+                 (click)="selectReason(reason)">
+              {{ reason }}
+            </span>
+            <!-- Always show Other if not included in predefined -->
+            <span class="chip" 
+                 *ngIf="!predefinedReasons.includes('Other')"
+                 [class.selected]="selectedReason === 'Other'"
+                 (click)="selectReason('Other')">
+              Other
             </span>
           </div>
         

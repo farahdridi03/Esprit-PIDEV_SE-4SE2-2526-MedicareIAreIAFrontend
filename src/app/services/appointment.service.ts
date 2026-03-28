@@ -11,6 +11,10 @@ export class AppointmentService {
 
   constructor(private http: HttpClient) {}
 
+  getAllAppointments(): Observable<AppointmentDTO[]> {
+    return this.http.get<AppointmentDTO[]>(`${this.baseUrl}/appointments`);
+  }
+
   getPatientAppointments(patientId: number): Observable<AppointmentDTO[]> {
     return this.http.get<AppointmentDTO[]>(
       `${this.baseUrl}/appointments/patients/${patientId}/appointments`

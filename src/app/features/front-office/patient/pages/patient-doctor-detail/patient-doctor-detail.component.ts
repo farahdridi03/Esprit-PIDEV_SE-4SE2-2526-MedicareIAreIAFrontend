@@ -27,6 +27,7 @@ export class PatientDoctorDetailComponent implements OnInit {
   // Reviews
   reviews: Review[] = [];
   newReviewRating: number = 0;
+  hoverRating: number = 0;
   newReviewComment: string = '';
   isSubmittingReview: boolean = false;
 
@@ -43,12 +44,21 @@ export class PatientDoctorDetailComponent implements OnInit {
   bookingReason: string = '';
   isBooking: boolean = false;
 
-  predefinedReasons: string[] = [
-    'Routine checkup', 'Follow-up visit', 'Test results', 'Back pain', 
-    'Headache', 'Fever', 'Chest pain', 'Fatigue', 'Other'
-  ];
+  predefinedReasons: string[] = [];
   selectedReason: string = '';
   customReason: string = '';
+
+  private specialtyReasonMap: { [key: string]: string[] } = {
+    'General Medicine': ['Routine checkup', 'Fever', 'Headache', 'Fatigue', 'Chest pain', 'Follow-up visit'],
+    'General Practice': ['Routine checkup', 'Fever', 'Headache', 'Fatigue', 'Chest pain', 'Follow-up visit'],
+    'Gynecology': ['Pregnancy follow-up', 'Pelvic pain', 'Menstrual issues', 'Contraception', 'Routine exam'],
+    'Dermatology': ['Acne', 'Rash', 'Skin check', 'Allergy', 'Mole evaluation'],
+    'Cardiology': ['Chest pain', 'Palpitations', 'Hypertension follow-up', 'Shortness of breath', 'Heart checkup'],
+    'Pediatrics': ['Child checkup', 'Vaccination', 'Fever', 'Digestive issues', 'Ear pain'],
+    'Dentistry': ['Toothache', 'Cleaning', 'Cavity', 'Crown/Filling', 'Consultation']
+  };
+
+  private genericReasons = ['Routine checkup', 'Follow-up visit', 'Test results', 'General Consultation'];
 
   constructor(
     private route: ActivatedRoute,
@@ -84,6 +94,7 @@ export class PatientDoctorDetailComponent implements OnInit {
     this.doctorService.getDoctor(this.doctorId).subscribe({
       next: (data) => {
         this.doctor = data;
+        this.updatePredefinedReasons();
         this.isLoading = false;
       },
       error: () => {
@@ -91,6 +102,16 @@ export class PatientDoctorDetailComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  private updatePredefinedReasons() {
+    if (this.doctor && this.doctor.specialty) {
+      const spec = this.doctor.specialty;
+      const reasons = this.specialtyReasonMap[spec] || this.genericReasons;
+      this.predefinedReasons = [...reasons];
+    } else {
+      this.predefinedReasons = [...this.genericReasons];
+    }
   }
 
   private extractScheduleOverview(slots: any[]) {
@@ -388,6 +409,8 @@ export class PatientDoctorDetailComponent implements OnInit {
         this.newReviewRating = 0;
         this.newReviewComment = '';
         this.isSubmittingReview = false;
+        // Refresh doctor profile to update global stats (rating/patient count)
+        this.loadDoctorProfile();
       },
       error: () => {
         alert('Failed to submit review');

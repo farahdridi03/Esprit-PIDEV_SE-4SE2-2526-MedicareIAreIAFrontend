@@ -26,17 +26,26 @@
           <div *ngIf="!schedule.active" class="closed-badge">Fermé</div>
 
           <ng-container *ngIf="schedule.active">
-            <div *ngFor="let slot of schedule.timeSlots" class="slot-card" [class]="slot.mode.toLowerCase()">
-              <div class="slot-time">{{ slot.startTime }} - {{ slot.endTime }}</div>
-              <div class="slot-mode">
-                <span *ngIf="slot.mode === 'OFFICE'">🏢 Cabinet</span>
-                <span *ngIf="slot.mode === 'ONLINE'">💻 Vidéo</span>
-                <span *ngIf="slot.mode === 'BOTH'">🔄 Mixte</span>
+            <div *ngFor="let slot of schedule.timeSlots" class="slot-card" [class]="slot.mode.toLowerCase()" [class.is-booked]="slot.status === 'BOOKED'">
+              <!-- Mode Indicator (Top corner) -->
+              <div class="mode-indicator" [ngSwitch]="slot.mode">
+                <span *ngSwitchCase="'ONLINE'" class="mode-badge online">
+                  <i class="fas fa-video"></i> En ligne
+                </span>
+                <span *ngSwitchCase="'OFFICE'" class="mode-badge office">
+                  <i class="fas fa-hospital"></i> Cabinet
+                </span>
+                <span *ngSwitchCase="'BOTH'" class="mode-badge both">
+                   🔄 Mixte
+                </span>
               </div>
-              <div class="slot-status">
-                <span *ngIf="!slot.status || slot.status === 'AVAILABLE'" class="badge-av">Disponible</span>
-                <span *ngIf="slot.status === 'BOOKED'" class="badge-bk" style="color:red;">Réservé</span>
-                <span *ngIf="slot.status === 'BLOCKED'" class="badge-bl" style="color:gray;">Bloqué</span>
+
+              <div class="slot-time">{{ slot.startTime }}</div>
+              
+              <div class="slot-status-row">
+                <span *ngIf="slot.status === 'AVAILABLE'" class="status-dot available"></span>
+                <span *ngIf="slot.status === 'BOOKED'" class="status-dot booked"></span>
+                <span class="status-text">{{ slot.status === 'BOOKED' ? 'Réservé' : 'Libre' }}</span>
               </div>
             </div>
 

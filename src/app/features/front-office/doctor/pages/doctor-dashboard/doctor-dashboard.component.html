@@ -9,22 +9,35 @@
         <div class="content-area">
             <!-- Welcome Banner -->
             <div class="welcome-banner">
-                <div class="banner-text">
-                    <h1>Welcome back, Dr. {{ firstName || 'User' }}!</h1>
-                </div>
+                <div class="banner-content">
+                    <div class="banner-text">
+                        <span class="greeting">Bonjour,</span>
+                        <h1>Dr. {{ firstName || 'User' }}</h1>
+                        <p>Voici un aperçu de vos activités pour aujourd'hui.</p>
+                    </div>
 
-                <div class="banner-stats">
-                    <div class="stat-card">
-                        <div class="label">Total Patients</div>
-                        <div class="value"></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Today's Appointments</div>
-                        <div class="value">{{ todayAppointments.length }}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Pending Reviews</div>
-                        <div class="value"></div>
+                    <div class="banner-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <div class="stat-data">
+                                <div class="value">{{ totalPatientsCount }}</div>
+                                <div class="label">Patients Total</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon highlight-yellow"><i class="fas fa-calendar-check"></i></div>
+                            <div class="stat-data">
+                                <div class="value">{{ todayAppointments.length }}</div>
+                                <div class="label">Rdv Aujourd'hui</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon highlight-purple"><i class="fas fa-star-half-alt"></i></div>
+                            <div class="stat-data">
+                                <div class="value">{{ getPendingReviews() }}</div>
+                                <div class="label">Nouveaux Avis</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

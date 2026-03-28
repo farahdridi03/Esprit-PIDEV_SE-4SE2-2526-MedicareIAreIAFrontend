@@ -11,6 +11,8 @@ import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-lis
 import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
 import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
 import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
+import { PatientBabyCareComponent } from './patient/pages/patient-baby-care/patient-baby-care.component';
+import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
 
 
 const routes: Routes = [
@@ -43,6 +45,18 @@ const routes: Routes = [
   {
     path: 'patient/doctors/:id',
     component: PatientDoctorDetailComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/baby-care',
+    component: PatientBabyCareComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/profile',
+    component: PatientProfileComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },

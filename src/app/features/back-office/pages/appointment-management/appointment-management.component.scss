@@ -1,0 +1,134 @@
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    h1 {
+        font-size: 1.85rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0;
+        em {
+            font-family: inherit;
+            font-style: italic;
+            font-weight: 300;
+            color: #ff3366;
+        }
+    }
+    p { color: #666; font-size: 0.9rem; margin-top: 0.2rem; }
+}
+
+.panel {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.panel-head {
+    margin-bottom: 1.5rem;
+}
+
+.role-filter {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: #333;
+    outline: none;
+    transition: all 0.2s;
+    &:focus { border-color: #6366f1; background: white; }
+}
+
+.tbl {
+    width: 100%;
+    border-collapse: collapse;
+    th {
+        text-align: left;
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #888;
+        padding: 0.75rem 1rem;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    td {
+        padding: 1rem;
+        font-size: 0.92rem;
+        color: #333;
+        border-bottom: 1px solid #f8f9fa;
+        vertical-align: middle;
+    }
+    tr:hover td { background: #fbfbfc; }
+}
+
+.ucell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.mav {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.75rem;
+}
+
+.ma1 { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+
+.uinfo {
+    .cn { font-weight: 700; color: #1a1a1a; font-size: 0.95rem; }
+    .cs { font-size: 0.75rem; color: #888; }
+}
+
+.chip {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 99px;
+    text-transform: uppercase;
+}
+
+.ck-emerald { background: #dcfce7; color: #166534; }
+.ck-amber { background: #fef3c7; color: #92400e; }
+.ck-rose { background: #fee2e2; color: #991b1b; }
+
+.action-btn {
+    background: none;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 1rem;
+    &:hover { opacity: 0.7; text-decoration: underline; }
+}
+
+.text-indigo { color: #6366f1; }
+.text-rose { color: #ff3366; }
+
+.btn-primary {
+    background: #112a46;
+    color: white;
+    padding: 0.7rem 1.25rem;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    svg { width: 16px; height: 16px; }
+}
+
+.loader, .no-data {
+    padding: 3rem;
+    text-align: center;
+    color: #888;
+}

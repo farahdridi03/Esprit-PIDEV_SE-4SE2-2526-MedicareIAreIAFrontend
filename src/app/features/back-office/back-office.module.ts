@@ -8,6 +8,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.component';
 import { AdminTopbarComponent } from './components/admin-topbar/admin-topbar.component';
 import { UserManagementComponent } from './pages/user-management/user-management.component';
+import { AppointmentManagementComponent } from './pages/appointment-management/appointment-management.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { UserManagementComponent } from './pages/user-management/user-management
     DashboardComponent,
     AdminSidebarComponent,
     AdminTopbarComponent,
-    UserManagementComponent
+    UserManagementComponent,
+    AppointmentManagementComponent
   ],
   imports: [
     CommonModule,

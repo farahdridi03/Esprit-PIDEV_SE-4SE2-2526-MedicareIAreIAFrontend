@@ -1,3 +1,5 @@
+$primary-green: #10b981;
+
 .patient-layout {
   display: flex;
   height: 100vh;
@@ -358,40 +360,72 @@
           padding: 20px 0;
         }
         
-        .slot-pill {
-          padding: 10px 8px;
-          border: 1px solid #E5E7EB;
-          border-radius: 30px;
-          background: white;
-          color: #111827;
-          font-size: 13px;
-          font-weight: 600;
+        .slot-card-mini {
+          position: relative;
+          background: #ffffff;
+          border: 1.5px solid #E5E7EB;
+          padding: 12px 10px;
+          border-radius: 16px;
           cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
-          white-space: nowrap;
-          transition: all 0.2s;
+          gap: 6px;
+          min-height: 80px;
           box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-          
+
           &:hover:not(.booked):not(.selected) {
-            background-color: #f9fafb;
-            transform: translateY(-1px);
+            transform: translateY(-4px);
+            border-color: #10b981;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.06);
           }
-          
+
           &.selected {
-            background-color: #111827 !important;
-            color: white !important;
+            background-color: #111827;
             border-color: #111827;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.2);
+            
+            .slot-time { color: white; }
+            .slot-badge {
+              &.online { background: rgba(255,255,255,0.2); color: white; }
+              &.office { background: rgba(255,255,255,0.2); color: white; }
+            }
           }
-          
+
           &.booked {
             background-color: #f3f4f6;
             color: #9ca3af;
             border-color: #e5e7eb;
             cursor: not-allowed;
             opacity: 0.6;
+            &:hover { transform: none; box-shadow: none; }
+          }
+
+          .slot-time {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #111827;
+            transition: color 0.3s;
+          }
+
+          .slot-badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+
+            &.online { background: #e0f2fe; color: #0369a1; }
+            &.office { background: #ffedd5; color: #c2410c; }
+            
+            i { font-size: 0.55rem; }
           }
         }
       }
@@ -399,70 +433,106 @@
 
     /* Reviews */
     .add-review {
-      background: #F9FAFB;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 30px;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 20px;
+      margin-bottom: 40px;
+      border: 1px solid #f1f5f9;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
 
       .stars-input {
-        margin-bottom: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
         i {
-          color: #D1D5DB;
-          font-size: 24px;
+          color: #e5e7eb;
+          font-size: 28px;
           cursor: pointer;
-          margin-right: 4px;
-          &.active { color: #FBBF24; }
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          
+          &:hover { transform: scale(1.2); }
+          &.hovered { color: #fde047; } // Soft yellow for hover
+          &.active { color: #f59e0b; transform: scale(1.1); } // Deeper amber for select
+        }
+
+        .rating-label {
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: #f59e0b;
+          background: #fffbeb;
+          padding: 2px 8px;
+          border-radius: 6px;
         }
       }
 
       textarea {
         width: 100%;
-        padding: 12px;
-        border: 1px solid #E5E7EB;
-        border-radius: 8px;
+        padding: 16px;
+        border: 1.5px solid #f1f5f9;
+        border-radius: 12px;
         font-family: inherit;
-        font-size: 14px;
-        height: 100px;
-        resize: vertical;
-        margin-bottom: 16px;
+        font-size: 15px;
+        height: 120px;
+        resize: none;
+        margin-bottom: 20px;
+        transition: all 0.2s;
+        background: #f8fafc;
+        
         &:focus {
+          background: white;
           border-color: #10b981;
+          box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
           outline: none;
         }
+      }
+      
+      .btn-primary {
+        width: 100%;
+        padding: 14px;
+        font-weight: 700;
+        border-radius: 12px;
+        background: $primary-green;
+        color: white;
+        border: none;
+        transition: all 0.2s;
+        
+        &:disabled { opacity: 0.6; cursor: not-allowed; }
+        &:hover:not(:disabled) { background: #0b6654; transform: translateY(-1px); }
       }
     }
 
     .review-item {
-      padding: 20px 0;
-      border-bottom: 1px solid #E5E7EB;
-      
-      &:last-child {
-        border-bottom: none;
-      }
+      padding: 30px;
+      border-radius: 20px;
+      background: #f8fafc;
+      margin-bottom: 20px;
+      border: 1px solid #f1f5f9;
       
       .review-header {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 8px;
+        align-items: center;
+        margin-bottom: 12px;
         
-        strong { color: #111827; font-weight: 600; }
-        .review-date { color: #6B7280; font-size: 12px; }
+        strong { color: #111827; font-size: 1.05rem; font-weight: 700; }
+        .review-date { color: #94a3b8; font-size: 0.85rem; font-weight: 500; }
       }
       
       .stars {
-        margin-bottom: 12px;
+        margin-bottom: 15px;
+        display: flex; gap: 4px;
         i {
-          color: #D1D5DB;
-          font-size: 14px;
-          margin-right: 2px;
-          &.filled { color: #FBBF24; }
+          color: #e5e7eb; font-size: 14px;
+          &.filled { color: #f59e0b; }
         }
       }
       
       .review-comment {
-        color: #4B5563;
-        font-size: 14px;
-        line-height: 1.5;
+        color: #475569;
+        font-size: 1rem;
+        line-height: 1.6;
         margin: 0;
       }
     }

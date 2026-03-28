@@ -141,4 +141,34 @@ export class AuthService {
             return 1;
         }
     }
+
+    getUserGender(): string {
+        const token = this.getToken();
+        if (!token) return 'UNKNOWN';
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.gender || 'UNKNOWN';
+        } catch (error) {
+            return 'UNKNOWN';
+        }
+    }
+
+    getParentRole() {
+        const gender = this.getUserGender();
+        if (gender === 'FEMALE') {
+            return {
+                label: 'Maman',
+                badge: 'MAMA'
+            };
+        } else if (gender === 'MALE') {
+            return {
+                label: 'Papa',
+                badge: 'PAPA'
+            };
+        }
+        return {
+            label: 'Parent',
+            badge: 'PARENT'
+        };
+    }
 }

@@ -120,42 +120,54 @@
 
         .slot-card {
            background: white;
-           padding: 0.75rem;
-           border-radius: 12px;
-           box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-           border-left: 4px solid #10b981;
+           padding: 1rem 0.75rem;
+           border-radius: 14px;
+           box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+           border: 1px solid #eef2f7;
+           position: relative;
            cursor: pointer;
-           transition: transform 0.2s;
+           transition: all 0.25s ease;
+           text-align: center;
+           overflow: hidden;
 
            &:hover {
-             transform: translateY(-2px);
-             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+             transform: translateY(-3px);
+             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08);
+             border-color: #d1d5db;
            }
 
-           &.online { border-left-color: #3b82f6; }
-           &.both { border-left-color: #8b5cf6; }
+           &.is-booked {
+             background: #fdfdfd; opacity: 0.85; border-color: #f3f4f6; cursor: not-allowed;
+           }
+
+           .mode-indicator {
+              margin-bottom: 0.5rem;
+              .mode-badge {
+                 font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+                 padding: 3px 8px; border-radius: 100px; display: inline-flex; align-items: center; gap: 4px;
+                 
+                 &.online { background: #e0f2fe; color: #0369a1; }
+                 &.office { background: #ffedd5; color: #c2410c; }
+                 &.both { background: #f3e8ff; color: #7e22ce; }
+              }
+           }
 
            .slot-time {
-             font-size: 0.85rem;
-             font-weight: 700;
+             font-size: 1.1rem;
+             font-weight: 800;
              color: #111827;
+             line-height: 1;
+             margin-bottom: 0.5rem;
            }
 
-           .slot-mode {
-             font-size: 0.75rem;
-             color: #6b7280;
-             margin-top: 0.15rem;
-           }
-
-           .slot-status {
-             font-size: 0.7rem;
-             font-weight: 600;
-             color: #10b981;
-             background: #ecfdf5;
-             display: inline-block;
-             padding: 2px 6px;
-             border-radius: 4px;
-             margin-top: 0.5rem;
+           .slot-status-row {
+             display: flex; align-items: center; justify-content: center; gap: 6px;
+             .status-dot {
+               width: 6px; height: 6px; border-radius: 50%;
+               &.available { background: #10b981; }
+               &.booked { background: #f87171; }
+             }
+             .status-text { font-size: 0.7rem; font-weight: 600; color: #6b7280; }
            }
         }
 
