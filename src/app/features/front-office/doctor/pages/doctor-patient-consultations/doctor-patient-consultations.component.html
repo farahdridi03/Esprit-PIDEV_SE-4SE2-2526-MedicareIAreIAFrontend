@@ -124,12 +124,18 @@
                     <form (ngSubmit)="saveConsultation()" #consultationForm="ngForm">
                         <div class="form-group" style="margin-bottom: 24px;">
                             <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #4a5568; font-size: 14px;">Date & Time <span style="color: #e53e3e;">*</span></label>
-                            <input type="datetime-local" name="date" [(ngModel)]="currentConsultation.date" required class="form-control" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px;">
+                            <input type="datetime-local" name="date" [(ngModel)]="currentConsultation.date" #date="ngModel" required class="form-control" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px;">
+                            <div *ngIf="date.invalid && (date.dirty || date.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Consultation date and time are required.
+                            </div>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 24px;">
                             <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #4a5568; font-size: 14px;">Observations <span style="color: #e53e3e;">*</span></label>
-                            <textarea name="observations" [(ngModel)]="currentConsultation.observations" required class="form-control" rows="5" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px;"></textarea>
+                            <textarea name="observations" [(ngModel)]="currentConsultation.observations" #observations="ngModel" required class="form-control" rows="5" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px;"></textarea>
+                            <div *ngIf="observations.invalid && (observations.dirty || observations.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Observations are required.
+                            </div>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 30px;">

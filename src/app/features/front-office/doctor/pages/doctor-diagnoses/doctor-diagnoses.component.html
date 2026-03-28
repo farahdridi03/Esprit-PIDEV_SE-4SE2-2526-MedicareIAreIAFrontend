@@ -48,16 +48,22 @@
         <form (ngSubmit)="saveDiagnosis()" #diagnosisForm="ngForm">
             <div class="form-group">
                 <label>Diagnosis Type</label>
-                <select name="type" [(ngModel)]="currentDiagnosis.type" required class="form-control">
+                <select name="type" [(ngModel)]="currentDiagnosis.type" #dtype="ngModel" required class="form-control">
                     <option value="PRIMARY">PRIMARY</option>
                     <option value="SECONDARY">SECONDARY</option>
                     <option value="PRELIMINARY">PRELIMINARY</option>
                     <option value="FINAL">FINAL</option>
                 </select>
+                <div *ngIf="dtype.invalid && (dtype.dirty || dtype.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                    Diagnosis type is required.
+                </div>
             </div>
             <div class="form-group">
                 <label>Description (Details)</label>
-                <textarea name="description" [(ngModel)]="currentDiagnosis.description" required class="form-control" rows="3" placeholder="Condition details..."></textarea>
+                <textarea name="description" [(ngModel)]="currentDiagnosis.description" #ddesc="ngModel" required class="form-control" rows="3" placeholder="Condition details..."></textarea>
+                <div *ngIf="ddesc.invalid && (ddesc.dirty || ddesc.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                    Description is required.
+                </div>
             </div>
             
             <div class="form-actions mt-3" style="display: flex; gap: 12px; justify-content: flex-end;">

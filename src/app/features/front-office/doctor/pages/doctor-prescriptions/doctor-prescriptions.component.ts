@@ -83,8 +83,12 @@ export class DoctorPrescriptionsComponent implements OnInit, OnChanges {
         next: () => {
           this.loadPrescriptions();
           this.showForm = false;
+          alert('Prescription updated successfully');
         },
-        error: (err) => console.error('Error updating prescription', err)
+        error: (err) => {
+          console.error('Error updating prescription', err);
+          alert('Failed to update prescription. Please check the data.');
+        }
       });
     } else {
       this.currentPrescription.consultationId = this.consultationId;
@@ -92,8 +96,12 @@ export class DoctorPrescriptionsComponent implements OnInit, OnChanges {
         next: () => {
           this.loadPrescriptions();
           this.showForm = false;
+          alert('Prescription added successfully');
         },
-        error: (err) => console.error('Error adding prescription', err)
+        error: (err) => {
+          console.error('Error adding prescription', err);
+          alert('Failed to add prescription. Please check the data.');
+        }
       });
     }
   }

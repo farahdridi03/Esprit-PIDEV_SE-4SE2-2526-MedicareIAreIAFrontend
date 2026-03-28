@@ -106,31 +106,46 @@
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
                             <div class="form-group">
                                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Link to Session <span style="color: #e53e3e;">*</span></label>
-                                <select name="consultationId" [(ngModel)]="currentPrescription.consultationId" required class="form-control" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px;">
+                                <select name="consultationId" [(ngModel)]="currentPrescription.consultationId" #consultationLink="ngModel" required class="form-control" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px;">
                                     <option [ngValue]="null" disabled>Select session...</option>
                                     <option *ngFor="let cons of consultations" [ngValue]="cons.id">CS#{{ cons.id }} ({{ cons.date | date:'shortDate' }})</option>
                                 </select>
+                                <div *ngIf="consultationLink.invalid && (consultationLink.dirty || consultationLink.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                    Please link to a consultation.
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Date</label>
-                                <input type="date" name="date" [(ngModel)]="currentPrescription.date" required class="form-control" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px;">
+                                <input type="date" name="date" [(ngModel)]="currentPrescription.date" #rxDate="ngModel" required class="form-control" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px;">
+                                <div *ngIf="rxDate.invalid && (rxDate.dirty || rxDate.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                    Prescription date is required.
+                                </div>
                             </div>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px;">
                             <div class="form-group">
                                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Medication Name <span style="color: #e53e3e;">*</span></label>
-                                <input type="text" name="medication" [(ngModel)]="currentPrescription.medication" required class="form-control" placeholder="e.g. Paracetamol 500mg" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px;">
+                                <input type="text" name="medication" [(ngModel)]="currentPrescription.medication" #medName="ngModel" required class="form-control" placeholder="e.g. Paracetamol 500mg" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px;">
+                                <div *ngIf="medName.invalid && (medName.dirty || medName.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                    Medication name is required.
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Dosage <span style="color: #e53e3e;">*</span></label>
-                                <input type="text" name="dosage" [(ngModel)]="currentPrescription.dosage" required class="form-control" placeholder="e.g. 1 tab x 3/day" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px;">
+                                <input type="text" name="dosage" [(ngModel)]="currentPrescription.dosage" #medDosage="ngModel" required class="form-control" placeholder="e.g. 1 tab x 3/day" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px;">
+                                <div *ngIf="medDosage.invalid && (medDosage.dirty || medDosage.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                    Dosage is required.
+                                </div>
                             </div>
                         </div>
 
                         <div class="form-group" style="margin-bottom: 30px;">
                             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Patient Instructions <span style="color: #e53e3e;">*</span></label>
-                            <textarea name="instructions" [(ngModel)]="currentPrescription.instructions" required class="form-control" rows="4" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px; background: #f8fafc;"></textarea>
+                            <textarea name="instructions" [(ngModel)]="currentPrescription.instructions" #rxInstructions="ngModel" required class="form-control" rows="4" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px; background: #f8fafc;"></textarea>
+                            <div *ngIf="rxInstructions.invalid && (rxInstructions.dirty || rxInstructions.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Instructions are required.
+                            </div>
                         </div>
                         
                         <div class="form-actions" style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 25px; border-top: 1px solid #edf2f7;">

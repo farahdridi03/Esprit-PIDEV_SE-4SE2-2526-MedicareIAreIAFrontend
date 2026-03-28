@@ -24,15 +24,15 @@ export class PatientProfileEditComponent implements OnInit {
   ) {
     this.profileForm = this.fb.group({
       fullName: ['', Validators.required],
-      email: [{ value: '', disabled: true }],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
       phone: [''],
       birthDate: [''],
       gender: [''],
       bloodType: [''],
       emergencyContactName: [''],
       emergencyContactPhone: [''],
-      height: [null, [Validators.min(0)]],
-      weight: [null, [Validators.min(0)]],
+      height: [null, [Validators.min(1)]],
+      weight: [null, [Validators.min(1)]],
       allergies: [''],
       diseases: [''],
       photo: ['']

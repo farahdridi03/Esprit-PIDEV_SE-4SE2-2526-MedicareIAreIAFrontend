@@ -154,3 +154,12 @@ app-root {
     height: 18px;
   }
 }
+
+/* Global Validation Styles */
+.error-msg {
+  color: #e53e3e;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 5px;
+  display: block;
+}

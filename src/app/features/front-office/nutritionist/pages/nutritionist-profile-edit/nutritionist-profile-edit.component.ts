@@ -24,12 +24,12 @@ export class NutritionistProfileEditComponent implements OnInit {
   ) {
     this.profileForm = this.fb.group({
       fullName: ['', Validators.required],
-      email: [{ value: '', disabled: true }],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
       phone: [''],
       birthDate: [''],
       licenseNumber: [{ value: '', disabled: true }],
       specialties: [''],
-      consultationFee: [null, [Validators.min(0)]],
+      consultationFee: [null, [Validators.min(1)]],
       consultationMode: [''],
       photo: ['']
     });

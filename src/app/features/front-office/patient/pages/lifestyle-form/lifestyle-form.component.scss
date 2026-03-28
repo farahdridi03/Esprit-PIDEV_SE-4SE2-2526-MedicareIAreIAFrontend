@@ -92,7 +92,16 @@ $border: #e5e7eb;
             box-shadow: 0 0 0 3px rgba($primary-green, 0.1);
         }
     }
+
+    .error-msg {
+        color: #dc2626;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin-top: 0.25rem;
+        display: block;
+    }
 }
+
 
 .form-actions {
     display: flex;

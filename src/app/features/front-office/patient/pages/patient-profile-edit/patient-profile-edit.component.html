@@ -91,10 +91,16 @@
                                 <div class="form-group">
                                     <label>Height (cm)</label>
                                     <input type="number" formControlName="height" placeholder="Enter height">
+                                    <span class="error-text" *ngIf="profileForm.get('height')?.touched && profileForm.get('height')?.errors?.['min']">
+                                        Height must be positive
+                                    </span>
                                 </div>
                                 <div class="form-group">
                                     <label>Weight (kg)</label>
                                     <input type="number" formControlName="weight" placeholder="Enter weight">
+                                    <span class="error-text" *ngIf="profileForm.get('weight')?.touched && profileForm.get('weight')?.errors?.['min']">
+                                        Weight must be positive
+                                    </span>
                                 </div>
                             </div>
 

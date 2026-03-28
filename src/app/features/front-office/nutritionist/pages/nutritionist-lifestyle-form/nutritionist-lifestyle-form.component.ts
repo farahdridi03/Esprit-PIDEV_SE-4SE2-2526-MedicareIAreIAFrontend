@@ -16,16 +16,19 @@ export class NutritionistLifestyleFormComponent implements OnInit {
   patientId: number | null = null;
   isEditMode: boolean = false;
   isLoading: boolean = false;
+  minDate: string = '';
+
 
   // Form Models
   goal: any = {
     category: 'WEIGHT_LOSS',
     targetValue: 0,
     baselineValue: 0,
-    targetDate: new Date().toISOString().split('T')[0],
+    targetDate: '',
     status: 'PENDING',
     patientId: null
   };
+
 
   tracking: any = {
     goalId: null,
@@ -38,11 +41,12 @@ export class NutritionistLifestyleFormComponent implements OnInit {
   plan: any = {
     title: '',
     description: '',
-    startDate: new Date().toISOString().split('T')[0],
+    startDate: '',
     endDate: '',
     goalId: null,
     nutritionistId: null
   };
+
 
   goals: LifestyleGoal[] = [];
 
@@ -53,12 +57,62 @@ export class NutritionistLifestyleFormComponent implements OnInit {
     private authService: AuthService
   ) { }
 
+  isTodayOrFuture(dateStr: string): boolean {
+    if (!dateStr) return true;
+    try {
+      const date = new Date(dateStr);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      return targetDate.getTime() >= today.getTime();
+    } catch (e) {
+      return false;
+    }
+  }
+
+  isDateInFuture(dateStr: string): boolean {
+    if (!dateStr) return true;
+    try {
+      const date = new Date(dateStr);
+      const tomorrow = new Date();
+      tomorrow.setHours(0,0,0,0);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      return targetDate.getTime() >= tomorrow.getTime();
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+
+
+
   ngOnInit(): void {
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    
+    const minDateStr = tomorrow.toISOString().split('T')[0];
+    const todayStr = today.toISOString().split('T')[0];
+    this.minDate = minDateStr;
+
     const userId = this.authService.getUserId();
+
     this.route.params.subscribe(params => {
       this.type = params['type'];
       this.patientId = +params['id'];
       const itemId = params['itemid'];
+
+      // Set defaults for NEW goal or NEW plan
+      if (!this.router.url.includes('/edit/')) {
+        this.isEditMode = false;
+        if (this.type === 'goals') this.goal.targetDate = this.minDate;
+        if (this.type === 'plans') this.plan.startDate = todayStr; // Allow today
+      }
+
+
+
 
       this.goal.patientId = this.patientId;
       this.tracking.patientId = this.patientId;
@@ -118,7 +172,12 @@ export class NutritionistLifestyleFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.type === 'goals' && !this.isDateInFuture(this.goal.targetDate)) return;
+    if (this.type === 'plans' && (!this.isTodayOrFuture(this.plan.startDate) || (this.plan.endDate && !this.isDateInFuture(this.plan.endDate)))) return;
+
     this.isLoading = true;
+
+
     let obs: Observable<any> | null = null;
     if (this.type === 'plans') {
       obs = this.isEditMode && this.id

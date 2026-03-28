@@ -37,8 +37,13 @@
                             </div>
                             <div class="form-group">
                                 <label>Target Date</label>
-                                <input type="date" name="targetDate" [(ngModel)]="goal.targetDate" required>
+                                <input type="date" name="targetDate" [(ngModel)]="goal.targetDate" #targetDate="ngModel" required [min]="minDate">
+                                <div *ngIf="(targetDate.dirty || targetDate.touched) && !isDateInFuture(goal.targetDate)" class="error-msg">
+                                    Target date must be a date in the future (today is not allowed).
+                                </div>
+
                             </div>
+
                             <div class="form-group" *ngIf="isEditMode">
                                 <label>Status</label>
                                 <select name="status" [(ngModel)]="goal.status">
@@ -56,16 +61,31 @@
                         <div *ngIf="type === 'plans'" class="form-grid">
                             <div class="form-group full-width">
                                 <label>Plan Title</label>
-                                <input type="text" name="title" [(ngModel)]="plan.title" required placeholder="e.g., High Protein Diet Plan">
+                                <input type="text" name="title" [(ngModel)]="plan.title" #title="ngModel" required minlength="3" maxlength="100" placeholder="e.g., High Protein Diet Plan">
+                                <div *ngIf="(title.dirty || title.touched) && title.invalid" class="error-msg">
+                                    <span *ngIf="title.errors?.['required']">Title is required.</span>
+                                    <span *ngIf="title.errors?.['minlength']">Title must be at least 3 characters.</span>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="date" name="startDate" [(ngModel)]="plan.startDate" required>
+                                <input type="date" name="startDate" [(ngModel)]="plan.startDate" #startDate="ngModel" required [min]="minDate">
+                                <div *ngIf="(startDate.dirty || startDate.touched) && !isTodayOrFuture(plan.startDate)" class="error-msg">
+                                    Start date cannot be in the past.
+                                </div>
+
+
                             </div>
+
                             <div class="form-group">
                                 <label>End Date</label>
-                                <input type="date" name="endDate" [(ngModel)]="plan.endDate">
+                                <input type="date" name="endDate" [(ngModel)]="plan.endDate" #endDate="ngModel" [min]="minDate">
+                                <div *ngIf="(endDate.dirty || endDate.touched) && !isDateInFuture(plan.endDate)" class="error-msg">
+                                    End date must be a date in the future.
+                                </div>
+
                             </div>
+
                             <div class="form-group">
                                 <label>Target Goal</label>
                                 <select name="goalId" [(ngModel)]="plan.goalId" required>
@@ -82,9 +102,15 @@
                                 </select>
                             </div>
                             <div class="form-group full-width">
-                                <label>Description & Instructions</label>
-                                <textarea name="description" [(ngModel)]="plan.description" rows="4" placeholder="Detailed meal instructions, caloric limits, etc."></textarea>
+                                <label>Description</label>
+                                <textarea name="description" [(ngModel)]="plan.description" #description="ngModel" required minlength="10" maxlength="500" rows="4" placeholder="Brief overview of the plan objectives."></textarea>
+                                <div *ngIf="(description.dirty || description.touched) && description.invalid" class="error-msg">
+                                    <span *ngIf="description.errors?.['required']">Description is required.</span>
+                                    <span *ngIf="description.errors?.['minlength']">Description must be at least 10 characters.</span>
+                                    <span *ngIf="description.errors?.['maxlength']">Description cannot exceed 500 characters.</span>
+                                </div>
                             </div>
+                            
                         </div>
 
                         <!-- Tracking Fields -->
@@ -110,10 +136,12 @@
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn-submit" [disabled]="!lifestyleForm.form.valid">
+                            <button type="submit" class="btn-submit" [disabled]="!lifestyleForm.form.valid || isLoading || (type === 'goals' && !isDateInFuture(goal.targetDate)) || (type === 'plans' && (!isTodayOrFuture(plan.startDate) || (plan.endDate && !isDateInFuture(plan.endDate))))">
                                 {{ isEditMode ? 'Update' : 'Create' }} {{ type }}
                             </button>
                         </div>
+
+
                     </form>
                 </div>
 

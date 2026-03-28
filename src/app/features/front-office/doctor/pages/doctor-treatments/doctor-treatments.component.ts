@@ -13,17 +13,24 @@ export class DoctorTreatmentsComponent implements OnInit, OnChanges {
   treatments: Treatment[] = [];
   loading = true;
   showForm = false;
+  minDate = '';
   currentTreatment: Treatment = this.getEmptyTreatment();
+
 
   constructor(
     private treatmentService: TreatmentService
   ) {}
 
   ngOnInit(): void {
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+    this.minDate = today.toISOString().split('T')[0];
+
     if (this.consultationId) {
       this.loadTreatments();
     }
   }
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['consultationId'] && !changes['consultationId'].isFirstChange()) {
@@ -32,8 +39,23 @@ export class DoctorTreatmentsComponent implements OnInit, OnChanges {
   }
 
   getEmptyTreatment(): Treatment {
-    return { consultationId: this.consultationId || 0, treatmentType: '', description: '', startDate: '', endDate: '', status: 'ACTIVE' } as any; 
+    return { consultationId: this.consultationId || 0, treatmentType: '', description: '', startDate: new Date().toISOString().split('T')[0], endDate: '', status: 'ONGOING' } as any; 
   }
+
+  isDateInFuture(dateStr: string | undefined): boolean {
+    if (!dateStr) return true;
+    try {
+      const date = new Date(dateStr);
+      const tomorrow = new Date();
+      tomorrow.setHours(0,0,0,0);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      return targetDate.getTime() >= tomorrow.getTime();
+    } catch (e) {
+      return false;
+    }
+  }
+
 
   loadTreatments(): void {
     this.loading = true;
@@ -50,9 +72,10 @@ export class DoctorTreatmentsComponent implements OnInit, OnChanges {
   }
 
   openAddForm(): void {
-    this.currentTreatment = { consultationId: this.consultationId, treatmentType: '', description: '', startDate: '', endDate: '', status: 'ACTIVE' };
+    this.currentTreatment = this.getEmptyTreatment();
     this.showForm = true;
   }
+
 
   openEditForm(treatment: Treatment): void {
     this.currentTreatment = { ...treatment };
@@ -64,7 +87,12 @@ export class DoctorTreatmentsComponent implements OnInit, OnChanges {
   }
 
   saveTreatment(): void {
+    if (this.currentTreatment.endDate && !this.isDateInFuture(this.currentTreatment.endDate)) {
+      return;
+    }
+
     if (this.currentTreatment.id) {
+
       this.treatmentService.update(this.currentTreatment.id, this.currentTreatment).subscribe({
         next: () => {
           this.loadTreatments();

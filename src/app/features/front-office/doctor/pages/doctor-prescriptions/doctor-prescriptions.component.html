@@ -54,7 +54,10 @@
         <form (ngSubmit)="savePrescription()" #prescriptionForm="ngForm">
             <div class="form-group mb-3">
                 <label>Date Prescribed</label>
-                <input type="date" name="date" [(ngModel)]="currentPrescription.date" required class="form-control">
+                <input type="date" name="date" [(ngModel)]="currentPrescription.date" #rxDate="ngModel" required class="form-control">
+                <div *ngIf="rxDate.invalid && (rxDate.dirty || rxDate.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                    Date is required.
+                </div>
             </div>
             
             <div class="items-list">
@@ -67,21 +70,33 @@
                     
                     <div class="form-group">
                         <label>Medication Name</label>
-                        <input type="text" [name]="'medName_'+i" [(ngModel)]="item.medicationName" required class="form-control" placeholder="e.g. Amoxicillin">
+                        <input type="text" [name]="'medName_'+i" [(ngModel)]="item.medicationName" #medName="ngModel" required class="form-control" placeholder="e.g. Amoxicillin">
+                        <div *ngIf="medName.invalid && (medName.dirty || medName.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                            Name is required.
+                        </div>
                     </div>
                     
                     <div class="form-row" style="display: flex; gap: 15px;">
                         <div class="form-group" style="flex: 1;">
                             <label>Dosage</label>
-                            <input type="text" [name]="'dosage_'+i" [(ngModel)]="item.dosage" required class="form-control" placeholder="e.g. 500mg">
+                            <input type="text" [name]="'dosage_'+i" [(ngModel)]="item.dosage" #medDosage="ngModel" required class="form-control" placeholder="e.g. 500mg">
+                            <div *ngIf="medDosage.invalid && (medDosage.dirty || medDosage.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Dosage required.
+                            </div>
                         </div>
                         <div class="form-group" style="flex: 1;">
                             <label>Frequency</label>
-                            <input type="text" [name]="'frequency_'+i" [(ngModel)]="item.frequency" required class="form-control" placeholder="e.g. Twice a day">
+                            <input type="text" [name]="'frequency_'+i" [(ngModel)]="item.frequency" #medFreq="ngModel" required class="form-control" placeholder="e.g. Twice a day">
+                            <div *ngIf="medFreq.invalid && (medFreq.dirty || medFreq.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Frequency required.
+                            </div>
                         </div>
                         <div class="form-group" style="flex: 1;">
                             <label>Duration</label>
-                            <input type="text" [name]="'duration_'+i" [(ngModel)]="item.duration" required class="form-control" placeholder="e.g. 7 days">
+                            <input type="text" [name]="'duration_'+i" [(ngModel)]="item.duration" #medDur="ngModel" required class="form-control" placeholder="e.g. 7 days">
+                            <div *ngIf="medDur.invalid && (medDur.dirty || medDur.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Duration required.
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -54,32 +54,48 @@
         <form (ngSubmit)="saveTreatment()" #treatmentForm="ngForm">
             <div class="form-group">
                 <label>Treatment Type</label>
-                <input type="text" name="treatmentType" [(ngModel)]="currentTreatment.treatmentType" required class="form-control" placeholder="e.g. Physical Therapy">
+                <input type="text" name="treatmentType" [(ngModel)]="currentTreatment.treatmentType" #ttype="ngModel" required class="form-control" placeholder="e.g. Physical Therapy">
+                <div *ngIf="ttype.invalid && (ttype.dirty || ttype.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                    Treatment type is required.
+                </div>
             </div>
             <div class="form-group">
                 <label>Description</label>
-                <textarea name="description" [(ngModel)]="currentTreatment.description" required class="form-control" rows="2"></textarea>
+                <textarea name="description" [(ngModel)]="currentTreatment.description" #tdesc="ngModel" required class="form-control" rows="2"></textarea>
+                <div *ngIf="tdesc.invalid && (tdesc.dirty || tdesc.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                    Description is required.
+                </div>
             </div>
             
             <div class="form-row" style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 1;">
                     <label>Start Date</label>
-                    <input type="date" name="startDate" [(ngModel)]="currentTreatment.startDate" required class="form-control">
+                    <input type="date" name="startDate" [(ngModel)]="currentTreatment.startDate" #tstart="ngModel" required class="form-control">
+                    <div *ngIf="tstart.invalid && (tstart.dirty || tstart.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                        Start date is required.
+                    </div>
                 </div>
                 <div class="form-group" style="flex: 1;">
                     <label>End Date (Optional)</label>
-                    <input type="date" name="endDate" [(ngModel)]="currentTreatment.endDate" class="form-control">
+                    <input type="date" name="endDate" [(ngModel)]="currentTreatment.endDate" #tend="ngModel" [min]="minDate" class="form-control">
+                    <div *ngIf="(tend.dirty || tend.touched) && !isDateInFuture(currentTreatment.endDate)" class="error-msg">
+                        End date must be in the future.
+                    </div>
                 </div>
+
             </div>
 
             <div class="form-group">
                 <label>Status</label>
-                <select name="status" [(ngModel)]="currentTreatment.status" required class="form-control">
+                <select name="status" [(ngModel)]="currentTreatment.status" #tstatus="ngModel" required class="form-control">
                     <option value="ACTIVE">ACTIVE</option>
                     <option value="COMPLETED">COMPLETED</option>
                     <option value="PAUSED">PAUSED</option>
                     <option value="CANCELLED">CANCELLED</option>
                 </select>
+                <div *ngIf="tstatus.invalid && (tstatus.dirty || tstatus.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                    Status is required.
+                </div>
             </div>
             
             <div class="form-actions mt-3" style="display: flex; gap: 12px; justify-content: flex-end;">
@@ -87,10 +103,11 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                     Cancel
                 </button>
-                <button type="submit" class="btn-premium btn-save" [disabled]="!treatmentForm.valid">
+                <button type="submit" class="btn-premium btn-save" [disabled]="!treatmentForm.valid || (currentTreatment.endDate && !isDateInFuture(currentTreatment.endDate))">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                     Save Treatment
                 </button>
+
             </div>
         </form>
     </div>

@@ -76,8 +76,10 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Consultation Fee (DT)</label>
                                     <input type="number" formControlName="consultationFee" placeholder="Fee amount">
+                                    <span class="error-text" *ngIf="profileForm.get('consultationFee')?.touched && profileForm.get('consultationFee')?.errors?.['min']">
+                                        Fee must be positive
+                                    </span>
                                 </div>
 
                                 <div class="form-group">

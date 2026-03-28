@@ -21,6 +21,8 @@ export class DoctorPatientTreatmentsComponent implements OnInit {
   isEdit = false;
   viewMode = false;
   currentViewItem: any = null;
+  minDate = '';
+
   
   currentTreatment: any = {
     consultationId: null,
@@ -50,6 +52,10 @@ export class DoctorPatientTreatmentsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+    this.minDate = today.toISOString().split('T')[0];
+
     this.route.params.subscribe(params => {
       const id = +params['id'];
       if (id) {
@@ -58,6 +64,34 @@ export class DoctorPatientTreatmentsComponent implements OnInit {
       }
     });
   }
+
+  isDateInFuture(dateStr: string): boolean {
+    if (!dateStr) return true;
+    try {
+      const date = new Date(dateStr);
+      const tomorrow = new Date();
+      tomorrow.setHours(0,0,0,0);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      return targetDate.getTime() >= tomorrow.getTime();
+    } catch (e) {
+      return false;
+    }
+  }
+
+  isTodayOrFuture(dateStr: string): boolean {
+    if (!dateStr) return true;
+    try {
+      const date = new Date(dateStr);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      return targetDate.getTime() >= today.getTime();
+    } catch (e) {
+      return false;
+    }
+  }
+
 
   loadData(): void {
     this.loading = true;
@@ -133,7 +167,12 @@ export class DoctorPatientTreatmentsComponent implements OnInit {
   }
 
   saveTreatment(): void {
+    if (this.currentTreatment.endDate && !this.isDateInFuture(this.currentTreatment.endDate)) {
+      return;
+    }
+
     if (!this.currentTreatment.consultationId) {
+
       alert("Please select a valid Consultation. If none exist, create one first.");
       return;
     }
