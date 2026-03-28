@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { UserManagementComponent } from './user-management.component';
+import { TestingModule } from '../../../../testing/testing.module';
 
 describe('UserManagementComponent', () => {
   let component: UserManagementComponent;
@@ -8,7 +9,9 @@ describe('UserManagementComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UserManagementComponent]
+      declarations: [UserManagementComponent],
+      imports: [TestingModule],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

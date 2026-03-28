@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { SidebarComponent } from './sidebar.component';
-import { Router } from '@angular/router';
+import { TestingModule } from '../../../../../testing/testing.module';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -9,7 +9,9 @@ describe('SidebarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SidebarComponent]
+      declarations: [SidebarComponent],
+      imports: [TestingModule],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 
@@ -22,13 +24,3 @@ describe('SidebarComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-export class PatientSidebarComponent {
-
-    constructor(private router: Router) { }
-
-    logout() {
-        this.router.navigate(['/front']);
-    }
-
-}

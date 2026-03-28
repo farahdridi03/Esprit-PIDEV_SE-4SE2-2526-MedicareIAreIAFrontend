@@ -10,21 +10,21 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  * Import this in your test files to get all the necessary dependencies
  */
 @NgModule({
-  imports: [
-    CommonModule,
-    HttpClientTestingModule,
-    RouterTestingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule
-  ],
-  exports: [
-    CommonModule,
-    HttpClientTestingModule,
-    RouterTestingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule
-  ]
+    imports: [
+        CommonModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule
+    ],
+    exports: [
+        CommonModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule
+    ]
 })
 export class TestingModule { }

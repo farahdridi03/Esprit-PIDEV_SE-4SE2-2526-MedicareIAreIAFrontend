@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { BackOfficeComponent } from './back-office.component';
+import { TestingModule } from '../../testing/testing.module';
 
 describe('BackOfficeComponent', () => {
   let component: BackOfficeComponent;
@@ -8,7 +9,9 @@ describe('BackOfficeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BackOfficeComponent]
+      declarations: [BackOfficeComponent],
+      imports: [TestingModule],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

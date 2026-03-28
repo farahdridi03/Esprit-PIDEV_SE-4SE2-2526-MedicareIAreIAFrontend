@@ -125,7 +125,7 @@ describe('RegisterComponent', () => {
       const birthDateControl = component.registerForm.get('birthDate');
       birthDateControl?.setValue('');
       birthDateControl?.markAsTouched();
-      
+
       const message = component.getBirthDateErrorMessage();
       expect(message).toBeDefined();
       expect(message.length).toBeGreaterThan(0);
