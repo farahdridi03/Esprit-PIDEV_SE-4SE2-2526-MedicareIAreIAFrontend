@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { DoctorDiagnosesComponent } from './doctor-diagnoses.component';
 
@@ -8,7 +11,9 @@ describe('DoctorDiagnosesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DoctorDiagnosesComponent]
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      declarations: [DoctorDiagnosesComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
 

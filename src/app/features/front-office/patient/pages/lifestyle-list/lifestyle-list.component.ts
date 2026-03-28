@@ -51,17 +51,22 @@ export class LifestyleListComponent implements OnInit {
     }
   }
 
-  loadData(): void {
-    this.isLoading = true;
-    const fetchObs = this.patientId 
-      ? this.getPatientSpecificData() 
-      : this.getMyData();
+    loadData(): void {
+        this.isLoading = true;
+        const fetchObs = this.patientId 
+            ? this.getPatientSpecificData() 
+            : this.getMyData();
 
-    fetchObs.subscribe({
-      next: (data: any[]) => this.handleSuccess(data),
-      error: (err: any) => this.isLoading = false
-    });
-  }
+        if (!fetchObs) {
+            this.isLoading = false;
+            return;
+        }
+
+        fetchObs.subscribe({
+            next: (data: any[]) => this.handleSuccess(data),
+            error: (err: any) => this.isLoading = false
+        });
+    }
 
   private getMyData(): any {
     switch (this.type) {
