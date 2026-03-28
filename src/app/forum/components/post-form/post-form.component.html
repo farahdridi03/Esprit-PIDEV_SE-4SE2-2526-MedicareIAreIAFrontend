@@ -1,0 +1,83 @@
+<div class="post-form-container">
+  <div class="form-header">
+    <h3>{{ isEditing ? 'Modifier le post' : 'Créer un nouveau post' }}</h3>
+    <button class="btn btn-outline-secondary" (click)="onCancel()">
+      <i class="fas fa-times"></i> Annuler
+    </button>
+  </div>
+
+  <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
+    <div class="form-group">
+      <label for="title">Titre *</label>
+      <input 
+        type="text" 
+        id="title" 
+        formControlName="title" 
+        class="form-control"
+        placeholder="Entrez le titre du post..."
+        [class.is-invalid]="getFieldError('title')"
+      >
+      <div class="invalid-feedback" *ngIf="getFieldError('title')">
+        {{ getFieldError('title') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Catégorie *</label>
+      <select 
+        id="category" 
+        formControlName="category" 
+        class="form-control"
+        [class.is-invalid]="getFieldError('category')"
+      >
+        <option value="General Health">General Health</option>
+        <option value="Medications">Medications</option>
+        <option value="Nutrition">Nutrition</option>
+        <option value="Treatments">Treatments</option>
+        <option value="Other">Other</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="getFieldError('category')">
+        {{ getFieldError('category') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="content">Contenu *</label>
+      <textarea 
+        id="content" 
+        formControlName="content" 
+        class="form-control"
+        rows="8"
+        placeholder="Écrivez le contenu de votre post..."
+        [class.is-invalid]="getFieldError('content')"
+      ></textarea>
+      <div class="invalid-feedback" *ngIf="getFieldError('content')">
+        {{ getFieldError('content') }}
+      </div>
+      <div class="character-count">
+        {{ postForm.get('content')?.value?.length || 0 }} / 2000 caractères
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="postForm.invalid || loading"
+      >
+        <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+        <i class="fas fa-save" *ngIf="!loading"></i>
+        {{ loading ? 'Enregistrement...' : (isEditing ? 'Mettre à jour' : 'Créer') }}
+      </button>
+      
+      <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+        Annuler
+      </button>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+    </div>
+  </form>
+</div>

@@ -14,7 +14,12 @@ const routes: Routes = [
     component: FrontLayoutComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'contact', component: ContactComponent }
+      { path: 'contact', component: ContactComponent },
+      {
+        path: 'forum',
+        loadChildren: () =>
+          import('../../forum/forum.module').then(m => m.ForumModule)
+      }
     ]
   },
   {

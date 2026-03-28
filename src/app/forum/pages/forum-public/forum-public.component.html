@@ -1,0 +1,170 @@
+<div class="forum-public-page">
+
+  <!-- ── Hero Banner ─────────────────────────────────── -->
+  <div class="forum-hero">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-comments"></i> Community</div>
+      <h1>Forum Communautaire</h1>
+      <p>Partagez vos expériences, posez vos questions et obtenez des conseils de professionnels de santé</p>
+      <div class="hero-stats">
+        <span><strong>{{ posts.length }}</strong> Discussions</span>
+        <span><strong>{{ getTotalComments() }}</strong> Commentaires</span>
+        <span><strong>{{ getTotalLikes() }}</strong> Likes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main Content ───────────────────────────────── -->
+  <div class="forum-content">
+
+    <!-- Loading -->
+    <div class="state-box loading-box" *ngIf="loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Chargement des discussions...</p>
+    </div>
+
+    <!-- Error -->
+    <div class="state-box error-box" *ngIf="error && !loading">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ error }}</p>
+      <button class="btn-retry" (click)="loadPosts()"><i class="fas fa-redo"></i> Réessayer</button>
+    </div>
+
+    <!-- ── POSTS LIST ──────────────────────────────── -->
+    <ng-container *ngIf="!loading && !error && !selectedPost">
+      <!-- Search & Filter Row -->
+      <div class="search-row">
+        <div class="search-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Rechercher une discussion...">
+        </div>
+        <select class="cat-select" [(ngModel)]="categoryFilter">
+          <option value="">Toutes les catégories</option>
+          <option value="General Health">General Health</option>
+          <option value="Medications">Medications</option>
+          <option value="Nutrition">Nutrition</option>
+          <option value="Treatments">Treatments</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <!-- Empty State -->
+      <div class="state-box" *ngIf="filteredPosts().length === 0">
+        <i class="fas fa-comment-slash"></i>
+        <p>Aucune discussion trouvée</p>
+      </div>
+
+      <!-- Posts -->
+      <div class="posts-feed">
+        <div class="post-card" *ngFor="let post of filteredPosts()" (click)="selectPost(post)">
+          <div class="post-card-top">
+            <span class="cat-chip"><i class="fas fa-tag"></i> {{ post.category || 'General Health' }}</span>
+            <span class="post-date"><i class="far fa-clock"></i> {{ post.createdAt | date:'d MMM y' }}</span>
+          </div>
+
+          <h3 class="post-title">{{ post.title }}</h3>
+          <p class="post-preview">{{ post.content | slice:0:150 }}{{ post.content.length > 150 ? '...' : '' }}</p>
+
+          <div class="post-footer">
+            <div class="author-chip">
+              <div class="author-avatar">{{ getInitial(post.authorName) }}</div>
+              <span>{{ post.authorName }}</span>
+            </div>
+            <div class="post-engage">
+              <span class="engage-item" [class.liked]="post.isLikedByUser" (click)="likePost(post); $event.stopPropagation()">
+                <i class="fas fa-heart"></i> {{ post.likeCount || 0 }}
+              </span>
+              <span class="engage-item">
+                <i class="fas fa-comment-alt"></i> {{ post.comments?.length || 0 }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── POST DETAIL ─────────────────────────────── -->
+    <div class="post-detail-view" *ngIf="selectedPost && !loading">
+      <!-- Back Button -->
+      <button class="back-btn" (click)="backToList()">
+        <i class="fas fa-arrow-left"></i> Retour aux discussions
+      </button>
+
+      <!-- Post Content -->
+      <div class="detail-card">
+        <div class="detail-header">
+          <span class="cat-chip"><i class="fas fa-tag"></i> {{ selectedPost.category || 'General Health' }}</span>
+        </div>
+        <h1 class="detail-title">{{ selectedPost.title }}</h1>
+
+        <div class="detail-author-row">
+          <div class="author-avatar-lg">{{ getInitial(selectedPost.authorName) }}</div>
+          <div>
+            <div class="author-name-lg">{{ selectedPost.authorName }}</div>
+            <div class="author-date">{{ selectedPost.createdAt | date:'fullDate' }}</div>
+          </div>
+        </div>
+
+        <div class="detail-body">{{ selectedPost.content }}</div>
+
+        <div class="detail-engage-bar">
+          <button class="engage-btn" [class.liked-active]="selectedPost.isLikedByUser" (click)="likePost(selectedPost)">
+            <i class="fas fa-heart"></i>
+            {{ selectedPost.isLikedByUser ? 'Aimé' : "J'aime" }} &nbsp;({{ selectedPost.likeCount || 0 }})
+          </button>
+          <span class="engage-info">
+            <i class="fas fa-comment-alt"></i> {{ selectedPost.comments?.length || 0 }} commentaires
+          </span>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div class="comments-card">
+        <h3 class="comments-heading">
+          <i class="fas fa-comments"></i> Commentaires
+          <span class="count-badge">{{ selectedPost.comments?.length || 0 }}</span>
+        </h3>
+
+        <!-- Comment Form -->
+        <div class="comment-form-wrap">
+          <div class="user-avatar-sm">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="comment-input-area">
+            <textarea [(ngModel)]="newComment" placeholder="Partagez votre expérience ou votre conseil..." [disabled]="submittingComment"></textarea>
+            <div class="comment-form-footer">
+              <button class="send-btn" (click)="submitComment()" [disabled]="!newComment.trim() || submittingComment">
+                <i class="fas" [class.fa-paper-plane]="!submittingComment" [class.fa-spinner]="submittingComment" [class.fa-spin]="submittingComment"></i>
+                {{ submittingComment ? 'Envoi...' : 'Publier' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comments List -->
+        <div class="loading-comments" *ngIf="loadingComments">
+          <i class="fas fa-spinner fa-spin"></i> Chargement...
+        </div>
+
+        <div class="comments-list" *ngIf="!loadingComments">
+          <div class="comment-item" *ngFor="let comment of selectedPost.comments">
+            <div class="comment-avatar">{{ getInitial(comment.authorName) }}</div>
+            <div class="comment-body">
+              <div class="comment-header">
+                <strong>{{ comment.authorName }}</strong>
+                <span class="comment-date">{{ comment.createdAt | date:'d MMM y, HH:mm' }}</span>
+              </div>
+              <p class="comment-text">{{ comment.content }}</p>
+            </div>
+          </div>
+
+          <div class="no-comments" *ngIf="!selectedPost.comments?.length">
+            <i class="far fa-comment-dots"></i>
+            <p>Soyez le premier à commenter !</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

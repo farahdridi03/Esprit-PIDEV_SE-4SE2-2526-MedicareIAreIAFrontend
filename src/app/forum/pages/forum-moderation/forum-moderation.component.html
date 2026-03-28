@@ -1,0 +1,217 @@
+<div class="forum-page">
+
+  <!-- ── Page Header ──────────────────────────────────── -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-eyebrow">
+        <span class="mod-pill"><i class="fas fa-shield-alt"></i> Moderation Mode</span>
+      </div>
+      <h1>Community Forum</h1>
+      <p>Ask questions, share experiences, and get advice from healthcare professionals</p>
+    </div>
+    <button class="btn-create" (click)="createPost()">
+      <i class="fas fa-plus"></i> Nouveau Post
+    </button>
+  </div>
+
+  <!-- ── Stats Bar ─────────────────────────────────────── -->
+  <div class="stats-bar" *ngIf="!selectedPost && !isEditing && !isCreating">
+    <div class="stat-card">
+      <div class="stat-icon teal"><i class="fas fa-file-alt"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ posts.length }}</div>
+        <div class="stat-label">Total Posts</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon purple"><i class="fas fa-comments"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ getTotalComments() }}</div>
+        <div class="stat-label">Commentaires</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange"><i class="fas fa-heart"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ getTotalLikes() }}</div>
+        <div class="stat-label">Total Likes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Error State ───────────────────────────────────── -->
+  <div class="state-box" *ngIf="error">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>{{ error }}</p>
+    <button class="btn btn-primary" (click)="loadPosts()"><i class="fas fa-redo"></i> Réessayer</button>
+  </div>
+
+  <ng-container *ngIf="!error">
+
+    <!-- ── POSTS LIST VIEW ──────────────────────────────────── -->
+    <ng-container *ngIf="!selectedPost && !isEditing && !isCreating">
+
+      <!-- Filter Card -->
+      <div class="filter-card">
+        <div class="search-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Rechercher des discussions...">
+        </div>
+        <select class="filter-select" [(ngModel)]="categoryFilter">
+          <option value="">Toutes Catégories</option>
+          <option value="General Health">General Health</option>
+          <option value="Medications">Medications</option>
+          <option value="Nutrition">Nutrition</option>
+          <option value="Treatments">Treatments</option>
+          <option value="Other">Other</option>
+        </select>
+        <div class="sort-btns">
+          <button [class.active-sort]="sortMode === 'recent'" (click)="sortMode = 'recent'">
+            <i class="fas fa-clock"></i> Récent
+          </button>
+          <button [class.active-sort]="sortMode === 'popular'" (click)="sortMode = 'popular'">
+            <i class="fas fa-fire"></i> Populaire
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="state-box" *ngIf="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Chargement des posts...</p>
+      </div>
+
+      <!-- Posts Grid -->
+      <div class="posts-grid" *ngIf="!loading">
+        <div class="post-card" *ngFor="let post of filteredPosts()" (click)="selectPost(post)">
+          <div class="card-top">
+            <span class="cat-badge">
+              <i class="fas fa-tag"></i> {{ post.category || 'General Health' }}
+            </span>
+            <div class="card-actions" (click)="$event.stopPropagation()">
+              <button class="action-btn edit-btn" (click)="editPost(post)" title="Modifier">
+                <i class="fas fa-pencil-alt"></i>
+              </button>
+              <button class="action-btn del-btn" (click)="deletePost(post)" title="Supprimer">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+
+          <h3 class="card-title">{{ post.title }}</h3>
+          <p class="card-excerpt">{{ post.content | slice:0:160 }}{{ post.content.length > 160 ? '...' : '' }}</p>
+
+          <div class="card-footer">
+            <div class="author-row">
+              <div class="avatar">{{ getInitial(post.authorName) }}</div>
+              <div class="author-details">
+                <span class="author-name">{{ post.authorName }}</span>
+                <span class="post-date">{{ post.createdAt | date:'d MMM y' }}</span>
+              </div>
+            </div>
+            <div class="card-meta">
+              <span class="meta-item">
+                <i class="fas fa-comment-alt"></i> {{ post.comments?.length || 0 }}
+              </span>
+              <span class="meta-item likes-meta">
+                <i class="fas fa-heart"></i> {{ post.likeCount || 0 }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="state-box" *ngIf="filteredPosts().length === 0">
+          <i class="fas fa-comments"></i>
+          <p>Aucun post trouvé</p>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── POST DETAIL VIEW ──────────────────────────────────── -->
+    <div class="detail-panel" *ngIf="selectedPost && !isEditing && !isCreating">
+      <div class="detail-topbar">
+        <button class="back-btn" (click)="onCancel()">
+          <i class="fas fa-arrow-left"></i> Retour
+        </button>
+        <div class="detail-actions">
+          <button class="btn-action edit" (click)="editPost(selectedPost)">
+            <i class="fas fa-pencil-alt"></i> Modifier
+          </button>
+          <button class="btn-action delete" (click)="deletePost(selectedPost)">
+            <i class="fas fa-trash-alt"></i> Supprimer
+          </button>
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <span class="detail-cat"><i class="fas fa-tag"></i> {{ selectedPost.category || 'General Health' }}</span>
+        <h2 class="detail-title">{{ selectedPost.title }}</h2>
+
+        <div class="detail-meta">
+          <div class="avatar-lg">{{ getInitial(selectedPost.authorName) }}</div>
+          <div class="meta-text">
+            <span class="meta-author">{{ selectedPost.authorName }}</span>
+            <span class="meta-date">{{ selectedPost.createdAt | date:'fullDate' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-content">{{ selectedPost.content }}</div>
+
+        <div class="engage-bar">
+          <button class="engage-btn" [class.liked-active]="selectedPost.isLikedByUser" (click)="toggleLike(selectedPost)">
+            <i class="fas fa-heart"></i> {{ selectedPost.isLikedByUser ? 'Aimé' : 'J\'aime' }} ({{ selectedPost.likeCount || 0 }})
+          </button>
+          <span class="engage-info">
+            <i class="fas fa-comment-alt"></i> {{ selectedPost.comments?.length || 0 }} commentaires
+          </span>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div class="comments-zone">
+        <h4 class="comments-title">
+          Commentaires
+          <span class="count-badge">{{ selectedPost.comments?.length || 0 }}</span>
+        </h4>
+
+        <div class="comment-input-wrap">
+          <textarea [(ngModel)]="newCommentContent" placeholder="Écrire un commentaire..." [disabled]="submittingComment"></textarea>
+          <div class="input-footer">
+            <button class="send-btn" (click)="addComment(selectedPost.id)" [disabled]="!newCommentContent.trim() || submittingComment">
+              <i class="fas" [class.fa-paper-plane]="!submittingComment" [class.fa-spinner]="submittingComment" [class.fa-spin]="submittingComment"></i>
+              {{ submittingComment ? 'Envoi...' : 'Répondre' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="comment-list">
+          <div class="comment-card" *ngFor="let comment of selectedPost.comments">
+            <div class="c-header">
+              <div class="c-author">
+                <div class="c-avatar">{{ getInitial(comment.authorName) }}</div>
+                <strong>{{ comment.authorName }}</strong>
+              </div>
+              <span class="c-date">{{ comment.createdAt | date:'d MMM y, HH:mm' }}</span>
+            </div>
+            <div class="c-body">{{ comment.content }}</div>
+          </div>
+
+          <div class="no-comments" *ngIf="!selectedPost.comments?.length">
+            <i class="fas fa-comment-slash" style="margin-right:8px"></i> Aucun commentaire pour le moment.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CREATE / EDIT FORM ──────────────────────────────── -->
+    <div class="form-panel" *ngIf="isEditing || isCreating">
+      <app-post-form
+        [post]="isEditing ? selectedPost : null"
+        [isEditing]="isEditing"
+        (postSaved)="onPostSaved($event)"
+        (cancel)="onCancel()">
+      </app-post-form>
+    </div>
+
+  </ng-container>
+</div>

@@ -9,7 +9,6 @@ const routes: Routes = [
         .then(m => m.FrontOfficeModule)
   },
 
-
   {
     path: 'admin',
     loadChildren: () =>
@@ -25,9 +24,25 @@ const routes: Routes = [
   },
 
   {
+    path: 'forum',
+    loadChildren: () =>
+      import('./forum/forum.module')
+        .then(m => m.ForumModule)
+  },
+
+  {
+    path: 'access-denied',
+    redirectTo: 'front',
+    pathMatch: 'full'
+  },
+  {
     path: '',
     redirectTo: 'front',
     pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'front'
   }
 
 ];
