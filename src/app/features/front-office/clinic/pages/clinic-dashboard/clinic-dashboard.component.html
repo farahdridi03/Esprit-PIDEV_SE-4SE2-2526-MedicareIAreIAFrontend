@@ -10,7 +10,7 @@
             <!-- Welcome Banner -->
             <div class="welcome-banner">
                 <div class="banner-text">
-                    <h1>Welcome back, {{ firstName || 'Clinic' }}!</h1>
+                    <h1>Welcome back, {{ fullName || 'Clinic' }}!</h1>
                     <p>Manage your clinic operations, doctors, and emergency responses.</p>
                 </div>
 
@@ -32,7 +32,7 @@
 
             <!-- Main Dashboard Grid -->
             <div class="dashboard-grid">
-                
+
                 <!-- Left Column (2/3): Today's Schedule -->
                 <div class="left-column">
                     <div class="section-card schedule-section">

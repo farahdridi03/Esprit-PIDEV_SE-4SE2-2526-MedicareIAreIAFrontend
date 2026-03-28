@@ -1,0 +1,71 @@
+<div class="courier-container">
+  <div class="header">
+    <h1>Tableau de Bord Livreur <small>(Simulation PFE)</small></h1>
+  </div>
+
+  <!-- Agent Selection (Simulation only) -->
+  <div class="card selection-card" *ngIf="!currentAgent">
+    <h3>Identifier en tant que...</h3>
+    <div class="form-group">
+      <label>Choisir une agence</label>
+      <select [(ngModel)]="selectedAgencyId" (change)="onAgencyChange()" class="form-control">
+        <option [ngValue]="null">Sélectionnez une agence</option>
+        <option *ngFor="let agency of agencies" [ngValue]="agency.id">{{agency.name}}</option>
+      </select>
+    </div>
+    <div class="form-group" *ngIf="selectedAgencyId">
+      <label>Choisir un livreur</label>
+      <select [(ngModel)]="selectedAgentId" class="form-control">
+        <option [ngValue]="null">Sélectionnez votre nom</option>
+        <option *ngFor="let agent of agents" [ngValue]="agent.id">{{agent.name}}</option>
+      </select>
+    </div>
+    <button class="btn-primary" [disabled]="!selectedAgentId" (click)="selectAgent()">Se connecter</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="dashboard-content" *ngIf="currentAgent">
+    <div class="agent-info">
+      <div class="profile">
+        <div class="avatar">{{currentAgent.name.charAt(0)}}</div>
+        <div class="details">
+          <h2>{{currentAgent.name}}</h2>
+          <p>{{currentAgent.agency?.name}} • {{currentAgent.vehicleType}}</p>
+        </div>
+      </div>
+      <button class="btn-outline" (click)="currentAgent = null">Changer Agent</button>
+    </div>
+
+    <div class="deliveries-grid">
+      <div class="section-title">
+        <h3>Livraisons Assignées</h3>
+      </div>
+
+      <div class="empty-state" *ngIf="assignedDeliveries.length === 0">
+        <p>Veuillez rafraîchir ou attendre une nouvelle mission.</p>
+        <button (click)="loadAssignedDeliveries()" class="btn-sm btn-outline">Actualiser</button>
+      </div>
+
+      <div class="delivery-card" *ngFor="let del of assignedDeliveries">
+        <div class="del-header">
+            <span class="trk">#{{del.trackingNumber}}</span>
+            <span class="status-badge" [attr.data-status]="del.status">{{del.status}}</span>
+        </div>
+        <div class="del-body">
+            <p><strong>Commande:</strong> #{{del.order.id}}</p>
+            <p><strong>Destination:</strong> Tunis, Centre Ville</p>
+        </div>
+        <div class="del-actions">
+            <button *ngIf="del.status === DeliveryStatus.REQUESTED || del.status === DeliveryStatus.ASSIGNED" 
+                    class="btn-primary" (click)="startLocationSimulation(del.id)">
+                Démarrer Livraison
+            </button>
+            <button *ngIf="del.status === DeliveryStatus.OUT_FOR_DELIVERY" 
+                    class="btn-success" (click)="updateStatus(del.id, DeliveryStatus.DELIVERED); stopLocationSimulation()">
+                Confirmer Livraison
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

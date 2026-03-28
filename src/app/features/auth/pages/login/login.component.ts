@@ -81,19 +81,21 @@ export class LoginComponent {
         targetRoute = '/front/nutritionist/dashboard';
         break;
       case 'LABORATORY':
-        targetRoute = '/front/laboratory';
+        targetRoute = '/front/laboratorystaff';
         break;
       case 'PHARMACIST':
+        targetRoute = '/front/pharmacist';
+        break;
       case 'CLINIC':
-      case 'VISITOR':
-        targetRoute = '/front';
+        targetRoute = '/front/clinic';
         break;
       case 'HOME_CARE_PROVIDER':
       case 'HOME_CARE':
-        targetRoute = '/front/home-care';
+        targetRoute = '/front/home-care/provider-dashboard';
         break;
+      case 'VISITOR':
       default:
-        console.warn('Unknown role, defaulting to /front:', cleanRole);
+        console.warn('Unknown or unspecific role, defaulting to /front:', cleanRole);
         targetRoute = '/front';
         break;
     }

@@ -32,15 +32,15 @@ export class AuthService {
         );
     }
 
-    // Le backend renvoie du texte brut pour /register -> spécifier responseType: 'text'
-    register(payload: RegisterRequest): Observable<string> {
-        return this.http.post(`${this.baseUrl}/register`, payload, { responseType: 'text' }) as Observable<string>;
+    // Le backend attend désormais un multipart/form-data
+    register(formData: FormData): Observable<string> {
+        return this.http.post(`${this.baseUrl}/register`, formData, { responseType: 'text' }) as Observable<string>;
     }
 
     logout(): void {
         localStorage.removeItem(this.TOKEN_KEY);
         this.authStatusSubject.next(false);
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/front']);
     }
 
     getToken(): string | null {
@@ -99,6 +99,42 @@ export class AuthService {
             const decoded: any = jwtDecode(token);
             // Typically Spring Security puts the username (email) in 'sub'
             return decoded.sub || decoded.email || null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    getUserId(): number | null {
+        const token = this.getToken();
+        if (!token) return null;
+
+        try {
+            const decoded: any = jwtDecode(token);
+            if (decoded.id) return decoded.id;
+            if (decoded.userId) return decoded.userId;
+            return null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    // Méthode ajoutée: tente d'extraire le nom complet de l'utilisateur depuis le token JWT
+    getUserFullName(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+
+        try {
+            const decoded: any = jwtDecode(token);
+            // Chercher dans plusieurs champs possibles
+            const possible = decoded.fullName || decoded.name || decoded.username || decoded.preferred_username || null;
+            if (possible && typeof possible === 'string') return possible;
+
+            // Parfois le prénom/nom sont séparés
+            if (decoded.firstName || decoded.lastName) {
+                return `${decoded.firstName || ''} ${decoded.lastName || ''}`.trim();
+            }
+
+            return null;
         } catch (error) {
             return null;
         }

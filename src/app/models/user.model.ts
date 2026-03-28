@@ -6,7 +6,10 @@ export interface UserResponseDTO {
     enabled: boolean;
     phone?: string;
     birthDate?: string;
+    pharmacyId?: number;
+    pharmacyName?: string;
 }
+
 
 export interface UserRequestDTO {
     fullName: string;

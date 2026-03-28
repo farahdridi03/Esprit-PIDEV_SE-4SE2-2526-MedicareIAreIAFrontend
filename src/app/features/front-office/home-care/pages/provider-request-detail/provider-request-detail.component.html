@@ -1,0 +1,132 @@
+<div class="dashboard-wrapper">
+    <app-home-care-sidebar></app-home-care-sidebar>
+
+    <div class="main-body">
+        <app-home-care-topbar></app-home-care-topbar>
+
+        <div class="content-area">
+            <div class="p-4 provider-main-content">
+                
+                <div class="mb-4 d-flex align-items-center gap-3">
+                    <button class="btn btn-light rounded-circle shadow-sm" (click)="goBack()" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                        </svg>
+                    </button>
+                    <h2 class="mb-0">Request Details <span *ngIf="requestDetails">#{{ requestDetails.id }}</span></h2>
+                </div>
+
+                <div class="text-center py-5" *ngIf="isLoading">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+
+                <div class="alert alert-danger" *ngIf="error && !isSubmitting">{{ error }}</div>
+
+                <div class="row" *ngIf="!isLoading && requestDetails">
+                    <div class="col-lg-8 mb-4">
+                        <div class="premium-card p-4 h-100">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                                <div>
+                                    <h4 class="mb-1 fw-bold text-dark">{{ requestDetails.service.name }}</h4>
+                                    <span class="text-muted">{{ requestDetails.requestedDateTime | date:'fullDate' }} at {{ requestDetails.requestedDateTime | date:'shortTime' }}</span>
+                                </div>
+                                <span class="premium-badge badge-lg" 
+                                    [ngClass]="{
+                                        'badge-amber': requestDetails.status === 'PENDING' || requestDetails.status === 'ACCEPTED',
+                                        'badge-sky': requestDetails.status === 'IN_PROGRESS',
+                                        'badge-emerald': requestDetails.status === 'COMPLETED',
+                                        'badge-rose': requestDetails.status === 'CANCELLED'
+                                    }">
+                                    {{ requestDetails.status | titlecase }}
+                                </span>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-muted text-uppercase small fw-bold mb-2">Patient Information</h6>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="patient-avatar">
+                                            {{ requestDetails.patient?.fullName?.charAt(0) || 'P' }}
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ requestDetails.patient?.fullName }}</h6>
+                                            <span class="text-muted small">{{ requestDetails.patient?.email }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-muted text-uppercase small fw-bold mb-2">Intervention Address</h6>
+                                    <div class="d-flex align-items-start gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="text-primary mt-1 flex-shrink-0" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <span class="fw-medium">{{ requestDetails.address }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4 p-3 bg-light rounded" *ngIf="requestDetails.patientNotes">
+                                <h6 class="fw-bold mb-2">Patient Notes:</h6>
+                                <p class="mb-0 fst-italic text-muted">"{{ requestDetails.patientNotes }}"</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-4">
+                        <div class="premium-card p-4 h-100">
+                            <h5 class="mb-4 pb-2 border-bottom">Actions</h5>
+
+                            <div *ngIf="requestDetails.status === 'PENDING'" class="text-center py-3">
+                                <div class="icon-circle bg-warning text-dark mx-auto mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                    </svg>
+                                </div>
+                                <h6 class="fw-bold mb-2">New Request Assigned</h6>
+                                <p class="text-muted small mb-4">Please review the details and accept or decline this request.</p>
+                                <div class="d-flex gap-2">
+                                    <button class="btn-premium flex-grow-1" style="background: var(--emerald)" (click)="acceptRequest()" [disabled]="isSubmitting">Accept</button>
+                                    <button class="btn-outline-premium flex-grow-1" style="color: var(--rose); border-color: var(--rose)" (click)="declineRequest()" [disabled]="isSubmitting">Decline</button>
+                                </div>
+                            </div>
+
+                            <div *ngIf="requestDetails.status === 'ACCEPTED'" class="text-center py-3">
+                                <div class="icon-circle bg-primary text-white mx-auto mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <h6 class="fw-bold mb-2">Ready to Start?</h6>
+                                <p class="text-muted small mb-4">Clicking start will notify the patient that you are on your way or beginning the intervention.</p>
+                                <button class="btn-premium w-100 py-2" (click)="startRequest()" [disabled]="isSubmitting">Start Intervention</button>
+                            </div>
+
+                            <div *ngIf="requestDetails.status === 'IN_PROGRESS'" class="text-center py-3">
+                                <div class="icon-circle bg-info text-white mx-auto mb-3">
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" style="width: 2rem; height: 2rem;"></span>
+                                </div>
+                                <h6 class="fw-bold mb-2">Intervention Ongoing</h6>
+                                <p class="text-muted small mb-4">Please mark the service as completed once you have finished the intervention.</p>
+                                <button class="btn-premium w-100 py-2" style="background: var(--emerald)" (click)="completeRequest()" [disabled]="isSubmitting">Mark as Completed</button>
+                            </div>
+
+                            <div *ngIf="requestDetails.status === 'COMPLETED'" class="text-center py-4">
+                                <div class="icon-circle bg-success text-white mx-auto mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <h5 class="text-success fw-bold mb-0">Completed</h5>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

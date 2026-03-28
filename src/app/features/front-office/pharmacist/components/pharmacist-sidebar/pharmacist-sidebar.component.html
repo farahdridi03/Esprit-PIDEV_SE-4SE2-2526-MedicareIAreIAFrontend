@@ -1,5 +1,5 @@
-<div class="sidebar">
-    <div class="brand">
+<div class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="brand" (click)="toggleSidebar()" style="cursor: pointer;">
         <div class="logo-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path

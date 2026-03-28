@@ -6,6 +6,9 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AuthGuard } from '../../guards/auth.guard';
 
 import { UserManagementComponent } from './pages/user-management/user-management.component';
+import { PharmacistValidationComponent } from './pages/pharmacist-validation/pharmacist-validation.component';
+import { AdminProvidersComponent } from './pages/admin-providers/admin-providers.component';
+import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.component';
 
 const routes: Routes = [
   {
@@ -14,6 +17,9 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'users', component: UserManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'validations', component: PharmacistValidationComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'homecare-providers', component: AdminProvidersComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'homecare-requests', component: AdminRequestsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

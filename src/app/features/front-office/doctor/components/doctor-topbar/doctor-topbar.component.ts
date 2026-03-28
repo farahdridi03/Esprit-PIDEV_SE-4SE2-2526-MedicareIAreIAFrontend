@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
@@ -16,12 +16,12 @@ export class DoctorTopbarComponent implements OnInit {
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserProfile) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching doctor profile', err);
       }
     });
@@ -29,9 +29,7 @@ export class DoctorTopbarComponent implements OnInit {
 
   private loadUserInfo() {
     const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.setNames(fullName);
-    }
+    if (fullName) this.setNames(fullName);
   }
 
   private setNames(fullName: string) {

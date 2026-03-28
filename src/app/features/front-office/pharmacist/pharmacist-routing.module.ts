@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PharmacistDashboardComponent } from './pages/pharmacist-dashboard/pharmacist-dashboard.component';
+import { OrdersComponent } from './pages/orders/orders.component';
 import { AuthGuard } from '../../../guards/auth.guard';
 
 const routes: Routes = [
@@ -12,6 +13,12 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: PharmacistDashboardComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PHARMACIST'] }
+  },
+  {
+    path: 'orders',
+    component: OrdersComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PHARMACIST'] }
   }

@@ -9,6 +9,16 @@ export interface UpdateProfileRequest {
     password?: string;
 }
 
+// Ajout d'une interface utilisateur simple utilisée par getProfile
+export interface UserProfile {
+    id?: number;
+    fullName?: string;
+    email?: string;
+    roles?: string[];
+    pharmacyId?: number;
+    [key: string]: any;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -48,5 +58,11 @@ export class UserService {
 
     getByRole(role: string): Observable<UserResponseDTO[]> {
         return this.http.get<UserResponseDTO[]>(`${this.apiUrl}/role/${role}`);
+    }
+
+    // Méthode ajoutée: récupère le profil de l'utilisateur courant
+    getProfile(): Observable<UserProfile> {
+        // Appel à l'endpoint legacy /profile
+        return this.http.get<UserProfile>(`${this.baseUrlLegacy}/profile`);
     }
 }

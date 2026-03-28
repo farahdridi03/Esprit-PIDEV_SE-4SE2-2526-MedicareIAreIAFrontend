@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
-    selector: 'app-nutritionist-topbar',
-    templateUrl: './nutritionist-topbar.component.html',
-    styleUrls: ['./nutritionist-topbar.component.scss']
+  selector: 'app-nutritionist-topbar',
+  templateUrl: './nutritionist-topbar.component.html',
+  styleUrls: ['./nutritionist-topbar.component.scss']
 })
 export class NutritionistTopbarComponent implements OnInit {
   firstName: string = 'Nutritionist';
@@ -16,12 +16,12 @@ export class NutritionistTopbarComponent implements OnInit {
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserProfile) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching nutritionist profile', err);
       }
     });
@@ -29,9 +29,7 @@ export class NutritionistTopbarComponent implements OnInit {
 
   private loadUserInfo() {
     const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.setNames(fullName);
-    }
+    if (fullName) this.setNames(fullName);
   }
 
   private setNames(fullName: string) {

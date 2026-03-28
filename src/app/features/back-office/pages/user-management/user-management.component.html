@@ -20,8 +20,9 @@
                 <option value="ALL">All Roles</option>
                 <option value="PATIENT">Patient</option>
                 <option value="DOCTOR">Doctor</option>
+                <option value="PHARMACIST">Pharmacist</option>
+                <option value="HOME_CARE_PROVIDER">Home Care Provider</option>
                 <option value="ADMIN">Admin</option>
-                <option value="MODERATOR">Moderator</option>
             </select>
             <button class="panel-action" (click)="refresh()">Refresh List ⭮</button>
         </div>
@@ -54,11 +55,14 @@
                 </td>
                 <td>
                     <span class="chip"
-                        [ngClass]="{'ck-indigo': u.role === 'DOCTOR', 'ck-violet': u.role === 'PATIENT', 'ck-teal': u.role === 'MODERATOR', 'ck-amber': u.role === 'ADMIN'}">
+                        [ngClass]="{'ck-indigo': u.role === 'DOCTOR', 'ck-violet': u.role === 'PATIENT', 'ck-amber': u.role === 'ADMIN', 'ck-teal': u.role === 'PHARMACIST', 'ck-emerald': u.role === 'HOME_CARE_PROVIDER'}">
                         {{ u.role }}
                     </span>
                 </td>
                 <td>
+                    <div *ngIf="u.role === 'PHARMACIST' && !u.enabled" class="chip ck-amber" style="font-size: 0.75rem; margin-bottom: 4px;">
+                        Pending Activation
+                    </div>
                     <button class="status-btn" [ngClass]="u.enabled ? 'ck-emerald' : 'ck-rose'"
                         (click)="toggleEnabled(u)">
                         {{ u.enabled ? 'Enabled' : 'Disabled' }}

@@ -1,0 +1,90 @@
+<div class="availability-dashboard">
+    <app-home-care-sidebar></app-home-care-sidebar>
+
+    <div class="main-body">
+        <app-home-care-topbar></app-home-care-topbar>
+
+        <div class="content-area">
+            <div class="dashboard-header mb-4">
+                <div class="title-section">
+                    <h1>Gestion des Demandes</h1>
+                    <p class="subtitle">Gérez vos interventions et répondez aux nouvelles demandes de soins.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="action-btn outline" (click)="loadRequests()">
+                        <i class="bi bi-arrow-clockwise"></i> Actualiser
+                    </button>
+                </div>
+            </div>
+
+            <!-- Alerts -->
+            <div class="alert alert-success mt-3" *ngIf="successMessage">{{ successMessage }}</div>
+            <div class="alert alert-danger mt-3" *ngIf="error">{{ error }}</div>
+
+            <!-- Request List -->
+            <div class="requests-container glass-card mt-4">
+                <div class="list-header mb-4">
+                    <div class="search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Rechercher un patient ou un service...">
+                    </div>
+                </div>
+
+                <div class="requests-list" *ngIf="!isLoading">
+                    <div class="request-item-premium" *ngFor="let req of requests">
+                        <div class="item-main">
+                            <div class="patient-avatar">
+                                {{ req.patient?.fullName?.charAt(0) }}
+                            </div>
+                            <div class="details">
+                                <div class="top-row d-flex align-items-center gap-3">
+                                    <h3 class="m-0">{{ req.service.name }}</h3>
+                                    <span class="badge-status" [ngClass]="req.status.toLowerCase()">{{ req.status }}</span>
+                                </div>
+                                <div class="patient-info mt-2">
+                                    <span class="name"><i class="bi bi-person me-1"></i> {{ req.patient?.fullName }}</span>
+                                    <span class="address"><i class="bi bi-geo-alt me-1"></i> {{ req.address }}</span>
+                                </div>
+                                <div class="time-info mt-1">
+                                    <span><i class="bi bi-calendar3 me-1"></i> {{ req.requestedDateTime | date:'medium' }}</span>
+                                    <span class="price ms-3"><i class="bi bi-cash-stack me-1"></i> {{ req.price }} DT</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="item-actions">
+                            <button class="btn-action accept" *ngIf="req.status === 'PENDING'" (click)="acceptRequest(req.id)">
+                                <i class="bi bi-check2"></i> Accepter
+                            </button>
+                            <button class="btn-action decline" *ngIf="req.status === 'PENDING'" (click)="declineRequest(req.id)">
+                                <i class="bi bi-x-lg"></i> Décliner
+                            </button>
+                            
+                            <button class="btn-action start" *ngIf="req.status === 'ACCEPTED'" (click)="startRequest(req.id)">
+                                <i class="bi bi-play-fill"></i> Commencer
+                            </button>
+                            
+                            <button class="btn-action complete" *ngIf="req.status === 'IN_PROGRESS'" (click)="completeRequest(req.id)">
+                                <i class="bi bi-check-all"></i> Terminer
+                            </button>
+
+                            <button class="btn-action details-btn" [routerLink]="['/front/home-care/requests', req.id]">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="empty-list" *ngIf="requests.length === 0">
+                        <i class="bi bi-inbox" style="font-size: 3rem; color: #cbd5e1;"></i>
+                        <p class="mt-3">Aucune demande trouvée.</p>
+                    </div>
+                </div>
+
+                <!-- Spinner -->
+                <div class="loading-overlay-inline" *ngIf="isLoading">
+                    <div class="medical-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

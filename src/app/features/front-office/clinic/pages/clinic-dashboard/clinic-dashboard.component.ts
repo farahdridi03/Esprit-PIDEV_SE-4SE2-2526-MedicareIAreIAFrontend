@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
@@ -8,20 +8,17 @@ import { AuthService } from '../../../../../services/auth.service';
   styleUrls: ['./clinic-dashboard.component.scss']
 })
 export class ClinicDashboardComponent implements OnInit {
-  firstName: string = 'Clinic';
-  initials: string = 'C';
+  fullName: string = '';
 
   constructor(private userService: UserService, private authService: AuthService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          this.setNames(user.fullName);
-        }
+      next: (user: UserProfile) => {
+        if (user && user.fullName) this.fullName = user.fullName;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching clinic profile', err);
       }
     });
@@ -29,16 +26,6 @@ export class ClinicDashboardComponent implements OnInit {
 
   private loadUserInfo() {
     const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.setNames(fullName);
-    }
-  }
-
-  private setNames(fullName: string) {
-    if (!fullName) return;
-    const parts = fullName.split(' ');
-    this.firstName = parts[0];
-    this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
-    if (!this.initials) this.initials = this.firstName[0].toUpperCase();
+    if (fullName) this.fullName = fullName;
   }
 }

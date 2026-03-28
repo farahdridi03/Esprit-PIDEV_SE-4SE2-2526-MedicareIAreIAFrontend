@@ -1,0 +1,193 @@
+<div class="orders-wrapper">
+    <div class="orders-container">
+        <div class="header">
+            <h2>Gestion des Commandes</h2>
+            <p class="subtitle" *ngIf="pharmacyId">Toutes les commandes pour {{ pharmacyName }}</p>
+        </div>
+
+        <div class="content" *ngIf="isLoading">
+            <div class="spinner"></div>
+            <p>Chargement des commandes...</p>
+        </div>
+
+        <div class="content error-state" *ngIf="error">
+            <p>{{ error }}</p>
+            <button class="btn btn-outline" (click)="loadOrders()">Réessayer</button>
+        </div>
+
+        <div class="content orders-content" *ngIf="!isLoading && !error">
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="search-box">
+                    <input #searchInput type="text" placeholder="Rechercher par ID ou Patient ID..."
+                        (keyup)="onSearchChange(searchInput.value)" class="search-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+
+                <div class="status-filters">
+                    <button class="filter-btn" [class.active]="statusFilter === 'ALL'"
+                        (click)="onStatusFilterChange('ALL')">Tous</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'PENDING'"
+                        (click)="onStatusFilterChange('PENDING')">En Attente</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'VALIDATED'"
+                        (click)="onStatusFilterChange('VALIDATED')">Validés</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'DELIVERY_REQUESTED'"
+                        (click)="onStatusFilterChange('DELIVERY_REQUESTED')">À Livrer</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'DELIVERED'"
+                        (click)="onStatusFilterChange('DELIVERED')">Livrés</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'REJECTED'"
+                        (click)="onStatusFilterChange('REJECTED')">Rejetés</button>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="card orders-card">
+                <div class="empty-state" *ngIf="filteredOrders.length === 0">
+                    <p>Aucune commande trouvée.</p>
+                </div>
+
+                <table class="data-table" *ngIf="filteredOrders.length > 0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Patient</th>
+                            <th>Montant</th>
+                            <th>Livraison</th>
+                            <th>Ordonnance</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let order of paginatedOrders">
+                            <td><strong>#{{ order.id }}</strong></td>
+                            <td>{{ order.createdAt | date:'short' }}</td>
+                            <td>Patient ID: {{ order.patientId }}</td>
+                            <td>{{ order.totalPrice | currency:'TND':'symbol' }}</td>
+                            <td>
+                                <span class="badge" [class.badge-primary]="order.deliveryType === 'HOME_DELIVERY'" [class.badge-info]="order.deliveryType !== 'HOME_DELIVERY'">
+                                    {{ order.deliveryType || 'PICKUP' }}
+                                </span>
+                            </td>
+                            <td>
+                                <a *ngIf="order.prescriptionImageUrl" [href]="backendUrl + order.prescriptionImageUrl" target="_blank" class="btn btn-sm btn-outline" title="Voir l'ordonnance">
+                                    Voir
+                                </a>
+                                <span *ngIf="!order.prescriptionImageUrl" class="text-muted" style="font-size:12px;">Aucune</span>
+                            </td>
+                            <td>
+                                <span class="badge" [class.badge-primary]="order.status === 'VALIDATED'"
+                                    [class.badge-warning]="order.status === 'PENDING' || order.status === 'REVIEWING'"
+                                    [class.badge-success]="order.status === 'DELIVERED' || order.status === 'PAID'"
+                                    [class.badge-danger]="order.status === 'CANCELLED' || order.status === 'REJECTED'"
+                                    [class.badge-info]="order.status === 'DELIVERY_REQUESTED' || order.status === 'OUT_FOR_DELIVERY' || order.status === 'ASSIGNED'">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                            <td class="action-buttons">
+                                <ng-container *ngIf="order.status === 'PENDING'">
+                                    <button class="btn btn-sm btn-success"
+                                        (click)="updateStatus(order.id, 'VALIDATED')">Valider</button>
+                                    <button class="btn btn-sm btn-danger"
+                                        (click)="openRejectModal(order.id)">Rejeter</button>
+                                </ng-container>
+
+                                <ng-container *ngIf="order.status === 'VALIDATED'">
+                                    <button class="btn btn-sm btn-primary"
+                                        (click)="updateStatus(order.id, 'DELIVERY_REQUESTED')">Demander
+                                        Livraison</button>
+                                    <button class="btn btn-sm btn-outline"
+                                        (click)="updateStatus(order.id, 'DELIVERED')">Remis au Client</button>
+                                </ng-container>
+
+                                <ng-container
+                                    *ngIf="order.status === 'DELIVERY_REQUESTED' || order.status === 'ASSIGNING' || order.status === 'ASSIGNED'">
+                                    <button class="btn btn-sm btn-outline"
+                                        (click)="updateStatus(order.id, 'OUT_FOR_DELIVERY')">Livreur en Route</button>
+                                </ng-container>
+
+                                <ng-container *ngIf="order.status === 'PAID'">
+                                    <button class="btn btn-sm btn-info"
+                                        (click)="openDispatchModal(order.id)">Expédier pour Livraison</button>
+                                </ng-container>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="pagination" *ngIf="totalPages > 1">
+                    <button class="btn btn-sm btn-outline" (click)="prevPage()" [disabled]="currentPage === 1">←
+                        Précédent</button>
+                    <span class="page-info">Page {{ currentPage }} sur {{ totalPages }}</span>
+                    <button class="btn btn-sm btn-outline" (click)="nextPage()"
+                        [disabled]="currentPage === totalPages">Suivant →</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Reject Modal -->
+        <div class="modal-overlay" *ngIf="showRejectModal">
+            <div class="modal">
+                <h3>Rejeter la commande #{{ selectedOrderId }}</h3>
+                <p>Veuillez indiquer la raison du rejet de la commande (obligatoire).</p>
+                <div class="form-group">
+                    <textarea [(ngModel)]="rejectReason"
+                        placeholder="Rupture de stock, ordonnance invalide..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" (click)="closeRejectModal()">Annuler</button>
+                    <button class="btn btn-danger" [disabled]="!rejectReason" (click)="confirmReject()">Confirmer le
+                        rejet</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dispatch Modal (Advanced Simulation) -->
+        <div class="modal-overlay" *ngIf="showDispatchModal">
+            <div class="modal">
+                <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7; padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                    <h3 style="margin: 0; color: #2d3748;">Expédier la commande #{{ currentDispatchOrderId }}</h3>
+                    <button (click)="closeDispatchModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #a0aec0;">&times;</button>
+                </div>
+                <p style="color: #4a5568; margin-bottom: 1.5rem;">Sélectionnez une agence et un livreur disponible.</p>
+                
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Agence de livraison</label>
+                    <select class="form-control" [(ngModel)]="selectedAgencyId" (change)="onAgencyChange()" 
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px;">
+                        <option [ngValue]="null">--- Choisir une agence ---</option>
+                        <option *ngFor="let agency of agencies" [ngValue]="agency.id">{{ agency.name }} ({{ agency.city }})</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;" *ngIf="selectedAgencyId">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Livreur disponible</label>
+                    <select class="form-control" [(ngModel)]="selectedAgentId">
+                        <option [ngValue]="null">--- Choisir un livreur ---</option>
+                        <option *ngFor="let agent of agents" [ngValue]="agent.id">
+                            {{ agent.name }} - {{ agent.vehicleType }} ({{ agent.phoneNumber }})
+                        </option>
+                    </select>
+                </div>
+
+                <div *ngIf="selectedAgencyId && agents.length === 0" style="padding: 1rem; background: #fff5f5; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <p style="color: #c53030; font-size: 13px; margin: 0;">⚠️ Aucun livreur disponible.</p>
+                </div>
+
+                <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 1rem;">
+                    <button class="btn btn-outline" (click)="closeDispatchModal()">Annuler</button>
+                    <button class="btn btn-primary" [disabled]="!selectedAgentId || isAssigning" (click)="confirmDispatch()">
+                        {{ isAssigning ? 'Traitement...' : 'Confirmer l\'expédition' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

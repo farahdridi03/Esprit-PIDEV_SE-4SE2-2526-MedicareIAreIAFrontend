@@ -18,6 +18,41 @@
     </div>
 
     <div class="topbar-right">
+        <div class="notification-container" (click)="toggleNotifications($event)">
+            <div class="notification-bell">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+                <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+            </div>
+
+            <!-- Notification Dropdown -->
+            <div class="notification-dropdown" *ngIf="showNotifications" (click)="$event.stopPropagation()">
+                <div class="dropdown-header">
+                    <h3>Notifications</h3>
+                    <span class="mark-all" (click)="markAllAsRead(authService.getUserId()!)">Marquer tout comme lu</span>
+                </div>
+                <div class="dropdown-body">
+                    <div *ngIf="notifications.length === 0" class="no-notifications">
+                        <p>Aucune notification</p>
+                    </div>
+                    <div *ngFor="let n of notifications" 
+                         class="notification-item" 
+                         [class.unread]="!n.isRead"
+                         (click)="navigateToRelated(n)">
+                        <div class="item-icon">{{ getNotificationIcon(n.type) }}</div>
+                        <div class="item-content">
+                            <h4 class="item-title">{{ n.title }}</h4>
+                            <p class="item-msg">{{ n.message }}</p>
+                            <span class="item-time">{{ n.createdAt | date:'short' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown-footer">
+                    <span>Voir tout</span>
+                </div>
+            </div>
+        </div>
 
         <div class="user-profile">
             <div class="avatar">{{ initials || 'U' }}</div>

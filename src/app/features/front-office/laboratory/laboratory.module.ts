@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { LaboratoryStaffSidebarComponent } from './components/laboratory-sidebar/laboratory-sidebar.component';
-import { LaboratoryStaffTopbarComponent } from './components/laboratory-topbar/laboratory-topbar.component';
-import { LaboratoryStaffDashboardComponent } from './pages/laboratory-dashboard/laboratory-dashboard.component';
+import { LaboratoryTopbarComponent } from './components/laboratory-topbar/laboratory-topbar.component';
+import { LaboratoryDashboardComponent } from './pages/laboratory-dashboard/laboratory-dashboard.component';
 
 const routes: Routes = [
     {
@@ -13,21 +13,21 @@ const routes: Routes = [
     },
     {
         path: 'dashboard',
-        component: LaboratoryStaffDashboardComponent
+        component: LaboratoryDashboardComponent
     },
-    { path: 'requests', component: LaboratoryStaffDashboardComponent },
-    { path: 'results', component: LaboratoryStaffDashboardComponent },
-    { path: 'events', component: LaboratoryStaffDashboardComponent },
-    { path: 'forum', component: LaboratoryStaffDashboardComponent },
-    { path: 'donations', component: LaboratoryStaffDashboardComponent },
-    { path: 'profile', component: LaboratoryStaffDashboardComponent }
+    { path: 'requests', component: LaboratoryDashboardComponent },
+    { path: 'results', component: LaboratoryDashboardComponent },
+    { path: 'events', component: LaboratoryDashboardComponent },
+    { path: 'forum', component: LaboratoryDashboardComponent },
+    { path: 'donations', component: LaboratoryDashboardComponent },
+    { path: 'profile', component: LaboratoryDashboardComponent }
 ];
 
 @NgModule({
     declarations: [
         LaboratoryStaffSidebarComponent,
-        LaboratoryStaffTopbarComponent,
-        LaboratoryStaffDashboardComponent
+        LaboratoryTopbarComponent,
+        LaboratoryDashboardComponent
     ],
     imports: [
         CommonModule,
