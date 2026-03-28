@@ -4,11 +4,13 @@ import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PharmacyOrderService } from '../../../../../services/pharmacy-order.service';
 import { DeliveryTrackingService } from '../../../../../services/delivery-tracking.service';
+import { NotificationService } from '../../../../../services/notification.service';
 import { PharmacyOrderResponseDTO } from '../../../../../models/pharmacy-order.model';
 import { DeliveryResponseDTO } from '../../../../../models/pharmacy.model';
 import { PaymentService } from '../../../../../services/payment.service';
 import { PaymentResponseDTO, PaymentMethod } from '../../../../../models/payment.model';
 import { AuthService } from '../../../../../services/auth.service';
+import { NotificationType } from '../../../../../models/notification.model';
 
 import { loadStripe, Stripe, StripeElements, StripeCardElement } from '@stripe/stripe-js';
 
@@ -32,7 +34,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
   error = '';
   cancelReason = '';
   showCancelModal = false;
-  
+
   showPaymentModal = false;
   paymentSuccess = false;
   existingPayment: PaymentResponseDTO | null = null;
@@ -41,6 +43,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
 
   private routeSub!: Subscription;
   private wsSub!: Subscription;
+  private notifSub!: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,7 +51,8 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
     private orderService: PharmacyOrderService,
     private deliveryService: DeliveryTrackingService,
     private paymentService: PaymentService,
-    private authService: AuthService
+    private authService: AuthService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -64,7 +68,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
     this.wsSub = this.deliveryService.deliveryUpdates$.subscribe((update: DeliveryResponseDTO) => {
       console.log('Received WebSocket delivery update!', update);
       this.delivery = update;
-      
+
       // Update order status if it changed
       if (this.order && update.status) {
         // Map delivery status to order status for the stepper
@@ -73,11 +77,28 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
         this.order.status = mappedStatus as any;
       }
     });
+
+    // 🚀 Listen for real-time order status updates (when pharmacist validates)
+    this.notifSub = this.notificationService.notifications$.subscribe(notifications => {
+      if (notifications.length > 0) {
+        const latestNotif = notifications[0];
+        // When pharmacist validates the order (DELIVERY_CHOICE_REQUIRED notification)
+        if (latestNotif.type === NotificationType.DELIVERY_CHOICE_REQUIRED ||
+          latestNotif.type === NotificationType.PAYMENT_CONFIRMED) {
+          console.log('Order status changed! Reloading order details...', latestNotif.type);
+          // Auto-reload the order to show payment button
+          setTimeout(() => {
+            this.loadOrderDetails();
+          }, 1000);
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
     if (this.routeSub) this.routeSub.unsubscribe();
     if (this.wsSub) this.wsSub.unsubscribe();
+    if (this.notifSub) this.notifSub.unsubscribe();
     this.deliveryService.disconnect();
   }
 
@@ -86,6 +107,12 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
     this.orderService.getOrderById(this.orderId).subscribe({
       next: (data) => {
         this.order = data;
+
+        // Connect to WebSocket notifications
+        const userEmail = this.authService.getUserEmail();
+        if (userEmail) {
+          this.deliveryService.connectToUserNotifications(userEmail);
+        }
 
         // If order has a delivery tracking, fetch initial state and connect WebSocket
         if (this.order.status === 'DELIVERY_REQUESTED' ||
@@ -174,10 +201,10 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
   async openPaymentModal(): Promise<void> {
     this.showPaymentModal = true;
     if (this.selectedPaymentMethod === PaymentMethod.STRIPE) {
-       await this.initializeStripe();
-       setTimeout(() => {
-         if (this.card) this.card.mount('#card-element');
-       }, 100);
+      await this.initializeStripe();
+      setTimeout(() => {
+        if (this.card) this.card.mount('#card-element');
+      }, 100);
     }
   }
 
@@ -190,10 +217,10 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
   async onPaymentMethodSelect(method: string): Promise<void> {
     this.selectedPaymentMethod = method as PaymentMethod;
     if (this.selectedPaymentMethod === PaymentMethod.STRIPE) {
-        await this.initializeStripe();
-        setTimeout(() => {
-            if (this.card) this.card.mount('#card-element');
-        }, 100);
+      await this.initializeStripe();
+      setTimeout(() => {
+        if (this.card) this.card.mount('#card-element');
+      }, 100);
     }
   }
 
@@ -211,7 +238,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
 
   private async initializeStripe(): Promise<void> {
     if (this.stripe) return;
-    
+
     this.stripe = await loadStripe(this.stripePublicKey);
     if (this.stripe) {
       this.elements = this.stripe.elements();
@@ -238,12 +265,12 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
 
   private initiateStripePayment(): void {
     this.isProcessingPayment = true;
-    
+
     // 1. Create Payment Intent on backend
     this.paymentService.createPaymentIntent(this.orderId).subscribe({
       next: async (res) => {
         const clientSecret = res.clientSecret; // We now have a dedicated field
-        
+
         if (!clientSecret || !this.stripe || !this.card) {
           alert('Erreur lors de l\'initialisation de Stripe.');
           this.isProcessingPayment = false;
@@ -269,7 +296,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
             next: () => {
               this.paymentSuccess = true;
               this.isProcessingPayment = false;
-              
+
               setTimeout(() => {
                 this.closePaymentModal();
                 this.loadOrderDetails();
@@ -316,7 +343,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
 
   private initiateMockPayment(): void {
     this.isProcessingPayment = true;
-    
+
     // Simulate network delay for a more realistic feel
     setTimeout(() => {
       this.paymentService.initiatePayment({
@@ -328,7 +355,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
           this.existingPayment = res;
           this.paymentSuccess = true;
           this.isProcessingPayment = false;
-          
+
           // Show success for a moment before closing
           setTimeout(() => {
             this.closePaymentModal();

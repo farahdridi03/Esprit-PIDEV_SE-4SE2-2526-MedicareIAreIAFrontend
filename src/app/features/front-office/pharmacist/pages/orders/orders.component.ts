@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PharmacyOrderService } from '../../../../../services/pharmacy-order.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { UserService } from '../../../../../services/user.service';
+import { PaymentService } from '../../../../../services/payment.service';
 import { Subscription } from 'rxjs';
 import {
     PharmacyOrderResponseDTO,
@@ -15,6 +16,7 @@ import { Delivery } from '../../../../../models/delivery.model';
 import { DeliveryTrackingService } from '../../../../../services/delivery-tracking.service';
 import { NotificationService } from '../../../../../services/notification.service';
 import { NotificationType } from '../../../../../models/notification.model';
+import { PaymentStatus } from '../../../../../models/payment.model';
 
 @Component({
     selector: 'app-orders',
@@ -28,6 +30,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     orders: PharmacyOrderResponseDTO[] = [];
     filteredOrders: PharmacyOrderResponseDTO[] = [];
+    orderPaymentStatus: Map<number, any> = new Map();
 
     isLoading = true;
     error = '';
@@ -59,6 +62,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         private orderService: PharmacyOrderService,
         private authService: AuthService,
         private userService: UserService,
+        private paymentService: PaymentService,
         private deliveryService: DeliveryService,
         private deliveryTrackingService: DeliveryTrackingService,
         private notificationService: NotificationService
@@ -108,7 +112,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
             this.notifSub = this.notificationService.notifications$.subscribe(notifs => {
                 if (notifs.length > 0) {
                     const latest = notifs[0];
-                    if (latest.type === NotificationType.PAYMENT_CONFIRMED || 
+                    if (latest.type === NotificationType.PAYMENT_CONFIRMED ||
                         latest.type === NotificationType.ORDER_CREATED) {
                         console.log('Real-time update: Reloading orders due to:', latest.type);
                         this.loadOrders();
@@ -125,6 +129,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.orderService.getOrdersByPharmacy(this.pharmacyId).subscribe({
             next: (data: PharmacyOrderResponseDTO[]) => {
                 this.orders = data;
+                this.loadPaymentStatuses();
                 this.applyFilters();
                 this.isLoading = false;
             },
@@ -133,6 +138,19 @@ export class OrdersComponent implements OnInit, OnDestroy {
                 this.error = 'Erreur lors du chargement des commandes.';
                 this.isLoading = false;
             }
+        });
+    }
+
+    loadPaymentStatuses(): void {
+        this.orders.forEach(order => {
+            this.paymentService.getPaymentByOrderId(order.id).subscribe({
+                next: (payment) => {
+                    this.orderPaymentStatus.set(order.id, payment);
+                },
+                error: () => {
+                    this.orderPaymentStatus.set(order.id, null);
+                }
+            });
         });
     }
 
@@ -269,5 +287,21 @@ export class OrdersComponent implements OnInit, OnDestroy {
         if (this.currentPage > 1) {
             this.currentPage--;
         }
+    }
+
+    // ✅ Helper methods for payment status
+    isPaymentCompleted(orderId: number): boolean {
+        const payment = this.orderPaymentStatus.get(orderId);
+        return payment && payment.status === 'COMPLETED';
+    }
+
+    getPaymentStatus(orderId: number): string {
+        const payment = this.orderPaymentStatus.get(orderId);
+        if (!payment) return 'Aucun paiement';
+        return payment.status || 'Inconnu';
+    }
+
+    canDispatchOrder(order: PharmacyOrderResponseDTO): boolean {
+        return order.status === 'VALIDATED' && this.isPaymentCompleted(order.id);
     }
 }
