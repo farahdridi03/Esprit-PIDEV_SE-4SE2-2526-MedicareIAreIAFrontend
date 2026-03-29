@@ -75,7 +75,7 @@ export class AdminEventFormComponent implements OnInit {
       physicalControls.forEach(ctrl => this.eventForm.get(ctrl)?.clearValidators());
     }
 
-    Object.keys(this.eventForm.controls).forEach(key => this.eventForm.get(key)?.updateValueAndValidity());
+    Object.keys(this.eventForm.controls).forEach(key => this.eventForm.get(key)?.updateValueAndValidity({ emitEvent: false }));
   }
 
   loadEvent() {

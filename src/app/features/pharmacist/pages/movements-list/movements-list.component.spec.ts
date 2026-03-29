@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MovementsListComponent } from './movements-list.component';
 
 describe('MovementsListComponent', () => {
@@ -8,6 +9,7 @@ describe('MovementsListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RouterTestingModule],
       declarations: [MovementsListComponent]
     })
     .compileComponents();

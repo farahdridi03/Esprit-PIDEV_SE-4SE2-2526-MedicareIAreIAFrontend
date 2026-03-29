@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { BatchesListComponent } from './batches-list.component';
 
 describe('BatchesListComponent', () => {
@@ -8,6 +9,7 @@ describe('BatchesListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RouterTestingModule],
       declarations: [BatchesListComponent]
     })
     .compileComponents();
