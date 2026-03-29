@@ -1,0 +1,464 @@
+$primary-green: #0e7c66;
+$text-dark: #111827;
+$text-light: #6b7280;
+$bg-light: #f9fafb;
+$border-color: #e5e7eb;
+$danger: #ef4444;
+$success: #10b981;
+
+/* Dashboard Layout */
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    background-color: $bg-light;
+}
+
+.main-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background-color: white;
+}
+
+.content-area {
+    flex: 1;
+    position: relative;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+/* Profile Container */
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Header Section */
+.profile-header {
+    margin-bottom: 2.5rem;
+
+    h1 {
+        font-size: 2rem;
+        color: $text-dark;
+        margin: 0 0 0.5rem 0;
+        font-weight: 700;
+    }
+
+    .subtitle {
+        color: $text-light;
+        font-size: 1rem;
+        margin: 0;
+    }
+}
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid $border-color;
+        border-top-color: $primary-green;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        color: $text-light;
+        margin: 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Alert Messages */
+.error-alert,
+.success-alert {
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    p {
+        margin: 0;
+        font-weight: 500;
+    }
+}
+
+.error-alert {
+    background: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: #991b1b;
+
+    p {
+        color: #991b1b;
+    }
+
+    .btn {
+        margin-left: 1rem;
+    }
+}
+
+.success-alert {
+    background: #ecfdf5;
+    border: 1px solid #d1fae5;
+    color: #065f46;
+
+    p {
+        color: #065f46;
+    }
+}
+
+/* Form Sections */
+.form-section {
+    background: white;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+    h2 {
+        font-size: 1.25rem;
+        color: $text-dark;
+        margin: 0 0 1.5rem 0;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid $bg-light;
+    }
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Form Group */
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    &.full-width {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-weight: 600;
+        color: $text-dark;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        padding: 0.75rem 1rem;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s;
+        font-family: inherit;
+
+        &:focus {
+            outline: none;
+            border-color: $primary-green;
+            box-shadow: 0 0 0 3px rgba(14, 124, 102, 0.1);
+        }
+
+        &:disabled {
+            background-color: #f3f4f6;
+            color: $text-light;
+            cursor: not-allowed;
+        }
+
+        &::placeholder {
+            color: #d1d5db;
+        }
+    }
+
+    .error-text {
+        color: $danger;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
+    }
+
+    .help-text {
+        color: $text-light;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        font-style: italic;
+    }
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 2rem;
+    border-top: 1px solid $border-color;
+    margin-top: 2rem;
+
+    @media (max-width: 768px) {
+        justify-content: stretch;
+        flex-direction: column;
+
+        .btn {
+            width: 100%;
+        }
+    }
+}
+
+/* Change Password Section */
+.change-password-section {
+    background: white;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+    h2 {
+        font-size: 1.25rem;
+        color: $text-dark;
+        margin: 0 0 1.5rem 0;
+    }
+
+    >.btn {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Password Form */
+.password-form {
+    background: $bg-light;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Password Actions */
+.password-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1rem;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    &.btn-primary {
+        background-color: $primary-green;
+        color: white;
+
+        &:hover:not(:disabled) {
+            background-color: darken($primary-green, 10%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(14, 124, 102, 0.3);
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(0);
+        }
+    }
+
+    &.btn-outline {
+        background-color: white;
+        color: $text-dark;
+        border: 2px solid $border-color;
+
+        &:hover:not(:disabled) {
+            border-color: $primary-green;
+            color: $primary-green;
+            background-color: #f0fdf9;
+        }
+    }
+}
+
+/* Validation States */
+input :invalid {
+    border-color: $danger;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content-area {
+        padding: 1rem;
+    }
+
+    .profile-header {
+        h1 {
+            font-size: 1.5rem;
+        }
+    }
+
+    .form-section {
+        padding: 1.5rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .change-password-section {
+        padding: 1.5rem;
+    }
+
+    .password-form {
+        padding: 1rem;
+    }
+
+    .form-actions,
+    .password-actions {
+        flex-direction: column;
+
+        .btn {
+            width: 100%;
+        }
+    }
+}
+
+/* Password Confirmation Modal */
+.password-confirmation-modal {
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .modal-content {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        width: 90%;
+        animation: slideUp 0.3s ease;
+    }
+
+    .modal-header {
+        padding: 2rem 2rem 1rem 2rem;
+        border-bottom: 1px solid $border-color;
+
+        h3 {
+            font-size: 1.25rem;
+            color: $text-dark;
+            margin: 0 0 0.5rem 0;
+            font-weight: 700;
+        }
+
+        .modal-subtext {
+            color: $text-light;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+    }
+
+    form {
+        padding: 1.5rem 2rem;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 1.5rem;
+        padding: 1rem 2rem 2rem 2rem;
+        border-top: 1px solid $border-color;
+
+        .btn {
+            flex: 1;
+
+            @media (max-width: 480px) {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Print Styles */
+@media print {
+
+    .form-actions,
+    .password-actions,
+    .btn {
+        display: none;
+    }
+
+    .form-section {
+        break-inside: avoid;
+    }
+}

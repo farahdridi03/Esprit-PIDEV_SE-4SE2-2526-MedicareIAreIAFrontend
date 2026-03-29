@@ -1,0 +1,9 @@
+<div class="toast-container">
+  <div *ngFor="let toast of (toasts$ | async)" class="toast" [ngClass]="toast.type">
+    <div class="toast-content">
+      <span class="message">{{ toast.message }}</span>
+      <button class="close-btn" (click)="remove(toast)">&times;</button>
+    </div>
+    <div class="progress-bar" [style.animationDuration.ms]="toast.duration"></div>
+  </div>
+</div>

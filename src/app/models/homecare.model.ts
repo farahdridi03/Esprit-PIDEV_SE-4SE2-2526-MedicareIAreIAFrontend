@@ -40,7 +40,7 @@ export interface ProviderProfileDTO {
   reviews?: ReviewDTO[];
 }
 
-/** Modèle complet (utilisé côté admin) */
+/** Complete model (used on admin side) */
 export interface ServiceProvider {
   id: number;
   user: any;
@@ -74,10 +74,14 @@ export interface ServiceRequest {
 
 export interface CreateServiceRequestDTO {
   serviceId: number;
-  providerId?: number;          // optionnel — patient choisit son prestataire
+  providerId?: number;          // optional — patient chooses their provider
   requestedDateTime: string;
   address: string;
   patientNotes?: string;
+}
+
+export interface CompleteRequestDTO {
+  providerNotes: string;
 }
 
 export interface SubmitReviewDTO {
@@ -96,7 +100,7 @@ export interface ServiceReview {
   provider?: { id: number };
 }
 
-// ─── Disponibilités ─────────────────────────────────────────────────────────
+// ─── Availability ─────────────────────────────────────────────────────────
 
 export interface ProviderAvailability {
   id: number;
@@ -105,7 +109,7 @@ export interface ProviderAvailability {
   startTime: string;   // HH:mm:ss
   endTime: string;     // HH:mm:ss
   available: boolean;
-  specificDate?: string; // YYYY-MM-DD — null = règle répétée, non-null = exception ponctuelle
+  specificDate?: string; // YYYY-MM-DD — null = repeated rule, non-null = one-time exception
 }
 
 export interface AvailabilityDTO {
@@ -116,7 +120,7 @@ export interface AvailabilityDTO {
   specificDate?: string; // YYYY-MM-DD
 }
 
-/** Créneau disponible calculé côté backend */
+/** Available slot calculated on backend side */
 export interface AvailableSlot {
   date: string;        // YYYY-MM-DD
   dayOfWeek: string;

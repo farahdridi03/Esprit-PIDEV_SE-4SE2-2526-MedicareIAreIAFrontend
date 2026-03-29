@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HomecareService } from '../../../../../services/homecare.service';
-import { ServiceRequest } from '../../../../../models/homecare.model';
+import { ServiceRequest, CompleteRequestDTO } from '../../../../../models/homecare.model';
+import { ToastService } from '../../../../../services/toast.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-provider-request-detail',
@@ -15,11 +17,21 @@ export class ProviderRequestDetailComponent implements OnInit {
   error = '';
   isSubmitting = false;
 
+  // Completion Modal
+  showCompleteModal = false;
+  completeForm!: FormGroup;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private homecare: HomecareService
-  ) {}
+    private homecare: HomecareService,
+    private toastService: ToastService,
+    private fb: FormBuilder
+  ) {
+    this.completeForm = this.fb.group({
+      providerNotes: ['', [Validators.required, Validators.maxLength(1000)]]
+    });
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -35,46 +47,44 @@ export class ProviderRequestDetailComponent implements OnInit {
 
   loadDetails(): void {
     this.isLoading = true;
-    // We get all provider requests and find the matching one, because getRequestById is patient-focused or admin-focused
-    // Actually, getRequestById in the service doesn't restrict to user, but let's see.
     this.homecare.getRequestById(this.requestId).subscribe({
       next: (data) => {
         this.requestDetails = data;
         this.isLoading = false;
       },
       error: () => {
-        this.error = 'Failed to load request details.';
+        this.toastService.error('Impossible de charger les détails de la demande.');
         this.isLoading = false;
       }
     });
   }
 
   acceptRequest(): void {
-    if (confirm('Accept this request?')) {
-      this.isSubmitting = true;
-      this.homecare.acceptRequest(this.requestId).subscribe({
-        next: () => {
-          this.loadDetails();
-          this.isSubmitting = false;
-        },
-        error: (err) => {
-          this.error = err.error?.message || 'Failed to accept request.';
-          this.isSubmitting = false;
-        }
-      });
-    }
+    this.isSubmitting = true;
+    this.homecare.acceptRequest(this.requestId).subscribe({
+      next: () => {
+        this.toastService.success('Demande acceptée !');
+        this.loadDetails();
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        this.toastService.error(err.error?.message || 'Échec de l\'acceptation.');
+        this.isSubmitting = false;
+      }
+    });
   }
 
   declineRequest(): void {
-    if (confirm('Are you sure you want to decline this request?')) {
+    if (confirm('Êtes-vous sûr de vouloir décliner cette demande ?')) {
       this.isSubmitting = true;
       this.homecare.declineRequest(this.requestId).subscribe({
         next: () => {
+          this.toastService.warning('Demande déclinée.');
           this.loadDetails();
           this.isSubmitting = false;
         },
         error: (err) => {
-          this.error = err.error?.message || 'Failed to decline request.';
+          this.toastService.error(err.error?.message || 'Échec du refus.');
           this.isSubmitting = false;
         }
       });
@@ -82,35 +92,47 @@ export class ProviderRequestDetailComponent implements OnInit {
   }
 
   startRequest(): void {
-    if (confirm('Are you ready to start this intervention?')) {
-      this.isSubmitting = true;
-      this.homecare.startRequest(this.requestId).subscribe({
-        next: () => {
-          this.loadDetails();
-          this.isSubmitting = false;
-        },
-        error: (err) => {
-          this.error = err.error?.message || 'Failed to start request.';
-          this.isSubmitting = false;
-        }
-      });
-    }
+    this.isSubmitting = true;
+    this.homecare.startRequest(this.requestId).subscribe({
+      next: () => {
+        this.toastService.info('Intervention commencée.');
+        this.loadDetails();
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        this.toastService.error(err.error?.message || 'Échec du démarrage.');
+        this.isSubmitting = false;
+      }
+    });
   }
 
-  completeRequest(): void {
-    if (confirm('Mark this request as completed?')) {
-      this.isSubmitting = true;
-      this.homecare.completeRequest(this.requestId).subscribe({
-        next: () => {
-          this.loadDetails();
-          this.isSubmitting = false;
-        },
-        error: (err) => {
-          this.error = err.error?.message || 'Failed to complete request.';
-          this.isSubmitting = false;
-        }
-      });
-    }
+  openCompleteModal(): void {
+    this.showCompleteModal = true;
+    this.completeForm.reset();
+  }
+
+  closeCompleteModal(): void {
+    this.showCompleteModal = false;
+  }
+
+  submitComplete(): void {
+    if (this.completeForm.invalid) return;
+
+    this.isSubmitting = true;
+    const dto: CompleteRequestDTO = this.completeForm.value;
+
+    this.homecare.completeRequest(this.requestId, dto).subscribe({
+      next: () => {
+        this.toastService.success('Intervention marquée comme terminée !');
+        this.closeCompleteModal();
+        this.loadDetails();
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        this.toastService.error(err.error?.message || 'Échec de la validation de fin.');
+        this.isSubmitting = false;
+      }
+    });
   }
 
   goBack(): void {

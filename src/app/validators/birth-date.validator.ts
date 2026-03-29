@@ -56,24 +56,24 @@ export function getBirthDateErrorMessage(errors: ValidationErrors | null): strin
     }
 
     if (errors['required']) {
-        return 'La date de naissance est obligatoire';
+        return 'Date of birth is required';
     }
 
     if (errors['futureDate']) {
-        return 'La date de naissance ne peut pas être dans le futur';
+        return 'Date of birth cannot be in the future';
     }
 
     if (errors['minAge']) {
         const requiredAge = errors['minAge'].requiredAge;
         const actualAge = errors['minAge'].actualAge;
-        return `Vous devez avoir au moins ${requiredAge} ans (vous avez ${actualAge} ans)`;
+        return `You must be at least ${requiredAge} years old (you are ${actualAge} years old)`;
     }
 
     if (errors['maxAge']) {
-        return 'La date de naissance semble invalide';
+        return 'Date of birth appears to be invalid';
     }
 
-    return 'Erreur de validation de la date';
+    return 'Date validation error';
 }
 
 /**

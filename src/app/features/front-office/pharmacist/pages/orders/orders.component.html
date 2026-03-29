@@ -1,18 +1,23 @@
-<div class="orders-wrapper">
-    <div class="orders-container">
+<div class="dashboard-wrapper">
+    <app-pharmacist-sidebar></app-pharmacist-sidebar>
+
+    <div class="main-body">
+        <app-pharmacist-topbar></app-pharmacist-topbar>
+
+        <div class="content-area">
         <div class="header">
-            <h2>Gestion des Commandes</h2>
-            <p class="subtitle" *ngIf="pharmacyId">Toutes les commandes pour {{ pharmacyName }}</p>
+            <h2>Order Management</h2>
+            <p class="subtitle" *ngIf="pharmacyId">All orders for {{ pharmacyName }}</p>
         </div>
 
         <div class="content" *ngIf="isLoading">
             <div class="spinner"></div>
-            <p>Chargement des commandes...</p>
+            <p>Loading orders...</p>
         </div>
 
         <div class="content error-state" *ngIf="error">
             <p>{{ error }}</p>
-            <button class="btn btn-outline" (click)="loadOrders()">Réessayer</button>
+            <button class="btn btn-outline" (click)="loadOrders()">Retry</button>
         </div>
 
         <div class="content orders-content" *ngIf="!isLoading && !error">
@@ -20,7 +25,7 @@
             <!-- Filters Section -->
             <div class="filters-section">
                 <div class="search-box">
-                    <input #searchInput type="text" placeholder="Rechercher par ID ou Patient ID..."
+                    <input #searchInput type="text" placeholder="Search by ID or Patient ID..."
                         (keyup)="onSearchChange(searchInput.value)" class="search-input">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,24 +35,24 @@
 
                 <div class="status-filters">
                     <button class="filter-btn" [class.active]="statusFilter === 'ALL'"
-                        (click)="onStatusFilterChange('ALL')">Tous</button>
+                        (click)="onStatusFilterChange('ALL')">All</button>
                     <button class="filter-btn" [class.active]="statusFilter === 'PENDING'"
-                        (click)="onStatusFilterChange('PENDING')">En Attente</button>
+                        (click)="onStatusFilterChange('PENDING')">Pending</button>
                     <button class="filter-btn" [class.active]="statusFilter === 'VALIDATED'"
-                        (click)="onStatusFilterChange('VALIDATED')">Validés</button>
+                        (click)="onStatusFilterChange('VALIDATED')">Validated</button>
                     <button class="filter-btn" [class.active]="statusFilter === 'DELIVERY_REQUESTED'"
-                        (click)="onStatusFilterChange('DELIVERY_REQUESTED')">À Livrer</button>
+                        (click)="onStatusFilterChange('DELIVERY_REQUESTED')">To Deliver</button>
                     <button class="filter-btn" [class.active]="statusFilter === 'DELIVERED'"
-                        (click)="onStatusFilterChange('DELIVERED')">Livrés</button>
+                        (click)="onStatusFilterChange('DELIVERED')">Delivered</button>
                     <button class="filter-btn" [class.active]="statusFilter === 'REJECTED'"
-                        (click)="onStatusFilterChange('REJECTED')">Rejetés</button>
+                        (click)="onStatusFilterChange('REJECTED')">Rejected</button>
                 </div>
             </div>
 
             <!-- Orders Table -->
             <div class="card orders-card">
                 <div class="empty-state" *ngIf="filteredOrders.length === 0">
-                    <p>Aucune commande trouvée.</p>
+                    <p>No orders found.</p>
                 </div>
 
                 <table class="data-table" *ngIf="filteredOrders.length > 0">
@@ -56,11 +61,11 @@
                             <th>ID</th>
                             <th>Date</th>
                             <th>Patient</th>
-                            <th>Montant</th>
-                            <th>Livraison</th>
-                            <th>Ordonnance</th>
-                            <th>Statut</th>
-                            <th>Paiement</th>
+                            <th>Amount</th>
+                            <th>Delivery</th>
+                            <th>Prescription</th>
+                            <th>Status</th>
+                            <th>Payment</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -78,11 +83,11 @@
                             </td>
                             <td>
                                 <a *ngIf="order.prescriptionImageUrl" [href]="backendUrl + order.prescriptionImageUrl"
-                                    target="_blank" class="btn btn-sm btn-outline" title="Voir l'ordonnance">
-                                    Voir
+                                    target="_blank" class="btn btn-sm btn-outline" title="View prescription">
+                                    View
                                 </a>
                                 <span *ngIf="!order.prescriptionImageUrl" class="text-muted"
-                                    style="font-size:12px;">Aucune</span>
+                                    style="font-size:12px;">None</span>
                             </td>
                             <td>
                                 <span class="badge" [class.badge-primary]="order.status === 'VALIDATED'"
@@ -103,35 +108,33 @@
                             <td class="action-buttons">
                                 <ng-container *ngIf="order.status === 'PENDING'">
                                     <button class="btn btn-sm btn-success"
-                                        (click)="updateStatus(order.id, 'VALIDATED')">Valider</button>
+                                        (click)="updateStatus(order.id, 'VALIDATED')">Validate</button>
                                     <button class="btn btn-sm btn-danger"
-                                        (click)="openRejectModal(order.id)">Rejeter</button>
+                                        (click)="openRejectModal(order.id)">Reject</button>
                                 </ng-container>
 
                                 <ng-container *ngIf="order.status === 'VALIDATED' && !isPaymentCompleted(order.id)">
                                     <button class="btn btn-sm btn-primary" disabled
-                                        title="Paiement du patient en attente">
-                                        En attente de paiement... ⏳
+                                        title="Awaiting customer payment...">
+                                        Awaiting payment... ⏳
                                     </button>
                                     <button class="btn btn-sm btn-danger" (click)="openRejectModal(order.id)"
-                                        title="Annuler la commande">Annuler</button>
+                                        title="Cancel order">Cancel</button>
                                 </ng-container>
 
                                 <ng-container *ngIf="order.status === 'VALIDATED' && isPaymentCompleted(order.id)">
                                     <button class="btn btn-sm btn-success"
-                                        (click)="updateStatus(order.id, 'DELIVERY_REQUESTED')">✅ Demander
-                                        Livraison</button>
+                                        (click)="updateStatus(order.id, 'DELIVERY_REQUESTED')">✅ Request Delivery</button>
                                 </ng-container>
 
                                 <ng-container *ngIf="order.status === 'PAID'">
-                                    <button class="btn btn-sm btn-info" (click)="openDispatchModal(order.id)">🚚
-                                        Expédier</button>
+                                    <button class="btn btn-sm btn-info" (click)="openDispatchModal(order.id)">🚚 Ship</button>
                                 </ng-container>
 
                                 <ng-container
                                     *ngIf="order.status === 'DELIVERY_REQUESTED' || order.status === 'ASSIGNING' || order.status === 'ASSIGNED'">
                                     <button class="btn btn-sm btn-outline"
-                                        (click)="updateStatus(order.id, 'OUT_FOR_DELIVERY')">Livreur en Route</button>
+                                        (click)="updateStatus(order.id, 'OUT_FOR_DELIVERY')">Courier Dispatched</button>
                                 </ng-container>
                             </td>
                         </tr>
@@ -140,11 +143,10 @@
 
                 <!-- Pagination -->
                 <div class="pagination" *ngIf="totalPages > 1">
-                    <button class="btn btn-sm btn-outline" (click)="prevPage()" [disabled]="currentPage === 1">←
-                        Précédent</button>
-                    <span class="page-info">Page {{ currentPage }} sur {{ totalPages }}</span>
+                    <button class="btn btn-sm btn-outline" (click)="prevPage()" [disabled]="currentPage === 1">← Previous</button>
+                    <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
                     <button class="btn btn-sm btn-outline" (click)="nextPage()"
-                        [disabled]="currentPage === totalPages">Suivant →</button>
+                        [disabled]="currentPage === totalPages">Next →</button>
                 </div>
             </div>
 
@@ -152,64 +154,88 @@
 
         <!-- Reject Modal -->
         <div class="modal-overlay" *ngIf="showRejectModal">
-            <div class="modal">
-                <h3>Rejeter la commande #{{ selectedOrderId }}</h3>
-                <p>Veuillez indiquer la raison du rejet de la commande (obligatoire).</p>
-                <div class="form-group">
-                    <textarea [(ngModel)]="rejectReason"
-                        placeholder="Rupture de stock, ordonnance invalide..."></textarea>
+            <div class="modal reject-modal">
+                <div class="modal-header">
+                    <h3>Reject order #{{ selectedOrderId }}</h3>
+                    <button class="close-icon" (click)="closeRejectModal()">&times;</button>
                 </div>
-                <div class="modal-actions">
-                    <button class="btn btn-outline" (click)="closeRejectModal()">Annuler</button>
-                    <button class="btn btn-danger" [disabled]="!rejectReason" (click)="confirmReject()">Confirmer le
-                        rejet</button>
-                </div>
+                
+                <p class="modal-desc">Veuillez indiquer le motif du rejet de cette commande. Le patient sera notifié instantanément.</p>
+                
+                <form [formGroup]="rejectForm" (ngSubmit)="confirmReject()">
+                    <div class="form-group">
+                        <label for="rejectReason">Motif du rejet <span class="required">*</span></label>
+                        <textarea id="rejectReason" formControlName="reason" 
+                            placeholder="Rupture de stock, ordonnance non valide, etc..."
+                            [class.is-invalid]="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched"></textarea>
+                        
+                        <div class="error-feedback" *ngIf="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched">
+                            <span *ngIf="rejectForm.get('reason')?.errors?.['required']">Le motif est obligatoire.</span>
+                            <span *ngIf="rejectForm.get('reason')?.errors?.['minlength']">Le motif doit faire au moins 5 caractères.</span>
+                            <span *ngIf="rejectForm.get('reason')?.errors?.['maxlength']">Le motif ne peut pas dépasser 1000 caractères.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline" (click)="closeRejectModal()">Annuler</button>
+                        <button type="submit" class="btn btn-danger" [disabled]="rejectForm.invalid">
+                            Confirmer le rejet
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
         <!-- Dispatch Modal (Advanced Simulation) -->
         <div class="modal-overlay" *ngIf="showDispatchModal">
-            <div class="modal">
-                <div class="modal-header"
-                    style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7; padding-bottom: 1rem; margin-bottom: 1.5rem;">
-                    <h3 style="margin: 0; color: #2d3748;">Expédier la commande #{{ currentDispatchOrderId }}</h3>
-                    <button (click)="closeDispatchModal()"
-                        style="background: none; border: none; font-size: 24px; cursor: pointer; color: #a0aec0;">&times;</button>
+            <div class="modal dispatch-modal">
+                <div class="modal-header">
+                    <h3>Expédier la commande #{{ currentDispatchOrderId }}</h3>
+                    <button class="close-icon" (click)="closeDispatchModal()">&times;</button>
                 </div>
-                <p style="color: #4a5568; margin-bottom: 1.5rem;">Sélectionnez une agence et un livreur disponible.</p>
+                
+                <p class="modal-desc">Sélectionnez une agence de livraison et un coursier disponible pour prendre en charge cette commande.</p>
 
-                <div class="form-group" style="margin-bottom: 1.25rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Agence de livraison</label>
-                    <select class="form-control" [(ngModel)]="selectedAgencyId" (change)="onAgencyChange()"
-                        style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px;">
-                        <option [ngValue]="null">--- Choisir une agence ---</option>
-                        <option *ngFor="let agency of agencies" [ngValue]="agency.id">{{ agency.name }} ({{ agency.city
-                            }})</option>
-                    </select>
-                </div>
+                <form [formGroup]="dispatchForm" (ngSubmit)="confirmDispatch()">
+                    <div class="form-group">
+                        <label for="agencySelect">Agence de livraison <span class="required">*</span></label>
+                        <select id="agencySelect" class="form-control" formControlName="agencyId" (change)="onAgencyChange()"
+                            [class.is-invalid]="dispatchForm.get('agencyId')?.invalid && dispatchForm.get('agencyId')?.touched">
+                            <option [ngValue]="null">--- Choisir une agence ---</option>
+                            <option *ngFor="let agency of agencies" [ngValue]="agency.id">
+                                {{ agency.name }} ({{ agency.city }})
+                            </option>
+                        </select>
+                        <div class="error-feedback" *ngIf="dispatchForm.get('agencyId')?.invalid && dispatchForm.get('agencyId')?.touched">
+                            L'agence est obligatoire.
+                        </div>
+                    </div>
 
-                <div class="form-group" style="margin-bottom: 1.25rem;" *ngIf="selectedAgencyId">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Livreur disponible</label>
-                    <select class="form-control" [(ngModel)]="selectedAgentId">
-                        <option [ngValue]="null">--- Choisir un livreur ---</option>
-                        <option *ngFor="let agent of agents" [ngValue]="agent.id">
-                            {{ agent.name }} - {{ agent.vehicleType }} ({{ agent.phoneNumber }})
-                        </option>
-                    </select>
-                </div>
+                    <div class="form-group" *ngIf="dispatchForm.get('agencyId')?.value">
+                        <label for="agentSelect">Coursier disponible <span class="required">*</span></label>
+                        <select id="agentSelect" class="form-control" formControlName="agentId"
+                            [class.is-invalid]="dispatchForm.get('agentId')?.invalid && dispatchForm.get('agentId')?.touched">
+                            <option [ngValue]="null">--- Choisir un coursier ---</option>
+                            <option *ngFor="let agent of agents" [ngValue]="agent.id">
+                                {{ agent.name }} - {{ agent.vehicleType }} ({{ agent.phoneNumber }})
+                            </option>
+                        </select>
+                        <div class="error-feedback" *ngIf="dispatchForm.get('agentId')?.invalid && dispatchForm.get('agentId')?.touched">
+                            Le coursier est obligatoire.
+                        </div>
+                    </div>
 
-                <div *ngIf="selectedAgencyId && agents.length === 0"
-                    style="padding: 1rem; background: #fff5f5; border-radius: 8px; margin-bottom: 1.5rem;">
-                    <p style="color: #c53030; font-size: 13px; margin: 0;">⚠️ Aucun livreur disponible.</p>
-                </div>
+                    <div *ngIf="dispatchForm.get('agencyId')?.value && agents.length === 0" class="alert alert-danger">
+                        <p>⚠️ Aucun coursier disponible pour cette agence actuellement.</p>
+                    </div>
 
-                <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 1rem;">
-                    <button class="btn btn-outline" (click)="closeDispatchModal()">Annuler</button>
-                    <button class="btn btn-primary" [disabled]="!selectedAgentId || isAssigning"
-                        (click)="confirmDispatch()">
-                        {{ isAssigning ? 'Traitement...' : 'Confirmer l\'expédition' }}
-                    </button>
-                </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline" (click)="closeDispatchModal()">Annuler</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="dispatchForm.invalid || isAssigning">
+                            {{ isAssigning ? 'Expédition en cours...' : 'Confirmer l\'expédition' }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

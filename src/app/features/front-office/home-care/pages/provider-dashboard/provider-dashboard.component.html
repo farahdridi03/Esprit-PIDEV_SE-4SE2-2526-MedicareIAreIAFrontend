@@ -17,9 +17,7 @@
                 </div>
             </div>
 
-            <!-- Alerts -->
-            <div class="alert alert-success mt-3" *ngIf="successMessage">{{ successMessage }}</div>
-            <div class="alert alert-danger mt-3" *ngIf="error">{{ error }}</div>
+            <!-- Notifications via ToastService (plus besoin d'alertes ici) -->
 
             <!-- Request List -->
             <div class="requests-container glass-card mt-4">
@@ -83,6 +81,50 @@
                 <!-- Spinner -->
                 <div class="loading-overlay-inline" *ngIf="isLoading">
                     <div class="medical-spinner"></div>
+                </div>
+
+                <!-- Complete Intervention Modal -->
+                <div class="modal-backdrop fade show" *ngIf="showCompleteModal"></div>
+                <div class="modal fade show d-block" *ngIf="showCompleteModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                            <div class="modal-header bg-primary text-white p-4">
+                                <h5 class="modal-title d-flex align-items-center gap-2">
+                                    <i class="bi bi-check-circle-fill"></i> Terminer l'intervention
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" (click)="closeCompleteModal()"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <form [formGroup]="completeForm">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Compte-rendu de l'intervention</label>
+                                        <textarea class="form-control rounded-3" rows="4" 
+                                            formControlName="providerNotes"
+                                            [ngClass]="{'is-invalid': completeForm.get('providerNotes')?.invalid && (completeForm.get('providerNotes')?.dirty || completeForm.get('providerNotes')?.touched)}"
+                                            placeholder="Détails de l'intervention, observations, recommandations..."></textarea>
+                                        <div class="invalid-feedback" *ngIf="completeForm.get('providerNotes')?.errors?.['required']">
+                                            Les notes sont obligatoires pour terminer l'intervention.
+                                        </div>
+                                        <div class="invalid-feedback" *ngIf="completeForm.get('providerNotes')?.errors?.['maxlength']">
+                                            Les notes ne peuvent pas dépasser 1000 caractères.
+                                        </div>
+                                        <div class="text-muted small mt-2 d-flex justify-content-between">
+                                            <span>Notez toute observation importante pour le patient.</span>
+                                            <span>{{ completeForm.get('providerNotes')?.value?.length || 0 }} / 1000</span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer border-0 p-4 pt-0 gap-2">
+                                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" (click)="closeCompleteModal()">Annuler</button>
+                                <button type="button" class="btn btn-primary rounded-pill px-4" 
+                                    [disabled]="completeForm.invalid"
+                                    (click)="submitComplete()">
+                                    Confirmer la complétion
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,12 +1,37 @@
 .orders-wrapper {
-    padding: 2rem;
+    padding: 0;
     background-color: #f8fafc;
     min-height: 100vh;
+    display: none;
 }
 
 .orders-container {
     max-width: 1400px;
     margin: 0 auto;
+    display: none;
+}
+
+/* Structural Layout (Dashboard) */
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--bg, #f8fafc);
+}
+
+.main-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background-color: white;
+}
+
+.content-area {
+    flex: 1;
+    position: relative;
+    overflow-y: auto;
+    padding: 2rem;
 }
 
 .header {

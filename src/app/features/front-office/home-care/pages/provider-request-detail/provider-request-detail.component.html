@@ -20,8 +20,6 @@
                     <div class="spinner-border text-primary" role="status"></div>
                 </div>
 
-                <div class="alert alert-danger" *ngIf="error && !isSubmitting">{{ error }}</div>
-
                 <div class="row" *ngIf="!isLoading && requestDetails">
                     <div class="col-lg-8 mb-4">
                         <div class="premium-card p-4 h-100">
@@ -72,6 +70,11 @@
                                 <p class="mb-0 fst-italic text-muted">"{{ requestDetails.patientNotes }}"</p>
                             </div>
 
+                            <div class="mb-4 p-3 bg-soft-success rounded" *ngIf="requestDetails.providerNotes">
+                                <h6 class="fw-bold mb-2 text-success">Provider Intervention Notes:</h6>
+                                <p class="mb-0 fst-italic">"{{ requestDetails.providerNotes }}"</p>
+                            </div>
+
                         </div>
                     </div>
 
@@ -110,7 +113,7 @@
                                 </div>
                                 <h6 class="fw-bold mb-2">Intervention Ongoing</h6>
                                 <p class="text-muted small mb-4">Please mark the service as completed once you have finished the intervention.</p>
-                                <button class="btn-premium w-100 py-2" style="background: var(--emerald)" (click)="completeRequest()" [disabled]="isSubmitting">Mark as Completed</button>
+                                <button class="btn-premium w-100 py-2" style="background: var(--emerald)" (click)="openCompleteModal()" [disabled]="isSubmitting">Mark as Completed</button>
                             </div>
 
                             <div *ngIf="requestDetails.status === 'COMPLETED'" class="text-center py-4">
@@ -126,6 +129,39 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Completion Modal -->
+<div class="modal fade show d-block" *ngIf="showCompleteModal" tabindex="-1" style="background: rgba(0,0,0,0.5); z-index: 1050;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Clôturer l'intervention</h5>
+                <button type="button" class="btn-close" (click)="closeCompleteModal()" [disabled]="isSubmitting"></button>
+            </div>
+            <div class="modal-body py-4">
+                <p class="text-muted small mb-4">Veuillez saisir vos notes de fin d'intervention pour informer le patient du travail réalisé.</p>
+                <form [formGroup]="completeForm" (ngSubmit)="submitComplete()">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase">Notes d'intervention</label>
+                        <textarea class="form-control" formControlName="providerNotes" rows="4" 
+                            placeholder="Ex: Pansement refait, constantes stables..."
+                            [ngClass]="{'is-invalid': completeForm.get('providerNotes')?.invalid && completeForm.get('providerNotes')?.touched}"></textarea>
+                        <div class="invalid-feedback" *ngIf="completeForm.get('providerNotes')?.errors?.['required']">Les notes sont obligatoires.</div>
+                        <div class="invalid-feedback" *ngIf="completeForm.get('providerNotes')?.errors?.['maxlength']">Maximum 1000 caractères.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" (click)="closeCompleteModal()" [disabled]="isSubmitting">Annuler</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" (click)="submitComplete()" 
+                    [disabled]="completeForm.invalid || isSubmitting">
+                    <span class="spinner-border spinner-border-sm me-2" *ngIf="isSubmitting"></span>
+                    Confirmer la fin
+                </button>
             </div>
         </div>
     </div>

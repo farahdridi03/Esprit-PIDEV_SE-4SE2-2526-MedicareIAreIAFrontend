@@ -32,7 +32,7 @@ export class AuthService {
         );
     }
 
-    // Le backend attend désormais un multipart/form-data
+    // The backend now expects multipart/form-data
     register(formData: FormData): Observable<string> {
         return this.http.post(`${this.baseUrl}/register`, formData, { responseType: 'text' }) as Observable<string>;
     }
@@ -66,7 +66,7 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
-            // Le rôle peut venir sous forme de chaîne ou de tableau
+            // The role may come as a string or array
             let role: string | null = null;
             if (typeof decoded.role === 'string') {
                 role = decoded.role;
@@ -84,7 +84,7 @@ export class AuthService {
 
             if (!role) return null;
 
-            // Supprimer le préfixe ROLE_ si présent
+            // Remove ROLE_ prefix if present
             return role.replace(/^ROLE_/, '');
         } catch (error) {
             return null;
@@ -118,7 +118,7 @@ export class AuthService {
         }
     }
 
-    // Méthode ajoutée: tente d'extraire le nom complet de l'utilisateur depuis le token JWT
+    // Added method: attempts to extract full user name from JWT token
     getUserFullName(): string | null {
         const token = this.getToken();
         if (!token) return null;
@@ -129,7 +129,7 @@ export class AuthService {
             const possible = decoded.fullName || decoded.name || decoded.username || decoded.preferred_username || null;
             if (possible && typeof possible === 'string') return possible;
 
-            // Parfois le prénom/nom sont séparés
+            // Sometimes first/last names are separated
             if (decoded.firstName || decoded.lastName) {
                 return `${decoded.firstName || ''} ${decoded.lastName || ''}`.trim();
             }

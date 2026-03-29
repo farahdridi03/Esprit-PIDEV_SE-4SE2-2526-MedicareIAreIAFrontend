@@ -44,7 +44,7 @@ export class PharmacyOrderListComponent implements OnInit {
         if (err.status === 403) {
           this.error = 'Accès refusé. Vous n\'avez pas les permissions nécessaires.';
         } else {
-          this.error = 'Échec du chargement de vos commandes. Veuillez réessayer plus tard.';
+          this.error = 'Failed to load your orders. Please try again later.';
         }
         this.isLoading = false;
       }

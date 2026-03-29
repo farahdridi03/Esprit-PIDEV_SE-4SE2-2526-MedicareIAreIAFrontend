@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HomecareService } from '../../../../../services/homecare.service';
 import { NotificationService } from '../../../../../services/notification.service';
-import { ServiceRequest } from '../../../../../models/homecare.model';
+import { ServiceRequest, CompleteRequestDTO } from '../../../../../models/homecare.model';
+import { ToastService } from '../../../../../services/toast.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -12,8 +14,10 @@ import { Subscription } from 'rxjs';
 export class ProviderDashboardComponent implements OnInit, OnDestroy {
   requests: ServiceRequest[] = [];
   isLoading = true;
-  error = '';
-  successMessage = '';
+  
+  showCompleteModal = false;
+  selectedRequestId: number | null = null;
+  completeForm: FormGroup;
 
   stats = {
     pending: 0,
@@ -25,8 +29,14 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private homecare: HomecareService,
-    private notificationService: NotificationService
-  ) { }
+    private notificationService: NotificationService,
+    private toastService: ToastService,
+    private fb: FormBuilder
+  ) {
+    this.completeForm = this.fb.group({
+      providerNotes: ['', [Validators.required, Validators.maxLength(1000)]]
+    });
+  }
 
   ngOnInit(): void {
     this.loadRequests();
@@ -54,7 +64,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       },
       error: () => {
-        this.error = 'Failed to load assigned requests.';
+        this.toastService.error('Échec du chargement des demandes assignées.');
         this.isLoading = false;
       }
     });
@@ -69,34 +79,65 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   }
 
   acceptRequest(id: number): void {
-    if (confirm('Accepter cette demande ? Cette plage horaire sera marquée comme occupée dans votre calendrier.')) {
-      this.homecare.acceptRequest(id).subscribe({
+    this.homecare.acceptRequest(id).subscribe({
+      next: () => {
+        this.toastService.success('Demande acceptée ! Le créneau est désormais réservé.');
+        this.loadRequests();
+      },
+      error: () => this.toastService.error('Erreur lors de l\'acceptation.')
+    });
+  }
+
+  declineRequest(id: number): void {
+    if (confirm('Êtes-vous sûr de vouloir décliner cette demande ?')) {
+      this.homecare.declineRequest(id).subscribe({
         next: () => {
-          this.successMessage = 'Demande acceptée ! Le créneau est désormais réservé dans votre planning.';
+          this.toastService.warning('Demande déclinée.');
           this.loadRequests();
-          // Clear message after 5s
-          setTimeout(() => this.successMessage = '', 5000);
         },
-        error: () => this.error = 'Erreur lors de l\'acceptation.'
+        error: () => this.toastService.error('Erreur lors du refus.')
       });
     }
   }
 
-  declineRequest(id: number): void {
-    if (confirm('Are you sure you want to decline this request?')) {
-      this.homecare.declineRequest(id).subscribe(() => this.loadRequests());
-    }
-  }
-
   startRequest(id: number): void {
-    if (confirm('Are you ready to start this intervention? This will notify the patient.')) {
-      this.homecare.startRequest(id).subscribe(() => this.loadRequests());
-    }
+    this.homecare.startRequest(id).subscribe({
+      next: () => {
+        this.toastService.info('Intervention commencée. Le patient a été notifié.');
+        this.loadRequests();
+      },
+      error: () => this.toastService.error('Erreur lors du démarrage.')
+    });
   }
 
   completeRequest(id: number): void {
-    if (confirm('Mark this intervention as completed?')) {
-      this.homecare.completeRequest(id).subscribe(() => this.loadRequests());
-    }
+    this.selectedRequestId = id;
+    this.completeForm.reset();
+    this.showCompleteModal = true;
+  }
+
+  submitComplete(): void {
+    if (this.completeForm.invalid || !this.selectedRequestId) return;
+
+    const dto: CompleteRequestDTO = {
+      providerNotes: this.completeForm.value.providerNotes
+    };
+
+    this.homecare.completeRequest(this.selectedRequestId, dto).subscribe({
+      next: () => {
+        this.toastService.success('Intervention marquée comme terminée !');
+        this.showCompleteModal = false;
+        this.loadRequests();
+      },
+      error: (err) => {
+        const msg = err.error?.message || 'Erreur lors de la complétion.';
+        this.toastService.error(msg);
+      }
+    });
+  }
+
+  closeCompleteModal(): void {
+    this.showCompleteModal = false;
+    this.selectedRequestId = null;
   }
 }

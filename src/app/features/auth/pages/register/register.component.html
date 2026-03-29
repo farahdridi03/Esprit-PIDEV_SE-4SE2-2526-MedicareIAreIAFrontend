@@ -250,7 +250,7 @@
 
           <!-- Pharmacy Name -->
           <div class="form-group">
-            <label for="pharmacyName">Nom de la Pharmacie (Obligatoire)</label>
+            <label for="pharmacyName">Pharmacy Name (Required)</label>
             <div class="input-wrapper">
               <span class="input-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -265,7 +265,7 @@
 
           <!-- Pharmacy Address -->
           <div class="form-group margin-top">
-            <label for="pharmacyAddress">Adresse de la Pharmacie</label>
+            <label for="pharmacyAddress">Pharmacy Address</label>
             <div class="input-wrapper">
               <span class="input-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -321,7 +321,7 @@
 
           <!-- Specialty Selection -->
           <div class="form-group margin-top">
-            <label for="specialtyIds">Spécialités (Obligatoire)</label>
+            <label for="specialtyIds">Specialties (Required)</label>
             <div class="input-wrapper">
               <span class="input-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -334,13 +334,13 @@
               </span>
               <select id="specialtyIds" formControlName="specialtyIds" class="role-select"
                 [ngClass]="{'is-invalid': registerForm.get('specialtyIds')?.invalid && (registerForm.get('specialtyIds')?.dirty || registerForm.get('specialtyIds')?.touched)}">
-                <option value="" disabled selected>Sélectionner votre spécialité</option>
+                <option value="" disabled selected>Select your specialty</option>
                 <option *ngFor="let s of availableSpecialties" [value]="s.id">{{ s.name }}</option>
               </select>
             </div>
             <div
               *ngIf="registerForm.get('specialtyIds')?.invalid && (registerForm.get('specialtyIds')?.dirty || registerForm.get('specialtyIds')?.touched)">
-              <small class="error-message">Veuillez sélectionner votre spécialité principale.</small>
+              <small class="error-message">Please select your primary specialty.</small>
             </div>
           </div>
           <div class="form-group">
@@ -360,7 +360,7 @@
             </div>
             <div
               *ngIf="registerForm.get('certificationDocument')?.invalid && (registerForm.get('certificationDocument')?.dirty || registerForm.get('certificationDocument')?.touched)">
-              <small class="error-message">Un document justificatif est obligatoire.</small>
+              <small class="error-message">Supporting document is required.</small>
             </div>
             <p class="helper-text" style="color: var(--text-2); font-size: 0.85rem; margin-top: 4px;">Vous serez
               placé(e) en attente jusqu'à ce qu'un Administrateur valide ce document.</p>

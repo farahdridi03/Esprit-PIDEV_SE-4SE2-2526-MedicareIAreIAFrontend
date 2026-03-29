@@ -124,7 +124,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
                     },
                     error: (err) => {
                         console.error('Error searching products:', err);
-                        this.error = 'Erreur lors de la recherche de produits.';
+                        this.error = 'Error searching for products.';
                         this.isLoading = false;
                     }
                 });
@@ -176,7 +176,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
     // Use batch search and support partial matches
     searchPharmaciesForSelectedProducts(): void {
         if (this.selectedProducts.length === 0) {
-            this.error = 'Veuillez ajouter au moins un produit.';
+            this.error = 'Please add at least one product.';
             return;
         }
 
@@ -239,7 +239,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
                 },
                 error: (err) => {
                     console.error('Error batch searching pharmacies:', err);
-                    this.error = 'Erreur lors de la recherche de pharmacies compatibles.';
+                    this.error = 'Error searching for compatible pharmacies.';
                     this.isSearchingPharmacies = false;
                 }
             });
@@ -271,7 +271,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
                     },
                     error: (err) => {
                         console.error('Upload error:', err);
-                        this.error = 'Erreur lors de l\'envoi de l\'ordonnance.';
+                        this.error = 'Error uploading prescription.';
                         this.isUploading = false;
                     }
                 });
@@ -295,7 +295,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
 
         const patientId = this.authService.getUserId();
         if (!patientId) {
-            this.error = 'Erreur: Patient non identifié.';
+            this.error = 'Error: Patient not identified.';
             this.isSubmitting = false;
             return;
         }
@@ -323,7 +323,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (response) => {
-                    this.successMessage = 'Commande créée avec succès!';
+                    this.successMessage = 'Order created successfully!';
                     this.isSubmitting = false;
                     setTimeout(() => {
                         this.router.navigate(['/front/patient/pharmacy-orders', response.id]);
@@ -331,7 +331,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
                 },
                 error: (err) => {
                     console.error('Error creating order:', err);
-                    this.error = err.error?.message || 'Erreur lors de la création de la commande.';
+                    this.error = err.error?.message || 'Error creating order.';
                     this.isSubmitting = false;
                 }
             });
@@ -341,22 +341,22 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
         this.error = '';
 
         if (!this.selectedCompatiblePharmacy) {
-            this.error = 'Veuillez sélectionner une pharmacie.';
+            this.error = 'Please select a pharmacy.';
             return false;
         }
 
         if (this.selectedProducts.length === 0) {
-            this.error = 'Veuillez ajouter au moins un produit.';
+            this.error = 'Please add at least one product.';
             return false;
         }
 
         if (!this.prescriptionImageUrl) {
-            this.error = 'L\'ordonnance est obligatoire pour confirmer la commande.';
+            this.error = 'Prescription is required to confirm the order.';
             return false;
         }
 
         if (this.deliveryType === 'HOME_DELIVERY' && !this.deliveryAddress.trim()) {
-            this.error = 'Veuillez entrer une adresse de livraison.';
+            this.error = 'Please enter a delivery address.';
             return false;
         }
 

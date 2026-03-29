@@ -169,7 +169,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
         this.closeCancelModal();
       },
       error: (err: any) => {
-        alert('Erreur: impossible danuller cette commande.');
+        alert('Error: unable to cancel this order.');
         this.closeCancelModal();
       }
     });
@@ -272,7 +272,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
         const clientSecret = res.clientSecret; // We now have a dedicated field
 
         if (!clientSecret || !this.stripe || !this.card) {
-          alert('Erreur lors de l\'initialisation de Stripe.');
+          alert('Error initializing Stripe.');
           this.isProcessingPayment = false;
           return;
         }
@@ -288,7 +288,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
         });
 
         if (error) {
-          alert('Paiement échoué: ' + error.message);
+          alert('Payment failed: ' + error.message);
           this.isProcessingPayment = false;
         } else if (paymentIntent && paymentIntent.status === 'succeeded') {
           // 3. Inform backend to verify and update status
@@ -316,7 +316,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
-        alert('Erreur lors de la création de l\'intention de paiement.');
+        alert('Error creating payment intent.');
         this.isProcessingPayment = false;
       }
     });
@@ -335,7 +335,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
         this.loadOrderDetails(); // Refresh order status
       },
       error: (err) => {
-        alert('Erreur lors de l\'initiation du paiement.');
+        alert('Error initiating payment.');
         this.isProcessingPayment = false;
       }
     });
@@ -363,7 +363,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
           }, 1500);
         },
         error: (err) => {
-          alert('Erreur lors du paiement test.');
+          alert('Error processing test payment.');
           this.isProcessingPayment = false;
         }
       });

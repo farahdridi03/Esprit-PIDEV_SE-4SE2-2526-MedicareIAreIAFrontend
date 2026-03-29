@@ -13,7 +13,7 @@ describe('BackOfficeComponent', () => {
       imports: [TestingModule],
       schemas: [NO_ERRORS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(BackOfficeComponent);
     component = fixture.componentInstance;

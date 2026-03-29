@@ -14,14 +14,14 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                             </svg>
                         </button>
-                        <h2>Nouvelle Commande</h2>
+                        <h2>New Order</h2>
                     </div>
                     
                     <!-- Step Indicator -->
                     <div class="stepper">
                         <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1">
                             <div class="step-circle">1</div>
-                            <div class="step-label">Médicaments</div>
+                            <div class="step-label">Medications</div>
                         </div>
                         <div class="step-line"></div>
                         <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2">
@@ -31,7 +31,7 @@
                         <div class="step-line"></div>
                         <div class="step" [class.active]="currentStep === 3">
                             <div class="step-circle">3</div>
-                            <div class="step-label">Détails</div>
+                            <div class="step-label">Details</div>
                         </div>
                     </div>
                 </div>
@@ -47,8 +47,8 @@
                     <!-- STEP 1: Medicine Selection -->
                     <div class="step-card" *ngIf="currentStep === 1">
                         <div class="card-header">
-                            <h3>Quels médicaments cherchez-vous ?</h3>
-                            <p>Ajoutez les médicaments pour trouver les pharmacies compatibles.</p>
+                            <h3>What medications are you looking for?</h3>
+                            <p>Add medications to find compatible pharmacies.</p>
                         </div>
 
                         <!-- Product Search -->
@@ -60,14 +60,14 @@
                                     </svg>
                                 </span>
                                 <input type="text" [(ngModel)]="searchProductName" name="searchProduct"
-                                    placeholder="Rechercher (ex: Doliprane, Aspegic...)" (input)="searchProducts()"
+                                    placeholder="Search (ex: Doliprane, Aspegic...)" (input)="searchProducts()"
                                     (focus)="showProductSearch = true" class="search-input">
                             </div>
 
                             <div *ngIf="showProductSearch && availableProducts.length > 0" class="product-results">
                                 <div class="results-header" *ngIf="availableProducts.length > 1">
-                                    <span>{{ availableProducts.length }} produits trouvés</span>
-                                    <button type="button" class="btn-link" (click)="addAllAvailable()">Tout ajouter</button>
+                                    <span>{{ availableProducts.length }} products found</span>
+                                    <button type="button" class="btn-link" (click)="addAllAvailable()">Add all</button>
                                 </div>
                                 <div *ngFor="let product of availableProducts" class="product-item"
                                     (click)="addProductToSelection(product)">
@@ -75,20 +75,20 @@
                                         <h4>{{ product.name }}</h4>
                                         <p *ngIf="product.description">{{ product.description }}</p>
                                     </div>
-                                    <span class="add-badge">+ Ajouter</span>
+                                    <span class="add-badge">+ Add</span>
                                 </div>
                             </div>
 
                             <div *ngIf="showProductSearch && searchProductName.trim() && availableProducts.length === 0"
                                 class="no-results">
-                                <p>Aucun produit trouvé.</p>
+                                <p>No products found.</p>
                             </div>
                         </div>
 
                         <!-- Selected Products List -->
                         <div class="selected-section" *ngIf="selectedProducts.length > 0">
                             <div class="section-title">
-                                <h4>Médicaments Sélectionnés ({{ selectedProducts.length }})</h4>
+                                <h4>Selected Medications ({{ selectedProducts.length }})</h4>
                             </div>
                             <div class="selected-list">
                                 <div class="selected-item" *ngFor="let item of selectedProducts; let i = index">
@@ -110,7 +110,7 @@
                         <div class="step-footer">
                             <button type="button" class="btn-action primary" (click)="searchPharmaciesForSelectedProducts()" [disabled]="selectedProducts.length === 0 || isSearchingPharmacies">
                                 <span *ngIf="isSearchingPharmacies" class="spinner-small"></span>
-                                Rechercher les Pharmacies
+                                Search for Pharmacies
                             </button>
                         </div>
                     </div>
@@ -118,8 +118,8 @@
                     <!-- STEP 2: Pharmacy Selection -->
                     <div class="step-card" *ngIf="currentStep === 2">
                         <div class="card-header">
-                            <h3>Choisir une Pharmacie</h3>
-                            <p>Nous avons classé les pharmacies par disponibilité de vos médicaments.</p>
+                            <h3>Choose a Pharmacy</h3>
+                            <p>We have sorted pharmacies by availability of your medications.</p>
                         </div>
 
                         <div class="pharmacy-results">
@@ -127,7 +127,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
-                                <p>Aucune pharmacie ne possède actuellement tous ces médicaments.</p>
+                                <p>No pharmacy currently has all these medications.</p>
                             </div>
 
                             <div class="pharmacy-grid" *ngIf="compatiblePharmacies.length > 0">
@@ -136,11 +136,11 @@
                                         <div class="name-row">
                                             <h4>{{ cp.pharmacyName }}</h4>
                                             <span class="match-badge" [class.perfect]="cp.matchCount === selectedProducts.length">
-                                                {{ cp.matchCount }}/{{ selectedProducts.length }} médicaments
+                                                {{ cp.matchCount }}/{{ selectedProducts.length }} medications
                                             </span>
                                         </div>
                                         <p class="missing-text" *ngIf="cp.missingProducts.length > 0">
-                                            Manquant: {{ cp.missingProducts.join(', ') }}
+                                            Raison manquante: {{ cp.missingProducts.join(', ') }}
                                         </p>
                                         <span class="price">{{ cp.totalPrice | currency:'TND':'symbol' }}</span>
                                     </div>
@@ -154,15 +154,15 @@
                         </div>
 
                         <div class="step-footer">
-                            <button type="button" class="btn-action outline" (click)="goBackToStep(1)">Retour</button>
+                            <button type="button" class="btn-action outline" (click)="goBackToStep(1)">Back</button>
                         </div>
                     </div>
 
                     <!-- STEP 3: Delivery Options & Confirm -->
                     <div class="step-card" *ngIf="currentStep === 3 && selectedCompatiblePharmacy">
                         <div class="card-header">
-                            <h3>Options & Finalisation</h3>
-                            <p>Définissez vos préférences de réception.</p>
+                            <h3>Options & Finalization</h3>
+                            <p>Set your preferred delivery options.</p>
                         </div>
 
                         <form (ngSubmit)="submitOrder()" class="order-form">
@@ -170,7 +170,7 @@
                             <div class="form-grid">
                                 <!-- Prescription Upload -->
                                 <div class="form-section full-width">
-                                    <label>Ordonnance Médicale * (Image uniquement)</label>
+                                    <label>Medical Prescription * (Image only)</label>
                                     <div class="file-upload-wrapper" [class.uploaded]="prescriptionImageUrl">
                                         <input type="file" (change)="onFileSelected($event)" accept="image/*" id="prescriptionFile" class="file-input">
                                         <label for="prescriptionFile" class="file-label">
@@ -178,62 +178,62 @@
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                                 </svg>
-                                                <span>Cliquez pour télécharger l'ordonnance</span>
+                                                <span>Click to upload prescription</span>
                                             </div>
                                             <div class="upload-progress" *ngIf="isUploading">
                                                 <div class="spinner-small green"></div>
-                                                <span>Téléchargement en cours...</span>
+                                                <span>Uploading...</span>
                                             </div>
                                             <div class="upload-success" *ngIf="prescriptionImageUrl && !isUploading">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                                 </svg>
-                                                <span>Ordonnance téléchargée avec succès</span>
-                                                <button type="button" class="btn-change" (click)="prescriptionImageUrl = ''">Changer</button>
+                                                <span>Prescription uploaded successfully</span>
+                                                <button type="button" class="btn-change" (click)="prescriptionImageUrl = ''">Change</button>
                                             </div>
                                         </label>
                                     </div>
-                                    <p class="field-info">L'ordonnance est obligatoire pour toutes les commandes.</p>
+                                    <p class="field-info">Prescription is required for all orders.</p>
                                 </div>
 
                                 <!-- Delivery Type -->
                                 <div class="form-section">
-                                    <label>Mode de Réception</label>
+                                    <label>Delivery Method</label>
                                     <div class="delivery-toggle">
                                         <label class="toggle-option" [class.active]="deliveryType === 'PICKUP'">
                                             <input type="radio" name="deliveryType" [(ngModel)]="deliveryType" value="PICKUP">
-                                            Retrait sur place
+                                            Home pickup
                                         </label>
                                         <label class="toggle-option" [class.active]="deliveryType === 'HOME_DELIVERY'">
                                             <input type="radio" name="deliveryType" [(ngModel)]="deliveryType" value="HOME_DELIVERY">
-                                            Livraison
+                                            Delivery
                                         </label>
                                     </div>
                                 </div>
 
                                 <!-- Delivery Details -->
                                 <div class="form-section full-width" *ngIf="deliveryType === 'HOME_DELIVERY'">
-                                    <label>Adresse de Livraison *</label>
-                                    <textarea [(ngModel)]="deliveryAddress" name="deliveryAddress" [required]="deliveryType === 'HOME_DELIVERY'" placeholder="Votre adresse complète..." rows="2" class="form-input"></textarea>
+                                    <label>Delivery Address *</label>
+                                    <textarea [(ngModel)]="deliveryAddress" name="deliveryAddress" [required]="deliveryType === 'HOME_DELIVERY'" placeholder="Your complete address..." rows="2" class="form-input"></textarea>
                                 </div>
                             </div>
 
                             <div class="order-summary">
                                 <div class="summary-item">
-                                    <span>Pharmacie</span>
+                                    <span>Pharmacy</span>
                                     <strong>{{ selectedCompatiblePharmacy.pharmacyName }}</strong>
                                 </div>
                                 <div class="summary-item total">
-                                    <span>Total Estimé</span>
+                                    <span>Estimated Total</span>
                                     <strong>{{ selectedCompatiblePharmacy.totalPrice | currency:'TND':'symbol' }}</strong>
                                 </div>
                             </div>
 
                             <div class="step-footer">
-                                <button type="button" class="btn-action outline" (click)="goBackToStep(2)" [disabled]="isSubmitting">Retour</button>
+                                <button type="button" class="btn-action outline" (click)="goBackToStep(2)" [disabled]="isSubmitting">Back</button>
                                 <button type="submit" class="btn-action primary" [disabled]="isSubmitting">
-                                    <span *ngIf="!isSubmitting">Confirmer la Commande</span>
-                                    <span *ngIf="isSubmitting">Envoi en cours...</span>
+                                    <span *ngIf="!isSubmitting">Confirm Order</span>
+                                    <span *ngIf="isSubmitting">Sending...</span>
                                 </button>
                             </div>
                         </form>

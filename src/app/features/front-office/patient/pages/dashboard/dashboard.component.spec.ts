@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { of } from 'rxjs';
 import { DashboardComponent } from './dashboard.component';
 import { TestingModule } from '../../../../../testing/testing.module';
 import { UserService } from '../../../../../services/user.service';
@@ -12,8 +13,11 @@ describe('DashboardComponent', () => {
   let authServiceMock: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
-    userServiceMock = jasmine.createSpyObj('UserService', ['getUser', 'getUserProfile']);
-    authServiceMock = jasmine.createSpyObj('AuthService', ['getToken', 'isAuthenticated']);
+    userServiceMock = jasmine.createSpyObj('UserService', ['getProfile']);
+    authServiceMock = jasmine.createSpyObj('AuthService', ['getUserFullName']);
+
+    userServiceMock.getProfile.and.returnValue(of({ fullName: 'John Doe' } as any));
+    authServiceMock.getUserFullName.and.returnValue('John Doe');
 
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent],
@@ -24,11 +28,15 @@ describe('DashboardComponent', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   it('should create', () => {

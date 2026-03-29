@@ -203,7 +203,7 @@ export class RegisterComponent {
       error: (err: any) => {
         console.error('Registration error details:', err.error);
 
-        let details = 'Erreur lors de l\'inscription';
+        let details = 'Registration error';
         // Parse custom error message since the request has responseType: 'text'
         if (err.error && typeof err.error === 'string') {
           try {
@@ -222,7 +222,7 @@ export class RegisterComponent {
   }
 
   /**
-   * Get birth date error message in French
+   * Get birth date error message in English
    */
   getBirthDateErrorMessage(): string {
     const control = this.registerForm.get('birthDate');
@@ -233,23 +233,23 @@ export class RegisterComponent {
     const errors = control.errors;
 
     if (errors['required']) {
-      return 'La date de naissance est obligatoire';
+      return 'Date of birth is required';
     }
 
     if (errors['futureDate']) {
-      return 'La date de naissance ne peut pas être dans le futur';
+      return 'Date of birth cannot be in the future';
     }
 
     if (errors['minAge']) {
       const requiredAge = errors['minAge'].requiredAge;
       const actualAge = errors['minAge'].actualAge;
-      return `Vous devez avoir au moins ${requiredAge} ans (vous avez actuellement ${actualAge} ans)`;
+      return `You must be at least ${requiredAge} years old (you are currently ${actualAge} years old)`;
     }
 
     if (errors['maxAge']) {
-      return 'La date de naissance semble invalide';
+      return 'Date of birth appears to be invalid';
     }
 
-    return 'Erreur de validation de la date';
+    return 'Date validation error';
   }
 }

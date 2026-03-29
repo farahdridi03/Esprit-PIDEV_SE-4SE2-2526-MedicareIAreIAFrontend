@@ -9,7 +9,7 @@ export interface UpdateProfileRequest {
     password?: string;
 }
 
-// Ajout d'une interface utilisateur simple utilisée par getProfile
+// Added simple user interface used by getProfile
 export interface UserProfile {
     id?: number;
     fullName?: string;
@@ -30,6 +30,14 @@ export class UserService {
 
     updateProfile(request: UpdateProfileRequest): Observable<any> {
         return this.http.put(`${this.baseUrlLegacy}/profile`, request);
+    }
+
+    updateUserProfile(id: number | string, profileData: any): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/${id}`, profileData);
+    }
+
+    changePassword(id: number | string, passwordData: any): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${id}/change-password`, passwordData);
     }
 
     create(dto: UserRequestDTO): Observable<UserResponseDTO> {
@@ -60,9 +68,9 @@ export class UserService {
         return this.http.get<UserResponseDTO[]>(`${this.apiUrl}/role/${role}`);
     }
 
-    // Méthode ajoutée: récupère le profil de l'utilisateur courant
+    // Added method: retrieves current user profile
     getProfile(): Observable<UserProfile> {
-        // Appel à l'endpoint legacy /profile
+        // Call to legacy /profile endpoint
         return this.http.get<UserProfile>(`${this.baseUrlLegacy}/profile`);
     }
 }

@@ -11,8 +11,8 @@
                 <div class="welcome-banner">
                     <div class="banner-content">
                         <div class="banner-text">
-                            <h1>Détails de la Commande #{{ orderId }}</h1>
-                            <p *ngIf="order">Suivi et récapitulatif de votre commande de médicaments.</p>
+                            <h1>Order Details #{{ orderId }}</h1>
+                            <p *ngIf="order">Tracking and summary of your medication order.</p>
                         </div>
                         <div class="banner-actions" *ngIf="order && !isLoading">
                             <button class="action-btn white shadow" (click)="downloadInvoice()">
@@ -45,7 +45,7 @@
                 <div class="states-wrapper" *ngIf="isLoading">
                     <div class="info-card center">
                         <div class="spinner"></div>
-                        <p>Chargement des détails de votre commande...</p>
+                        <p>Loading order details...</p>
                     </div>
                 </div>
 
@@ -56,7 +56,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                         <p>{{ error }}</p>
-                        <button class="action-btn outline mt-3" (click)="loadOrderDetails()">Réessayer</button>
+                        <button class="action-btn outline mt-3" (click)="loadOrderDetails()">Retry</button>
                     </div>
                 </div>
 
@@ -126,7 +126,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                                <h3>Général</h3>
+                                <h3>General</h3>
                             </div>
                             <div class="card-body">
                                 <div class="data-row">
@@ -134,11 +134,11 @@
                                     <span class="value">{{ order.createdAt | date:'medium' }}</span>
                                 </div>
                                 <div class="data-row">
-                                    <span class="label">Statut:</span>
+                                    <span class="label">Status:</span>
                                     <span class="status-badge" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
                                 </div>
                                 <div class="data-row">
-                                    <span class="label">Pharmacie:</span>
+                                    <span class="label">Pharmacy:</span>
                                     <span class="value">{{ order.pharmacyName || 'N/A' }}</span>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1" />
                                     </svg>
                                 </div>
-                                <h3>Livraison</h3>
+                                <h3>Delivery</h3>
                             </div>
                             <div class="card-body">
                                 <div class="data-row">
@@ -161,12 +161,12 @@
                                     <span class="value">{{ order.deliveryType || 'PICKUP' }}</span>
                                 </div>
                                 <div class="data-row">
-                                    <span class="label">Adresse:</span>
+                                    <span class="label">Address:</span>
                                     <span class="value">{{ order.deliveryAddress }}</span>
                                 </div>
                                 <div class="data-row">
-                                    <span class="label">Échéance:</span>
-                                    <span class="value">{{ order.scheduledDeliveryDate ? (order.scheduledDeliveryDate | date:'mediumDate') : 'Dès que possible' }}</span>
+                                    <span class="label">Deadline:</span>
+                                    <span class="value">{{ order.scheduledDeliveryDate ? (order.scheduledDeliveryDate | date:'mediumDate') : 'As soon as possible' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -179,15 +179,15 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                                     </svg>
                                 </div>
-                                <h3>Paiement</h3>
+                                <h3>Payment</h3>
                             </div>
                             <div class="card-body">
                                 <div class="data-row">
-                                    <span class="label">Méthode:</span>
+                                    <span class="label">Method:</span>
                                     <span class="value">{{ existingPayment.method }}</span>
                                 </div>
                                 <div class="data-row">
-                                    <span class="label">Statut:</span>
+                                    <span class="label">Status:</span>
                                     <span class="status-badge" [ngClass]="existingPayment.status.toLowerCase()">{{ existingPayment.status }}</span>
                                 </div>
                                 <div class="data-row" *ngIf="existingPayment.transactionId">
@@ -205,13 +205,13 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
-                                <h3>Ordonnance Joint</h3>
+                                <h3>Attached Prescription</h3>
                             </div>
                             <div class="card-body prescription-container">
                                 <a [href]="order.prescriptionImageUrl" target="_blank" class="prescription-link">
                                     <img [src]="order.prescriptionImageUrl" alt="Ordonnance">
                                     <div class="img-overlay">
-                                        <span>Cliquer pour agrandir</span>
+                                        <span>Click to enlarge</span>
                                     </div>
                                 </a>
                             </div>
@@ -223,22 +223,21 @@
                         <div class="card-header">
                             <div class="live-indicator">
                                 <span class="dot"></span>
-                                SUIVI EN DIRECT
+                                LIVE TRACKING
                             </div>
-                            <h3>Localisation du Livreur</h3>
+                            <h3>Delivery Location</h3>
                         </div>
                         <div class="card-body">
                             <div class="tracking-meta">
-                                <div class="meta-item">
-                                    <span class="label">Livreur</span>
+                                <div class="meta-item">\n                                    <span class="label">Courier</span>
                                     <span class="value">{{ delivery.agencyName }}</span>
                                 </div>
                                 <div class="meta-item">
-                                    <span class="label">Statut</span>
+                                    <span class="label">Status</span>
                                     <span class="value highlight">{{ delivery.status }}</span>
                                 </div>
                                 <div class="meta-item" *ngIf="delivery.estimatedArrival">
-                                    <span class="label">Arrivée prévue</span>
+                                    <span class="label">Expected arrival</span>
                                     <span class="value time">{{ delivery.estimatedArrival | date:'shortTime' }}</span>
                                 </div>
                             </div>
@@ -250,13 +249,13 @@
                                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                                         </svg>
                                     </div>
-                                    <div class="marker-label">Position du livreur</div>
+                                    <div class="marker-label">Courier position</div>
                                 </div>
                                 <div class="map-status">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" [class.pulse]="delivery.currentLat">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                                     </svg>
-                                    <span>{{ delivery.currentLat ? 'Position actualisée en direct' : 'En attente du signal GPS...' }}</span>
+                                    <span>{{ delivery.currentLat ? 'Position updated in real time' : 'Waiting for GPS signal...' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -265,21 +264,21 @@
                     <!-- Items Table -->
                     <div class="items-section card">
                         <div class="card-header">
-                            <h3>Contenu de la Commande</h3>
+                            <h3>Order Contents</h3>
                         </div>
                         <div class="table-container">
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th>Médicament</th>
-                                        <th class="center">Quantité</th>
-                                        <th class="right">Prix Unitaire</th>
+                                        <th>Medication</th>
+                                        <th class="center">Quantity</th>
+                                        <th class="right">Unit Price</th>
                                         <th class="right">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let item of order.items">
-                                        <td class="name-cell">{{ item.productName || 'Médicament ID: ' + item.productId }}</td>
+                                        <td class="name-cell">{{ item.productName || 'Medication ID: ' + item.productId }}</td>
                                         <td class="center">{{ item.quantity }}</td>
                                         <td class="right">{{ (item.price / item.quantity) | currency:'TND':'symbol' }}</td>
                                         <td class="right font-bold">{{ item.price | currency:'TND':'symbol' }}</td>
@@ -301,7 +300,7 @@
                 <div class="dashboard-modal-overlay" *ngIf="showPaymentModal">
                     <div class="dashboard-modal">
                         <div class="modal-head">
-                            <h3>Choisir le mode de paiement</h3>
+                            <h3>Choose payment method</h3>
                             <button class="close-btn" (click)="closePaymentModal()">&times;</button>
                         </div>
                         <div class="modal-body">
@@ -311,19 +310,19 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
-                                <h3>Paiement réussi !</h3>
-                                <p>Votre commande a été mise à jour avec succès.</p>
+                                <h3>Payment successful!</h3>
+                                <p>Your order has been updated successfully.</p>
                             </div>
 
                             <ng-container *ngIf="!paymentSuccess">
-                                <p>Sélectionnez votre méthode de paiement préférée pour la commande <strong>#{{ orderId }}</strong> :</p>
+                                <p>Select your preferred payment method for order <strong>#{{ orderId }}</strong> :</p>
                                 
                                 <div class="payment-methods-grid">
                                     <div class="method-option" [class.active]="selectedPaymentMethod === 'STRIPE'" (click)="onPaymentMethodSelect('STRIPE')">
                                         <div class="method-icon">💳</div>
                                         <div class="method-info">
-                                            <span class="name">Carte Bancaire (Stripe)</span>
-                                            <span class="desc">Sécurisé par Stripe</span>
+                                            <span class="name">Card Payment (Stripe)</span>
+                                            <span class="desc">Secured by Stripe</span>
                                         </div>
                                         <div class="check-mark" *ngIf="selectedPaymentMethod === 'STRIPE'">✓</div>
                                     </div>
@@ -331,8 +330,8 @@
                                     <div class="method-option" [class.active]="selectedPaymentMethod === 'D17'" (click)="onPaymentMethodSelect('D17')">
                                         <div class="method-icon">📱</div>
                                         <div class="method-info">
-                                            <span class="name">D17 (Tunisie)</span>
-                                            <span class="desc">Portefeuille mobile</span>
+                                            <span class="name">D17 (Tunisia)</span>
+                                            <span class="desc">Mobile wallet</span>
                                         </div>
                                         <div class="check-mark" *ngIf="selectedPaymentMethod === 'D17'">✓</div>
                                     </div>
@@ -340,8 +339,8 @@
                                     <div class="method-option" [class.active]="selectedPaymentMethod === 'CASH_ON_DELIVERY'" (click)="onPaymentMethodSelect('CASH_ON_DELIVERY')">
                                         <div class="method-icon">💵</div>
                                         <div class="method-info">
-                                            <span class="name">Paiement à la livraison</span>
-                                            <span class="desc">Payez en espèces</span>
+                                            <span class="name">Cash on Delivery</span>
+                                            <span class="desc">Pay in cash</span>
                                         </div>
                                         <div class="check-mark" *ngIf="selectedPaymentMethod === 'CASH_ON_DELIVERY'">✓</div>
                                     </div>
@@ -349,7 +348,7 @@
 
                                 <!-- Stripe Card Element -->
                                 <div class="stripe-card-container" [hidden]="selectedPaymentMethod !== 'STRIPE' || isProcessingPayment">
-                                    <label for="card-element">Informations de carte</label>
+                                    <label for="card-element">Card Information</label>
                                     <div id="card-element">
                                         <!-- A Stripe Element will be inserted here. -->
                                     </div>
@@ -358,8 +357,8 @@
 
                                 <div class="payment-processing-status" *ngIf="isProcessingPayment">
                                     <div class="btn-spinner big"></div>
-                                    <p>Traitement du paiement en cours...</p>
-                                    <span class="small">Veuillez ne pas fermer cette fenêtre.</span>
+                                    <p>Processing payment...</p>
+                                    <span class="small">Please don't close this window.</span>
                                 </div>
                             </ng-container>
                         </div>
@@ -377,16 +376,16 @@
                 <div class="dashboard-modal-overlay" *ngIf="showCancelModal">
                     <div class="dashboard-modal">
                         <div class="modal-head">
-                            <h3>Annuler la commande</h3>
+                            <h3>Cancel order</h3>
                             <button class="close-btn" (click)="closeCancelModal()">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <p>Voulez-vous vraiment annuler cette commande ? Veuillez indiquer la raison ci-dessous :</p>
-                            <textarea [(ngModel)]="cancelReason" placeholder="Raison de l'annulation..." class="modal-textarea"></textarea>
+                            <p>Are you sure you want to cancel this order? Please provide the reason below:</p>
+                            <textarea [(ngModel)]="cancelReason" placeholder="Reason for cancellation..." class="modal-textarea"></textarea>
                         </div>
                         <div class="modal-foot">
-                            <button class="action-btn outline" (click)="closeCancelModal()">Retour</button>
-                            <button class="action-btn danger" [disabled]="!cancelReason" (click)="confirmCancel()">Confirmer l'annulation</button>
+                            <button class="action-btn outline" (click)="closeCancelModal()">Back</button>
+                            <button class="action-btn danger" [disabled]="!cancelReason" (click)="confirmCancel()">Confirm cancellation</button>
                         </div>
                     </div>
                 </div>

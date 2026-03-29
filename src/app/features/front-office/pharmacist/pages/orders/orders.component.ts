@@ -1,4 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastService } from '../../../../../services/toast.service';
 import { PharmacyOrderService } from '../../../../../services/pharmacy-order.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { UserService } from '../../../../../services/user.service';
@@ -37,15 +39,14 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     showRejectModal = false;
     selectedOrderId: number | null = null;
-    rejectReason = '';
+    rejectForm: FormGroup;
+    dispatchForm: FormGroup;
 
     // Dispatch Modal properties
     showDispatchModal = false;
     currentDispatchOrderId: number | null = null;
     agencies: DeliveryAgency[] = [];
     agents: DeliveryAgent[] = [];
-    selectedAgencyId: number | null = null;
-    selectedAgentId: number | null = null;
     isAssigning = false;
 
     // Filters
@@ -65,8 +66,18 @@ export class OrdersComponent implements OnInit, OnDestroy {
         private paymentService: PaymentService,
         private deliveryService: DeliveryService,
         private deliveryTrackingService: DeliveryTrackingService,
-        private notificationService: NotificationService
-    ) { }
+        private notificationService: NotificationService,
+        private toastService: ToastService,
+        private fb: FormBuilder
+    ) {
+        this.rejectForm = this.fb.group({
+            reason: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(1000)]]
+        });
+        this.dispatchForm = this.fb.group({
+            agencyId: [null, Validators.required],
+            agentId: [null, Validators.required]
+        });
+    }
 
     ngOnInit(): void {
         this.initOrders();
@@ -81,7 +92,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     initOrders(): void {
         const userId = this.authService.getUserId();
         if (!userId) {
-            this.error = 'Utilisateur non authentifié.';
+            this.error = 'User not authenticated.';
             this.isLoading = false;
             return;
         }
@@ -90,15 +101,15 @@ export class OrdersComponent implements OnInit, OnDestroy {
             next: (user) => {
                 if (user.pharmacyId) {
                     this.pharmacyId = user.pharmacyId;
-                    this.pharmacyName = user.pharmacyName || 'Pharmacie';
+                    this.pharmacyName = user.pharmacyName || 'Pharmacy';
                     this.loadOrders();
                 } else {
-                    this.error = 'Aucune pharmacie associée à ce profil.';
+                    this.error = 'No pharmacy associated with this profile.';
                     this.isLoading = false;
                 }
             },
             error: (err) => {
-                this.error = 'Erreur lors de la récupération du profil utilisateur.';
+                this.error = 'Error retrieving user profile.';
                 this.isLoading = false;
                 console.error(err);
             }
@@ -136,6 +147,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
             error: (err: any) => {
                 console.error('Failed to load orders', err);
                 this.error = 'Erreur lors du chargement des commandes.';
+                this.toastService.error(this.error);
                 this.isLoading = false;
             }
         });
@@ -177,12 +189,15 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     updateStatus(orderId: number, status: OrderStatus): void {
         const dto: UpdateOrderStatusDTO = { status };
-        if (confirm(`Voulez-vous vraiment changer le statut à ${status} ?`)) {
+        if (confirm(`Êtes-vous sûr de vouloir passer le statut à ${status} ?`)) {
             this.orderService.updateOrderStatus(orderId, dto).subscribe({
                 next: (updated: PharmacyOrderResponseDTO) => {
+                    this.toastService.success(`Statut mis à jour : ${status}`);
                     this.loadOrders(); // Reload to update list
                 },
-                error: (err: any) => alert('Erreur lors de la mise à jour du statut.')
+                error: (err: any) => {
+                    this.toastService.error('Erreur lors de la mise à jour du statut.');
+                }
             });
         }
     }
@@ -195,22 +210,31 @@ export class OrdersComponent implements OnInit, OnDestroy {
     closeRejectModal(): void {
         this.showRejectModal = false;
         this.selectedOrderId = null;
-        this.rejectReason = '';
+        this.rejectForm.reset();
     }
 
     confirmReject(): void {
-        if (!this.selectedOrderId || !this.rejectReason) return;
+        if (!this.selectedOrderId || this.rejectForm.invalid) {
+            this.toastService.error('Veuillez saisir un motif de rejet valide.');
+            return;
+        }
 
-        const dto: RejectOrderDTO = { note: this.rejectReason };
+        const reason = this.rejectForm.get('reason')?.value;
+        const changedBy = this.authService.getUserFullName() || this.authService.getUserEmail() || 'PHARMACIST';
+        const dto: RejectOrderDTO = {
+            note: reason,
+            changedBy: changedBy
+        };
         this.orderService.rejectOrder(this.selectedOrderId, dto).subscribe({
             next: () => {
+                this.toastService.success('Commande rejetée avec succès');
                 this.closeRejectModal();
                 this.loadOrders();
             },
             error: (err: any) => {
-                console.error('Erreur rejet commande', err);
+                console.error('Error rejecting order', err);
                 const msg = err.error?.error || err.error?.message || 'Erreur lors du rejet de la commande.';
-                alert(msg);
+                this.toastService.error(msg);
                 this.closeRejectModal();
             }
         });
@@ -225,8 +249,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     closeDispatchModal(): void {
         this.showDispatchModal = false;
         this.currentDispatchOrderId = null;
-        this.selectedAgencyId = null;
-        this.selectedAgentId = null;
+        this.dispatchForm.reset();
         this.agents = [];
     }
 
@@ -238,32 +261,41 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }
 
     onAgencyChange(): void {
-        if (this.selectedAgencyId) {
-            this.deliveryService.getAgentsByAgency(this.selectedAgencyId).subscribe({
-                next: (data) => this.agents = data,
+        const agencyId = this.dispatchForm.get('agencyId')?.value;
+        if (agencyId) {
+            this.deliveryService.getAgentsByAgency(agencyId).subscribe({
+                next: (data) => {
+                    this.agents = data;
+                    this.dispatchForm.patchValue({ agentId: null });
+                },
                 error: (err) => console.error('Error loading agents', err)
             });
         } else {
             this.agents = [];
+            this.dispatchForm.patchValue({ agentId: null });
         }
     }
 
     confirmDispatch(): void {
-        if (!this.currentDispatchOrderId || !this.selectedAgentId) return;
+        if (!this.currentDispatchOrderId || this.dispatchForm.invalid) {
+            this.toastService.error('Veuillez sélectionner une agence et un livreur.');
+            return;
+        }
 
         this.isAssigning = true;
-        this.deliveryService.dispatchOrder(this.currentDispatchOrderId, this.selectedAgentId).subscribe({
+        const agentId = this.dispatchForm.get('agentId')?.value;
+        this.deliveryService.dispatchOrder(this.currentDispatchOrderId, agentId).subscribe({
             next: (delivery: Delivery) => {
                 this.isAssigning = false;
                 this.closeDispatchModal();
                 this.loadOrders();
-                alert('Commande expédiée avec succès !');
+                this.toastService.success('Commande expédiée avec succès !');
             },
             error: (err) => {
                 this.isAssigning = false;
                 console.error('Dispatch error', err);
                 const msg = err.error?.message || 'Erreur lors de la création de l\'expédition.';
-                alert(msg);
+                this.toastService.error(msg);
             }
         });
     }
@@ -297,8 +329,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     getPaymentStatus(orderId: number): string {
         const payment = this.orderPaymentStatus.get(orderId);
-        if (!payment) return 'Aucun paiement';
-        return payment.status || 'Inconnu';
+        if (!payment) return 'No payment';
+        return payment.status || 'Unknown';
     }
 
     canDispatchOrder(order: PharmacyOrderResponseDTO): boolean {

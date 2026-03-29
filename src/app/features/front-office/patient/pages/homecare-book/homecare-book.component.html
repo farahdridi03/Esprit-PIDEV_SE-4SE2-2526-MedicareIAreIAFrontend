@@ -22,7 +22,7 @@
                                     {{ serviceDetails.durationMinutes }} min</p>
                             </div>
                             <div class="price-pill-lg">
-                                <span class="label">À partir de</span>
+                                <span class="label">Starting from</span>
                                 <span class="value">{{ serviceDetails?.price }} TND</span>
                             </div>
                         </div>
@@ -65,25 +65,24 @@
                                                     <h5 class="mb-0 fw-bold text-dark">{{ p.fullName }}</h5>
                                                     <div class="rating-stars text-warning small">
                                                         <i class="bi bi-star-fill"></i> {{ p.averageRating.toFixed(1) }}
-                                                        <span class="text-muted ms-1">({{ p.totalReviews }} avis)</span>
+                                                        <span class="text-muted ms-1">({{ p.totalReviews }} reviews)</span>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <p class="bio-preview text-muted small flex-grow-1 mb-4 lh-base">
-                                                {{ p.bio || 'Professionnel de santé qualifié dévoué aux soins de qualité
-                                                à domicile.' | slice:0:120 }}...
+                                                {{ p.bio || 'Qualified healthcare professional dedicated to quality home care.' | slice:0:120 }}...
                                             </p>
 
                                             <div class="d-grid gap-2 mt-auto">
                                                 <div class="d-flex gap-2">
                                                     <button class="btn btn-profile-refined flex-grow-1"
                                                         (click)="viewProviderProfile(p.id)">
-                                                        Profil
+                                                        Profile
                                                     </button>
                                                     <button class="btn btn-book-refined flex-grow-1"
                                                         (click)="selectProviderAndNext(p.id)">
-                                                        Réserver
+                                                        Book
                                                     </button>
                                                 </div>
                                             </div>
@@ -93,9 +92,9 @@
 
                                 <div class="col-12 text-center py-5" *ngIf="availableProviders.length === 0">
                                     <div class="mb-3 display-1 text-light"><i class="bi bi-people"></i></div>
-                                    <h4 class="text-muted">Aucun prestataire disponible pour ce service.</h4>
+                                    <h4 class="text-muted">No providers available for this service.</h4>
                                     <button class="btn btn-outline-primary mt-3"
-                                        routerLink="/front/patient/homecare">Retour au catalogue</button>
+                                        routerLink="/front/patient/homecare">Back to catalog</button>
                                 </div>
                             </div>
                         </div>
@@ -111,10 +110,10 @@
                                         style="width: 32px; height: 32px;" (click)="backToProviders()">
                                         <i class="bi bi-arrow-left"></i>
                                     </button>
-                                    <h2 class="mb-0">Détails de votre rendez-vous</h2>
+                                    <h2 class="mb-0">Your appointment details</h2>
                                 </div>
                                 <div class="badge bg-soft-primary text-primary p-2 px-3 rounded-pill">
-                                    Service : {{ serviceDetails.name }}
+                                    Service: {{ serviceDetails.name }}
                                 </div>
                             </div>
 
@@ -139,8 +138,7 @@
                                                                     class="bi bi-exclamation-circle-fill"
                                                                     style="font-size: 1.5rem; color: #ffc107;"></i>
                                                                 <strong style="font-size: 1.1rem;">
-                                                                    {{ dateAlertType === 'danger' ? 'Date non
-                                                                    disponible' : 'Attention' }}
+                                                                    {{ dateAlertType === 'danger' ? 'Date not available' : 'Caution' }}
                                                                 </strong>
                                                             </div>
                                                             <p class="mb-0"
@@ -150,14 +148,13 @@
                                                         </div>
                                                         <button type="button" class="btn-close"
                                                             (click)="showDateAlert = false"
-                                                            aria-label="Fermer"></button>
+                                                            aria-label="Close"></button>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label fw-bold d-flex align-items-center gap-2">
-                                                        <i class="bi bi-calendar-event text-primary"></i> 1. Date de
-                                                        l'intervention <span class="text-danger">*</span>
+                                                        <i class="bi bi-calendar-event text-primary"></i> 1. Intervention date <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="date" class="form-control rounded-3"
                                                         formControlName="requestedDate" [min]="minDate" [max]="maxDate"
@@ -177,7 +174,7 @@
                                                         style="border-left: 4px solid #dc3545;">
                                                         <p class="small text-danger mb-2 fw-bold">
                                                             <i class="bi bi-calendar-x me-2"></i>
-                                                            Jours indisponibles pour ce prestataire:
+                                                            Unavailable days for this provider:
                                                         </p>
                                                         <div class="d-flex flex-wrap gap-2">
                                                             <span *ngFor="let blockedDate of blockedProviderDates"
@@ -190,7 +187,7 @@
 
                                                     <div class="mt-3" *ngIf="suggestedDates.length > 0">
                                                         <p class="small text-muted mb-2"><i
-                                                                class="bi bi-magic me-1"></i> Dates suggérées :</p>
+                                                                class="bi bi-magic me-1"></i> Suggested dates:</p>
                                                         <div class="d-flex flex-wrap gap-2">
                                                             <button type="button" *ngFor="let sugg of suggestedDates"
                                                                 class="btn btn-sm btn-outline-primary py-1 px-3 rounded-pill tiny-btn"
@@ -203,7 +200,7 @@
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label fw-bold d-flex align-items-center gap-2">
-                                                        <i class="bi bi-clock text-primary"></i> 2. Heure d'arrivée
+                                                        <i class="bi bi-clock text-primary"></i> 2. Arrival time
                                                         <span class="text-danger">*</span>
                                                     </label>
                                                     <div class="slots-container mt-2"
@@ -222,7 +219,7 @@
                                                         <div
                                                             class="alert alert-info py-3 small d-flex align-items-center gap-2 rounded-3">
                                                             <i class="bi bi-info-circle-fill"></i>
-                                                            Choisissez une date pour voir les horaires.
+                                                            Choose a date to see available times.
                                                         </div>
                                                     </ng-template>
                                                 </div>
@@ -230,29 +227,37 @@
 
                                             <div class="mb-4">
                                                 <label class="form-label fw-bold d-flex align-items-center gap-2">
-                                                    <i class="bi bi-geo-alt text-primary"></i> 3. Adresse de
-                                                    l'intervention <span class="text-danger">*</span>
+                                                    <i class="bi bi-geo-alt text-primary"></i> 3. Intervention address <span class="text-danger">*</span>
                                                 </label>
                                                 <textarea class="form-control rounded-3" rows="3"
                                                     formControlName="address"
-                                                    placeholder="Rue, ville, code postal..."></textarea>
+                                                    [ngClass]="{'is-invalid': f['address'].invalid && (f['address'].dirty || f['address'].touched)}"
+                                                    placeholder="Street, city, postal code..."></textarea>
+                                                <div *ngIf="f['address'].invalid && (f['address'].dirty || f['address'].touched)" class="invalid-feedback">
+                                                    <div *ngIf="f['address'].errors?.['required']">L'adresse est obligatoire.</div>
+                                                    <div *ngIf="f['address'].errors?.['minlength']">L'adresse doit faire au moins 10 caractères.</div>
+                                                    <div *ngIf="f['address'].errors?.['maxlength']">L'adresse ne peut pas dépasser 500 caractères.</div>
+                                                </div>
                                             </div>
 
                                             <div class="mb-4">
                                                 <label class="form-label fw-bold d-flex align-items-center gap-2">
-                                                    <i class="bi bi-pencil-square text-primary"></i> 4. Notes pour
-                                                    l'intervenant
+                                                    <i class="bi bi-pencil-square text-primary"></i> 4. Notes for provider
                                                 </label>
                                                 <textarea class="form-control rounded-3" rows="2"
                                                     formControlName="patientNotes"
-                                                    placeholder="Précisions sur votre état de santé ou accès au logement..."></textarea>
+                                                    [ngClass]="{'is-invalid': f['patientNotes'].invalid && (f['patientNotes'].dirty || f['patientNotes'].touched)}"
+                                                    placeholder="Details about your health status or home access..."></textarea>
+                                                <div *ngIf="f['patientNotes'].invalid && (f['patientNotes'].dirty || f['patientNotes'].touched)" class="invalid-feedback">
+                                                    <div *ngIf="f['patientNotes'].errors?.['maxlength']">Les notes ne peuvent pas dépasser 1000 caractères.</div>
+                                                </div>
                                             </div>
 
                                             <div class="d-flex justify-content-end pt-4">
                                                 <button type="submit"
                                                     class="btn btn-primary rounded-pill px-5 py-3 shadow-sm d-flex align-items-center gap-2"
                                                     [disabled]="isSubmitting || bookingForm.invalid">
-                                                    VALIDER <i class="bi bi-check2-circle mb-0"
+                                                    CONFIRM <i class="bi bi-check2-circle mb-0"
                                                         style="font-size: 1.2rem;"></i>
                                                 </button>
                                             </div>
@@ -275,33 +280,33 @@
                                                 <div class="badge bg-warning text-dark mb-3"><i
                                                         class="bi bi-star-fill"></i> {{
                                                     selectedProviderRating.toFixed(1) }}</div>
-                                                <p class="text-muted small mb-3">Professionnel sélectionné</p>
+                                                <p class="text-muted small mb-3">Selected provider</p>
                                                 <button
                                                     class="btn btn-sm btn-light text-primary fw-bold rounded-pill px-3"
                                                     (click)="backToProviders()">
-                                                    <i class="bi bi-arrow-left-right me-1"></i> Changer
+                                                    <i class="bi bi-arrow-left-right me-1"></i> Change
                                                 </button>
                                             </div>
                                         </div>
 
                                         <div class="service-details-card shadow-lg overflow-hidden position-relative">
                                             <div class="bg-circle-decoration"></div>
-                                            <h5 class="position-relative">Récapitulatif financier</h5>
+                                            <h5 class="position-relative">Financial summary</h5>
 
                                             <div class="item-row position-relative">
-                                                <span>Montant du service</span>
+                                                <span>Service amount</span>
                                                 <span class="fw-bold">{{ serviceDetails.price }} TND</span>
                                             </div>
 
                                             <div class="item-row position-relative">
-                                                <span>Frais de déplacement</span>
-                                                <span class="fw-bold">Inclus</span>
+                                                <span>Travel fees</span>
+                                                <span class="fw-bold">Included</span>
                                             </div>
 
                                             <hr class="position-relative">
 
                                             <div class="total-row position-relative">
-                                                <span class="h6 mb-0">Total à payer</span>
+                                                <span class="h6 mb-0">Total to pay</span>
                                                 <span class="h4 mb-0 fw-bold">{{ serviceDetails.price }} TND</span>
                                             </div>
                                         </div>
@@ -346,12 +351,12 @@
                     <div class="row g-4">
                         <div class="col-md-5">
                             <div class="profile-section-card h-100 p-4 bg-white rounded-4 shadow-sm border-0">
-                                <h6 class="text-uppercase tiny-text text-muted fw-bold mb-3 ls-1">À PROPOS</h6>
-                                <p class="text-dark small lh-base mb-4">{{ selectedProviderProfile?.bio || 'Ce
-                                    professionnel de santé est hautement qualifié pour les interventions à domicile.' }}
+                                <h6 class="text-uppercase tiny-text text-muted fw-bold mb-3 ls-1">ABOUT</h6>
+                                <p class="text-dark small lh-base mb-4">{{ selectedProviderProfile?.bio || 'This
+                                    healthcare professional is highly qualified for home interventions.' }}
                                 </p>
 
-                                <h6 class="text-uppercase tiny-text text-muted fw-bold mb-3 ls-1">SPÉCIALITÉS</h6>
+                                <h6 class="text-uppercase tiny-text text-muted fw-bold mb-3 ls-1">SPECIALTIES</h6>
                                 <div class="d-flex flex-wrap gap-2">
                                     <span class="badge bg-soft-primary text-primary p-2 px-3 rounded-pill tiny-text"
                                         *ngFor="let s of selectedProviderProfile?.specialties">
@@ -363,13 +368,13 @@
 
                         <div class="col-md-7">
                             <div class="profile-section-card p-4 bg-white rounded-4 shadow-sm border-0">
-                                <h6 class="text-uppercase tiny-text text-muted fw-bold mb-3 ls-1">DERNIERS AVIS PATIENTS
+                                <h6 class="text-uppercase tiny-text text-muted fw-bold mb-3 ls-1">LATEST PATIENT REVIEWS
                                 </h6>
 
                                 <div class="reviews-minimal-list">
                                     <div *ngIf="!selectedProviderProfile?.reviews?.length"
                                         class="text-center py-4 text-muted small fst-italic">
-                                        Aucun avis à afficher pour le moment.
+                                        No reviews to display at this time.
                                     </div>
 
                                     <div class="review-item-minimal p-3 mb-2 rounded-3 border-start border-primary border-4"
@@ -381,8 +386,8 @@
                                                     [style.display]="s <= r.rating ? 'inline' : 'none'"></i>
                                             </div>
                                         </div>
-                                        <p class="very-small text-muted mb-0">"{{ r.comment || 'Intervention
-                                            recommandée.' }}"</p>
+                                        <p class="very-small text-muted mb-0">"{{ r.comment || 'Recommended intervention.'
+                                            }}"</p>
                                     </div>
                                 </div>
                             </div>
@@ -393,10 +398,10 @@
                 <div
                     class="modal-footer border-0 p-4 bg-white rounded-bottom-4 shadow-top justify-content-center gap-3">
                     <button type="button" class="btn btn-profile-refined px-4"
-                        (click)="$event.stopPropagation(); closeProfileModal()">Plus tard</button>
+                        (click)="$event.stopPropagation(); closeProfileModal()">Later</button>
                     <button type="button" class="btn btn-book-refined px-5" *ngIf="selectedProviderProfile"
                         (click)="$event.stopPropagation(); selectProviderAndNext(selectedProviderProfile.id)">
-                        CHOISIR CE PRESTATAIRE
+                        CHOOSE THIS PROVIDER
                     </button>
                 </div>
             </div>

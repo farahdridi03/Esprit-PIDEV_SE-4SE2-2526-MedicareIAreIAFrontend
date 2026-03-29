@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HomecareService } from '../../../../../services/homecare.service';
 import { HomeCareService, ProviderProfileDTO, CreateServiceRequestDTO } from '../../../../../models/homecare.model';
 import { interventionDateValidator, getTodayDateString, getMaxInterventionDateString, getInterventionDateErrorMessage } from '../../../../../validators/intervention-date.validator';
+import { ToastService } from '../../../../../services/toast.service';
 
 @Component({
   selector: 'app-homecare-book',
@@ -19,8 +20,7 @@ export class HomecareBookComponent implements OnInit {
 
   isLoading = true;
   isSubmitting = false;
-  error = '';
-  success = false;
+  error: string = '';
 
   // ✅ Date validation properties
   minDate: string = getTodayDateString();
@@ -44,8 +44,8 @@ export class HomecareBookComponent implements OnInit {
   // Funnel Steps
   currentStep: 'PROVIDER_SELECT' | 'BOOKING_FORM' = 'PROVIDER_SELECT';
   steps = [
-    { id: 'PROVIDER_SELECT', label: 'Intervenant', icon: 'bi-person-check' },
-    { id: 'BOOKING_FORM', label: 'Planification', icon: 'bi-calendar-event' }
+    { id: 'PROVIDER_SELECT', label: 'Provider', icon: 'bi-person-check' },
+    { id: 'BOOKING_FORM', label: 'Scheduling', icon: 'bi-calendar-event' }
   ];
 
   // Détails Profil
@@ -63,7 +63,7 @@ export class HomecareBookComponent implements OnInit {
   get selectedProviderName(): string {
     const id = this.bookingForm.get('providerId')?.value;
     const p = this.availableProviders.find(p => p.id === id);
-    return p ? p.fullName : 'Prestataire';
+    return p ? p.fullName : 'Provider';
   }
 
   get selectedProviderRating(): number {
@@ -76,7 +76,8 @@ export class HomecareBookComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private homecare: HomecareService
+    private homecare: HomecareService,
+    private toastService: ToastService
   ) {
     this.initForm();
   }
@@ -97,8 +98,8 @@ export class HomecareBookComponent implements OnInit {
     this.bookingForm = this.fb.group({
       requestedDate: ['', [Validators.required, interventionDateValidator(90)]],
       requestedTime: ['', Validators.required],
-      address: ['', [Validators.required, Validators.minLength(10)]],
-      patientNotes: [''],
+      address: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
+      patientNotes: ['', [Validators.maxLength(1000)]],
       providerId: [null, Validators.required]
     });
 
@@ -341,13 +342,14 @@ export class HomecareBookComponent implements OnInit {
     this.homecare.createRequest(requestDto).subscribe({
       next: (res) => {
         this.isSubmitting = false;
-        this.success = true;
+        this.toastService.success('Votre demande de soins a été créée avec succès !');
         setTimeout(() => {
           this.router.navigate(['/front/patient/homecare/my-requests']);
         }, 2000);
       },
       error: (err) => {
-        this.error = err.error?.message || 'Failed to submit the booking request.';
+        const msg = err.error?.message || 'Erreur lors de la création de la demande.';
+        this.toastService.error(msg);
         this.isSubmitting = false;
       }
     });

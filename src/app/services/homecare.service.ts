@@ -12,7 +12,8 @@ import {
   ProviderAvailability,
   AvailabilityDTO,
   AvailableSlot,
-  CalendarEvent
+  CalendarEvent,
+  CompleteRequestDTO
 } from '../models/homecare.model';
 
 @Injectable({
@@ -30,9 +31,9 @@ export class HomecareService {
   }
 
   /**
-   * Recherche de prestataires par service, triés par rating.
-   * @param serviceId - ID du service recherché
-   * @param minRating - Note minimale optionnelle (ex: 4)
+   * Search for providers by service, sorted by rating.
+   * @param serviceId - ID of the service to search
+   * @param minRating - Optional minimum rating (e.g.: 4)
    */
   getProvidersByService(serviceId: number, minRating?: number): Observable<ProviderProfileDTO[]> {
     let params = new HttpParams();
@@ -48,23 +49,23 @@ export class HomecareService {
   }
 
   /**
-   * Fiche complète d'un prestataire : bio, spécialités, rating, avis.
+   * Complete provider profile: bio, specialties, rating, reviews.
    */
   getProviderProfile(providerId: number): Observable<ProviderProfileDTO> {
     return this.http.get<ProviderProfileDTO>(`${this.apiUrl}/providers/${providerId}/profile`);
   }
 
   /**
-   * Avis d'un prestataire, du plus récent au plus ancien.
+   * Provider reviews, from most recent to oldest.
    */
   getProviderReviews(providerId: number): Observable<ServiceReview[]> {
     return this.http.get<ServiceReview[]>(`${this.apiUrl}/providers/${providerId}/reviews`);
   }
 
   /**
-   * Créneaux disponibles d'un prestataire sur une période.
-   * @param from - Date de début (YYYY-MM-DD)
-   * @param to   - Date de fin   (YYYY-MM-DD)
+   * Available time slots for a provider over a period.
+   * @param from - Start date (YYYY-MM-DD)
+   * @param to   - End date   (YYYY-MM-DD)
    */
   getAvailableSlots(providerId: number, from: string, to: string): Observable<AvailableSlot[]> {
     const params = new HttpParams().set('from', from).set('to', to);
@@ -72,11 +73,11 @@ export class HomecareService {
   }
 
   /**
-   * Jours bloqués/indisponibles d'un prestataire sur une période.
-   * Retourne les dates spécifiques où available=false
-   * @param providerId - ID du prestataire
-   * @param from - Date de début (YYYY-MM-DD)
-   * @param to   - Date de fin   (YYYY-MM-DD)
+   * Blocked/unavailable dates for a provider over a period.
+   * Returns specific dates where available=false
+   * @param providerId - Provider ID
+   * @param from - Start date (YYYY-MM-DD)
+   * @param to   - End date   (YYYY-MM-DD)
    */
   getBlockedDates(providerId: number, from: string, to: string): Observable<string[]> {
     const params = new HttpParams().set('from', from).set('to', to);
@@ -127,11 +128,11 @@ export class HomecareService {
     return this.http.put<ServiceRequest>(`${this.apiUrl}/provider/requests/${id}/start`, {});
   }
 
-  completeRequest(id: number, providerNotes?: string): Observable<ServiceRequest> {
-    return this.http.put<ServiceRequest>(`${this.apiUrl}/provider/requests/${id}/complete`, { providerNotes });
+  completeRequest(id: number, dto: CompleteRequestDTO): Observable<ServiceRequest> {
+    return this.http.put<ServiceRequest>(`${this.apiUrl}/provider/requests/${id}/complete`, dto);
   }
 
-  /** Ajouter une règle de disponibilité hebdomadaire */
+  /** Add a weekly availability rule */
   getMyAvailability(): Observable<ProviderAvailability[]> {
     return this.http.get<ProviderAvailability[]>(`${this.apiUrl}/provider/availability`);
   }
@@ -144,21 +145,21 @@ export class HomecareService {
     return this.http.delete<void>(`${this.apiUrl}/provider/availability/${id}`);
   }
 
-  /** Vue calendrier complète (règles + exceptions) */
+  /** Complete calendar view (rules + exceptions) */
   getMyCalendar(): Observable<ProviderAvailability[]> {
     return this.http.get<ProviderAvailability[]>(`${this.apiUrl}/provider/calendar`);
   }
 
   /**
-   * Bloquer un jour entier — il apparaîtra comme indisponible pour les patients.
-   * @param date - Date au format YYYY-MM-DD
+   * Block an entire day — it will appear unavailable for patients.
+   * @param date - Date in format YYYY-MM-DD
    */
   blockDay(date: string): Observable<ProviderAvailability> {
     return this.http.post<ProviderAvailability>(`${this.apiUrl}/provider/calendar/block`, { date });
   }
 
   /**
-   * Débloquer un jour (supprime l'entrée de blocage).
+   * Unblock a day (removes the blocking entry).
    */
   unblockDay(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/provider/calendar/block/${id}`);

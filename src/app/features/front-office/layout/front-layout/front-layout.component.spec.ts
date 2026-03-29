@@ -13,7 +13,7 @@ describe('FrontLayoutComponent', () => {
       imports: [TestingModule],
       schemas: [NO_ERRORS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(FrontLayoutComponent);
     component = fixture.componentInstance;

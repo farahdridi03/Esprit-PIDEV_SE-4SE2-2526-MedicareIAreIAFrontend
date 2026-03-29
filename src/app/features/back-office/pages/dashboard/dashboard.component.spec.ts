@@ -5,7 +5,7 @@ import { TestingModule } from '../../../../testing/testing.module';
 
 // Mock Chart.js
 (window as any).Chart = class {
-  constructor(ctx: any, config: any) {}
+  constructor(ctx: any, config: any) { }
 };
 
 describe('DashboardComponent', () => {
@@ -18,7 +18,7 @@ describe('DashboardComponent', () => {
       imports: [TestingModule],
       schemas: [NO_ERRORS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;

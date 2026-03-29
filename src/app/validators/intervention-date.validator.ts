@@ -1,11 +1,11 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**
- * Validateur pour les dates d'intervention
- * La date doit être:
- * - Non vide
- * - Aujourd'hui ou dans le futur (pas au passé)
- * - Maximum 90 jours à l'avance
+ * Validator for intervention dates
+ * The date must be:
+ * - Not empty
+ * - Today or in the future (not in the past)
+ * - Maximum 90 days ahead
  */
 export function interventionDateValidator(maxDaysAhead: number = 90): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -16,16 +16,16 @@ export function interventionDateValidator(maxDaysAhead: number = 90): ValidatorF
         const selectedDate = new Date(control.value);
         const today = new Date();
 
-        // Normaliser les dates à minuit pour éviter les problèmes de timezone
+        // Normalize dates to midnight to avoid timezone issues
         today.setHours(0, 0, 0, 0);
         selectedDate.setHours(0, 0, 0, 0);
 
-        // Vérifier que la date n'est pas au passé
+        // Check that date is not in the past
         if (selectedDate < today) {
             return { pastDate: true };
         }
 
-        // Vérifier que la date n'est pas trop loin dans le futur
+        // Check that date is not too far in the future
         const maxDate = new Date(today);
         maxDate.setDate(maxDate.getDate() + maxDaysAhead);
 
@@ -38,7 +38,7 @@ export function interventionDateValidator(maxDaysAhead: number = 90): ValidatorF
 }
 
 /**
- * Obtient la date minimale autorisée (aujourd'hui)
+ * Gets the minimum allowed date (today)
  */
 export function getTodayDateString(): string {
     const today = new Date();
@@ -46,8 +46,8 @@ export function getTodayDateString(): string {
 }
 
 /**
- * Obtient la date maximale autorisée
- * @param daysAhead Nombre de jours à l'avance
+ * Gets the maximum allowed date
+ * @param daysAhead Number of days ahead
  */
 export function getMaxInterventionDateString(daysAhead: number = 90): string {
     const maxDate = new Date();
@@ -56,7 +56,7 @@ export function getMaxInterventionDateString(daysAhead: number = 90): string {
 }
 
 /**
- * Obtient le message d'erreur approprié
+ * Gets the appropriate error message
  */
 export function getInterventionDateErrorMessage(errors: ValidationErrors | null): string {
     if (!errors) {
@@ -64,17 +64,17 @@ export function getInterventionDateErrorMessage(errors: ValidationErrors | null)
     }
 
     if (errors['required']) {
-        return 'La date d\'intervention est obligatoire';
+        return 'Intervention date is required';
     }
 
     if (errors['pastDate']) {
-        return 'La date d\'intervention doit être aujourd\'hui ou dans le futur';
+        return 'Intervention date must be today or in the future';
     }
 
     if (errors['tooFarInFuture']) {
         const maxDays = errors['tooFarInFuture'].maxDays;
-        return `La date d\'intervention doit être dans les ${maxDays} jours`;
+        return `Intervention date must be within ${maxDays} days`;
     }
 
-    return 'Date invalide';
+    return 'Invalid date';
 }
