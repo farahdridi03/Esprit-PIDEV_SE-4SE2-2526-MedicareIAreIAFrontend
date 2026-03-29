@@ -16,6 +16,8 @@ export class ForumPublicComponent implements OnInit {
   loadingComments = false;
   newComment: string = '';
   submittingComment = false;
+  isCreating = false;
+  isEditing = false;
 
   // Search & filter
   searchQuery = '';
@@ -25,6 +27,72 @@ export class ForumPublicComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPosts();
+  }
+
+  canCreatePost(): boolean {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    if (!currentUser || !currentUser.token) return false;
+    
+    // Les patients ne peuvent pas créer de posts
+    const patientRoles = ['PATIENT'];
+    const rawRole = currentUser.role || '';
+    const userRole = rawRole.toUpperCase().replace(/^ROLE_/, '');
+    
+    return !patientRoles.includes(userRole);
+  }
+
+  showRestrictedAccessMessage(action: string): void {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const rawRole = currentUser.role || '';
+    const userRole = rawRole.toUpperCase().replace(/^ROLE_/, '');
+    
+    if (userRole === 'PATIENT') {
+      alert(`En tant que patient, vous n'êtes pas autorisé à ${action}. Veuillez contacter un professionnel de santé pour créer ou modifier des posts.`);
+    }
+  }
+
+  createPost(): void {
+    this.isCreating = true;
+    this.selectedPost = null;
+    this.isEditing = false;
+  }
+
+  editPost(post: Post): void {
+    if (!this.canCreatePost()) {
+      this.showRestrictedAccessMessage('modifier des posts');
+      return;
+    }
+    
+    this.selectedPost = post;
+    this.isEditing = true;
+    this.isCreating = false;
+  }
+
+  deletePost(post: Post): void {
+    if (!this.canCreatePost()) {
+      this.showRestrictedAccessMessage('supprimer des posts');
+      return;
+    }
+    
+    if (confirm(`Supprimer le post "${post.title}" ?`)) {
+      this.forumService.deletePost(post.id).subscribe({
+        next: () => {
+          this.loadPosts();
+          this.selectedPost = null;
+        },
+        error: (err) => {
+          this.error = 'Erreur lors de la suppression du post';
+          console.error('Error deleting post:', err);
+        }
+      });
+    }
+  }
+
+  onPostSaved(post: Post | any): void {
+    this.loadPosts();
+    this.selectedPost = post;
+    this.isEditing = false;
+    this.isCreating = false;
   }
 
   loadPosts(): void {
@@ -71,7 +139,7 @@ export class ForumPublicComponent implements OnInit {
   }
 
   getTotalLikes(): number {
-    return this.posts.reduce((s, p) => s + (p.likeCount || 0), 0);
+    return this.posts.reduce((s, p) => s + (p.likesCount || 0), 0);
   }
 
   selectPost(post: Post): void {
@@ -99,13 +167,22 @@ export class ForumPublicComponent implements OnInit {
     });
   }
 
-
-  likePost(post: Post): void {
+  toggleLike(post: Post): void {
     if (post.isLikedByUser) {
       this.forumService.unlikePost(post.id).subscribe({
         next: () => {
-          post.isLikedByUser = false;
-          post.likeCount = (post.likeCount || 0) - 1;
+          // Update the post in the posts array
+          const postInArray = this.posts.find(p => p.id === post.id);
+          if (postInArray) {
+            postInArray.isLikedByUser = false;
+            postInArray.likesCount = (postInArray.likesCount || 0) - 1;
+          }
+          
+          // Also update selectedPost if it's the same post
+          if (this.selectedPost && this.selectedPost.id === post.id) {
+            this.selectedPost.isLikedByUser = false;
+            this.selectedPost.likesCount = (this.selectedPost.likesCount || 0) - 1;
+          }
         },
         error: (err) => {
           console.error('Error unliking post:', err);
@@ -114,8 +191,18 @@ export class ForumPublicComponent implements OnInit {
     } else {
       this.forumService.likePost(post.id).subscribe({
         next: () => {
-          post.isLikedByUser = true;
-          post.likeCount = (post.likeCount || 0) + 1;
+          // Update the post in the posts array
+          const postInArray = this.posts.find(p => p.id === post.id);
+          if (postInArray) {
+            postInArray.isLikedByUser = true;
+            postInArray.likesCount = (postInArray.likesCount || 0) + 1;
+          }
+          
+          // Also update selectedPost if it's the same post
+          if (this.selectedPost && this.selectedPost.id === post.id) {
+            this.selectedPost.isLikedByUser = true;
+            this.selectedPost.likesCount = (this.selectedPost.likesCount || 0) + 1;
+          }
         },
         error: (err) => {
           console.error('Error liking post:', err);
@@ -124,8 +211,12 @@ export class ForumPublicComponent implements OnInit {
     }
   }
 
+  likePost(post: Post): void {
+    this.toggleLike(post);
+  }
+
   submitComment(): void {
-    if (!this.newComment.trim() || !this.selectedPost) {
+    if (!this.selectedPost || !this.newComment.trim()) {
       return;
     }
 
@@ -149,7 +240,14 @@ export class ForumPublicComponent implements OnInit {
         this.newComment = '';
         this.submittingComment = false;
         
-        // Mettre à jour le nombre de commentaires du post
+        // Update the post in the posts array
+        const postInArray = this.posts.find(p => p.id === this.selectedPost!.id);
+        if (postInArray) {
+          if (!postInArray.comments) postInArray.comments = [];
+          postInArray.comments.unshift(comment);
+        }
+        
+        // Also update selectedPost
         if (this.selectedPost) {
           this.selectedPost.comments = [...(this.selectedPost.comments || []), comment];
         }
@@ -182,5 +280,11 @@ export class ForumPublicComponent implements OnInit {
     this.selectedPost = null;
     this.comments = [];
     this.newComment = '';
+  }
+
+  onCancel(): void {
+    this.selectedPost = null;
+    this.isEditing = false;
+    this.isCreating = false;
   }
 }

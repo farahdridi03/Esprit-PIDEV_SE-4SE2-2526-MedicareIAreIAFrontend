@@ -84,38 +84,51 @@
       <!-- Posts Grid -->
       <div class="posts-grid" *ngIf="!loading">
         <div class="post-card" *ngFor="let post of filteredPosts()" (click)="selectPost(post)">
-          <div class="card-top">
-            <span class="cat-badge">
-              <i class="fas fa-tag"></i> {{ post.category || 'General Health' }}
-            </span>
-            <div class="card-actions" (click)="$event.stopPropagation()">
-              <button class="action-btn edit-btn" (click)="editPost(post)" title="Modifier">
-                <i class="fas fa-pencil-alt"></i>
-              </button>
-              <button class="action-btn del-btn" (click)="deletePost(post)" title="Supprimer">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <!-- Badge catégorie à GAUCHE -->
+            <span style="
+              background: #E1F5EE;
+              color: #085041;
+              font-size: 11px;
+              padding: 4px 12px;
+              border-radius: 20px;
+            ">{{ post.category || 'General Health' }}</span>
+
+          <!-- Plus de boutons Edit + Delete -->
           </div>
 
-          <h3 class="card-title">{{ post.title }}</h3>
-          <p class="card-excerpt">{{ post.content | slice:0:160 }}{{ post.content.length > 160 ? '...' : '' }}</p>
+          <!-- Titre + Contenu -->
+          <h3 style="margin: 12px 0 6px; font-weight: 500;">{{ post.title }}</h3>
+          <p style="color: var(--color-text-secondary); font-size: 14px;">{{ post.content | slice:0:160 }}{{ post.content.length > 160 ? '...' : '' }}</p>
 
-          <div class="card-footer">
-            <div class="author-row">
-              <div class="avatar">{{ getInitial(post.authorName) }}</div>
-              <div class="author-details">
-                <span class="author-name">{{ post.authorName }}</span>
-                <span class="post-date">{{ post.createdAt | date:'d MMM y' }}</span>
-              </div>
+          <!-- Auteur -->
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px;">
+            <div style="
+              width: 32px; height: 32px; border-radius: 50%;
+              background: #7F77DD; color: white;
+              display: flex; align-items: center; justify-content: center;
+              font-size: 13px; font-weight: 500;
+            ">{{ getInitial(post.authorName) }}</div>
+            <div>
+              <div style="font-size: 13px; font-weight: 500;">{{ post.authorName }}</div>
+              <div style="font-size: 11px; color: var(--color-text-secondary);">{{ post.createdAt | date:'d MMM y' }}</div>
             </div>
-            <div class="card-meta">
-              <span class="meta-item">
-                <i class="fas fa-comment-alt"></i> {{ post.comments?.length || 0 }}
-              </span>
-              <span class="meta-item likes-meta">
-                <i class="fas fa-heart"></i> {{ post.likeCount || 0 }}
-              </span>
+
+            <!-- Like + Commentaire à DROITE en bas -->
+            <div style="margin-left: auto; display: flex; gap: 16px;" (click)="$event.stopPropagation()">
+              <button (click)="toggleLike(post)" style="
+                background: none; border: none;
+                color: #E24B4A; font-size: 13px;
+                font-weight: 500; cursor: pointer;
+                display: flex; align-items: center; gap:4px;
+              ">♥ {{ post.likesCount || 0 }} Likes</button>
+
+              <button (click)="selectPost(post)" style="
+                background: none; border: none;
+                color: #1D9E75; font-size: 13px;
+                font-weight: 500; cursor: pointer;
+                display: flex; align-items: center; gap:4px;
+              ">💬 {{ post.comments?.length || 0 }} Commentaires</button>
             </div>
           </div>
         </div>
@@ -133,14 +146,7 @@
         <button class="back-btn" (click)="onCancel()">
           <i class="fas fa-arrow-left"></i> Retour
         </button>
-        <div class="detail-actions">
-          <button class="btn-action edit" (click)="editPost(selectedPost)">
-            <i class="fas fa-pencil-alt"></i> Modifier
-          </button>
-          <button class="btn-action delete" (click)="deletePost(selectedPost)">
-            <i class="fas fa-trash-alt"></i> Supprimer
-          </button>
-        </div>
+        <!-- Plus de boutons d'action -->
       </div>
 
       <div class="detail-body">
@@ -159,7 +165,7 @@
 
         <div class="engage-bar">
           <button class="engage-btn" [class.liked-active]="selectedPost.isLikedByUser" (click)="toggleLike(selectedPost)">
-            <i class="fas fa-heart"></i> {{ selectedPost.isLikedByUser ? 'Aimé' : 'J\'aime' }} ({{ selectedPost.likeCount || 0 }})
+            <i class="fas fa-heart"></i> {{ selectedPost.isLikedByUser ? 'Aimé' : 'J\'aime' }} ({{ selectedPost.likesCount || 0 }})
           </button>
           <span class="engage-info">
             <i class="fas fa-comment-alt"></i> {{ selectedPost.comments?.length || 0 }} commentaires
@@ -175,12 +181,13 @@
         </h4>
 
         <div class="comment-input-wrap">
-          <textarea [(ngModel)]="newCommentContent" placeholder="Écrire un commentaire..." [disabled]="submittingComment"></textarea>
+          <textarea [(ngModel)]="newComment" placeholder="Écrire un commentaire..." [disabled]="submittingComment"></textarea>
           <div class="input-footer">
-            <button class="send-btn" (click)="addComment(selectedPost.id)" [disabled]="!newCommentContent.trim() || submittingComment">
+            <button class="send-btn" (click)="submitComment()" [disabled]="!newComment.trim() || submittingComment">
               <i class="fas" [class.fa-paper-plane]="!submittingComment" [class.fa-spinner]="submittingComment" [class.fa-spin]="submittingComment"></i>
               {{ submittingComment ? 'Envoi...' : 'Répondre' }}
             </button>
+            <!-- Plus de boutons Edit + Delete -->
           </div>
         </div>
 

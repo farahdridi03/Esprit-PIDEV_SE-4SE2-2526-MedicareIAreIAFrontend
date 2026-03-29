@@ -11,6 +11,14 @@
         <span><strong>{{ getTotalComments() }}</strong> Commentaires</span>
         <span><strong>{{ getTotalLikes() }}</strong> Likes</span>
       </div>
+      <!-- Create Post Button for non-patients -->
+      <button class="modern-create-post-btn" *ngIf="canCreatePost()" (click)="createPost()">
+        <div class="btn-content">
+          <i class="fas fa-plus-circle"></i>
+          <span>Créer un Post</span>
+        </div>
+        <div class="btn-bg"></div>
+      </button>
     </div>
   </div>
 
@@ -57,26 +65,73 @@
       <!-- Posts -->
       <div class="posts-feed">
         <div class="post-card" *ngFor="let post of filteredPosts()" (click)="selectPost(post)">
-          <div class="post-card-top">
-            <span class="cat-chip"><i class="fas fa-tag"></i> {{ post.category || 'General Health' }}</span>
-            <span class="post-date"><i class="far fa-clock"></i> {{ post.createdAt | date:'d MMM y' }}</span>
+          <div class="post-header">
+            <div class="post-category">
+              <span class="cat-badge">
+                <i class="fas fa-tag"></i> {{ post.category || 'General Health' }}
+              </span>
+            </div>
+            <!-- Edit + Delete -->
+            <div style="display:flex; gap:8px;" (click)="$event.stopPropagation()">
+              <!-- Edit -->
+              <button 
+                (click)="editPost(post)" 
+                style="
+                  background-color: #378ADD;
+                  color: white;
+                  border: none;
+                  border-radius: 8px;
+                  width: 32px;
+                  height: 32px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  transition: all 0.15s ease;
+                ">
+                ✏️
+              </button>
+              <!-- Delete -->
+              <button 
+                (click)="deletePost(post)" 
+                style="
+                  background-color: #888780;
+                  color: white;
+                  border: none;
+                  border-radius: 8px;
+                  width: 32px;
+                  height: 32px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  transition: all 0.15s ease;
+                ">
+                🗑️
+              </button>
+            </div>
           </div>
 
-          <h3 class="post-title">{{ post.title }}</h3>
-          <p class="post-preview">{{ post.content | slice:0:150 }}{{ post.content.length > 150 ? '...' : '' }}</p>
+          <div class="post-content">
+            <h3 class="post-title">{{ post.title }}</h3>
+            <p class="post-preview">{{ post.content | slice:0:150 }}{{ post.content.length > 150 ? '...' : '' }}</p>
+          </div>
 
-          <div class="post-footer">
-            <div class="author-chip">
+          <div class="post-meta">
+            <div class="author-info">
               <div class="author-avatar">{{ getInitial(post.authorName) }}</div>
-              <span>{{ post.authorName }}</span>
+              <div class="author-details">
+                <span class="author-name">{{ post.authorName }}</span>
+                <span class="post-date"><i class="far fa-clock"></i> {{ post.createdAt | date:'d MMM y' }}</span>
+              </div>
             </div>
-            <div class="post-engage">
-              <span class="engage-item" [class.liked]="post.isLikedByUser" (click)="likePost(post); $event.stopPropagation()">
-                <i class="fas fa-heart"></i> {{ post.likeCount || 0 }}
-              </span>
-              <span class="engage-item">
-                <i class="fas fa-comment-alt"></i> {{ post.comments?.length || 0 }}
-              </span>
+          </div>
+
+          <!-- Likes + Commentaires -->
+          <div class="post-footer">
+            <div style="display:flex; gap:16px;" (click)="$event.stopPropagation()">
+              <button class="btn-like" (click)="likePost(post)">
+                ♥ {{ post.likesCount || 0 }} Likes
+              </button>
+              <button class="btn-comment" (click)="selectPost(post)">
+                💬 {{ post.comments?.length || 0 }} Commentaires
+              </button>
             </div>
           </div>
         </div>
@@ -93,7 +148,8 @@
       <!-- Post Content -->
       <div class="detail-card">
         <div class="detail-header">
-          <span class="cat-chip"><i class="fas fa-tag"></i> {{ selectedPost.category || 'General Health' }}</span>
+          <span class="detail-tag"><i class="fas fa-tag"></i> {{ selectedPost.category || 'General Health' }}</span>
+          <!-- Plus de boutons Edit/Delete -->
         </div>
         <h1 class="detail-title">{{ selectedPost.title }}</h1>
 
@@ -108,12 +164,13 @@
         <div class="detail-body">{{ selectedPost.content }}</div>
 
         <div class="detail-engage-bar">
-          <button class="engage-btn" [class.liked-active]="selectedPost.isLikedByUser" (click)="likePost(selectedPost)">
+          <button class="engage-btn modern-engage-btn" [class.liked-active]="selectedPost.isLikedByUser" (click)="likePost(selectedPost!)" title="{{ selectedPost.likesCount || 0 }} likes">
             <i class="fas fa-heart"></i>
-            {{ selectedPost.isLikedByUser ? 'Aimé' : "J'aime" }} &nbsp;({{ selectedPost.likeCount || 0 }})
           </button>
           <span class="engage-info">
-            <i class="fas fa-comment-alt"></i> {{ selectedPost.comments?.length || 0 }} commentaires
+            <button class="modern-engage-btn comment-btn" title="{{ selectedPost.comments?.length || 0 }} commentaires">
+              <i class="fas fa-comment-alt"></i>
+            </button>
           </span>
         </div>
       </div>
@@ -147,7 +204,7 @@
         </div>
 
         <div class="comments-list" *ngIf="!loadingComments">
-          <div class="comment-item" *ngFor="let comment of selectedPost.comments">
+          <div class="comment-item" *ngFor="let comment of selectedPost?.comments">
             <div class="comment-avatar">{{ getInitial(comment.authorName) }}</div>
             <div class="comment-body">
               <div class="comment-header">
@@ -158,12 +215,22 @@
             </div>
           </div>
 
-          <div class="no-comments" *ngIf="!selectedPost.comments?.length">
+          <div class="no-comments" *ngIf="!selectedPost?.comments?.length">
             <i class="far fa-comment-dots"></i>
             <p>Soyez le premier à commenter !</p>
           </div>
         </div>
       </div>
+    </div>
+
+  <!-- ── CREATE / EDIT FORM ──────────────────────────────── -->
+    <div class="form-panel" *ngIf="isCreating || isEditing">
+      <app-post-form
+        [post]="isEditing ? selectedPost : null"
+        [isEditing]="isEditing"
+        (postSaved)="onPostSaved($event)"
+        (cancel)="onCancel()">
+      </app-post-form>
     </div>
 
   </div>

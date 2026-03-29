@@ -13,6 +13,7 @@ export interface Post {
   comments?: Comment[];
   likes?: Like[];
   likeCount?: number;
+  likesCount?: number; // Backend sends likesCount
   isLikedByUser?: boolean;
 }
 
