@@ -116,6 +116,7 @@ export class DoctorPatientPrescriptionsComponent implements OnInit {
     }
     
     this.showForm = true;
+    this.viewMode = false; // Hide detail view when modifying
   }
 
   cancelForm(): void {

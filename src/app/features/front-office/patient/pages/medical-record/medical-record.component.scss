@@ -31,19 +31,30 @@ $border: #e5e7eb;
     font-family: 'Inter', sans-serif;
 }
 
-.page-header {
+.welcome-banner {
+    background-color: $primary-green;
+    border-radius: 20px;
+    padding: 2.5rem;
+    color: white;
     margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(14, 124, 102, 0.2);
 
-    h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: $text-dark;
-        margin: 0 0 0.5rem 0;
-    }
+    .banner-text {
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            color: white;
+        }
 
-    p {
-        color: $text-light;
-        margin: 0;
+        p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
     }
 }
 

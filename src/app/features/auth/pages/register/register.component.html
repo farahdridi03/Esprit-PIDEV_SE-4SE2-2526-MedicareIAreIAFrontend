@@ -310,7 +310,7 @@
           <div class="form-group margin-top">
             <label for="emergencyPhone">Emergency Phone</label>
             <div class="input-wrapper">
-              <input type="tel" id="emergencyPhone" formControlName="emergencyPhone" placeholder="8 digits"
+              <input type="tel" id="emergencyPhone" formControlName="emergencyPhone" placeholder="3 digits"
                 [ngClass]="{'is-invalid': registerForm.get('emergencyPhone')?.invalid && (registerForm.get('emergencyPhone')?.dirty || registerForm.get('emergencyPhone')?.touched)}">
             </div>
           </div>
@@ -318,7 +318,7 @@
           <div class="form-group margin-top">
             <label for="ambulancePhone">Ambulance Phone</label>
             <div class="input-wrapper">
-              <input type="tel" id="ambulancePhone" formControlName="ambulancePhone" placeholder="8 digits"
+              <input type="tel" id="ambulancePhone" formControlName="ambulancePhone" placeholder="3 digits"
                 [ngClass]="{'is-invalid': registerForm.get('ambulancePhone')?.invalid && (registerForm.get('ambulancePhone')?.dirty || registerForm.get('ambulancePhone')?.touched)}">
             </div>
           </div>

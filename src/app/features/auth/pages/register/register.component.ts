@@ -40,8 +40,8 @@ export class RegisterComponent implements OnInit {
   ];
 
   consultationModes = [
-    { value: 'ONLINE', label: 'Online' },
     { value: 'IN_PERSON', label: 'In Person' },
+    { value: 'ONLINE', label: 'Video Call' },
     { value: 'BOTH', label: 'Both' }
   ];
 
@@ -74,8 +74,8 @@ export class RegisterComponent implements OnInit {
       clinicName: [''],
       clinicAddress: [''],
       clinicPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
-      emergencyPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
-      ambulancePhone: ['', [Validators.pattern('^[0-9]{8}$')]],
+      emergencyPhone: ['', [Validators.pattern('^[0-9]{3}$')]],
+      ambulancePhone: ['', [Validators.pattern('^[0-9]{3}$')]],
       // Pharmacist fields
       pharmacyName: [''],
       pharmacyAddress: [''],
@@ -175,8 +175,8 @@ export class RegisterComponent implements OnInit {
         clinicNameCtrl?.setValidators([Validators.required]);
         clinicAddressCtrl?.setValidators([Validators.required]);
         clinicPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
-        clinicEmergencyCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
-        clinicAmbulanceCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        clinicEmergencyCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{3}$')]);
+        clinicAmbulanceCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{3}$')]);
       } else if (isPharmacist) {
         pharmacyNameCtrl?.setValidators([Validators.required]);
         pharmacyAddressCtrl?.setValidators([Validators.required]);

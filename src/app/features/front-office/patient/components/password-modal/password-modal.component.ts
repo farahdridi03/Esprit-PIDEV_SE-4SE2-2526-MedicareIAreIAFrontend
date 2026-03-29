@@ -45,7 +45,7 @@ export class PasswordModalComponent {
       },
       error: (err: any) => {
         this.loading = false;
-        this.errorMessage = typeof err.error === 'string' ? err.error : 'Failed to update password. Please check your current password.';
+        this.errorMessage = err.error?.message || (typeof err.error === 'string' ? err.error : 'Failed to update password. Please check your current password.');
       }
     });
   }
