@@ -11,6 +11,8 @@ export class PharmaciesListComponent implements OnInit {
   pharmacies: Pharmacy[] = [];
   loading = false;
   viewState: 'list' | 'add' | 'edit' = 'list';
+  fieldErrors: { [key: string]: string } = {};
+  globalError: string | null = null;
 
   currentId: number | null = null;
   formModel: PharmacyRequest = {
@@ -45,6 +47,8 @@ export class PharmaciesListComponent implements OnInit {
   viewAdd() {
     this.formModel = { name: '', address: '', locationLat: 0, locationLng: 0, phoneNumber: '', email: '' };
     this.currentId = null;
+    this.fieldErrors = {};
+    this.globalError = null;
     this.viewState = 'add';
   }
 
@@ -58,6 +62,8 @@ export class PharmaciesListComponent implements OnInit {
       email: p.email
     };
     this.currentId = p.id;
+    this.fieldErrors = {};
+    this.globalError = null;
     this.viewState = 'edit';
   }
 
@@ -75,7 +81,7 @@ export class PharmaciesListComponent implements OnInit {
         },
         error: (err) => {
           console.error('Create error', err);
-          this.loading = false;
+          this.handleFormError(err);
         }
       });
     } else if (this.viewState === 'edit' && this.currentId) {
@@ -86,7 +92,7 @@ export class PharmaciesListComponent implements OnInit {
         },
         error: (err) => {
           console.error('Update error', err);
-          this.loading = false;
+          this.handleFormError(err);
         }
       });
     }
@@ -102,6 +108,20 @@ export class PharmaciesListComponent implements OnInit {
           this.loading = false;
         }
       });
+    }
+  }
+
+  private handleFormError(err: any) {
+    this.loading = false;
+    this.fieldErrors = {};
+    this.globalError = null;
+    
+    if (err.error?.fields) {
+      this.fieldErrors = err.error.fields;
+    } else if (err.error?.message) {
+      this.globalError = err.error.message;
+    } else {
+      this.globalError = 'An unexpected error occurred while saving the pharmacy.';
     }
   }
 }

@@ -81,6 +81,27 @@
     border-color: var(--text-3);
 }
 
+.btn-pharma-primary {
+    @extend .btn-primary;
+    background: linear-gradient(135deg, #1A7A5E, #14614A);
+    box-shadow: 0 4px 14px rgba(26, 122, 94, 0.3);
+}
+
+.btn-pharma-primary:hover:not(:disabled) {
+    box-shadow: 0 8px 20px rgba(26, 122, 94, 0.35);
+}
+
+.btn-pharma-outline {
+    @extend .btn-secondary;
+    border-color: #1A7A5E;
+    color: #1A7A5E;
+}
+
+.btn-pharma-outline:hover {
+    border-color: #1A7A5E;
+    background: rgba(26, 122, 94, 0.05);
+}
+
 /* Panel */
 .panel {
     background: var(--surface);
@@ -155,6 +176,10 @@
 
 .text-indigo {
     color: var(--indigo) !important;
+}
+
+.text-pharma {
+    color: #1A7A5E !important;
 }
 
 /* Table overrides relative to app */

@@ -76,3 +76,7 @@
 </div>
 
 <div class="loader" *ngIf="loading">Loading event details...</div>
+
+<div *ngIf="toastMessage" [ngClass]="toastType === 'error' ? 'toast-error' : 'toast-success'">
+  {{ toastMessage }}
+</div>

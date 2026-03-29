@@ -13,6 +13,8 @@ export class MovementsListComponent implements OnInit {
   movements: StockMovement[] = [];
   loading = false;
   viewState: 'list' | 'add' = 'list';
+  fieldErrors: { [key: string]: string } = {};
+  globalError: string | null = null;
 
   formModel: StockMovementRequest = {
     pharmacyStockId: 0,
@@ -50,6 +52,8 @@ export class MovementsListComponent implements OnInit {
       quantity: 1,
       reference: ''
     };
+    this.fieldErrors = {};
+    this.globalError = null;
     this.viewState = 'add';
   }
 
@@ -59,6 +63,9 @@ export class MovementsListComponent implements OnInit {
 
   saveMovement() {
     this.loading = true;
+    this.fieldErrors = {};
+    this.globalError = null;
+
     this.stockService.addMovement(this.formModel).subscribe({
       next: () => {
         this.viewState = 'list';
@@ -67,6 +74,14 @@ export class MovementsListComponent implements OnInit {
       error: err => {
         console.error(err);
         this.loading = false;
+        
+        if (err.error?.fields) {
+          this.fieldErrors = err.error.fields;
+        } else if (err.error?.message) {
+          this.globalError = err.error.message;
+        } else {
+          this.globalError = 'An unexpected error occurred while saving the movement.';
+        }
       }
     });
   }

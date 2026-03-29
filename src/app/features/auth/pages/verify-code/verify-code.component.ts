@@ -23,7 +23,7 @@ export class VerifyCodeComponent implements OnInit {
   ) {
     this.verifyForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      code: ['', [Validators.required, Validators.minLength(4)]]
+      code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
     });
   }
 
@@ -67,6 +67,16 @@ export class VerifyCodeComponent implements OnInit {
       error: (err: any) => {
         this.isLoading = false;
         
+        if (err.error?.fields) {
+          Object.keys(err.error.fields).forEach(key => {
+            const control = this.verifyForm.get(key);
+            if (control) {
+              control.setErrors({ serverError: err.error.fields[key] });
+            }
+          });
+          return;
+        }
+
         const rawErrorMsg = err?.error?.error || err?.error || '';
         
         if (typeof rawErrorMsg === 'string' && rawErrorMsg.includes('granted authority textual representation')) {

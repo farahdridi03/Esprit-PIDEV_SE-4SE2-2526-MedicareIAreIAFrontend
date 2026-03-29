@@ -15,6 +15,8 @@ export class EventDetailsComponent implements OnInit {
   event: MedicalEvent | null = null;
   loading = false;
   registering = false;
+  toastMessage: string | null = null;
+  toastType: 'success' | 'error' = 'success';
 
   userId!: number;
   userRegistration: EventRegistration | null = null;
@@ -75,8 +77,8 @@ export class EventDetailsComponent implements OnInit {
 
   register() {
     if (!this.userId) {
-      alert('Please log in to register.');
-      this.router.navigate(['/auth/login']);
+      this.showToast('Please log in to register.', 'error');
+      setTimeout(() => this.router.navigate(['/auth/login']), 2000);
       return;
     }
 
@@ -90,18 +92,25 @@ export class EventDetailsComponent implements OnInit {
       next: (reg) => {
         this.userRegistration = reg;
         this.registering = false;
-        alert('Successfully registered for the event!');
+        this.showToast('Successfully registered for the event!', 'success');
       },
       error: (err) => {
         console.error(err);
-        // Fallback warning if backend detects duplicate
         if (err.error?.message?.includes('already')) {
-           alert('You are already registered for this event.');
+           this.showToast('You are already registered for this event.', 'error');
         } else {
-           alert('Registration failed. Please try again.');
+           this.showToast('Registration failed. Please try again.', 'error');
         }
         this.registering = false;
       }
     });
+  }
+
+  showToast(message: string, type: 'success' | 'error') {
+    this.toastMessage = message;
+    this.toastType = type;
+    setTimeout(() => {
+      this.toastMessage = null;
+    }, 4000);
   }
 }

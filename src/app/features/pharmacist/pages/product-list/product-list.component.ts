@@ -11,6 +11,8 @@ export class ProductListComponent implements OnInit {
   products: Product[] = [];
   loading = false;
   viewState: 'list' | 'add' | 'edit' = 'list';
+  fieldErrors: { [key: string]: string } = {};
+  globalError: string | null = null;
 
   productTypes = Object.values(ProductType);
   productUnits = Object.values(ProductUnit);
@@ -53,12 +55,16 @@ export class ProductListComponent implements OnInit {
         name: '', description: '', imageUrl: '', manufacturer: '', brand: '', category: '', type: ProductType.MEDICATION, barcode: '', unit: ProductUnit.PIECE
     };
     this.currentId = null;
+    this.fieldErrors = {};
+    this.globalError = null;
     this.viewState = 'add';
   }
 
   viewEdit(p: Product) {
     this.formModel = { ...p };
     this.currentId = p.id;
+    this.fieldErrors = {};
+    this.globalError = null;
     this.viewState = 'edit';
   }
 
@@ -76,7 +82,7 @@ export class ProductListComponent implements OnInit {
         },
         error: (err) => {
           console.error('Create error', err);
-          this.loading = false;
+          this.handleFormError(err);
         }
       });
     } else if (this.viewState === 'edit' && this.currentId) {
@@ -87,7 +93,7 @@ export class ProductListComponent implements OnInit {
         },
         error: (err) => {
           console.error('Update error', err);
-          this.loading = false;
+          this.handleFormError(err);
         }
       });
     }
@@ -103,6 +109,20 @@ export class ProductListComponent implements OnInit {
           this.loading = false;
         }
       });
+    }
+  }
+
+  private handleFormError(err: any) {
+    this.loading = false;
+    this.fieldErrors = {};
+    this.globalError = null;
+    
+    if (err.error?.fields) {
+      this.fieldErrors = err.error.fields;
+    } else if (err.error?.message) {
+      this.globalError = err.error.message;
+    } else {
+      this.globalError = 'An unexpected error occurred while saving the product.';
     }
   }
 }

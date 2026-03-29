@@ -3,7 +3,7 @@
         <h1>Product <em>Management</em></h1>
         <p>Catalog exactly what you sell or distribute</p>
     </div>
-    <button class="btn-primary" *ngIf="viewState === 'list'" (click)="viewAdd()">
+    <button class="btn-pharma-primary" *ngIf="viewState === 'list'" (click)="viewAdd()">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
@@ -57,7 +57,7 @@
                     <span style="font-size: 0.85rem; color: #666;">Unit: {{ p.unit }}</span>
                 </td>
                 <td style="text-align: right;">
-                    <button class="action-btn text-indigo" (click)="viewEdit(p)">Edit</button>
+                    <button class="action-btn text-pharma" (click)="viewEdit(p)">Edit</button>
                     <button class="action-btn text-rose" (click)="deleteProduct(p.id)">Delete</button>
                 </td>
             </tr>
@@ -77,16 +77,24 @@
     </div>
 
     <div class="form-container">
+        <div *ngIf="globalError" class="form-error-summary">
+            {{ globalError }}
+        </div>
+
         <form (ngSubmit)="saveProduct()" #productForm="ngForm">
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Product Name</label>
-                    <input type="text" [(ngModel)]="formModel.name" name="name" required placeholder="Paracetamol">
+                    <label>Product Name *</label>
+                    <input type="text" [(ngModel)]="formModel.name" name="name" required placeholder="Paracetamol" #nameCtrl="ngModel"
+                           [ngClass]="{'is-invalid': (nameCtrl.invalid && nameCtrl.touched) || fieldErrors['name']}">
+                    <span class="error-message" *ngIf="nameCtrl.errors?.['required'] && nameCtrl.touched">Product name is required.</span>
+                    <span class="error-message" *ngIf="fieldErrors['name']">{{ fieldErrors['name'] }}</span>
                 </div>
 
                 <div class="form-group">
                     <label>Description</label>
                     <input type="text" [(ngModel)]="formModel.description" name="description" placeholder="Pain relief medication">
+                    <span class="error-message" *ngIf="fieldErrors['description']">{{ fieldErrors['description'] }}</span>
                 </div>
 
                 <div class="form-group">
@@ -110,17 +118,23 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Type</label>
-                    <select [(ngModel)]="formModel.type" name="type" required>
+                    <label>Type *</label>
+                    <select [(ngModel)]="formModel.type" name="type" required #typeCtrl="ngModel"
+                            [ngClass]="{'is-invalid': (typeCtrl.invalid && typeCtrl.touched) || fieldErrors['type']}">
                         <option *ngFor="let t of productTypes" [value]="t">{{ t }}</option>
                     </select>
+                    <span class="error-message" *ngIf="typeCtrl.errors?.['required'] && typeCtrl.touched">Type is required.</span>
+                    <span class="error-message" *ngIf="fieldErrors['type']">{{ fieldErrors['type'] }}</span>
                 </div>
 
                 <div class="form-group">
-                    <label>Unit</label>
-                    <select [(ngModel)]="formModel.unit" name="unit" required>
+                    <label>Unit *</label>
+                    <select [(ngModel)]="formModel.unit" name="unit" required #unitCtrl="ngModel"
+                            [ngClass]="{'is-invalid': (unitCtrl.invalid && unitCtrl.touched) || fieldErrors['unit']}">
                         <option *ngFor="let u of productUnits" [value]="u">{{ u }}</option>
                     </select>
+                    <span class="error-message" *ngIf="unitCtrl.errors?.['required'] && unitCtrl.touched">Unit is required.</span>
+                    <span class="error-message" *ngIf="fieldErrors['unit']">{{ fieldErrors['unit'] }}</span>
                 </div>
 
                 <div class="form-group">
@@ -131,8 +145,9 @@
 
             <div class="form-actions">
                 <button type="button" class="btn-secondary" (click)="cancelForm()">Cancel</button>
-                <button type="submit" class="btn-primary" [disabled]="productForm.invalid || loading">
-                    {{ viewState === 'add' ? 'Create Product' : 'Save Changes' }}
+                <button type="submit" class="btn-pharma-primary" [disabled]="productForm.invalid || loading">
+                    <span *ngIf="loading">Saving...</span>
+                    <span *ngIf="!loading">{{ viewState === 'add' ? 'Create Product' : 'Save Changes' }}</span>
                 </button>
             </div>
         </form>

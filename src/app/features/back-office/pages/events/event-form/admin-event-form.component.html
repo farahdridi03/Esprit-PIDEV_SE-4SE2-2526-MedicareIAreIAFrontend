@@ -16,31 +16,46 @@
     <div class="loader" *ngIf="loading">Processing...</div>
 
     <div class="form-container" *ngIf="!loading">
+        <div *ngIf="globalError" class="form-error-summary">
+            {{ globalError }}
+        </div>
         <form [formGroup]="eventForm" (ngSubmit)="saveEvent()">
             
             <div class="form-grid">
                 <!-- Basic Info -->
                 <div class="form-group" style="grid-column: span 2;">
                     <label>Event Title *</label>
-                    <input type="text" formControlName="title" placeholder="e.g. Annual Medical Summit">
+                    <input type="text" formControlName="title" placeholder="e.g. Annual Medical Summit"
+                           [ngClass]="{'is-invalid': eventForm.get('title')?.invalid && (eventForm.get('title')?.dirty || eventForm.get('title')?.touched)}">
+                    <span class="error-message" *ngIf="eventForm.get('title')?.errors?.['required'] && eventForm.get('title')?.touched">Title is required.</span>
+                    <span class="error-message" *ngIf="eventForm.get('title')?.errors?.['serverError']">{{ eventForm.get('title')?.errors?.['serverError'] }}</span>
                 </div>
 
                 <div class="form-group" style="grid-column: span 2;">
                     <label>Description *</label>
-                    <input type="text" formControlName="description">
+                    <input type="text" formControlName="description"
+                           [ngClass]="{'is-invalid': eventForm.get('description')?.invalid && (eventForm.get('description')?.dirty || eventForm.get('description')?.touched)}">
+                    <span class="error-message" *ngIf="eventForm.get('description')?.errors?.['required'] && eventForm.get('description')?.touched">Description is required.</span>
+                    <span class="error-message" *ngIf="eventForm.get('description')?.errors?.['serverError']">{{ eventForm.get('description')?.errors?.['serverError'] }}</span>
                 </div>
 
                 <div class="form-group">
                     <label>Date & Time *</label>
-                    <input type="datetime-local" formControlName="date">
+                    <input type="datetime-local" formControlName="date"
+                           [ngClass]="{'is-invalid': eventForm.get('date')?.invalid && (eventForm.get('date')?.dirty || eventForm.get('date')?.touched)}">
+                    <span class="error-message" *ngIf="eventForm.get('date')?.errors?.['required'] && eventForm.get('date')?.touched">Date is required.</span>
+                    <span class="error-message" *ngIf="eventForm.get('date')?.errors?.['serverError']">{{ eventForm.get('date')?.errors?.['serverError'] }}</span>
                 </div>
 
                 <div class="form-group">
                     <label>Event Type *</label>
-                    <select formControlName="eventType">
+                    <select formControlName="eventType"
+                            [ngClass]="{'is-invalid': eventForm.get('eventType')?.invalid && (eventForm.get('eventType')?.dirty || eventForm.get('eventType')?.touched)}">
                         <option value="PHYSICAL">Physical (In-Person)</option>
                         <option value="ONLINE">Online (Virtual)</option>
                     </select>
+                    <span class="error-message" *ngIf="eventForm.get('eventType')?.errors?.['required'] && eventForm.get('eventType')?.touched">Event type is required.</span>
+                    <span class="error-message" *ngIf="eventForm.get('eventType')?.errors?.['serverError']">{{ eventForm.get('eventType')?.errors?.['serverError'] }}</span>
                 </div>
             </div>
 
@@ -50,17 +65,26 @@
                 <div class="form-grid">
                     <div class="form-group" style="grid-column: span 2;">
                         <label>Venue Name *</label>
-                        <input type="text" formControlName="venueName" placeholder="Grand Hotel Conference Center">
+                        <input type="text" formControlName="venueName" placeholder="Grand Hotel Conference Center"
+                               [ngClass]="{'is-invalid': eventForm.get('venueName')?.invalid && (eventForm.get('venueName')?.dirty || eventForm.get('venueName')?.touched)}">
+                        <span class="error-message" *ngIf="eventForm.get('venueName')?.errors?.['required'] && eventForm.get('venueName')?.touched">Venue name is required.</span>
+                        <span class="error-message" *ngIf="eventForm.get('venueName')?.errors?.['serverError']">{{ eventForm.get('venueName')?.errors?.['serverError'] }}</span>
                     </div>
                     
                     <div class="form-group" style="grid-column: span 2;">
                         <label>Address *</label>
-                        <input type="text" formControlName="address">
+                        <input type="text" formControlName="address"
+                               [ngClass]="{'is-invalid': eventForm.get('address')?.invalid && (eventForm.get('address')?.dirty || eventForm.get('address')?.touched)}">
+                        <span class="error-message" *ngIf="eventForm.get('address')?.errors?.['required'] && eventForm.get('address')?.touched">Address is required.</span>
+                        <span class="error-message" *ngIf="eventForm.get('address')?.errors?.['serverError']">{{ eventForm.get('address')?.errors?.['serverError'] }}</span>
                     </div>
 
                     <div class="form-group">
                         <label>City *</label>
-                        <input type="text" formControlName="city">
+                        <input type="text" formControlName="city"
+                               [ngClass]="{'is-invalid': eventForm.get('city')?.invalid && (eventForm.get('city')?.dirty || eventForm.get('city')?.touched)}">
+                        <span class="error-message" *ngIf="eventForm.get('city')?.errors?.['required'] && eventForm.get('city')?.touched">City is required.</span>
+                        <span class="error-message" *ngIf="eventForm.get('city')?.errors?.['serverError']">{{ eventForm.get('city')?.errors?.['serverError'] }}</span>
                     </div>
 
                     <div class="form-group">
@@ -70,7 +94,10 @@
 
                     <div class="form-group">
                         <label>Country *</label>
-                        <input type="text" formControlName="country">
+                        <input type="text" formControlName="country"
+                               [ngClass]="{'is-invalid': eventForm.get('country')?.invalid && (eventForm.get('country')?.dirty || eventForm.get('country')?.touched)}">
+                        <span class="error-message" *ngIf="eventForm.get('country')?.errors?.['required'] && eventForm.get('country')?.touched">Country is required.</span>
+                        <span class="error-message" *ngIf="eventForm.get('country')?.errors?.['serverError']">{{ eventForm.get('country')?.errors?.['serverError'] }}</span>
                     </div>
 
                     <div class="form-group">
@@ -86,12 +113,18 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Platform Name *</label>
-                        <input type="text" formControlName="platformName" placeholder="Zoom, Google Meet, Teams...">
+                        <input type="text" formControlName="platformName" placeholder="Zoom, Google Meet, Teams..."
+                               [ngClass]="{'is-invalid': eventForm.get('platformName')?.invalid && (eventForm.get('platformName')?.dirty || eventForm.get('platformName')?.touched)}">
+                        <span class="error-message" *ngIf="eventForm.get('platformName')?.errors?.['required'] && eventForm.get('platformName')?.touched">Platform name is required.</span>
+                        <span class="error-message" *ngIf="eventForm.get('platformName')?.errors?.['serverError']">{{ eventForm.get('platformName')?.errors?.['serverError'] }}</span>
                     </div>
 
                     <div class="form-group">
                         <label>Meeting Link *</label>
-                        <input type="url" formControlName="meetingLink" placeholder="https://zoom.us/j/123...">
+                        <input type="url" formControlName="meetingLink" placeholder="https://zoom.us/j/123..."
+                               [ngClass]="{'is-invalid': eventForm.get('meetingLink')?.invalid && (eventForm.get('meetingLink')?.dirty || eventForm.get('meetingLink')?.touched)}">
+                        <span class="error-message" *ngIf="eventForm.get('meetingLink')?.errors?.['required'] && eventForm.get('meetingLink')?.touched">Meeting link is required.</span>
+                        <span class="error-message" *ngIf="eventForm.get('meetingLink')?.errors?.['serverError']">{{ eventForm.get('meetingLink')?.errors?.['serverError'] }}</span>
                     </div>
 
                     <div class="form-group">

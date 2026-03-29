@@ -15,6 +15,7 @@ export class AdminEventFormComponent implements OnInit {
   eventId?: number;
   isEditMode = false;
   loading = false;
+  globalError: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -119,7 +120,7 @@ export class AdminEventFormComponent implements OnInit {
     if (this.isEditMode && this.eventId) {
       this.eventService.updateEvent(this.eventId, formData).subscribe({
         next: () => this.router.navigate(['/admin/events']),
-        error: (err) => { console.error(err); this.loading = false; }
+        error: (err) => this.handleError(err)
       });
     } else {
       // Create mode
@@ -133,8 +134,27 @@ export class AdminEventFormComponent implements OnInit {
 
       this.eventService.createEvent(formData).subscribe({
         next: () => this.router.navigate(['/admin/events']),
-        error: (err) => { console.error(err); this.loading = false; }
+        error: (err) => this.handleError(err)
       });
+    }
+  }
+
+  private handleError(err: any): void {
+    console.error(err);
+    this.loading = false;
+    this.globalError = null;
+
+    if (err.error?.fields) {
+      Object.keys(err.error.fields).forEach(key => {
+        const control = this.eventForm.get(key);
+        if (control) {
+          control.setErrors({ serverError: err.error.fields[key] });
+        }
+      });
+    } else if (err.error?.message) {
+      this.globalError = err.error.message;
+    } else {
+      this.globalError = 'Failed to save event.';
     }
   }
 }

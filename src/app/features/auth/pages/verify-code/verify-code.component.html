@@ -32,6 +32,7 @@
         <div *ngIf="verifyForm.get('email')?.invalid && (verifyForm.get('email')?.dirty || verifyForm.get('email')?.touched)">
            <small class="error-message" *ngIf="verifyForm.get('email')?.errors?.['required']">Email is required.</small>
            <small class="error-message" *ngIf="verifyForm.get('email')?.errors?.['email']">Please enter a valid email.</small>
+           <small class="error-message" *ngIf="verifyForm.get('email')?.errors?.['serverError']">{{ verifyForm.get('email')?.errors?.['serverError'] }}</small>
         </div>
       </div>
 
@@ -44,8 +45,9 @@
         </div>
         <div *ngIf="verifyForm.get('code')?.invalid && (verifyForm.get('code')?.dirty || verifyForm.get('code')?.touched)">
           <small class="error-message" *ngIf="verifyForm.get('code')?.errors?.['required']">Code is required.</small>
-          <small class="error-message" *ngIf="verifyForm.get('code')?.errors?.['minlength'] || verifyForm.get('code')?.errors?.['maxlength']">Code must be at least 4 characters.</small>
+          <small class="error-message" *ngIf="verifyForm.get('code')?.errors?.['minlength'] || verifyForm.get('code')?.errors?.['maxlength']">Code must be exactly 6 characters.</small>
           <small class="error-message" *ngIf="verifyForm.get('code')?.errors?.['pattern']">Code must contain only numbers.</small>
+          <small class="error-message" *ngIf="verifyForm.get('code')?.errors?.['serverError']">{{ verifyForm.get('code')?.errors?.['serverError'] }}</small>
         </div>
       </div>
 
