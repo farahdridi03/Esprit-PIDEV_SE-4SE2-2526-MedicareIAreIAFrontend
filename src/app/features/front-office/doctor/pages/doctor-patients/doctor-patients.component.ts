@@ -10,6 +10,8 @@ import { AppointmentDTO } from '../../../../../models/appointment.model';
 })
 export class DoctorPatientsComponent implements OnInit {
   todayAppointments: AppointmentDTO[] = [];
+  allPatients: any[] = [];
+  displayMode: 'today' | 'all' = 'today';
   isLoadingAppointments: boolean = true;
   firstName: string = '';
 
@@ -28,11 +30,42 @@ export class DoctorPatientsComponent implements OnInit {
   }
 
   loadTodayAppointments(doctorId: number): void {
-    const today = new Date().toISOString().split('T')[0];
     this.isLoadingAppointments = true;
-    this.appointmentService.getDoctorAppointments(doctorId, today).subscribe({
+    
+    // Fetch EVERYTHING to populate both views
+    this.appointmentService.getDoctorAppointments(doctorId).subscribe({
       next: (data) => {
-        this.todayAppointments = data.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+        const now = new Date();
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        
+        // 1. Keep today's appointments for the "Planning du jour"
+        this.todayAppointments = data.filter(a => a.date === todayStr)
+                                    .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+        
+        // 2. Generate a Unique Patients List from all appointments
+        const patientMap = new Map<number, any>();
+        
+        data.forEach(appt => {
+          if (!appt.patientId) return;
+          
+          const existing = patientMap.get(appt.patientId);
+          // If not exists OR current appt is newer than the saved one
+          if (!existing || (appt.date && appt.date > existing.lastAppointmentDate)) {
+            patientMap.set(appt.patientId, {
+              id: appt.patientId,
+              name: appt.patientName,
+              lastAppointmentDate: appt.date,
+              lastAppointmentStatus: appt.status,
+              totalAppointments: (existing?.totalAppointments || 0) + 1,
+              mode: appt.mode
+            });
+          } else if (existing) {
+             existing.totalAppointments++;
+          }
+        });
+        
+        this.allPatients = Array.from(patientMap.values()).sort((a,b) => b.lastAppointmentDate.localeCompare(a.lastAppointmentDate));
+        
         this.isLoadingAppointments = false;
         this.cdr.detectChanges();
       },
@@ -41,6 +74,11 @@ export class DoctorPatientsComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  setMode(mode: 'today' | 'all'): void {
+    this.displayMode = mode;
+    this.cdr.detectChanges();
   }
 
   confirmAppointment(id: number): void {

@@ -43,7 +43,7 @@ export interface BabyDashboard {
   nextCheckupDate: string;
   milestoneProgress: number;
   totalSleepSecondsToday?: number;
-  weeklySleep?: { day: string, hours: number, totalSeconds?: number, isToday?: boolean }[];
+  weeklySleep?: { day: string, totalSeconds?: number, isToday?: boolean }[];
   diaperTotalToday?: number;
   diaperWetToday?: number;
   diaperDirtyToday?: number;
@@ -128,6 +128,7 @@ export class BabyCareService {
       gender: profileData.gender || 'UNKNOWN',
       birthWeight: profileData.birthWeight || 0,
       birthHeight: profileData.birthHeight || 0,
+      photoUrl: profileData.photoUrl,
       priorities: profileData.priorities || []
     };
 
@@ -201,7 +202,6 @@ export class BabyCareService {
           totalSleepSecondsToday: dash.totalSleepSecondsToday || 0,
           weeklySleep: dash.weeklySleep ? dash.weeklySleep.map((d: any, index: number) => ({
             day: d.day,
-            hours: d.hours,
             totalSeconds: d.totalSeconds,
             isToday: index === (dash.weeklySleep?.length || 0) - 1
           })) : [],
@@ -387,13 +387,15 @@ export class BabyCareService {
       map(entries => {
         const mappedLogs = entries.map(e => {
           let meta = {};
-          if (e.notes) {
+          if (e.metadata) {
+            try { meta = JSON.parse(e.metadata); } catch(e){}
+          } else if (e.notes) {
             try { 
               const metaStr = e.notes.includes('|||') ? e.notes.split('|||')[1] : e.notes;
               meta = JSON.parse(metaStr); 
             } catch(err) {}
           }
-          return {
+          const log: any = {
             id: e.id,
             babyId: e.babyProfileId,
             timestamp: new Date(e.createdAt).getTime(),
@@ -402,12 +404,13 @@ export class BabyCareService {
             icon: this.getIconForType(e.entryType),
             title: this.getTitleForType(e.entryType),
             detail: e.value,
-            badge: this.getBadgeForType(e.entryType, e.value),
             badgeBg: '#f1f5f9',
             badgeColor: '#475569',
             notes: e.notes ? e.notes.split('|||')[0] : '',
             ...meta
           };
+          log.badge = this.getBadgeForMappedLog(log);
+          return log;
         }).sort((a,b) => b.timestamp - a.timestamp);
         
         // Keep local cache synced for sync methods
@@ -423,20 +426,22 @@ export class BabyCareService {
 
   addJournalEntry(babyId: number, type: string, value: string, notes?: string, metadata?: any): Observable<any> {
     const metaString = metadata ? JSON.stringify(metadata) : '';
-    const finalNotes = notes ? (metaString ? `${notes}|||${metaString}` : notes) : metaString;
     
     return this.http.post<any>(`${this.apiUrl}/journal/${babyId}`, {
       type: type,
       value: value,
-      notes: finalNotes || ''
+      notes: notes || '',
+      metadata: metaString
     }).pipe(
       map(e => {
         let meta = {};
-        if (e.notes) {
+        if (e.metadata) {
+          try { meta = JSON.parse(e.metadata); } catch(err) {} 
+        } else if (e.notes) {
           try { meta = JSON.parse(e.notes.includes('|||') ? e.notes.split('|||')[1] : e.notes); } catch(err) {} 
         }
         
-        const newEntry = {
+        const log: any = {
           id: e.id,
           babyId: e.babyProfileId,
           timestamp: new Date(e.createdAt).getTime(),
@@ -445,17 +450,17 @@ export class BabyCareService {
           icon: this.getIconForType(e.entryType),
           title: this.getTitleForType(e.entryType),
           detail: e.value,
-          badge: this.getBadgeForType(e.entryType, e.value),
           badgeBg: '#f1f5f9',
           badgeColor: '#475569',
           notes: e.notes ? e.notes.split('|||')[0] : '',
           ...meta
         };
+        log.badge = this.getBadgeForMappedLog(log);
 
         const journals = this.getJournals();
-        journals.push(newEntry);
+        journals.push(log);
         this.saveJournals(journals);
-        return newEntry;
+        return log;
       })
     );
   }
@@ -465,18 +470,42 @@ export class BabyCareService {
   }
 
   private getIconForType(type: string): string {
-    const map: any = { 'FEEDING': '🍼', 'SLEEP': '🌙', 'DIAPER': '💧', 'TEMP': '🌡️', 'NOTE': '📝' };
+    const map: any = { 'FEEDING': '🍼', 'SLEEP': '🌙', 'DIAPER': '💧', 'TEMPERATURE': '🌡️', 'NOTE': '📝' };
     return map[type] || '📝';
   }
 
   private getTitleForType(type: string): string {
-    const map: any = { 'FEEDING': 'Feeding', 'SLEEP': 'Sleep', 'DIAPER': 'Diaper Change', 'TEMP': 'Temperature', 'NOTE': 'Note' };
+    const map: any = { 'FEEDING': 'Feeding', 'SLEEP': 'Sleep', 'DIAPER': 'Diaper Change', 'TEMPERATURE': 'Temperature', 'NOTE': 'Note' };
     return map[type] || 'Note';
   }
 
-  private getBadgeForType(type: string, value: string): string {
-    if (type === 'TEMP') return value.includes('38') ? 'High' : 'Normal';
-    if (type === 'FEEDING') return value.includes('ml') ? 'Bottle' : 'Breast';
+  private getBadgeForMappedLog(log: any): string {
+    if (log.type === 'TEMPERATURE') {
+      const t = parseFloat(log.detail);
+      if (t >= 38) return 'High';
+      return 'Normal';
+    }
+    if (log.type === 'SLEEP') {
+      const s = log.totalDurationSeconds || ((log.duration || 0) * 60);
+      if (s > 0) {
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        if (h > 0) return `${h}h ${m}m`;
+        return `${m}min`;
+      }
+      return 'Logged';
+    }
+    if (log.type === 'FEEDING') {
+      if (log.subType === 'BOTTLE') return `${log.quantity}ml`;
+      if (log.subType === 'BREAST') {
+        const d = log.duration || 0;
+        return `${d}m · ${log.side === 'LEFT' ? 'L' : log.side === 'RIGHT' ? 'R' : 'Both'}`;
+      }
+      return 'Feeding';
+    }
+    if (log.type === 'DIAPER') {
+      return log.subType || 'Logged';
+    }
     return 'Logged';
   }
 
@@ -508,7 +537,7 @@ export class BabyCareService {
     const dirtyCount = diaperLogs.filter(j => j.subType === 'DIRTY' || j.subType === 'MIXED').length;
 
     // Health
-    const tempLogs = journals.filter(j => j.type === 'TEMP');
+    const tempLogs = journals.filter(j => j.type === 'TEMPERATURE');
     const latestTemp = tempLogs.length > 0 ? tempLogs[tempLogs.length - 1] : null;
 
     return of({
@@ -517,7 +546,7 @@ export class BabyCareService {
       breast: { totalMins: totalBreastMins, sessionCount: breastLogs.length, leftCount: leftCount, rightCount: rightCount, bothCount: bothCount, lastTime: breastLogs.length > 0 ? breastLogs[0].time : 'N/A' },
       feeding: { totalMl: totalMl, sessionCount: feedingLogs.length, lastTime: feedingLogs.length > 0 ? feedingLogs[0].time : 'N/A' }, // Keep just in case components break without it
       diaper: { total: diaperLogs.length, wet: wetCount, dirty: dirtyCount },
-      health: { latest: latestTemp?.value || 'N/A', status: this.getTempStatus(latestTemp?.value) }
+      health: { latest: latestTemp?.detail || 'N/A', status: this.getTempStatus(latestTemp?.detail) }
     }).pipe(delay(100));
   }
 

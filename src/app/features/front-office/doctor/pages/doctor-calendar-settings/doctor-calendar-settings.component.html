@@ -1,12 +1,12 @@
 <div class="calendar-settings-container">
   <div class="header-section">
-      <h2>Mettre à Jour la Semaine Spécifique</h2>
-      <p>Configurez vos créneaux pour cette semaine uniquement. Seuls ces jours précis seront affectés.</p>
+      <h2>Update Specific Week</h2>
+      <p>Configure your slots for this week only. Only these specific days will be affected.</p>
     </div>
     
     <div class="date-navigator">
       <button class="nav-btn" type="button" (click)="prevWeek()">‹</button>
-      <span class="current-range">Semaine du {{ daysInWeek[0] | date:'dd MMM' }} au {{ daysInWeek[6] | date:'dd MMM yyyy' }}</span>
+      <span class="current-range">Week of {{ daysInWeek[0] | date:'dd MMM' }} to {{ daysInWeek[6] | date:'dd MMM yyyy' }}</span>
       <button class="nav-btn" type="button" (click)="nextWeek()">›</button>
     </div>
 
@@ -14,7 +14,7 @@
 
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
-    <p>Chargement de vos horaires...</p>
+    <p>Loading your schedule...</p>
   </div>
 
   <div *ngIf="errorMessage" class="alert alert-danger">
@@ -44,7 +44,7 @@
               </small>
             </h3>
             <span class="status-badge" [class.off]="!day.get('active')?.value">
-              {{ day.get('active')?.value ? 'Disponible' : 'Indisponible' }}
+              {{ day.get('active')?.value ? 'Available' : 'Unavailable' }}
             </span>
           </div>
         </div>
@@ -55,7 +55,7 @@
                [formGroupName]="sIndex" class="time-slot-row">
             
             <div class="input-group">
-              <label>Début</label>
+              <label>Start</label>
               <div class="time-input-wrapper">
                 <span class="time-icon">🕒</span>
                 <input type="time" formControlName="startTime" required>
@@ -69,7 +69,7 @@
             </div>
             
             <div class="input-group">
-              <label>Fin</label>
+              <label>End</label>
               <div class="time-input-wrapper">
                 <span class="time-icon">🕒</span>
                 <input type="time" formControlName="endTime" required>
@@ -80,23 +80,23 @@
               <label>Mode</label>
               <div class="custom-select-wrapper">
                 <select formControlName="mode">
-                  <option value="OFFICE">En Cabinet 🏢</option>
-                  <option value="ONLINE">En Ligne 💻</option>
-                  <option value="BOTH">Les Deux 🔄</option>
+                  <option value="OFFICE">In Clinic 🏢</option>
+                  <option value="ONLINE">Online 💻</option>
+                  <option value="BOTH">Both 🔄</option>
                 </select>
                 <span class="select-arrow">▼</span>
               </div>
             </div>
 
             <button type="button" class="btn-remove" (click)="removeTimeSlot(dIndex, sIndex)" 
-                    *ngIf="timeSlots(dIndex).length > 1" title="Supprimer cette plage">
+                    *ngIf="timeSlots(dIndex).length > 1" title="Delete this slot">
               <span class="trash-icon">🗑️</span>
             </button>
           </div>
           
           <div class="add-slot-wrapper">
             <button type="button" class="btn-add-slot" (click)="addTimeSlot(dIndex)">
-              <span class="plus-icon">+</span> Ajouter une plage horaire
+              <span class="plus-icon">+</span> Add time slot
             </button>
           </div>
         </div>
@@ -106,8 +106,8 @@
 
     <div class="actions-footer">
       <button type="submit" class="btn-save" [class.loading]="isSaving" [disabled]="scheduleForm.invalid || isSaving">
-        <span *ngIf="!isSaving">Enregistrer le planning</span>
-        <span *ngIf="isSaving">Enregistrement...</span>
+        <span *ngIf="!isSaving">Save schedule</span>
+        <span *ngIf="isSaving">Saving...</span>
       </button>
     </div>
   </form>

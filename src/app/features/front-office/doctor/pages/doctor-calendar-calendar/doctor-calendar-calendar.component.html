@@ -1,13 +1,12 @@
 <div class="calendar-viewport">
   <div class="calendar-header">
     <div class="view-controls">
-      <h2>Aperçu des disponibilités</h2>
-      <p>Voici comment vos patients voient votre planning cette semaine.</p>
+      <h2>Availability Overview</h2>
+      <p>Here is how your patients see your schedule this week.</p>
     </div>
     <div class="date-navigator">
       <button class="nav-btn" (click)="prevWeek()">‹</button>
-      <span class="current-range">Semaine du {{ daysInWeek[0] | date:'dd MMM' }} au {{ daysInWeek[6] | date:'dd MMM
-        yyyy' }}</span>
+      <span class="current-range">Week of {{ daysInWeek[0] | date:'dd MMM' }} to {{ daysInWeek[6] | date:'dd MMM yyyy' }}</span>
       <button class="nav-btn" (click)="nextWeek()">›</button>
     </div>
   </div>
@@ -23,20 +22,20 @@
         <div *ngIf="isLoading" class="loader-mini"></div>
 
         <ng-container *ngIf="!isLoading && getDaySchedule(date) as schedule">
-          <div *ngIf="!schedule.active" class="closed-badge">Fermé</div>
+          <div *ngIf="!schedule.active" class="closed-badge">Closed</div>
 
           <ng-container *ngIf="schedule.active">
             <div *ngFor="let slot of schedule.timeSlots" class="slot-card" [class]="slot.mode.toLowerCase()" [class.is-booked]="slot.status === 'BOOKED'">
               <!-- Mode Indicator (Top corner) -->
               <div class="mode-indicator" [ngSwitch]="slot.mode">
                 <span *ngSwitchCase="'ONLINE'" class="mode-badge online">
-                  <i class="fas fa-video"></i> En ligne
+                  <i class="fas fa-video"></i> Online
                 </span>
                 <span *ngSwitchCase="'OFFICE'" class="mode-badge office">
-                  <i class="fas fa-hospital"></i> Cabinet
+                  <i class="fas fa-hospital"></i> Office
                 </span>
                 <span *ngSwitchCase="'BOTH'" class="mode-badge both">
-                   🔄 Mixte
+                   🔄 Both
                 </span>
               </div>
 
@@ -45,18 +44,18 @@
               <div class="slot-status-row">
                 <span *ngIf="slot.status === 'AVAILABLE'" class="status-dot available"></span>
                 <span *ngIf="slot.status === 'BOOKED'" class="status-dot booked"></span>
-                <span class="status-text">{{ slot.status === 'BOOKED' ? 'Réservé' : 'Libre' }}</span>
+                <span class="status-text">{{ slot.status === 'BOOKED' ? 'Booked' : 'Free' }}</span>
               </div>
             </div>
 
             <div *ngIf="schedule.timeSlots.length === 0" class="no-slots">
-              Aucun créneau
+              No slots
             </div>
           </ng-container>
         </ng-container>
 
         <div *ngIf="!isLoading && !getDaySchedule(date)" class="no-data">
-          Pas de config
+          No config
         </div>
       </div>
     </div>

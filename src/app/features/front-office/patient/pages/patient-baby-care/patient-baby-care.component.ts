@@ -11,6 +11,7 @@ export class PatientBabyCareComponent implements OnInit {
   activeSection: string = 'dashboard';
   isFirstTime: boolean = false;
   isLoading: boolean = true;
+  formError: string = '';
   
   // Real Data
   baby: BabyDashboard | null = null;
@@ -21,7 +22,7 @@ export class PatientBabyCareComponent implements OnInit {
   editingDiaperId: number | null = null;
   newDiaper: any = { type: 'WET', rash: false, stoolColor: 'Yellow', stoolTexture: 'Normal', notes: '' };
   manualSleep: any = { 
-    duration: 30, 
+    duration: '', 
     show: false, 
     type: 'Nap', 
     presets: [30, 60, 90, 120, 180]
@@ -29,14 +30,14 @@ export class PatientBabyCareComponent implements OnInit {
   onboardingPhoto: string | null = null;
   Math = Math;
   
-  weekData: { day: string, hours: number, totalSeconds?: number, isToday?: boolean }[] = [
-    { day: 'Sun', hours: 0, totalSeconds: 0, isToday: false },
-    { day: 'Mon', hours: 0, totalSeconds: 0, isToday: false },
-    { day: 'Tue', hours: 0, totalSeconds: 0, isToday: false },
-    { day: 'Wed', hours: 0, totalSeconds: 0, isToday: false },
-    { day: 'Thu', hours: 0, totalSeconds: 0, isToday: false },
-    { day: 'Fri', hours: 0, totalSeconds: 0, isToday: false },
-    { day: 'Sat', hours: 0, totalSeconds: 0, isToday: false }
+  weekData: { day: string, totalSeconds?: number, isToday?: boolean }[] = [
+    { day: 'Sun', totalSeconds: 0, isToday: false },
+    { day: 'Mon', totalSeconds: 0, isToday: false },
+    { day: 'Tue', totalSeconds: 0, isToday: false },
+    { day: 'Wed', totalSeconds: 0, isToday: false },
+    { day: 'Thu', totalSeconds: 0, isToday: false },
+    { day: 'Fri', totalSeconds: 0, isToday: false },
+    { day: 'Sat', totalSeconds: 0, isToday: false }
   ];
 
   get currentFormattedDate() {
@@ -75,9 +76,9 @@ export class PatientBabyCareComponent implements OnInit {
     { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-th-large' },
     { id: 'vaccination', label: 'Vaccination', icon: 'fas fa-syringe' },
     { id: 'feeding', label: 'Feeding', icon: 'fas fa-baby-bottle' },
+    { id: 'health', label: 'Temp', icon: 'fas fa-thermometer-half' },
     { id: 'sleep', label: 'Sleep', icon: 'fas fa-moon' },
     { id: 'diaper', label: 'Diaper', icon: 'fas fa-cloud' },
-    { id: 'milestones', label: 'Milestones', icon: 'fas fa-chart-line' },
     { id: 'ai-help', label: 'AI Help', icon: 'fas fa-robot' },
     { id: 'journal', label: 'Journal', icon: 'fas fa-book' }
   ];
@@ -148,39 +149,43 @@ export class PatientBabyCareComponent implements OnInit {
     }
   };
 
-  milestonesData: any = {
-    physical: [
-      { title: 'Holds head steady', description: 'During tummy time and when held upright — neck muscles are getting strong!', achieved: true },
-      { title: 'Pushes up on forearms', description: 'During tummy time, pushing up is excellent upper body development.', achieved: true },
-      { title: 'Rolls from tummy to back', description: 'Some babies begin rolling around 4–5 months. Encourage with gentle play.', achieved: false }
-    ],
-    sensory: [
-      { title: 'Follows moving objects with eyes', description: 'Tracking toys and faces is a sign of healthy visual development.', achieved: true },
-      { title: 'Laughs and makes sounds', description: 'Cooing, squealing, and first laughs — early language is blooming.', achieved: true }
-    ],
-    social: [
-      { title: 'Smiles spontaneously, especially at people', description: 'Social smiling shows strong emotional bonding and attachment.', achieved: true },
-      { title: 'Shows excitement with familiar faces', description: 'Looking for your face, reaching arms up — attachment is deepening.', achieved: false }
-    ]
-  };
-
   constructor(
     private babyService: BabyCareService,
     public authService: AuthService,
     private fb: FormBuilder
   ) {}
 
+  pastDateValidator(control: any): { [key: string]: any } | null {
+    if (!control.value) return null;
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    return selectedDate > today ? { 'futureDate': true } : null;
+  }
+
+  maxOneYearValidator(control: any): { [key: string]: any } | null {
+    if (!control.value) return null;
+    const selectedDate = new Date(control.value);
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    return selectedDate < oneYearAgo ? { 'tooOld': true } : null;
+  }
+
   ngOnInit(): void {
     this.onboardingForm = this.fb.group({
-      name: ['', Validators.required],
-      birthDate: ['', Validators.required],
-      gender: ['UNKNOWN'],
-      birthWeight: [null, [Validators.min(0)]],
-      birthHeight: [null, [Validators.min(0)]],
-      priorities: [[]]
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      birthDate: ['', [Validators.required, this.pastDateValidator, this.maxOneYearValidator]],
+      gender: ['', Validators.required],
+      birthWeight: [null, [Validators.required, Validators.min(0), Validators.max(15)]],
+      birthHeight: [null, [Validators.required, Validators.min(0), Validators.max(80)]],
+      priorities: [[], [Validators.required, Validators.minLength(1)]]
     });
     this.checkBabyProfile();
     this.onboardingPhoto = localStorage.getItem('onboarding_photo');
+
+    this.onboardingForm.valueChanges.subscribe(() => {
+      if (this.formError) this.formError = '';
+    });
   }
 
   checkBabyProfile() {
@@ -204,17 +209,30 @@ export class PatientBabyCareComponent implements OnInit {
   }
 
   saveOnboarding() {
+    if (this.onboardingForm.invalid || !this.onboardingPhoto) {
+      this.onboardingForm.markAllAsTouched();
+      this.formError = !this.onboardingPhoto 
+        ? "Please add a photo of the baby." 
+        : "Please fill in all required fields correctly.";
+      return;
+    }
+    
     const parentId = this.authService.getUserId();
-    if (!parentId || this.onboardingForm.invalid) return;
+    if (!parentId) return;
 
+    this.formError = '';
     const data = { ...this.onboardingForm.value, photoUrl: this.onboardingPhoto };
     this.babyService.createProfile(parentId, data).subscribe({
       next: (profile) => {
         this.isFirstTime = false;
+        this.formError = '';
         localStorage.removeItem('onboarding_photo');
         this.loadAllData(); // Use loadAllData after onboarding
       },
-      error: () => alert('Failed to save profile')
+      error: (err) => {
+        this.formError = "Error creating profile. Please check the fields.";
+        console.error(err);
+      }
     });
   }
 
@@ -242,6 +260,7 @@ export class PatientBabyCareComponent implements OnInit {
       } else {
         this.onboardingPhoto = base64;
         localStorage.setItem('onboarding_photo', base64);
+        this.formError = ''; // Clear photo error immediately
       }
     };
     reader.readAsDataURL(file);
@@ -321,7 +340,6 @@ export class PatientBabyCareComponent implements OnInit {
     const value = this.formatSleepValue(totalSeconds);
     const metadata = { 
       totalDurationSeconds: totalSeconds,
-      sleepType: 'Nap',
       manual: false 
     };
 
@@ -333,10 +351,7 @@ export class PatientBabyCareComponent implements OnInit {
   }
 
   formatSleepValue(totalSeconds: number): string {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    if (mins === 0) return `${secs} sec`;
-    return secs > 0 ? `${mins} min ${secs} sec` : `${mins} min`;
+    return this.displayDuration(totalSeconds);
   }
 
   historyFilter: string = 'today';
@@ -356,9 +371,49 @@ export class PatientBabyCareComponent implements OnInit {
 
   getFilteredSleepLogs(): any[] {
     const logs = this.journalLogs.filter(log => log.type === 'SLEEP');
-    if (this.historyFilter === 'today') return logs.filter(l => this.isToday(l.timestamp));
-    if (this.historyFilter === 'yesterday') return logs.filter(l => this.isYesterday(l.timestamp));
-    return logs;
+    let filtered = logs;
+    if (this.historyFilter === 'today') filtered = logs.filter(l => this.isToday(l.timestamp));
+    else if (this.historyFilter === 'yesterday') filtered = logs.filter(l => this.isYesterday(l.timestamp));
+    return filtered;
+  }
+
+  selectedLogIds = new Set<number>();
+  
+  toggleSelectLog(id: number) {
+    if (this.selectedLogIds.has(id)) this.selectedLogIds.delete(id);
+    else this.selectedLogIds.add(id);
+  }
+
+  isLogSelected(id: number): boolean {
+    return this.selectedLogIds.has(id);
+  }
+
+  toggleSelectAll() {
+    const logs = this.getFilteredSleepLogs();
+    if (this.selectedLogIds.size === logs.length) {
+      this.selectedLogIds.clear();
+    } else {
+      logs.forEach(l => this.selectedLogIds.add(l.id));
+    }
+  }
+
+  deleteSelectedLogs() {
+    if (this.selectedLogIds.size === 0) return;
+    if (confirm(`Are you sure you want to delete ${this.selectedLogIds.size} records?`)) {
+      const idsToDelete = Array.from(this.selectedLogIds);
+      let count = 0;
+      idsToDelete.forEach(id => {
+        this.babyService.deleteJournalEntry(id).subscribe(() => {
+          count++;
+          if (count === idsToDelete.length) {
+            this.selectedLogIds.clear();
+            this.loadAllData();
+          }
+        });
+      });
+      // In case of error (simplified)
+      setTimeout(() => { this.selectedLogIds.clear(); this.loadAllData(); }, 1500);
+    }
   }
 
   formatMinutes(totalMins: number): string {
@@ -368,15 +423,19 @@ export class PatientBabyCareComponent implements OnInit {
 
   // Master formatter for unified seconds
   displayDuration(totalSeconds: number): string {
-    if (totalSeconds < 60) return `${totalSeconds} sec`;
-    
     const h = Math.floor(totalSeconds / 3600);
     const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = Math.floor(totalSeconds % 60);
     
-    if (h > 0) {
-      return m > 0 ? `${h}h ${m}min` : `${h}h`;
-    }
-    return `${m} min`;
+    if (h > 0) return `${h}h ${m}min ${s}sec`;
+    if (m > 0) return `${m}min ${s}sec`;
+    return `${s}sec`;
+  }
+
+  // Concise formatter for the weekly chart (hours only)
+  displayChartDuration(totalSeconds: number): string {
+    const hours = Math.round((totalSeconds / 3600) * 10) / 10;
+    return `${hours}h`;
   }
 
   formatFullDuration(log: any): string {
@@ -397,10 +456,7 @@ export class PatientBabyCareComponent implements OnInit {
     return this.formatMinutes(avg);
   }
 
-  toggleMilestone(m: any) {
-    m.achieved = !m.achieved;
-    // Persist if needed
-  }
+
 
   loadVaccines(babyId?: number) {
     const id = babyId || this.baby?.id;
@@ -464,6 +520,7 @@ export class PatientBabyCareComponent implements OnInit {
       updated = [...currentPriorities, p];
     }
     this.onboardingForm.patchValue({ priorities: updated });
+    this.formError = '';
   }
 
   // ====== JOURNAL ======
@@ -510,45 +567,78 @@ export class PatientBabyCareComponent implements OnInit {
       'FEEDING': { label: 'Feeding', placeholder: 'e.g. Breastfed 20 min, left side...', icon: '🍼' },
       'SLEEP': { label: 'Sleep', placeholder: 'e.g. Morning nap, slept 1h 45min...', icon: '🌙' },
       'DIAPER': { label: 'Diaper', placeholder: 'e.g. Wet diaper, changed at 10:30 AM...', icon: '💧' },
-      'TEMP': { label: 'Temperature', placeholder: 'e.g. 37.8°C, checked after nap...', icon: '🌡️' },
+      'TEMPERATURE': { label: 'Temperature', placeholder: 'e.g. 37.8°C, checked after nap...', icon: '🌡️' },
       'NOTE': { label: 'Note', placeholder: 'e.g. Baby seem exceptionally happy today...', icon: '📝' }
     };
     return configs[this.newEntry.type] || configs['FEEDING'];
   }
 
-  // Demo log entries that would normally come from the backend
-  demoLogs: any[] = [
-    { time: '8:30\nAM', type: 'FEEDING', icon: '🤱', iconBg: '#fce4ec', title: 'Breastfed', detail: 'Left side 12 min · Right side 8 min · Sofia seemed satisfied after', badge: '20 mins total', badgeBg: '#f3e8ff', badgeColor: '#6b21a8' },
-    { time: '9:15\nAM', type: 'DIAPER', icon: '💧', iconBg: '#e0f7fa', title: 'Diaper Change', detail: 'Wet · Normal yellow · No rash noted', badge: '✓ Normal', badgeBg: '#e8f5e9', badgeColor: '#2e7d32' },
-    { time: '10:00\nAM', type: 'SLEEP', icon: '🌙', iconBg: '#fff8e1', title: 'Nap — Morning', detail: 'Fell asleep in crib · Woke at 11:45 AM · Seemed well rested', badge: '1h 45min', badgeBg: '#fff3cd', badgeColor: '#856404' },
-    { time: '12:10\nPM', type: 'FEEDING', icon: '🤱', iconBg: '#fce4ec', title: 'Breastfed', detail: 'Right side 15 min · A bit fussy at the start but settled', badge: '15 mins', badgeBg: '#f3e8ff', badgeColor: '#6b21a8' },
-    { time: '2:00\nPM', type: 'TEMP', icon: '🌡️', iconBg: '#fde8ff', title: 'Temperature Check', detail: 'Felt a little warm — checked temperature', badge: '37.8°C — Monitor', badgeBg: '#fff0f0', badgeColor: '#c53030' }
-  ];
 
   get filteredLogs(): any[] {
-    const combined = [...this.journalLogs, ...this.demoLogs];
-    if (this.journalFilter === 'all') return combined;
-    return combined.filter(l => l.type === this.journalFilter);
+    if (this.journalFilter === 'all') return this.journalLogs;
+    return this.journalLogs.filter(l => l.type === this.journalFilter);
   }
 
   prevDay() { const d = new Date(this.journalDate); d.setDate(d.getDate() - 1); this.journalDate = d; }
   nextDay() { const d = new Date(this.journalDate); d.setDate(d.getDate() + 1); this.journalDate = d; }
 
   submitJournalEntry() {
-    if (!this.baby || !this.newEntry.value) return;
+    this.formError = '';
+    if (!this.baby || !this.newEntry.value) {
+      if (!this.newEntry.value) this.formError = "Please enter a value.";
+      return;
+    }
+
+    if (this.newEntry.type === 'TEMPERATURE') {
+      const tempVal = parseFloat(this.newEntry.value);
+      if (isNaN(tempVal) || tempVal < 30 || tempVal > 45) {
+        this.formError = "Temperature must be between 30°C and 45°C.";
+        return;
+      }
+    } else if (this.newEntry.type === 'FEEDING') {
+      if (this.newEntry.subType === 'BOTTLE') {
+        const qty = parseFloat(this.newEntry.quantity);
+        if (isNaN(qty) || qty <= 0 || qty > 1000) {
+           this.formError = "Quantity must be between 1 and 1000 ml.";
+           return;
+        }
+      } else {
+        const dur = this.parsedDuration(this.newEntry.duration);
+        if (dur <= 0 || dur > 7200) { 
+           this.formError = "Duration must be between 1 min and 2 hours.";
+           return;
+        }
+      }
+    } else if (this.newEntry.type === 'SLEEP') {
+      const totalSeconds = this.parsedDuration(this.newEntry.duration);
+      if (totalSeconds < 60 || totalSeconds > 86400) {
+          this.formError = "Sleep duration must be between 1 min and 24 hours.";
+          return;
+      }
+    } else if (this.newEntry.type === 'DIAPER') {
+      if (!this.newEntry.subType) {
+        this.formError = "Diaper type (Wet/Dirty) is required.";
+        return;
+      }
+    }
     
     // Prepare metadata based on type
     const metadata: any = {};
-    if (this.newEntry.type === 'FEEDING') {
+    if (this.newEntry.type === 'SLEEP') {
+      const totalSeconds = this.parsedDuration(this.newEntry.duration);
+      metadata.totalDurationSeconds = totalSeconds;
+      if (!this.newEntry.value) {
+        this.newEntry.value = this.displayDuration(totalSeconds);
+      }
+    } else if (this.newEntry.type === 'FEEDING') {
       metadata.subType = this.newEntry.subType;
       if (this.newEntry.subType === 'BOTTLE') {
         metadata.quantity = this.newEntry.quantity;
       } else {
         metadata.side = this.newEntry.side;
         metadata.duration = this.newEntry.duration;
+        metadata.totalDurationSeconds = this.parsedDuration(this.newEntry.duration);
       }
-    } else if (this.newEntry.type === 'SLEEP') {
-      metadata.totalSeconds = this.newEntry.duration * 60;
     } else if (this.newEntry.type === 'DIAPER') {
       metadata.subType = this.newEntry.subType;
       metadata.stoolColor = this.newEntry.stoolColor;
@@ -559,22 +649,56 @@ export class PatientBabyCareComponent implements OnInit {
       .subscribe({
         next: () => {
           this.showAddEntry = false;
+          this.formError = '';
           this.resetNewEntry();
-          this.loadAllData(); // Fully refresh dashboard metrics
+          this.loadAllData();
         },
-        error: () => alert('Failed to save entry')
+        error: (err) => {
+          this.formError = "Server Error: Unable to save entry.";
+          console.error(err);
+        }
       });
   }
 
-  submitManualSleep() {
-    if (!this.baby || !this.manualSleep.duration) return;
+  parsedDuration(input: any): number {
+    if (typeof input === 'number') return input * 60;
+    if (!input) return 0;
     
-    // String content for legacy display, metadata for rich parsing
-    const value = `Slept for ${this.manualSleep.duration} min`;
+    const str = input.toLowerCase().trim();
+    let totalSec = 0;
+    
+    const hMatch = str.match(/(\d+)\s*h/);
+    const mMatch = str.match(/(?:h\s*)?(\d+)\s*(?:m|min)/) || str.match(/(\d+)\s*(?:m|min)/);
+    const sMatch = str.match(/(\d+)\s*(?:s|sec)/);
+    
+    if (hMatch) totalSec += parseInt(hMatch[1]) * 3600;
+    if (mMatch) totalSec += parseInt(mMatch[1]) * 60;
+    if (sMatch) totalSec += parseInt(sMatch[1]);
+    
+    if (totalSec === 0 && /^\d+$/.test(str)) {
+      totalSec = parseInt(str) * 60;
+    }
+    return totalSec;
+  }
+
+  get parsedManualSeconds(): number {
+    return this.parsedDuration(this.manualSleep.duration);
+  }
+
+  submitManualSleep() {
+    this.formError = '';
+    const totalSeconds = this.parsedManualSeconds;
+    if (!this.baby) return;
+
+    if (totalSeconds < 60 || totalSeconds > 86400) { // between 1 min and 24 hours
+        this.formError = "Sleep duration must be realistic (between 1 minute and 24 hours).";
+        return;
+    }
+    
+    const value = this.displayDuration(totalSeconds);
     const metadata = { 
-      duration: this.manualSleep.duration, 
-      sleepType: this.manualSleep.type, 
-      totalDurationSeconds: this.manualSleep.duration * 60,
+      durationString: this.manualSleep.duration,
+      totalDurationSeconds: totalSeconds,
       manual: true 
     };
     
@@ -591,9 +715,8 @@ export class PatientBabyCareComponent implements OnInit {
 
   resetManualSleep() {
     this.manualSleep = { 
-      duration: 30, 
+      duration: '', 
       show: false, 
-      type: 'Nap', 
       presets: [30, 60, 90, 120, 180]
     };
   }

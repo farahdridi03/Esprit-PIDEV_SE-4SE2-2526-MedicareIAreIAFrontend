@@ -14,7 +14,7 @@
 
     <nav class="sidebar-menu">
         <ul>
-            <li [class.active]="currentView === 'overview'" (click)="setView('overview')">
+            <li [class.active]="currentView === 'overview'" routerLink="/front/doctor/dashboard" [queryParams]="{ view: 'overview' }" (click)="setView('overview')">
                 <span class="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor">
@@ -24,7 +24,7 @@
                 </span>
                 Dashboard
             </li>
-            <li [class.active]="currentView === 'calendar'" (click)="setView('calendar')">
+            <li [class.active]="currentView === 'calendar'" routerLink="/front/doctor/dashboard" [queryParams]="{ view: 'calendar' }" (click)="setView('calendar')">
                 <span class="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor">
@@ -32,9 +32,9 @@
                             d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                     </svg>
                 </span>
-                Calendrier
+                Calendar
             </li>
-            <li [class.active]="currentView === 'settings'" (click)="setView('settings')">
+            <li [class.active]="currentView === 'settings'" routerLink="/front/doctor/dashboard" [queryParams]="{ view: 'settings' }" (click)="setView('settings')">
                 <span class="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor">
@@ -42,9 +42,9 @@
                             d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                     </svg>
                 </span>
-                Horaires de travail
+                Work Schedule
             </li>
-            <li [class.active]="currentView === 'exceptions'" (click)="setView('exceptions')">
+            <li [class.active]="currentView === 'exceptions'" routerLink="/front/doctor/dashboard" [queryParams]="{ view: 'exceptions' }" (click)="setView('exceptions')">
                 <span class="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor">
@@ -52,7 +52,7 @@
                             d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008z" />
                     </svg>
                 </span>
-                Exceptions & Congés
+                Exceptions & Leave
             </li>
             <li routerLinkActive="active" routerLink="/front/doctor/patients">
                 <span class="icon">

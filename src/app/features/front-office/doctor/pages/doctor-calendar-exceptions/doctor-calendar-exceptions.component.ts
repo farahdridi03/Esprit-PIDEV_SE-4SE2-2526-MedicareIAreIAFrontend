@@ -50,7 +50,7 @@ export class DoctorCalendarExceptionsComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        this.errorMessage = 'Erreur lors du chargement des exceptions.';
+        this.errorMessage = 'Error loading exceptions.';
         this.isLoading = false;
       }
     });
@@ -78,13 +78,13 @@ export class DoctorCalendarExceptionsComponent implements OnInit {
     this.scheduleService.addException(this.providerId, newException).subscribe({
       next: (res) => {
         this.exceptions.unshift(res);
-        this.successMessage = 'Exception ajoutée avec succès.';
+        this.successMessage = 'Exception added successfully.';
         this.isSaving = false;
         this.toggleForm();
         setTimeout(() => this.successMessage = '', 3000);
       },
       error: () => {
-        this.errorMessage = 'Erreur lors de l\'ajout.';
+        this.errorMessage = 'Error while adding.';
         this.isSaving = false;
       }
     });
@@ -92,7 +92,7 @@ export class DoctorCalendarExceptionsComponent implements OnInit {
 
   deleteException(id: number | undefined): void {
     if (!id) return;
-    if (confirm('Voulez-vous vraiment supprimer cette exception ?')) {
+    if (confirm('Are you sure you want to delete this exception?')) {
       this.scheduleService.deleteException(this.providerId, id).subscribe(() => {
         this.exceptions = this.exceptions.filter(e => e.id !== id);
       });
@@ -101,10 +101,10 @@ export class DoctorCalendarExceptionsComponent implements OnInit {
 
   getExceptionTypeLabel(type: ExceptionType): string {
     const labels: Record<ExceptionType, string> = {
-      TIME_OFF: 'Congé',
+      TIME_OFF: 'Leave',
       ABSENCE: 'Absence',
-      HOLIDAY: 'Jour Férié',
-      PARTIAL_AVAILABILITY: 'Disponibilité Partielle'
+      HOLIDAY: 'Public Holiday',
+      PARTIAL_AVAILABILITY: 'Partial Availability'
     };
     return labels[type] || type;
   }

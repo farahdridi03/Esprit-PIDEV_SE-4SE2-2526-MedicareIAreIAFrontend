@@ -9,70 +9,101 @@
         <div class="content-area">
             <div class="page-header">
                 <div>
-                    <h1>Gestion des Rendez-vous</h1>
-                    <p>Suivez et validez vos consultations de la journée.</p>
+                    <h1>Patient Management</h1>
+                    <p>Access your patient base and manage your consultations.</p>
+                </div>
+                <div class="header-tabs">
+                    <button [class.active]="displayMode === 'today'" (click)="setMode('today')">
+                        <i class="fas fa-calendar-day"></i> Today
+                    </button>
+                    <button [class.active]="displayMode === 'all'" (click)="setMode('all')">
+                        <i class="fas fa-users"></i> All Patients
+                    </button>
                 </div>
             </div>
 
             <div class="patients-schedule-card">
                 <div class="card-header">
-                    <h3>📅 Planning du jour</h3>
-                    <div class="refresh-info">Mise à jour automatique en cours...</div>
+                    <h3>{{ displayMode === 'today' ? '📅 Today\'s Schedule' : '👥 Patient Database' }}</h3>
+                    <div class="refresh-info">{{ displayMode === 'today' ? todayAppointments.length + ' Appointments' : allPatients.length + ' Unique patients' }}</div>
                 </div>
 
                 <div class="schedule-list detailing">
                     <div *ngIf="isLoadingAppointments" class="loader-container">
                         <div class="spinner"></div>
-                        <p>Chargement de votre planning...</p>
+                        <p>Loading data...</p>
                     </div>
 
-                    <div *ngIf="!isLoadingAppointments && todayAppointments.length === 0" class="no-data">
-                        <img src="assets/img/no_appointments.svg" alt="Aucun rendez-vous" *ngIf="false"> <!-- Fallback -->
+                    <!-- EMPTY STATES -->
+                    <div *ngIf="!isLoadingAppointments && displayMode === 'today' && todayAppointments.length === 0" class="no-data">
                         <div class="empty-icon">📅</div>
-                        <p>Aucun rendez-vous pour aujourd'hui.</p>
+                        <p>No appointments for today.</p>
+                    </div>
+                    <div *ngIf="!isLoadingAppointments && displayMode === 'all' && allPatients.length === 0" class="no-data">
+                        <div class="empty-icon">👥</div>
+                        <p>You don't have any registered patients yet.</p>
                     </div>
 
-                    <div class="appointment-row" *ngFor="let app of todayAppointments">
-                        <div class="time-block">
-                            <span class="start">{{ app.startTime }}</span>
-                            <span class="end">{{ app.endTime }}</span>
-                        </div>
-
-                        <div class="patient-info">
-                            <div class="avatar-circle">
-                                {{ app.patientName ? app.patientName.charAt(0) : 'P' }}
+                    <!-- MODE: TODAY APPOINTMENTS -->
+                    <div *ngIf="!isLoadingAppointments && displayMode === 'today'">
+                        <div class="appointment-row" *ngFor="let app of todayAppointments">
+                            <div class="time-block">
+                                <span class="start">{{ app.startTime }}</span>
+                                <span class="end">{{ app.endTime }}</span>
                             </div>
-                            <div class="name-meta">
-                                <h4>{{ app.patientName }}</h4>
-                                <span class="mode-tag" [class]="app.mode.toLowerCase()">{{ app.mode }}</span>
+
+                            <div class="patient-info">
+                                <div class="avatar-circle">
+                                    {{ app.patientName ? app.patientName.charAt(0) : 'P' }}
+                                </div>
+                                <div class="name-meta">
+                                    <h4>{{ app.patientName }}</h4>
+                                    <span class="mode-tag" [class]="app.mode.toLowerCase()">{{ app.mode }}</span>
+                                </div>
+                            </div>
+
+                            <div class="status-col">
+                                <span class="status-pill" [ngClass]="app.status.toLowerCase()">
+                                    {{ app.status }}
+                                </span>
+                            </div>
+
+                            <div class="actions-col">
+                                <button *ngIf="app.status === 'BOOKED'" class="btn-action confirm" (click)="confirmAppointment(app.id)">Accept</button>
+                                <button *ngIf="app.mode === 'ONLINE' && app.status === 'CONFIRMED'" class="btn-action start" (click)="startConsultation(app)">Start Session</button>
+                                <button *ngIf="app.mode === 'ONLINE' && app.status === 'LIVE'" class="btn-action live" (click)="openMeeting(app.meetingLink)">Join Live</button>
+                                <div class="notes-preview" *ngIf="app.notes" [title]="app.notes">📝</div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="status-col">
-                            <span class="status-pill" [ngClass]="app.status.toLowerCase()">
-                                {{ app.status }}
-                            </span>
-                        </div>
+                    <!-- MODE: ALL PATIENTS -->
+                    <div *ngIf="!isLoadingAppointments && displayMode === 'all'">
+                        <div class="appointment-row" *ngFor="let p of allPatients">
+                            <div class="patient-info" style="flex: 1;">
+                                <div class="avatar-circle" style="background: #e0f2fe; color: #0369a1;">
+                                    {{ p.name ? p.name.charAt(0) : 'P' }}
+                                </div>
+                                <div class="name-meta">
+                                    <h4>{{ p.name }}</h4>
+                                    <span class="sub-text">Registered via Medicare • <strong>{{ p.totalAppointments }}</strong> Appointments</span>
+                                </div>
+                            </div>
 
-                        <div class="actions-col">
-                            <!-- Action: Confirm -->
-                            <button *ngIf="app.status === 'BOOKED'" class="btn-action confirm" (click)="confirmAppointment(app.id)">
-                                Accepter
-                            </button>
+                            <div class="meta-col" style="flex: 1; text-align: right; padding-right: 20px;">
+                                <div class="date-label">Last visit</div>
+                                <div class="date-val">{{ p.lastAppointmentDate | date:'mediumDate' }}</div>
+                            </div>
 
-                            <!-- Action: Start (Online + Confirmed) -->
-                            <button *ngIf="app.mode === 'ONLINE' && app.status === 'CONFIRMED'" class="btn-action start" (click)="startConsultation(app)">
-                                Démarrer la séance
-                            </button>
+                            <div class="status-col">
+                                <span class="status-pill" [ngClass]="p.lastAppointmentStatus.toLowerCase()">
+                                    {{ p.lastAppointmentStatus }}
+                                </span>
+                            </div>
 
-                            <!-- Action: Join (Live) -->
-                            <button *ngIf="app.mode === 'ONLINE' && app.status === 'LIVE'" class="btn-action live" (click)="openMeeting(app.meetingLink)">
-                                Rejoindre (En direct)
-                            </button>
-
-                            <!-- Read-only notes if any -->
-                            <div class="notes-preview" *ngIf="app.notes" [title]="app.notes">
-                                📝
+                            <div class="actions-col">
+                                <button class="btn-action-mini" title="View history"><i class="fas fa-history"></i></button>
+                                <button class="btn-action-mini" title="Contact patient"><i class="fas fa-envelope"></i></button>
                             </div>
                         </div>
                     </div>

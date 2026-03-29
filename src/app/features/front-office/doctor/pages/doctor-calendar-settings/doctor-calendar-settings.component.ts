@@ -73,7 +73,7 @@ export class DoctorCalendarSettingsComponent implements OnInit {
       },
       error: (err) => {
         console.error('[ERROR] Failed to load schedule', err);
-        this.errorMessage = 'Erreur lors du chargement du planning.';
+        this.errorMessage = 'Error loading schedule.';
         this.isLoading = false;
       }
     });
@@ -142,13 +142,13 @@ export class DoctorCalendarSettingsComponent implements OnInit {
 
   getDayName(dayOfWeek: string): string {
     const names: Record<string, string> = {
-      MONDAY: 'Lundi',
-      TUESDAY: 'Mardi',
-      WEDNESDAY: 'Mercredi',
-      THURSDAY: 'Jeudi',
-      FRIDAY: 'Vendredi',
-      SATURDAY: 'Samedi',
-      SUNDAY: 'Dimanche'
+      MONDAY: 'Monday',
+      TUESDAY: 'Tuesday',
+      WEDNESDAY: 'Wednesday',
+      THURSDAY: 'Thursday',
+      FRIDAY: 'Friday',
+      SATURDAY: 'Saturday',
+      SUNDAY: 'Sunday'
     };
     return names[dayOfWeek] || dayOfWeek;
   }
@@ -211,7 +211,7 @@ export class DoctorCalendarSettingsComponent implements OnInit {
 
     this.scheduleService.saveSpecificWeek(this.providerId, weekStartDate, weekDays).subscribe({
       next: () => {
-        this.successMessage = 'Votre planning a été enregistré avec succès (seulement pour cette semaine spécifique).';
+        this.successMessage = 'Your schedule has been successfully saved (for this specific week only).';
         this.isSaving = false;
         
         // Wait briefly to let the user see the success message, then redirect
@@ -222,7 +222,7 @@ export class DoctorCalendarSettingsComponent implements OnInit {
       },
       error: (err) => {
         console.error('[ERROR] Failed to save schedule', err);
-        this.errorMessage = 'Une erreur est survenue lors de l\'enregistrement. Vérifiez que la console du serveur ne contient pas d\'erreurs.';
+        this.errorMessage = 'An error occurred while saving. Please check the server console for errors.';
         this.isSaving = false;
       }
     });

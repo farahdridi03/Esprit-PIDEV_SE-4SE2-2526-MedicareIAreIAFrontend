@@ -29,7 +29,12 @@ export class PatientDoctorDetailComponent implements OnInit {
   newReviewRating: number = 0;
   hoverRating: number = 0;
   newReviewComment: string = '';
+  reviewError: string = '';
+  isAnonymous: boolean = false;
   isSubmittingReview: boolean = false;
+  editingReviewId: number | null = null;
+  showDeleteModal: boolean = false;
+  reviewToDeleteId: number | null = null;
 
   // Availability & Calendar
   currentMonthDate: Date = new Date();
@@ -43,10 +48,20 @@ export class PatientDoctorDetailComponent implements OnInit {
   showBookingModal: boolean = false;
   bookingReason: string = '';
   isBooking: boolean = false;
+  currentUserId: number | null = null;
+  bookingError: string = '';
 
   predefinedReasons: string[] = [];
   selectedReason: string = '';
   customReason: string = '';
+ 
+  // Content moderation
+  private forbiddenWords: string[] = ['bad', 'nul', 'mediocre', 'mal', 'stupid', 'incompetent', 'worst', 'hate', 'stupide', 'naze', 'pourri', 'incompétent'];
+  
+  private containsBadWords(text: string): boolean {
+    const lower = text.toLowerCase();
+    return this.forbiddenWords.some(word => lower.includes(word));
+  }
 
   private specialtyReasonMap: { [key: string]: string[] } = {
     'General Medicine': ['Routine checkup', 'Fever', 'Headache', 'Fatigue', 'Chest pain', 'Follow-up visit'],
@@ -76,6 +91,7 @@ export class PatientDoctorDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.doctorId = +params['id'];
+      this.currentUserId = this.authService.getUserId();
       if (this.doctorId) {
         this.loadDoctorProfile();
         this.loadReviews();
@@ -306,7 +322,11 @@ export class PatientDoctorDetailComponent implements OnInit {
     const dateString = this.formatDate(date);
     this.doctorService.getAvailableSlots(this.doctorId, dateString).subscribe({
       next: (slots) => {
-        this.availableSlots = slots;
+        const now = new Date();
+        this.availableSlots = slots.filter(slot => {
+          const slotDate = new Date(slot.startTime);
+          return slotDate > now;
+        });
         this.isLoadingSlots = false;
       },
       error: () => {
@@ -332,6 +352,7 @@ export class PatientDoctorDetailComponent implements OnInit {
   // --- Booking ---
   openBookingModal() {
     if (!this.selectedSlot) return;
+    this.bookingError = '';
     this.showBookingModal = true;
   }
 
@@ -339,6 +360,7 @@ export class PatientDoctorDetailComponent implements OnInit {
     this.showBookingModal = false;
     this.selectedReason = '';
     this.customReason = '';
+    this.bookingError = '';
   }
 
   selectReason(reason: string): void {
@@ -351,7 +373,14 @@ export class PatientDoctorDetailComponent implements OnInit {
   }
 
   confirmBooking() {
+    this.bookingError = '';
     if (!this.selectedSlot || !this.doctor) return;
+
+    if (!this.finalReason.trim()) {
+      this.bookingError = 'Veuillez sélectionner ou saisir un motif de consultation.';
+      return;
+    }
+
     this.isBooking = true;
     
     // Assuming backend endpoint /api/v1/appointments
@@ -397,24 +426,93 @@ export class PatientDoctorDetailComponent implements OnInit {
   // --- Reviews ---
   setRating(val: number) {
     this.newReviewRating = val;
+    this.reviewError = '';
   }
 
   submitReview() {
-    if (this.newReviewRating === 0 || !this.newReviewComment.trim()) return;
+    this.reviewError = '';
+
+    if (this.containsBadWords(this.newReviewComment)) {
+      this.reviewError = 'Mots non autorisés détectés. Merci de rester courtois et positif.';
+      return;
+    }
+    
+    if (this.newReviewRating === 0) {
+      this.reviewError = 'Veuillez attribuer une note (étoiles) avant de publier.';
+      return;
+    }
+    
+    if (!this.newReviewComment.trim() || this.newReviewComment.trim().length < 10) {
+      this.reviewError = 'L\'avis doit contenir au moins 10 caractères pour être utile.';
+      return;
+    }
     
     this.isSubmittingReview = true;
-    this.reviewService.addReview(this.doctorId, this.newReviewRating, this.newReviewComment).subscribe({
-      next: (rev) => {
-        this.reviews.unshift(rev);
-        this.newReviewRating = 0;
-        this.newReviewComment = '';
-        this.isSubmittingReview = false;
-        // Refresh doctor profile to update global stats (rating/patient count)
-        this.loadDoctorProfile();
+
+    if (this.editingReviewId) {
+      this.reviewService.updateReview(this.doctorId, this.editingReviewId, this.newReviewRating, this.newReviewComment, this.isAnonymous).subscribe({
+        next: (updatedRev) => {
+          const idx = this.reviews.findIndex(r => r.id === updatedRev.id);
+          if (idx !== -1) this.reviews[idx] = updatedRev;
+          this.resetReviewForm();
+          this.isSubmittingReview = false;
+          this.loadDoctorProfile();
+        },
+        error: () => {
+          this.reviewError = 'Échec de la modification. Veuillez réessayer.';
+          this.isSubmittingReview = false;
+        }
+      });
+    } else {
+      this.reviewService.addReview(this.doctorId, this.newReviewRating, this.newReviewComment, this.isAnonymous).subscribe({
+        next: (rev) => {
+          this.reviews.unshift(rev);
+          this.resetReviewForm();
+          this.isSubmittingReview = false;
+          this.loadDoctorProfile();
+        },
+        error: (err) => {
+          this.reviewError = 'Échec de l\'envoi de l\'avis. Veuillez réessayer.';
+          this.isSubmittingReview = false;
+        }
+      });
+    }
+  }
+
+  resetReviewForm() {
+    this.newReviewRating = 0;
+    this.newReviewComment = '';
+    this.isAnonymous = false;
+    this.reviewError = '';
+    this.editingReviewId = null;
+  }
+
+  startEditReview(review: any) {
+    this.editingReviewId = review.id;
+    this.newReviewRating = review.rating;
+    this.newReviewComment = review.comment;
+    this.isAnonymous = !!review.isAnonymous;
+    window.scrollTo({ top: 300, behavior: 'smooth' }); // Scroll back to form
+  }
+
+  deleteReview(reviewId: number) {
+    this.reviewToDeleteId = reviewId;
+    this.showDeleteModal = true;
+  }
+
+  deleteReviewConfirmed() {
+    if (!this.reviewToDeleteId) return;
+    
+    this.reviewService.deleteReview(this.doctorId, this.reviewToDeleteId).subscribe({
+      next: () => {
+        this.reviews = this.reviews.filter(r => r.id !== this.reviewToDeleteId);
+        this.loadDoctorProfile(); // Refresh average
+        this.showDeleteModal = false;
+        this.reviewToDeleteId = null;
       },
       error: () => {
-        alert('Failed to submit review');
-        this.isSubmittingReview = false;
+        alert('Erreur lors de la suppression.');
+        this.showDeleteModal = false;
       }
     });
   }

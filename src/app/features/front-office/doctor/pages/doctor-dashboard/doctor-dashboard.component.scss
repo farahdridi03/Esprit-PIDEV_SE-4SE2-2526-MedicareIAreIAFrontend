@@ -195,28 +195,69 @@ $text-light: #6b7280;
     .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 0.5rem;
+        gap: 2px;
         text-align: center;
 
-        span {
+        .cal-day {
             font-size: 0.875rem;
-            padding: 0.5rem;
-            border-radius: 8px;
+            padding: 8px 0;
+            border-radius: 10px;
             color: $text-dark;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+
+            &:hover:not(.muted) {
+                background-color: #f1f5f9;
+                transform: translateY(-2px);
+            }
 
             &.muted {
-                color: #d1d5db;
+                color: #e2e8f0;
+                cursor: default;
             }
 
             &.today {
-                background-color: $primary-green;
-                color: white;
-                font-weight: 600;
+                background-color: #ecfdf5;
+                color: $primary-green;
+                font-weight: 700;
+                border: 1px solid #d1fae5;
             }
 
-            &:hover:not(.muted):not(.today) {
-                background-color: #f3f4f6;
-                cursor: pointer;
+            &.selected {
+                background-color: $primary-green;
+                color: white;
+                font-weight: 700;
+                box-shadow: 0 4px 12px rgba(14, 124, 102, 0.2);
+
+                .appt-dot { background: white; }
+                .appt-count { background: white; color: $primary-green; }
+            }
+
+            .appt-dot {
+                position: absolute;
+                bottom: 4px;
+                width: 4px;
+                height: 4px;
+                background: $primary-green;
+                border-radius: 50%;
+            }
+
+            .appt-count {
+                position: absolute;
+                top: -2px;
+                right: -2px;
+                background: #ef4444; 
+                color: white;
+                font-size: 9px;
+                font-weight: 800;
+                padding: 1px 4px;
+                border-radius: 6px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
         }
     }

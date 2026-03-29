@@ -11,18 +11,18 @@
         <div *ngIf="!selectedAppointment">
           <div class="tabs">
             <button [class.active]="activeTab==='upcoming'" (click)="activeTab='upcoming'">
-              À venir ({{ upcomingAppointments.length }})
+              Upcoming ({{ upcomingAppointments.length }})
             </button>
             <button [class.active]="activeTab==='past'" (click)="activeTab='past'">
-              Passés ({{ pastAppointments.length }})
+              Past ({{ pastAppointments.length }})
             </button>
             <button [class.active]="activeTab==='cancelled'" (click)="activeTab='cancelled'">
-              Annulés ({{ cancelledAppointments.length }})
+              Cancelled ({{ cancelledAppointments.length }})
             </button>
           </div>
 
-          <div *ngIf="isLoading" class="loading"><p>Recherche de vos rendez-vous...</p></div>
-          <div *ngIf="!isLoading && appointments.length === 0" class="empty-state"><p>Aucun rendez-vous trouvé.</p></div>
+          <div *ngIf="isLoading" class="loading"><p>Searching for your appointments...</p></div>
+          <div *ngIf="!isLoading && appointments.length === 0" class="empty-state"><p>No appointments found.</p></div>
 
           <div *ngIf="!isLoading">
             <div *ngFor="let appt of (activeTab==='upcoming'? upcomingAppointments : activeTab==='past'? pastAppointments : cancelledAppointments); let i = index" 
@@ -51,13 +51,14 @@
 
                 <div class="detail-grid">
                   <div class="detail-box"><div class="icon">📅</div><div class="text"><label>Date</label><span>{{ appt.date | date:'EEE, MMM d, y' }}</span></div></div>
-                  <div class="detail-box"><div class="icon">🕒</div><div class="text"><label>Heure</label><span>{{ appt.startTime }}</span></div></div>
+                  <div class="detail-box"><div class="icon">🕒</div><div class="text"><label>Time</label><span>{{ appt.startTime }}</span></div></div>
                   <div class="detail-box"><div class="icon">💻</div><div class="text"><label>Type</label><span>{{ appt.mode }}</span></div></div>
                 </div>
 
                 <div class="appt-actions">
-                  <button class="btn-cancel" *ngIf="activeTab==='upcoming'" (click)="cancelAppointment(appt.id)">Annuler</button>
-                  <button class="btn-view" (click)="viewDetails(appt)">Voir Détails ↗</button>
+                  <button class="btn-cancel" *ngIf="activeTab==='upcoming'" (click)="cancelAppointment(appt.id)">Cancel</button>
+                  <button class="btn-delete" *ngIf="activeTab==='cancelled'" (click)="openDeleteModal(appt.id)">Delete</button>
+                  <button class="btn-view" (click)="viewDetails(appt)">View Details ↗</button>
                 </div>
               </div>
             </div>
@@ -69,7 +70,7 @@
           
           <div class="view-header">
             <button class="btn-back" (click)="closeDetails()">←</button>
-            <h2>Résumé du Rendez-vous</h2>
+            <h2>Appointment Summary</h2>
           </div>
 
           <!-- Hero Doctor Profile Part -->
@@ -91,22 +92,22 @@
               </div>
               <div class="info-item">
                 <div class="ico-box">🕒</div>
-                <div class="txt"><label>Heure</label><span>{{ selectedAppointment.startTime }} – {{ selectedAppointment.endTime || '...' }}</span></div>
+                <div class="txt"><label>Time</label><span>{{ selectedAppointment.startTime }} – {{ selectedAppointment.endTime || '...' }}</span></div>
               </div>
               <div class="info-item">
                 <div class="ico-box">💻</div>
-                <div class="txt"><label>Mode</label><span>{{ selectedAppointment.mode === 'ONLINE' ? 'Consultation en ligne' : 'Rendez-vous au cabinet' }}</span></div>
+                <div class="txt"><label>Mode</label><span>{{ selectedAppointment.mode === 'ONLINE' ? 'Online consultation' : 'Office appointment' }}</span></div>
               </div>
               <div class="info-item">
                 <div class="ico-box">⏳</div>
-                <div class="txt"><label>Durée</label><span>Env. 30 min</span></div>
+                <div class="txt"><label>Duration</label><span>Approx. 30 min</span></div>
               </div>
             </div>
           </div>
 
           <!-- Note/Reason Card -->
           <div class="section-card" *ngIf="selectedAppointment.notes">
-             <h4>🩺 Motif de Consultation</h4>
+             <h4>🩺 Consultation Reason</h4>
              <p>{{ selectedAppointment.notes }}</p>
           </div>
 
@@ -119,20 +120,20 @@
               
               <div [ngSwitch]="getTeleconsultationState(selectedAppointment)">
                 <div *ngSwitchCase="'WAITING_CONFIRMATION'">
-                    <h4>En attente de confirmation</h4>
-                    <p>Votre demande est en cours d'examen par le Dr. {{ formatName(selectedAppointment.doctorName) }}.</p>
+                    <h4>Waiting for confirmation</h4>
+                    <p>Your request is being reviewed by Dr. {{ formatName(selectedAppointment.doctorName) }}.</p>
                 </div>
                 <div *ngSwitchCase="'WAITING_TIME'">
-                    <h4>Consultation à venir</h4>
-                    <p>La salle de consultation ouvrira automatiquement à l'heure prévue : <strong>{{ selectedAppointment.startTime }}</strong>.</p>
+                    <h4>Upcoming consultation</h4>
+                    <p>The consultation room will automatically open at the scheduled time: <strong>{{ selectedAppointment.startTime }}</strong>.</p>
                 </div>
                 <div *ngSwitchCase="'WAITING_DOCTOR'">
-                    <h4>Le médecin va bientôt vous rejoindre</h4>
-                    <p>Dr. {{ formatName(selectedAppointment.doctorName) }} prépare la séance. Veuillez rester connecté sur cette page.</p>
+                    <h4>The doctor will join you shortly</h4>
+                    <p>Dr. {{ formatName(selectedAppointment.doctorName) }} is preparing the session. Please stay connected on this page.</p>
                 </div>
                 <div *ngSwitchDefault>
-                    <h4>Préparation de la séance</h4>
-                    <p>Veuillez patienter quelques instants...</p>
+                    <h4>Preparing the session</h4>
+                    <p>Please wait a moment...</p>
                 </div>
               </div>
             </div>
@@ -141,12 +142,12 @@
             <div *ngIf="isTeleconsultationActive(selectedAppointment)" class="live-video-view">
               <div class="user-tag">
                 <span class="rec-dot"></span>
-                Dr. {{ formatName(selectedAppointment.doctorName) }} • En direct
+                Dr. {{ formatName(selectedAppointment.doctorName) }} • Live
               </div>
 
               <!-- Action to join if link available -->
               <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:20;" *ngIf="selectedAppointment.meetingLink">
-                 <button class="btn-view" style="padding:20px 40px; font-size:1.1rem;" (click)="openMeeting(selectedAppointment.meetingLink)">Rejoindre la Réunion 🚀</button>
+                 <button class="btn-view" style="padding:20px 40px; font-size:1.1rem;" (click)="openMeeting(selectedAppointment.meetingLink)">Join Meeting 🚀</button>
               </div>
 
               <!-- Remote Video (Doctor Placeholder) -->
@@ -174,30 +175,30 @@
             </div>
             <div class="location-info-bar">
               <div class="loc-text">
-                <h4>{{ selectedAppointment.clinicName || 'Clinique Centrale MediCare' }}</h4>
-                <p>{{ selectedAppointment.clinicAddress || 'Quartier Liberté, Tunis' }}</p>
+                <h4>{{ selectedAppointment.clinicName || 'MediCare Central Clinic' }}</h4>
+                <p>{{ selectedAppointment.clinicAddress || 'Liberté Quarter, Tunis' }}</p>
               </div>
               <button class="btn-maps-action" (click)="openMaps(selectedAppointment.clinicAddress || 'Tunis')">
-                🗺️ Localiser
+                🗺️ Locate
               </button>
             </div>
           </div>
 
           <!-- Timeline Status -->
           <div class="section-card">
-             <h4>📈 Progression du rendez-vous</h4>
+             <h4>📈 Appointment Progress</h4>
              <div class="timeline">
                <div class="step active">
-                 <span class="s-txt">Réservé</span>
-                 <span class="s-sub">Action effectuée avec succès</span>
+                 <span class="s-txt">Booked</span>
+                 <span class="s-sub">Successfully booked</span>
                </div>
                <div class="step" [class.active]="selectedAppointment.status === 'CONFIRMED' || selectedAppointment.status === 'COMPLETED'">
-                 <span class="s-txt">Confirmé</span>
-                 <span class="s-sub">En attente de la consultation</span>
+                 <span class="s-txt">Confirmed</span>
+                 <span class="s-sub">Waiting for consultation</span>
                </div>
                <div class="step" [class.active]="selectedAppointment.status === 'COMPLETED'">
-                 <span class="s-txt">Effectué</span>
-                 <span class="s-sub">Compte-rendu disponible bientôt</span>
+                 <span class="s-txt">Completed</span>
+                 <span class="s-sub">Report available soon</span>
                </div>
              </div>
           </div>
@@ -205,12 +206,50 @@
           <!-- Danger Action -->
           <div class="section-card" *ngIf="selectedAppointment.status === 'BOOKED' || selectedAppointment.status === 'CONFIRMED'" style="border-top: 1px solid #fecaca;">
             <button class="btn-cancel" style="width:100%; padding:15px; border-radius:16px; border:1.5px solid #fecaca; color:#ef4444; background:#fff; font-weight:700; cursor:pointer;" (click)="cancelAppointment(selectedAppointment.id)">
-               Annuler ce rendez-vous
+               Cancel this appointment
             </button>
           </div>
 
         </div>
 
+      </div>
+  <!-- CUSTOM CANCEL CONFIRMATION MODAL -->
+  <div class="modal-overlay-custom" *ngIf="showCancelModal">
+    <div class="modal-card-premium">
+      <div class="modal-header-visual">
+        <div class="icon-circle-danger">
+          <i class="fas fa-calendar-times"></i>
+        </div>
+        <h3>Cancel this appointment?</h3>
+        <p>This action is irreversible. Your slot will be immediately released for other patients.</p>
+      </div>
+      
+      <div class="modal-actions-grid">
+        <button class="btn-cancel-soft" (click)="closeCancelModal()">Keep Appointment</button>
+        <button class="btn-confirm-danger" (click)="confirmCancelAppointment()">
+          <span *ngIf="!isLoading">Confirm Cancellation</span>
+          <span *ngIf="isLoading" class="spinner-mini"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- CUSTOM DELETE CONFIRMATION MODAL -->
+  <div class="modal-overlay-custom" *ngIf="showDeleteModal">
+    <div class="modal-card-premium">
+      <div class="modal-header-visual">
+        <div class="icon-circle-danger" style="background: #fee2e2;">
+          <i class="fas fa-trash-alt" style="color: #ef4444;"></i>
+        </div>
+        <h3>Delete this appointment?</h3>
+        <p>This action is final. The appointment will be permanently removed from your history.</p>
+      </div>
+      
+      <div class="modal-actions-grid">
+        <button class="btn-cancel-soft" (click)="closeDeleteModal()">Keep It</button>
+        <button class="btn-confirm-danger" (click)="confirmDeleteAppointment()">
+          <span *ngIf="!isLoading">Delete Permanently</span>
+          <span *ngIf="isLoading" class="spinner-mini"></span>
+        </button>
       </div>
     </div>
   </div>

@@ -26,7 +26,7 @@
       </div>
 
       <!-- Central Photo Blob -->
-      <div class="photo-blob-container">
+      <div class="photo-blob-container" [class.photo-error]="!onboardingPhoto && formError">
         <label class="photo-blob">
           <input type="file" (change)="handlePhotoUpload($event, false)" accept="image/*" hidden>
 
@@ -46,38 +46,48 @@
 
       <div class="onboarding-form" [formGroup]="onboardingForm">
 
-        <div class="premium-field">
+        <div class="premium-field" [class.field-error]="onboardingForm.get('name')?.invalid && onboardingForm.get('name')?.touched">
           <label>Baby's Name</label>
           <input type="text" formControlName="name" placeholder="E.g. Sofia">
+          <span class="error-text" *ngIf="onboardingForm.get('name')?.hasError('required') && onboardingForm.get('name')?.touched">This field is required</span>
+          <span class="error-text" *ngIf="onboardingForm.get('name')?.hasError('minlength') && onboardingForm.get('name')?.touched">Name must be at least 2 characters</span>
         </div>
 
-        <div class="premium-field">
+        <div class="premium-field" [class.field-error]="onboardingForm.get('birthDate')?.invalid && onboardingForm.get('birthDate')?.touched">
           <label>Date of birth</label>
           <input type="date" formControlName="birthDate">
+          <span class="error-text" *ngIf="onboardingForm.get('birthDate')?.hasError('required') && onboardingForm.get('birthDate')?.touched">Date is required</span>
+          <span class="error-text" *ngIf="onboardingForm.get('birthDate')?.hasError('futureDate') && onboardingForm.get('birthDate')?.touched">Date cannot be in the future</span>
+          <span class="error-text" *ngIf="onboardingForm.get('birthDate')?.hasError('tooOld') && onboardingForm.get('birthDate')?.touched">Max 1 year old (App is for babies)</span>
         </div>
 
-        <div class="premium-field has-icon">
+        <div class="premium-field has-icon" [class.field-error]="onboardingForm.get('gender')?.invalid && onboardingForm.get('gender')?.touched">
           <label>Gender</label>
           <select formControlName="gender">
-            <option value="UNKNOWN">Prefer not to say</option>
+            <option value="" disabled selected>Select gender</option>
             <option value="MALE">Boy</option>
             <option value="FEMALE">Girl</option>
           </select>
+          <span class="error-text" *ngIf="onboardingForm.get('gender')?.invalid && onboardingForm.get('gender')?.touched">Please select a gender</span>
           <i class="fas fa-chevron-down field-icon" style="color: #4a7c74;"></i>
         </div>
 
         <div class="form-row" style="display: flex; gap: 15px;">
-          <div class="premium-field" style="flex: 1;">
+          <div class="premium-field" style="flex: 1;" [class.field-error]="onboardingForm.get('birthWeight')?.invalid && onboardingForm.get('birthWeight')?.touched">
             <label>Weight (kg)</label>
             <input type="number" step="0.1" formControlName="birthWeight" placeholder="3.2">
+            <span class="error-text" *ngIf="onboardingForm.get('birthWeight')?.hasError('required') && onboardingForm.get('birthWeight')?.touched">Required</span>
+            <span class="error-text" *ngIf="(onboardingForm.get('birthWeight')?.hasError('min') || onboardingForm.get('birthWeight')?.hasError('max')) && onboardingForm.get('birthWeight')?.touched">Invalid (0-15kg)</span>
           </div>
-          <div class="premium-field" style="flex: 1;">
+          <div class="premium-field" style="flex: 1;" [class.field-error]="onboardingForm.get('birthHeight')?.invalid && onboardingForm.get('birthHeight')?.touched">
             <label>Height (cm)</label>
             <input type="number" formControlName="birthHeight" placeholder="50">
+            <span class="error-text" *ngIf="onboardingForm.get('birthHeight')?.hasError('required') && onboardingForm.get('birthHeight')?.touched">Required</span>
+            <span class="error-text" *ngIf="(onboardingForm.get('birthHeight')?.hasError('min') || onboardingForm.get('birthHeight')?.hasError('max')) && onboardingForm.get('birthHeight')?.touched">Invalid (0-80cm)</span>
           </div>
         </div>
 
-        <div class="priority-section" style="margin-top: 1.5rem;">
+        <div class="priority-section" style="margin-top: 1.5rem;" [class.field-error]="onboardingForm.get('priorities')?.invalid && onboardingForm.get('priorities')?.touched">
           <label style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px; display: block;">What
             matters most?</label>
           <div class="priority-chips">
@@ -87,17 +97,19 @@
               (click)="togglePriority('sleep')">😴 Sleep</span>
             <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('vaccines')"
               (click)="togglePriority('vaccines')">💉 Vaccines</span>
-            <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('development')"
-              (click)="togglePriority('development')">🌱 Milestones</span>
             <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('health')"
               (click)="togglePriority('health')">🩺 Health</span>
             <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('self-care')"
               (click)="togglePriority('self-care')">💝 Self-care</span>
           </div>
+          <span class="error-text" *ngIf="onboardingForm.get('priorities')?.invalid && onboardingForm.get('priorities')?.touched">Please choose at least one priority</span>
         </div>
 
-        <button class="btn-premium-continue" (click)="saveOnboarding()" [disabled]="onboardingForm.invalid"
-          [class.disabled]="onboardingForm.invalid">
+        <div class="form-error-banner" *ngIf="formError">
+           <i class="fas fa-exclamation-circle"></i> {{ formError }}
+        </div>
+
+        <button class="btn-premium-continue" (click)="saveOnboarding()">
           Save & Continue
         </button>
       </div>
@@ -141,6 +153,10 @@
       <!-- Immersive Content Area -->
       <main class="content-area centered-layout">
         <div class="page-container">
+          <div class="back-dashboard-top" [routerLink]="['/front/patient/dashboard']" 
+               style="display: flex; align-items: center; gap: 6px; color: #4a7c74; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+          </div>
 
           <!-- Header Section -->
           <header class="page-header-banner" *ngIf="activeSection !== 'onboarding' && activeSection !== 'sleep'">
@@ -184,7 +200,7 @@
                   </div>
 
                   <div class="next-event">
-                    <div class="label">Next Milestone</div>
+                    <div class="label">Next Checkup</div>
                     <div class="val serif-title">{{ baby.nextCheckupDate }}</div>
                   </div>
                 </div>
@@ -197,19 +213,16 @@
                   <div class="icon-box"><i class="fas fa-syringe"></i></div>
                   <div class="label">Vaccination Status</div>
                   <div class="val serif-title">{{ baby.nextVaccineDate || 'Coming soon' }}</div>
-                  <div class="sub">{{ baby.nextVaccineName || 'Next milestone' }}</div>
                 </div>
                 <div class="today-card">
                   <div class="icon-box"><i class="fas fa-baby-bottle"></i></div>
                   <div class="label">Last Feeding</div>
                   <div class="val serif-title">{{ summaries.feeding.lastTime }}</div>
-                  <div class="sub">{{ baby.lastFeedingText }}</div>
                 </div>
                 <div class="today-card">
                   <div class="icon-box"><i class="fas fa-moon"></i></div>
                   <div class="label">Sleep Insights</div>
                   <div class="val serif-title">{{ getSleepQuality(summaries.sleep.totalMins) }}</div>
-                  <div class="sub">{{ summaries.sleep.totalMins / 60 | number:'1.1-1' }}h total today</div>
                 </div>
               </div>
 
@@ -290,7 +303,7 @@
                           <i class="fas fa-check"></i> Mark Done
                         </button>
                         <button *ngIf="v.status === 'done'" class="btn-mark-undo" (click)="undoMarkAsDone(v.name)">
-                          <i class="fas fa-undo"></i> {{ 'Annuler' }}
+                          <i class="fas fa-undo"></i> Undo
                         </button>
                         <span class="lock-label" *ngIf="!v.isClickable && v.status !== 'done'">
                           <i class="fas fa-lock-alt"></i> {{ v.unlockMessage }}
@@ -464,16 +477,16 @@
             <!-- Sleep Tracking View (Desktop Concept) -->
             <div class="sleep-section-desktop" *ngIf="activeSection === 'sleep'">
               <header class="app-header">
-                <h1 class="welcome-text">Bonjour, <span class="teal-italic">{{ userName }}</span> 👋</h1>
-                <p class="subtitle">{{ currentFormattedDate }} &middot; Suivi de {{ baby.name }}</p>
+                <h1 class="welcome-text">Hello, <span class="teal-italic">{{ userName }}</span> 👋</h1>
+                <p class="subtitle">{{ currentFormattedDate }} &middot; Tracking for {{ baby.name }}</p>
               </header>
 
               <div class="tip-card-wide">
                 <div class="tip-icon">💡</div>
                 <div class="tip-content">
-                  <strong>Conseil du jour</strong><br>
-                  À {{ baby.ageText }}, {{ baby.name }} devrait dormir entre 14h et 17h par jour. Les cycles de sommeil
-                  durent environ 50 minutes — normal qu'il se réveille souvent !
+                  <strong>Advice of the day</strong><br>
+                  At {{ baby.ageText }}, {{ baby.name }} should sleep between 14h and 17h per day. Sleep cycles
+                  last about 50 minutes — it's normal if they wake up often!
                 </div>
               </div>
 
@@ -555,28 +568,6 @@
                         </span>
                       </div>
 
-                      <!-- Sleep Type -->
-                      <div class="form-group-wrap">
-                        <label class="group-label">Sleep type</label>
-                        <div class="type-selector">
-                          <div class="type-item" [class.active]="manualSleep.type === 'Night'"
-                            (click)="manualSleep.type = 'Night'">
-                            <span class="type-emoji">🌙</span>
-                            <span class="type-name">Night</span>
-                          </div>
-                          <div class="type-item" [class.active]="manualSleep.type === 'Nap'"
-                            (click)="manualSleep.type = 'Nap'">
-                            <span class="type-emoji">🌞</span>
-                            <span class="type-name">Nap</span>
-                          </div>
-                          <div class="type-item" [class.active]="manualSleep.type === 'Rest'"
-                            (click)="manualSleep.type = 'Rest'">
-                            <span class="type-emoji">🛋️</span>
-                            <span class="type-name">Rest</span>
-                          </div>
-                        </div>
-                      </div>
-
                       <!-- Duration Section -->
                       <div class="form-group-wrap">
                         <label class="group-label">Duration</label>
@@ -586,8 +577,10 @@
                             {{ p < 60 ? p + ' min' : (p/60) + 'h' + (p%60 !==0 ? ' ' + (p%60) : '' ) }} </button>
                         </div>
                         <div class="duration-input-wrap">
-                          <input type="number" [(ngModel)]="manualSleep.duration" class="main-duration-input">
-                          <div class="duration-hint">= {{ manualSleep.duration }} min</div>
+                          <input type="text" [(ngModel)]="manualSleep.duration" class="main-duration-input" 
+                            [class.input-error]="formError && manualSleep.show" placeholder="e.g. 1h 30m">
+                          <div class="duration-hint" *ngIf="parsedManualSeconds > 0 && !(formError && manualSleep.show)">= {{ displayDuration(parsedManualSeconds) }}</div>
+                          <div class="error-text" style="font-size: 11px; margin-top: 4px;" *ngIf="formError && manualSleep.show">{{ formError }}</div>
                         </div>
                       </div>
 
@@ -615,7 +608,7 @@
 
                   <div class="chart-bars">
                     <div class="bar-col" *ngFor="let day of weekData">
-                      <div class="bar-val">{{ displayDuration(day.totalSeconds || 0) }}</div>
+                      <div class="bar-val">{{ displayChartDuration(day.totalSeconds || 0) }}</div>
                       <div class="bar" [style.height.%]="Math.max(((day.totalSeconds || 0) / (16 * 3600)) * 100, 8)"
                            [class.today]="day.isToday"></div>
                       <div class="bar-lbl">{{ day.day }}</div>
@@ -640,16 +633,29 @@
                     (click)="historyFilter = 'history'">History</button>
                 </div>
 
+                <div class="history-actions-bar" *ngIf="getFilteredSleepLogs().length > 0">
+                  <button class="action-btn-v2" (click)="toggleSelectAll()">
+                    <i class="far" [class.fa-check-square]="selectedLogIds.size === getFilteredSleepLogs().length" [class.fa-square]="selectedLogIds.size !== getFilteredSleepLogs().length"></i>
+                    {{ selectedLogIds.size === getFilteredSleepLogs().length ? 'Deselect All' : 'Select All' }}
+                  </button>
+                  <button class="action-btn-v2 delete-all" *ngIf="selectedLogIds.size > 0" (click)="deleteSelectedLogs()">
+                    <i class="fas fa-trash-alt"></i> Delete Selected ({{ selectedLogIds.size }})
+                  </button>
+                </div>
+
                 <ng-container *ngFor="let log of getFilteredSleepLogs()">
-                  <div class="sleep-history-item">
+                  <div class="sleep-history-item" [class.is-selected]="isLogSelected(log.id)" (click)="toggleSelectLog(log.id)">
                     <div class="item-left">
+                      <div class="action-checkbox">
+                        <i class="fas" [class.fa-check-circle]="isLogSelected(log.id)" [class.fa-circle]="!isLogSelected(log.id)"></i>
+                      </div>
                       <div class="dot-indicator"></div>
                       <div class="history-label">{{ log.sleepType || 'Nap' }}</div>
                       <div class="history-time">{{ log.time }} &middot; {{ log.manual ? 'Manual log' : 'Timer log' }}
                       </div>
                     </div>
                     <div class="history-duration">{{ formatFullDuration(log) }}</div>
-                    <button class="btn-delete-log" (click)="onDeleteSleepLog(log)">
+                    <button class="btn-delete-log" (click)="$event.stopPropagation(); onDeleteSleepLog(log)">
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
@@ -757,73 +763,80 @@
               </div>
             </div>
 
-            <!-- Health View -->
-            <div class="section-container health-section"
-              *ngIf="activeSection === 'health' || (activeSection === 'dashboard' && summaries.health.status !== 'Normal')">
-              <div class="feeding-header">
-                <div class="feeding-header-bg">
-                  <div class="decor-circle" style="background: #f43f5e;"></div>
-                </div>
-                <h2 class="serif-text">Health &amp; <span class="italic">Vitals</span></h2>
-                <p>Recent checks for {{ baby.name }}</p>
-              </div>
-
-              <div class="glance-grid">
-                <div class="today-card">
-                  <div class="label">Latest Temp</div>
-                  <div class="val">{{ summaries.health.latest }}°C</div>
-                  <div class="sub">{{ summaries.health.status }}</div>
-                </div>
-                <div class="today-card">
-                  <div class="label">Status</div>
-                  <div class="val" [style.color]="summaries.health.status === 'Normal' ? '#10b981' : '#f43f5e'">{{
-                    summaries.health.status }}</div>
-                  <div class="sub">Log status: Verified</div>
-                </div>
-              </div>
-
-              <div class="log-action-card">
-                <div class="log-controls">
-                  <div class="control-group">
-                    <label>Temperature (°C)</label>
-                    <input type="text" [(ngModel)]="newEntry.value" class="control-input" placeholder="e.g. 37.2">
+            <!-- Premium Health View -->
+            <div class="section-container premium-health-section" *ngIf="activeSection === 'health'">
+              
+              <!-- Health Hero Header -->
+              <div class="premium-health-hero">
+                <div class="hero-bg-accent"></div>
+                <div class="hero-content">
+                  <div class="hero-icon-box heartbeat-anim">
+                    <i class="fas fa-heartbeat"></i>
+                  </div>
+                  <div class="hero-text">
+                    <h2 class="serif-title">Health & <span class="italic">Vitals</span></h2>
+                    <p>Monitoring wellness and recent checks for <strong>{{ baby.name }}</strong></p>
                   </div>
                 </div>
-                <button class="btn-save-round" (click)="newEntry.type = 'TEMP'; submitJournalEntry()"
-                  style="background: #f43f5e;">Log Temperature</button>
               </div>
-            </div>
 
-            <!-- Development Milestones View -->
-            <div class="section-container milestones-section" *ngIf="activeSection === 'milestones'">
-              <div class="milestone-header">
-                <div class="milestone-header-bg">
-                  <div class="decor-circle"></div>
+              <!-- Vitals Summary Cards -->
+              <div class="premium-vitals-grid">
+                <div class="vital-card temperature-card" [ngClass]="{'is-fever': summaries.health.status !== 'Normal'}">
+                  <div class="vital-header">
+                    <div class="vital-icon"><i class="fas fa-thermometer-half"></i></div>
+                    <span class="vital-status-badge">{{ summaries.health.status }}</span>
+                  </div>
+                  <div class="vital-body">
+                    <div class="vital-label">Latest Temperature</div>
+                    <div class="vital-value">{{ summaries.health.latest }}<span class="unit">°C</span></div>
+                  </div>
+                  <div class="vital-footer">
+                    <i class="fas fa-check-circle"></i> Log status: Verified
+                  </div>
                 </div>
-                <h2 class="serif-text">Development <span class="italic">Milestones</span></h2>
-                <p>{{ baby.name }}'s Journey — what to look for</p>
-              </div>
 
-              <div class="milestone-quote">
-                <p>"Every baby is unique. These are gentle guides for the {{ baby.ageText }} stage."</p>
-              </div>
-
-              <!-- Categories -->
-              <div *ngFor="let cat of ['physical', 'social', 'feeding']">
-                <div class="milestone-category-label">{{ cat | uppercase }}</div>
-                <div class="milestone-item" *ngFor="let m of milestonesData[cat]" [class.achieved]="m.achieved"
-                  (click)="toggleMilestone(m)">
-                  <div class="milestone-check">
-                    <div class="check-circle" [class.done]="m.achieved"><i class="fas fa-check" *ngIf="m.achieved"></i>
+                <div class="vital-card ai-insight-card">
+                  <div class="vital-header">
+                    <div class="vital-icon ai-icon"><i class="fas fa-sparkles"></i></div>
+                    <span class="vital-status-badge ai-badge">AI Insight</span>
+                  </div>
+                  <div class="vital-body">
+                    <div class="vital-label">Guidance</div>
+                    <div class="vital-insight-text">
+                      <span *ngIf="summaries.health.status === 'Normal'">{{ baby.name }}'s last reading was perfectly normal. Keep ensuring they are comfortable and well hydrated!</span>
+                      <span *ngIf="summaries.health.status !== 'Normal'">Elevated temperature detected. Please monitor {{ baby.name }} closely and consult a pediatrician if symptoms persist.</span>
                     </div>
                   </div>
-                  <div class="milestone-text">
-                    <strong>{{ m.title }}</strong>
-                    <p>{{ m.description }}</p>
+                </div>
+              </div>
+
+              <!-- Interactive Log Action -->
+              <div class="premium-log-action-card">
+                <div class="premium-log-layout">
+                  <div class="log-info-side">
+                    <div class="icon-blob"><i class="fas fa-plus"></i></div>
+                    <div>
+                      <h3>Log New Reading</h3>
+                      <p>Add a new temperature check for {{ baby.name }}.</p>
+                    </div>
+                  </div>
+                  <div class="log-input-side">
+                    <div class="input-wrapper">
+                      <i class="fas fa-temperature-high input-icon"></i>
+                      <input type="text" [(ngModel)]="newEntry.value" class="premium-input" placeholder="e.g. 37.2">
+                      <span class="input-suffix">°C</span>
+                    </div>
+                    <p class="error-text" *ngIf="formError" style="margin-top: 10px; font-weight: 600;">{{ formError }}</p>
+                    <button class="btn-premium-action health-btn" (click)="newEntry.type = 'TEMPERATURE'; submitJournalEntry()" [disabled]="!newEntry.value">
+                      Save Record <i class="fas fa-arrow-right"></i>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
+
+
 
             <!-- Journal View -->
             <div class="section-container journal-section" *ngIf="activeSection === 'journal'">
@@ -853,7 +866,7 @@
                   Sleep</button>
                 <button class="j-tab" [class.active]="journalFilter === 'DIAPER'"
                   (click)="setJournalFilter('DIAPER')">💧 Diaper</button>
-                <button class="j-tab" [class.active]="journalFilter === 'TEMP'" (click)="setJournalFilter('TEMP')">🌡️
+                <button class="j-tab" [class.active]="journalFilter === 'TEMPERATURE'" (click)="setJournalFilter('TEMPERATURE')">🌡️
                   Temp</button>
               </div>
 
@@ -876,33 +889,8 @@
 
                 <div class="empty-journal" *ngIf="filteredLogs.length === 0">
                   <div class="empty-icon">📋</div>
-                  <p>No entries yet for this filter.<br>Tap <strong>+ Add Entry</strong> to start logging.</p>
+                  <p>No entries yet for this filter.</p>
                 </div>
-              </div>
-
-              <!-- Add Entry -->
-              <div class="add-entry-area">
-                <button class="btn-add-entry" (click)="showAddEntry = !showAddEntry">+ Add Entry</button>
-              </div>
-
-              <!-- Inline Add Entry Form -->
-              <div class="add-entry-form" *ngIf="showAddEntry">
-                <div class="form-header">
-                  <span class="type-badge">{{ currentJournalConfig.icon }} Log {{ currentJournalConfig.label }}</span>
-                </div>
-                <select class="form-input" [(ngModel)]="newEntry.type">
-                  <option value="FEEDING">🍼 Feeding</option>
-                  <option value="SLEEP">🌙 Sleep</option>
-                  <option value="DIAPER">💧 Diaper</option>
-                  <option value="TEMP">🌡️ Temperature</option>
-                  <option value="NOTE">📝 Note</option>
-                </select>
-                <input type="text" class="form-input" [(ngModel)]="newEntry.value"
-                  [placeholder]="currentJournalConfig.placeholder">
-                <input type="text" class="form-input" [(ngModel)]="newEntry.notes"
-                  placeholder="Additional notes (optional)">
-                <button class="btn-continue" (click)="submitJournalEntry()">Save {{ currentJournalConfig.label }}
-                  Entry</button>
               </div>
             </div>
 

@@ -1,11 +1,11 @@
 <div class="calendar-exceptions-container">
   <div class="header-section">
     <div class="header-content">
-      <h2>Exceptions & Congés</h2>
-      <p>Gérez vos jours d'absence, jours fériés ou périodes bloquées exceptionnelles.</p>
+      <h2>Exceptions & Leave</h2>
+      <p>Manage your absences, holidays, or specific blocked periods.</p>
     </div>
     <button class="btn-add-exception" (click)="toggleForm()" *ngIf="!showForm">
-      <span>+</span> Ajouter une exception
+      <span>+</span> Add Exception
     </button>
   </div>
 
@@ -15,37 +15,37 @@
   <!-- Add Form -->
   <div class="exception-form-card" *ngIf="showForm">
     <div class="card-header">
-      <h3>Nouvelle Exception</h3>
+      <h3>New Exception</h3>
       <button class="btn-close" (click)="toggleForm()">×</button>
     </div>
     <form [formGroup]="exceptionForm" (ngSubmit)="addException()">
       <div class="form-grid">
         <div class="input-group">
-          <label>Date de début</label>
+          <label>Start Date</label>
           <input type="date" formControlName="startDate">
         </div>
         <div class="input-group">
-          <label>Date de fin</label>
+          <label>End Date</label>
           <input type="date" formControlName="endDate">
         </div>
         <div class="input-group">
           <label>Type</label>
           <select formControlName="type">
-            <option value="ABSENCE">Absence Maladie</option>
-            <option value="TIME_OFF">Congé / Vacances</option>
-            <option value="HOLIDAY">Jour Férié</option>
-            <option value="PARTIAL_AVAILABILITY">Disponibilité Exceptionnelle</option>
+            <option value="ABSENCE">Sick Leave</option>
+            <option value="TIME_OFF">Vacation / Leave</option>
+            <option value="HOLIDAY">Public Holiday</option>
+            <option value="PARTIAL_AVAILABILITY">Special Availability</option>
           </select>
         </div>
         <div class="input-group full-width">
-          <label>Motif / Note</label>
-          <input type="text" formControlName="reason" placeholder="Ex: Voyage, Rendez-vous personnel...">
+          <label>Reason / Note</label>
+          <input type="text" formControlName="reason" placeholder="E.g.: Travel, Personal meeting...">
         </div>
       </div>
       <div class="form-actions">
-        <button type="button" class="btn-cancel" (click)="toggleForm()">Annuler</button>
+        <button type="button" class="btn-cancel" (click)="toggleForm()">Cancel</button>
         <button type="submit" class="btn-submit" [disabled]="exceptionForm.invalid || isSaving">
-          {{ isSaving ? 'Enregistrement...' : 'Enregistrer' }}
+          {{ isSaving ? 'Saving...' : 'Save' }}
         </button>
       </div>
     </form>
@@ -53,10 +53,10 @@
 
   <!-- Exceptions List -->
   <div class="exceptions-list">
-    <div *ngIf="isLoading" class="loader">Chargement...</div>
+    <div *ngIf="isLoading" class="loader">Loading...</div>
     <div *ngIf="!isLoading && exceptions.length === 0" class="empty-state">
       <div class="empty-icon">🏖️</div>
-      <p>Aucune exception enregistrée pour le moment.</p>
+      <p>No exceptions recorded yet.</p>
     </div>
 
     <div *ngFor="let ex of exceptions" class="exception-card" [class.holiday]="ex.type === 'HOLIDAY'">
@@ -67,7 +67,7 @@
         <span class="badge" [attr.data-type]="ex.type">{{ getExceptionTypeLabel(ex.type) }}</span>
         <p class="reason">{{ ex.reason }}</p>
       </div>
-      <button class="btn-delete" (click)="deleteException(ex.id)" title="Supprimer">🗑️</button>
+      <button class="btn-delete" (click)="deleteException(ex.id)" title="Delete">🗑️</button>
     </div>
   </div>
 </div>

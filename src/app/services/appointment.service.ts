@@ -44,4 +44,8 @@ export class AppointmentService {
   startTeleconsultation(id: number): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/appointments/${id}/start-live`, {});
   }
+
+  deleteAppointment(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/appointments/${id}`);
+  }
 }

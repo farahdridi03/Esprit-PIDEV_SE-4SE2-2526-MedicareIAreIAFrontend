@@ -16,9 +16,15 @@ export class PatientAppointmentsComponent implements OnInit, OnDestroy {
   activeTab: string = 'upcoming';
   isLoading = false;
   error: string | null = null;
+  selectedAppointment: AppointmentDTO | null = null;
   refreshInterval: any;
   
-  selectedAppointment: AppointmentDTO | null = null;
+  // Custom Modals
+  showCancelModal: boolean = false;
+  appointmentToCancelId: number | null = null;
+  
+  showDeleteModal: boolean = false;
+  appointmentToDeleteId: number | null = null;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -186,17 +192,61 @@ export class PatientAppointmentsComponent implements OnInit, OnDestroy {
   }
 
   cancelAppointment(id: number): void {
-    if (!confirm('Voulez-vous vraiment annuler ce rendez-vous ?')) return;
+    this.appointmentToCancelId = id;
+    this.showCancelModal = true;
+  }
+
+  confirmCancelAppointment(): void {
+    if (!this.appointmentToCancelId) return;
+    
     this.isLoading = true;
-    this.appointmentService.cancelAppointment(id).subscribe({
+    this.appointmentService.cancelAppointment(this.appointmentToCancelId).subscribe({
       next: () => {
+        this.showCancelModal = false;
+        this.appointmentToCancelId = null;
         this.selectedAppointment = null;
         this.loadAppointments();
       },
       error: (err) => {
         console.error('Cancel error:', err);
         this.isLoading = false;
+        this.showCancelModal = false;
       }
     });
+  }
+
+  closeCancelModal(): void {
+    this.showCancelModal = false;
+    this.appointmentToCancelId = null;
+  }
+
+  // --- DELETE LOGIC ---
+  openDeleteModal(id: number): void {
+    this.appointmentToDeleteId = id;
+    this.showDeleteModal = true;
+  }
+
+  confirmDeleteAppointment(): void {
+    if (!this.appointmentToDeleteId) return;
+
+    this.isLoading = true;
+    this.appointmentService.deleteAppointment(this.appointmentToDeleteId).subscribe({
+      next: () => {
+        this.showDeleteModal = false;
+        this.appointmentToDeleteId = null;
+        this.selectedAppointment = null;
+        this.loadAppointments();
+      },
+      error: (err) => {
+        console.error('Delete error:', err);
+        this.isLoading = false;
+        this.showDeleteModal = false;
+      }
+    });
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.appointmentToDeleteId = null;
   }
 }

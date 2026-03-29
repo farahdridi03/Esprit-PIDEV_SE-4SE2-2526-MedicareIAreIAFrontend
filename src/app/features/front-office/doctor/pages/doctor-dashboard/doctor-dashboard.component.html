@@ -11,9 +11,9 @@
             <div class="welcome-banner">
                 <div class="banner-content">
                     <div class="banner-text">
-                        <span class="greeting">Bonjour,</span>
+                        <span class="greeting">Hello,</span>
                         <h1>Dr. {{ firstName || 'User' }}</h1>
-                        <p>Voici un aperçu de vos activités pour aujourd'hui.</p>
+                        <p>Here is an overview of your activities for today.</p>
                     </div>
 
                     <div class="banner-stats">
@@ -21,21 +21,21 @@
                             <div class="stat-icon"><i class="fas fa-users"></i></div>
                             <div class="stat-data">
                                 <div class="value">{{ totalPatientsCount }}</div>
-                                <div class="label">Patients Total</div>
+                                <div class="label">Total Patients</div>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon highlight-yellow"><i class="fas fa-calendar-check"></i></div>
                             <div class="stat-data">
                                 <div class="value">{{ todayAppointments.length }}</div>
-                                <div class="label">Rdv Aujourd'hui</div>
+                                <div class="label">Today's Appointments</div>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon highlight-purple"><i class="fas fa-star-half-alt"></i></div>
                             <div class="stat-data">
                                 <div class="value">{{ getPendingReviews() }}</div>
-                                <div class="label">Nouveaux Avis</div>
+                                <div class="label">New Reviews</div>
                             </div>
                         </div>
                     </div>
@@ -82,21 +82,26 @@
                     </div>
                     <div class="calendar-placeholder">
                         <div class="calendar-header">
-                            <span class="month">March 2026</span>
+                            <span class="month">{{ monthNames[calendarDate.getMonth()] }} {{ calendarDate.getFullYear() }}</span>
                             <div class="nav-btns">
-                                <button>&lt;</button>
-                                <button>&gt;</button>
+                                <button (click)="prevMonth()">&lt;</button>
+                                <button (click)="nextMonth()">&gt;</button>
                             </div>
                         </div>
                         <div class="calendar-days">
-                            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                            <span *ngFor="let dayName of dayNames">{{ dayName }}</span>
                         </div>
                         <div class="calendar-grid">
-                            <!-- Simple mock grid -->
-                            <span class="muted">23</span><span class="muted">24</span><span class="muted">25</span><span class="muted">26</span><span class="muted">27</span><span class="muted">28</span><span>1</span>
-                            <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
-                            <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
-                            <span>16</span><span>17</span><span>18</span><span>19</span><span class="today">20</span><span>21</span><span>22</span>
+                            <div *ngFor="let day of calendarDays" 
+                                 class="cal-day" 
+                                 [class.muted]="!day.currentMonth"
+                                 [class.today]="day.isToday"
+                                 [class.selected]="day.dateStr === selectedDateStr"
+                                 (click)="selectDay(day.dateStr)">
+                                {{ day.day }}
+                                <div class="appt-dot" *ngIf="day.hasAppointments"></div>
+                                <div class="appt-count" *ngIf="day.hasAppointments && day.currentMonth">{{ day.count }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
