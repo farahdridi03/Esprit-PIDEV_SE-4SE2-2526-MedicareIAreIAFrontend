@@ -60,6 +60,21 @@ export class LabRequestsComponent implements OnInit {
     this.today     = new Date().toISOString().slice(0, 16);
     this.patientId = this.authService.getPatientId();
     console.log('patientId =', this.patientId);
+    
+    // Vérifier si l'utilisateur est authentifié
+    if (!this.authService.isAuthenticated()) {
+      console.error('User not authenticated');
+      this.submitError = 'You are not authenticated. Please log in again.';
+      return;
+    }
+    
+    // Vérifier le token
+    const token = this.authService.getToken();
+    console.log('Token exists:', !!token);
+    if (token) {
+      console.log('Token length:', token.length);
+      console.log('Token starts with Bearer:', token.startsWith('Bearer'));
+    }
 
     this.form = this.fb.group({
       laboratoryId:  [null, Validators.required],
@@ -80,15 +95,36 @@ export class LabRequestsComponent implements OnInit {
   }
 
   loadRequests(): void {
-    if (!this.patientId) return;
+    console.log('=== DEBUG LOAD REQUESTS ===');
+    console.log('patientId brut:', this.patientId);
+    console.log('patientId type:', typeof this.patientId);
+    
+    if (!this.patientId || this.patientId <= 0) {
+      console.error('Invalid patient ID:', this.patientId);
+      this.isLoading = false;
+      this.submitError = 'Unable to load requests: Invalid patient ID. Please log in again.';
+      return;
+    }
+    
+    // S'assurer que patientId est un nombre entier
+    const cleanPatientId = Math.floor(this.patientId);
+    console.log('cleanPatientId:', cleanPatientId);
+    console.log('URL qui sera appelée:', `/springsecurity/api/lab-requests/patient/${cleanPatientId}`);
+    
     this.isLoading = true;
-    this.labService.getByPatient(this.patientId).subscribe({
+    this.labService.getByPatient(cleanPatientId).subscribe({
       next: (data: LabRequestResponse[]) => {
+        console.log('Données reçues:', data);
         this.requests = data;
         this.applyFilters();
         this.isLoading = false;
       },
-      error: (err: unknown) => { console.error(err); this.isLoading = false; }
+      error: (err: unknown) => { 
+        console.error('Error loading lab requests:', err); 
+        console.error('Error details:', JSON.stringify(err, null, 2));
+        this.isLoading = false;
+        this.submitError = 'Failed to load lab requests. Please try again.';
+      }
     });
   }
 
@@ -151,7 +187,10 @@ export class LabRequestsComponent implements OnInit {
 
   onSubmit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
-    if (!this.patientId)   { this.submitError = 'Session expired. Please log in again.'; return; }
+    if (!this.patientId || this.patientId <= 0) { 
+      this.submitError = 'Session expired. Please log in again.'; 
+      return; 
+    }
 
     const v = this.form.value;
     const payload: LabRequestPayload = {

@@ -54,8 +54,18 @@ export class AuthService {
         if (!token) return 0;
         try {
             const decoded: any = jwtDecode(token);
-            console.log('JWT payload:', decoded); // debug — supprime après fix
-            return decoded.patientId || 0;
+            console.log('JWT payload complet:', decoded); // debug complet
+            console.log('patientId brut:', decoded.patientId); // debug du patientId
+            console.log('patientId type:', typeof decoded.patientId); // debug du type
+            
+            // Gérer différents formats possibles de patientId
+            let patientId = decoded.patientId;
+            if (patientId === undefined || patientId === null) return 0;
+            
+            // Convertir en nombre proprement
+            const id = parseInt(patientId.toString(), 10);
+            console.log('patientId converti:', id); // debug de la conversion
+            return isNaN(id) ? 0 : id;
         } catch (e) {
             console.error('JWT decode error:', e);
             return 0;
