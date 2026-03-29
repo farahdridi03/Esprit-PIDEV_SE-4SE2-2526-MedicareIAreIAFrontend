@@ -23,7 +23,18 @@
                         <button class="add-btn" (click)="loadAlerts()" [disabled]="loading">
                             <span class="plus">↻</span> Refresh
                         </button>
+                        <button class="add-btn alert-btn" (click)="openModal()">
+                            <span class="plus">🚨</span> New Alert
+                        </button>
                     </div>
+                </div>
+
+                <!-- SUCCESS MESSAGE -->
+                <div *ngIf="submitSuccess" class="global-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {{ submitSuccess }}
                 </div>
 
                 <div *ngIf="loading" class="loading-state">
@@ -63,7 +74,7 @@
                             </div>
 
                             <div class="type-chip" [ngClass]="getSeverityClass(alert.severity)">
-                                {{ alert.severity | titlecase }}
+                                {{ getSeverityIcon(alert.severity) }} {{ alert.severity | titlecase }}
                             </div>
 
                             <div class="location-row" *ngIf="alert.latitude && alert.longitude">
@@ -85,7 +96,7 @@
                             </div>
 
                             <div class="card-actions">
-                                <button *ngIf="alert.status !== 'RESOLVED' && !alert.canceledByPatient" class="cancel-btn"
+                                <button *ngIf="alert.status !== 'RESOLVED' && !alert.canceledByPatient && isCreator(alert.patientName)" class="cancel-btn"
                                     (click)="cancelAlert(alert.id)" [disabled]="cancelingId === alert.id">
                                     {{ cancelingId === alert.id ? 'Canceling...' : 'Cancel Alert' }}
                                 </button>
@@ -98,5 +109,151 @@
                 </div>
             </main>
         </div>
+    </div>
+</div>
+
+<!-- MODAL: New Emergency Alert -->
+<div class="modal-overlay" [class.open]="isModalOpen" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-top">
+            <div style="display:flex;align-items:center;gap:14px">
+                <div class="modal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="modal-title">New Emergency Alert</div>
+                    <div class="modal-sub">Fill in the details below to create an alert</div>
+                </div>
+            </div>
+            <button class="modal-close" (click)="closeModal()">×</button>
+        </div>
+
+        <form (ngSubmit)="submitAlert()">
+            <div class="modal-body">
+
+                <!-- GLOBAL ERROR -->
+                <div *ngIf="submitError" class="form-error-global">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                    <span>{{ submitError }}</span>
+                </div>
+
+                <!-- GLOBAL SUCCESS -->
+                <div *ngIf="submitSuccess" class="form-success-global">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ submitSuccess }}</span>
+                </div>
+
+                <!-- Smart Device ID -->
+                <div class="form-group">
+                    <label class="form-label">Smart Device ID <span class="required">*</span></label>
+                    <input class="form-input" [class.input-error]="hasError('smartDeviceId')"
+                        type="number" [(ngModel)]="alertForm.smartDeviceId" name="smartDeviceId"
+                        (blur)="markTouched('smartDeviceId')" (input)="validateField('smartDeviceId')"
+                        placeholder="e.g.: 1001" min="1" id="smartDeviceId">
+                    <div class="field-error" *ngIf="hasError('smartDeviceId')">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                        {{ getError('smartDeviceId') }}
+                    </div>
+                </div>
+
+                <!-- Severity -->
+                <div class="form-group">
+                    <label class="form-label">Severity Level <span class="required">*</span></label>
+                    <div class="severity-toggle">
+                        <div class="severity-option" *ngFor="let sev of severities"
+                            [class.selected]="alertForm.severity === sev"
+                            [ngClass]="getSeverityClass(sev)"
+                            (click)="alertForm.severity = sev; markTouched('severity')">
+                            <div class="sev-opt-icon">{{ getSeverityIcon(sev) }}</div>
+                            <div class="sev-opt-name">{{ sev }}</div>
+                        </div>
+                    </div>
+                    <div class="field-error" *ngIf="hasError('severity')">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                        {{ getError('severity') }}
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div class="form-group">
+                    <label class="form-label">Location <span class="required">*</span></label>
+                    <button type="button" class="geo-btn" (click)="useCurrentLocation()"
+                        [disabled]="detectingLocation">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                        </svg>
+                        {{ detectingLocation ? 'Detecting...' : '📍 Use my current location' }}
+                    </button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label-sm">Latitude</label>
+                            <input class="form-input" [class.input-error]="hasError('latitude')"
+                                type="number" step="0.000001" [(ngModel)]="alertForm.latitude" name="latitude"
+                                (blur)="markTouched('latitude')" (input)="validateField('latitude')"
+                                placeholder="e.g.: 36.8065" id="latitude">
+                            <div class="field-error" *ngIf="hasError('latitude')">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                </svg>
+                                {{ getError('latitude') }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label-sm">Longitude</label>
+                            <input class="form-input" [class.input-error]="hasError('longitude')"
+                                type="number" step="0.000001" [(ngModel)]="alertForm.longitude" name="longitude"
+                                (blur)="markTouched('longitude')" (input)="validateField('longitude')"
+                                placeholder="e.g.: 10.1815" id="longitude">
+                            <div class="field-error" *ngIf="hasError('longitude')">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                </svg>
+                                {{ getError('longitude') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Phone -->
+                <div class="form-group">
+                    <label class="form-label">Emergency Phone <span class="optional">(optional)</span></label>
+                    <input class="form-input" [class.input-error]="hasError('emergencyPhone')"
+                        type="tel" [(ngModel)]="alertForm.emergencyPhone" name="emergencyPhone"
+                        (blur)="markTouched('emergencyPhone')" (input)="validateField('emergencyPhone')"
+                        placeholder="e.g.: +216 12 345 678" id="emergencyPhone">
+                    <div class="field-error" *ngIf="hasError('emergencyPhone')">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                        {{ getError('emergencyPhone') }}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+                <button type="submit" class="btn-save btn-alert" [disabled]="submitting || !isFormValid">
+                    <svg *ngIf="!submitting" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg>
+                    <div *ngIf="submitting" class="btn-spinner"></div>
+                    {{ submitting ? 'Sending...' : 'Send Alert' }}
+                </button>
+            </div>
+        </form>
     </div>
 </div>

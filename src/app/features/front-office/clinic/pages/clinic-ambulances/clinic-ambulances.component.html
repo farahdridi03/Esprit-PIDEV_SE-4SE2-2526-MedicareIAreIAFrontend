@@ -1,0 +1,134 @@
+<div class="page-wrapper">
+  <app-clinic-sidebar></app-clinic-sidebar>
+
+  <div class="main-body">
+    <app-clinic-topbar></app-clinic-topbar>
+
+    <div class="content-area">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="header-left">
+          <h1>🚑 Ambulance Fleet</h1>
+          <p>Manage all clinic ambulances and their locations</p>
+        </div>
+        <button class="btn-add" (click)="openAddForm()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Add Ambulance
+        </button>
+      </div>
+
+      <!-- Add/Edit Form Modal -->
+      <div class="modal-overlay" *ngIf="showForm" (click)="cancelForm()">
+        <div class="modal-card" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h2>{{ editingId ? '✏️ Edit Ambulance' : '🚑 Add New Ambulance' }}</h2>
+            <button class="close-btn" (click)="cancelForm()">✕</button>
+          </div>
+
+          <form (ngSubmit)="submitForm()" class="modal-form">
+            <div *ngIf="error" class="form-error" style="background:#fef2f2; color:#991b1b; padding:10px; border-radius:6px; margin-bottom:15px; font-size:0.85rem; border:1px solid #f87171;">
+              {{ error }}
+            </div>
+            <div class="form-group">
+              <label for="licensePlate">License Plate *</label>
+              <input
+                id="licensePlate"
+                type="text"
+                [(ngModel)]="form.licensePlate"
+                name="licensePlate"
+                placeholder="e.g. AMB-001"
+                required />
+            </div>
+            
+            <div class="form-group">
+              <label for="status">Status</label>
+              <select id="status" [(ngModel)]="form.status" name="status">
+                <option value="AVAILABLE">AVAILABLE</option>
+                <option value="ON_DUTY">ON DUTY</option>
+              </select>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn-cancel" (click)="cancelForm()">Cancel</button>
+              <button type="submit" class="btn-submit" [disabled]="submitting || !form.licensePlate">
+                {{ submitting ? 'Saving...' : (editingId ? 'Update' : 'Add Ambulance') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading ambulance fleet...</p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="error && !loading" class="error-state">
+        <span>⚠️</span>
+        <p>{{ error }}</p>
+        <button (click)="loadAmbulances()">Retry</button>
+      </div>
+
+      <!-- Empty -->
+      <div *ngIf="!loading && !error && ambulances.length === 0" class="empty-state">
+        <div class="empty-icon">🚑</div>
+        <h3>No ambulances registered</h3>
+        <p>Add your first ambulance to start managing the fleet.</p>
+        <button class="btn-add-empty" (click)="openAddForm()">Add Ambulance</button>
+      </div>
+
+      <!-- Stats Row -->
+      <div *ngIf="!loading && !error && ambulances.length > 0" class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">🚑</div>
+          <div class="stat-info">
+            <div class="stat-value">{{ ambulances.length }}</div>
+            <div class="stat-label">Total Ambulances</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ambulances Grid -->
+      <div *ngIf="!loading && !error && ambulances.length > 0" class="ambulances-grid">
+        <div *ngFor="let amb of ambulances" class="ambulance-card">
+
+          <div class="card-header">
+            <div class="amb-avatar">🚑</div>
+            <div class="amb-plate">
+              {{ amb.licensePlate }}
+              <span [style.background]="(amb.status === 'ON_DUTY' || amb.status === 'EN_TRAVAIL') ? '#dc2626' : '#10b981'" 
+                    style="font-size: 0.65rem; padding: 2px 8px; border-radius: 12px; margin-left: 8px; color: white; vertical-align: middle; font-weight: bold; display: inline-block;">
+                {{ amb.status === 'ON_DUTY' || amb.status === 'EN_TRAVAIL' ? 'ON DUTY' : 'AVAILABLE' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="info-row">
+              <span class="info-icon">🆔</span>
+              <span>Ambulance #{{ amb.id }}</span>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn-edit" (click)="openEditForm(amb)">
+              ✏️ Edit
+            </button>
+            <button
+              class="btn-delete"
+              [disabled]="deletingId === amb.id"
+              (click)="delete(amb.id)">
+              {{ deletingId === amb.id ? 'Deleting...' : '🗑️ Delete' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

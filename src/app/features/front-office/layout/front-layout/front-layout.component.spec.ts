@@ -2,13 +2,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FrontLayoutComponent } from './front-layout.component';
 
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+
 describe('FrontLayoutComponent', () => {
   let component: FrontLayoutComponent;
   let fixture: ComponentFixture<FrontLayoutComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FrontLayoutComponent]
+      declarations: [FrontLayoutComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

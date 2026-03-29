@@ -12,6 +12,7 @@ export class RegisterComponent {
 
   registerForm: FormGroup;
   errorMessage: string = '';
+  profileImageBase64: string | null = null;
 
   roles = [
     { value: 'ADMIN', label: 'Administrator' },
@@ -61,7 +62,8 @@ export class RegisterComponent {
       drugAllergies: [''],
       hereditaryDiseases: [''],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      terms: [false, Validators.requiredTrue]
+      terms: [false, Validators.requiredTrue],
+      profileImage: [null]
     });
 
     this.registerForm.get('role')?.valueChanges.subscribe(role => {
@@ -95,9 +97,52 @@ export class RegisterComponent {
     return this.registerForm.get('role')?.value === 'PATIENT';
   }
 
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB max
+        this.errorMessage = 'La taille de l\'image ne doit pas dépasser 2Mo.';
+        return;
+      }
+      this.errorMessage = '';
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.profileImageBase64 = e.target.result;
+        this.registerForm.patchValue({ profileImage: this.profileImageBase64 });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   onSubmit() {
     if (this.registerForm.valid) {
-      const { terms, ...payload } = this.registerForm.value;
+      const payload: any = { ...this.registerForm.value };
+      delete payload.terms;
+      
+      if (this.profileImageBase64) {
+          payload.profileImage = this.profileImageBase64;
+      }
+
+      // ✅ Map individual fields to the medicalHistories array for the backend DTO
+      const histories = [];
+      if (payload.chronicDiseases?.trim()) {
+        histories.push({ type: 'CHRONIC_DISEASE', description: payload.chronicDiseases.trim() });
+      }
+      if (payload.drugAllergies?.trim()) {
+        histories.push({ type: 'ALLERGY', description: payload.drugAllergies.trim() });
+      }
+      if (payload.hereditaryDiseases?.trim()) {
+        histories.push({ type: 'FAMILY_HISTORY', description: payload.hereditaryDiseases.trim() });
+      }
+
+      if (histories.length > 0) {
+        payload.medicalHistories = histories;
+      }
+
+      // Supprimer les clés qui n'existent pas dans RegisterRequest
+      delete payload.chronicDiseases;
+      delete payload.drugAllergies;
+      delete payload.hereditaryDiseases;
 
       // ✅ Un seul endpoint pour tous les rôles → /api/auth/register
       this.authService.register(payload).subscribe({

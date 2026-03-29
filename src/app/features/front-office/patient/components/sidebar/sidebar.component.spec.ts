@@ -3,12 +3,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SidebarComponent } from './sidebar.component';
 import { Router } from '@angular/router';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterModule } from '@angular/router';
+
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RouterModule.forRoot([])],
       declarations: [SidebarComponent]
     })
     .compileComponents();

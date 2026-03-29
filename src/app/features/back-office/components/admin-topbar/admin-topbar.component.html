@@ -14,14 +14,43 @@
         <input type="text" placeholder="Search users, events, logs...">
     </div>
     <div class="topbar-right">
-        <div class="tb-icon-btn">
-            <div class="notif-dot"></div>
+
+        <!-- 🔔 NOTIFICATION BELL -->
+        <div class="tb-icon-btn notif-wrapper" (click)="toggleDropdown()">
+            <div class="notif-dot" *ngIf="unreadCount > 0"></div>
+            <span class="notif-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
             </svg>
+
+            <!-- Dropdown Panel -->
+            <div class="notif-dropdown" *ngIf="showDropdown" (click)="$event.stopPropagation()">
+                <div class="notif-header">
+                    <span class="notif-header-title">🔔 Notifications</span>
+                    <div class="notif-header-actions">
+                        <button (click)="markAllRead()">Mark all read</button>
+                        <button (click)="clearAll()">Clear</button>
+                    </div>
+                </div>
+
+                <div class="notif-list">
+                    <div *ngIf="notifications.length === 0" class="notif-empty">
+                        No notifications
+                    </div>
+                    <div class="notif-item" *ngFor="let n of notifications" [class.unread]="!n.read">
+                        <div class="notif-icon">{{ getIcon(n.type) }}</div>
+                        <div class="notif-content">
+                            <div class="notif-title">{{ n.title }}</div>
+                            <div class="notif-msg">{{ n.message }}</div>
+                            <div class="notif-time">{{ timeAgo(n.timestamp) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="tb-icon-btn">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
                 stroke="currentColor">

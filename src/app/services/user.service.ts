@@ -7,6 +7,7 @@ export interface UpdateProfileRequest {
     fullName: string;
     email: string;
     password?: string;
+    profileImage?: string;
 }
 
 @Injectable({
@@ -23,7 +24,7 @@ export class UserService {
     }
 
     getProfile(): Observable<any> {
-        return this.http.get(`${this.baseUrlLegacy}/profile`);
+        return this.http.get(`http://localhost:8081/springsecurity/api/profile/me`);
     }
 
     create(dto: UserRequestDTO): Observable<UserResponseDTO> {

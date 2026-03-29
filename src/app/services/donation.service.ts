@@ -16,22 +16,13 @@ export class DonationService {
     return this.http.get<Donation[]>(this.apiUrl);
   }
 
-  createDonation(donation: Donation, file?: File): Observable<Donation> {
-    const formData = new FormData();
-    formData.append('donation', new Blob([JSON.stringify(donation)], { type: 'application/json' }));
-    if (file) {
-      formData.append('image', file);  // backend @RequestPart("image")
-    }
-    return this.http.post<Donation>(this.apiUrl, formData);
+  createDonation(donation: Donation): Observable<Donation> {
+    // La chaîne Base64 est déjà présente dans donation.imageData
+    return this.http.post<Donation>(this.apiUrl, donation);
   }
 
-  updateDonation(id: number, donation: Partial<Donation>, file?: File): Observable<Donation> {
-    const formData = new FormData();
-    formData.append('donation', new Blob([JSON.stringify(donation)], { type: 'application/json' }));
-    if (file) {
-      formData.append('image', file);  // backend @RequestPart("image")
-    }
-    return this.http.put<Donation>(`${this.apiUrl}/${id}`, formData);
+  updateDonation(id: number, donation: Partial<Donation>): Observable<Donation> {
+    return this.http.put<Donation>(`${this.apiUrl}/${id}`, donation);
   }
 
   deleteDonation(id: number): Observable<void> {
@@ -52,6 +43,10 @@ export class DonationService {
 
   deleteAidRequest(id: number): Observable<void> {
     return this.http.delete<void>(`${this.aidApiUrl}/${id}`);
+  }
+
+  updateAidRequest(id: number, request: Partial<AidRequest>): Observable<AidRequest> {
+    return this.http.put<AidRequest>(`${this.aidApiUrl}/${id}`, request);
   }
 
   updateAidRequestStatus(id: number, status: string): Observable<AidRequest> {

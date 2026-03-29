@@ -12,4 +12,5 @@ export interface RegisterRequest {
     chronicDiseases?: string;
     drugAllergies?: string;
     hereditaryDiseases?: string;
+    profileImage?: string;
 }

@@ -1,0 +1,173 @@
+<div class="page-wrapper">
+  <app-clinic-sidebar></app-clinic-sidebar>
+
+  <div class="main-body">
+    <app-clinic-topbar></app-clinic-topbar>
+
+    <div class="content-area">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="header-left">
+          <h1>🚨 Emergency Alerts</h1>
+          <p>Monitor and respond to patient emergency alerts in real-time</p>
+        </div>
+        <div class="header-stats">
+          <div class="stat-pill pending">
+            <span class="dot"></span>
+            {{ pendingCount }} Pending
+          </div>
+          <div class="stat-pill critical">
+            <span class="dot"></span>
+            {{ criticalCount }} Critical
+          </div>
+          <button class="refresh-btn" (click)="loadAlerts()" title="Refresh">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs">
+        <button
+          *ngFor="let s of statuses"
+          class="filter-tab"
+          [class.active]="selectedStatus === s"
+          (click)="onFilterChange(s)">
+          {{ s }}
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading emergency alerts...</p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="error && !loading" class="error-state">
+        <span>⚠️</span>
+        <p>{{ error }}</p>
+        <button (click)="loadAlerts()">Retry</button>
+      </div>
+
+      <!-- Empty -->
+      <div *ngIf="!loading && !error && filteredAlerts.length === 0" class="empty-state">
+        <div class="empty-icon">✅</div>
+        <h3>No alerts found</h3>
+        <p>There are no emergency alerts for the selected filter.</p>
+      </div>
+      <!-- Dispatch Modal -->
+      <div class="modal-overlay" *ngIf="dispatchingAlertId" (click)="cancelDispatch()">
+        <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>🚑 Dispatch Ambulance</h2>
+                <button class="close-btn" (click)="cancelDispatch()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Select an available ambulance for Alert #{{ dispatchingAlertId }}</p>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Available Ambulances</label>
+                    <select [(ngModel)]="selectedAmbulanceId" class="ambulance-select">
+                        <option *ngFor="let amb of ambulances" [value]="amb.id">
+                            {{ amb.licensePlate }} ({{ amb.status }})
+                        </option>
+                        <option *ngIf="ambulances.length === 0" disabled>No ambulances available</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button class="btn-cancel" (click)="cancelDispatch()">Cancel</button>
+                <button class="btn-confirm" 
+                        [disabled]="updatingId || !selectedAmbulanceId"
+                        (click)="confirmDispatch()">
+                    {{ updatingId ? 'Dispatching...' : 'Confirm Dispatch' }}
+                </button>
+            </div>
+        </div>
+      </div>
+
+      <!-- Alerts Grid -->
+      <div *ngIf="!loading && !error && filteredAlerts.length > 0" class="alerts-grid">
+        <div
+          *ngFor="let alert of filteredAlerts"
+          class="alert-card"
+          [class]="getSeverityClass(alert.severity)">
+
+          <div class="alert-header">
+            <div class="severity-badge" [class]="getSeverityClass(alert.severity)">
+              <span class="sev-icon">{{ getSeverityIcon(alert.severity) }}</span>
+              {{ alert.severity }}
+            </div>
+            <div class="status-tag" [class]="getStatusClass(alert.status)">
+              {{ alert.status }}
+            </div>
+          </div>
+
+          <div class="alert-body">
+            <div class="patient-info">
+              <div class="patient-avatar">{{ (alert.patientName || 'P')[0].toUpperCase() }}</div>
+              <div>
+                <div class="patient-name">{{ alert.patientName || 'Unknown Patient' }}</div>
+                <div class="alert-id">Alert #{{ alert.id }}</div>
+              </div>
+            </div>
+
+            <div class="alert-meta">
+              <div class="meta-item" *ngIf="alert.latitude && alert.longitude">
+                <span class="meta-icon">📍</span>
+                <span>{{ alert.latitude | number:'1.4-4' }}, {{ alert.longitude | number:'1.4-4' }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-icon">🕒</span>
+                <span>{{ formatDate(alert.createdAt) }}</span>
+              </div>
+              <div class="meta-item" *ngIf="alert.emergencyPhone">
+                <span class="meta-icon">📞</span>
+                <span>{{ alert.emergencyPhone }}</span>
+              </div>
+              <div class="meta-item" *ngIf="alert.canceledByPatient">
+                <span class="meta-icon">❌</span>
+                <span>Canceled by patient</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert-actions">
+            <button
+              *ngIf="alert.status === 'PENDING'"
+              class="btn-acknowledge"
+              [disabled]="updatingId === alert.id"
+              (click)="acknowledge(alert)">
+              {{ updatingId === alert.id ? 'Processing...' : '✓ Acknowledge' }}
+            </button>
+            
+            <button
+              *ngIf="alert.status === 'ACKNOWLEDGED'"
+              class="btn-dispatch"
+              [disabled]="updatingId === alert.id"
+              (click)="openDispatchModal(alert.id)">
+              🚑 Dispatch Ambulance
+            </button>
+
+            <button
+              *ngIf="alert.status === 'ACKNOWLEDGED' || alert.status === 'CLINIC_NOTIFIED'"
+              class="btn-resolve"
+              [disabled]="updatingId === alert.id"
+              (click)="resolve(alert)">
+              {{ updatingId === alert.id ? 'Processing...' : '✅ Mark Resolved' }}
+            </button>
+            
+            <span *ngIf="alert.status === 'RESOLVED'" class="resolved-label">✅ Resolved</span>
+            <span *ngIf="alert.status === 'CANCELED'" class="canceled-label">🚫 Canceled</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

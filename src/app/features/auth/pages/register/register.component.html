@@ -241,6 +241,18 @@
         </div>
       </ng-container>
 
+      <!-- Profile Image -->
+      <div class="form-group margin-top">
+        <label for="profileImage">Profile Picture (Optional)</label>
+        <div class="input-wrapper" style="border: none; padding: 0; background: transparent;">
+          <input type="file" id="profileImage" accept="image/*" (change)="onFileSelected($event)"
+                 style="padding: 0; border: none; background: transparent; cursor: pointer;">
+        </div>
+        <div *ngIf="profileImageBase64" style="margin-top: 10px; display: flex; justify-content: center;">
+            <img [src]="profileImageBase64" alt="Preview" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #0e7c66;">
+        </div>
+      </div>
+
       <!-- Password Field -->
       <div class="form-group">
         <label for="password">Password</label>

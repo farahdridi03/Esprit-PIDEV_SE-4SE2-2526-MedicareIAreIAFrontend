@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Donation, DonationStatus, DonationType, AidRequest, AidRequestStatus } from '../../../../models/donation.model';
 import { DonationService } from '../../../../services/donation.service';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
     selector: 'app-donations-management',
@@ -21,11 +23,18 @@ export class DonationsManagementComponent implements OnInit {
     AidRequestStatus = AidRequestStatus;
 
     showAssignModal = false;
+    showDocModal = false;
     selectedReq: AidRequest | null = null;
     availableDonations: Donation[] = [];
     selectedDonationId: number | null = null;
+    previewDocUrl: SafeResourceUrl | null = null;
+    rawPreviewDoc: string | null = null;
 
-    constructor(private donationService: DonationService) { }
+    constructor(
+        private donationService: DonationService,
+        private notificationService: NotificationService,
+        private sanitizer: DomSanitizer
+    ) { }
 
     ngOnInit(): void {
         this.refresh();
@@ -36,24 +45,24 @@ export class DonationsManagementComponent implements OnInit {
         this.donationService.getAllDonations().subscribe({
             next: (data) => {
                 this.donations = data;
-                this.refreshRequests();
+                this.loading = false;
             },
             error: (err) => {
                 console.error('Error fetching donations', err);
                 this.loading = false;
             }
         });
+        this.refreshRequests();
     }
 
     refreshRequests(): void {
         this.donationService.getAllAidRequests().subscribe({
             next: (data) => {
+                console.log('Aid requests from backend:', data);
                 this.aidRequests = data;
-                this.loading = false;
             },
             error: (err) => {
-                console.error('Error fetching aid requests', err);
-                this.loading = false;
+                console.error('❌ Error fetching aid requests:', err);
             }
         });
     }
@@ -119,6 +128,16 @@ export class DonationsManagementComponent implements OnInit {
             aidRequestId: this.selectedReq.id
         }).subscribe({
             next: () => {
+                // 🔔 Notify Patient
+                if (this.selectedReq && this.selectedReq.patientId) {
+                    this.notificationService.addPatientNotification(
+                        this.selectedReq.patientId,
+                        'Request Approved 🎉',
+                        `Good news! A donation has been assigned to your aid request (Req #${this.selectedReq.id}).`,
+                        'info'
+                    );
+                }
+                
                 this.closeAssignModal();
                 this.refresh();
             },
@@ -132,5 +151,44 @@ export class DonationsManagementComponent implements OnInit {
     getInitials(name: string | undefined): string {
         if (!name) return 'UN';
         return name.substring(0, 2).toUpperCase();
+    }
+
+    downloadOrViewDoc(base64: string | undefined): void {
+        if (!base64) return;
+        if (base64.startsWith('http')) {
+            window.open(base64, '_blank');
+            return;
+        }
+        
+        // Try to guess extension
+        let ext = 'txt';
+        if (base64.includes('application/pdf')) ext = 'pdf';
+        else if (base64.includes('image/png')) ext = 'png';
+        else if (base64.includes('image/jpeg')) ext = 'jpg';
+        
+        const a = document.createElement('a');
+        a.href = base64;
+        a.download = `supporting-document.${ext}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    openDocModal(base64: string | undefined): void {
+        if (!base64) return;
+        this.rawPreviewDoc = base64;
+        this.previewDocUrl = this.sanitizer.bypassSecurityTrustResourceUrl(base64);
+        this.showDocModal = true;
+    }
+
+    closeDocModal(): void {
+        this.showDocModal = false;
+        this.previewDocUrl = null;
+        this.rawPreviewDoc = null;
+    }
+
+    isPdf(base64: any): boolean {
+        if (!base64 || typeof base64 !== 'string') return false;
+        return base64.includes('application/pdf');
     }
 }

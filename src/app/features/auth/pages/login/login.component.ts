@@ -29,8 +29,11 @@ export class LoginComponent {
   onSubmit() {
     console.log('onSubmit called');
     if (this.loginForm.valid) {
-      console.log('Form is valid, calling login...', this.loginForm.value);
-      this.authService.login(this.loginForm.value).subscribe({
+      const { email, password } = this.loginForm.value;
+      const payload = { email: email.trim(), password };
+      
+      console.log('Form is valid, calling login...', payload);
+      this.authService.login(payload).subscribe({
         next: (response) => {
           console.log('Login successful response:', response);
           const role = response.role || this.authService.getUserRole();
@@ -39,12 +42,19 @@ export class LoginComponent {
         },
         error: (err) => {
           console.error('Login error:', err);
-          this.errorMessage = err.error?.message || 'Identifiants invalides';
+          // Make error output clear for developers/users
+          if (err.status === 400) {
+            this.errorMessage = err.error?.message || 'Mauvaise requête. Vérifiez le format (Email/password).';
+          } else if (err.status === 401 || err.status === 403) {
+            this.errorMessage = err.error?.message || 'Identifiants invalides ou compte non activé.';
+          } else {
+            this.errorMessage = err.error?.message || 'Erreur lors de la connexion. Vérifiez le serveur.';
+          }
         }
       });
     } else {
       this.loginForm.markAllAsTouched();
-      this.errorMessage = 'Veuillez remplir correctement tous les champs.';
+      this.errorMessage = 'Please fill out all fields correctly.';
       console.warn('Form is invalid:', this.loginForm.errors);
       Object.keys(this.loginForm.controls).forEach(key => {
         const controlErrors = this.loginForm.get(key)?.errors;
@@ -84,7 +94,11 @@ export class LoginComponent {
         targetRoute = '/front/laboratory';
         break;
       case 'PHARMACIST':
+        targetRoute = '/front/pharmacist/dashboard';
+        break;
       case 'CLINIC':
+        targetRoute = '/front/clinic/dashboard';
+        break;
       case 'VISITOR':
         targetRoute = '/front';
         break;
@@ -110,3 +124,4 @@ export class LoginComponent {
     });
   }
 }
+

@@ -15,6 +15,7 @@ import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-pro
 import { FormsModule } from '@angular/forms';
 import { DonationsComponent } from './patient/pages/donations/donations.component';
 import { EmergencyComponent } from './patient/pages/emergency/emergency.component';
+import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { EmergencyComponent } from './patient/pages/emergency/emergency.componen
     DoctorDashboardComponent,
     DoctorProfileComponent,
     DonationsComponent,
-    EmergencyComponent
+    EmergencyComponent,
+    PatientProfileComponent
   ],
   imports: [
     CommonModule,

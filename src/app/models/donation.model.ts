@@ -10,8 +10,10 @@ export enum DonationStatus {
 
 export interface Donation {
     id?: number;
+    creatorId?: number;
     type: DonationType;
     donorName: string;
+    donorProfileImage?: string;
     status: DonationStatus;
     amount?: number;
     categorie?: string;

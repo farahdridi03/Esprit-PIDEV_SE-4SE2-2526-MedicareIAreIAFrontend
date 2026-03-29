@@ -134,6 +134,8 @@
                     </span>
                 </td>
                 <td style="text-align: right;">
+                    <button *ngIf="req.supportingDocument" class="action-btn text-teal" 
+                        style="font-weight: bold; margin-right: 8px;" (click)="openDocModal(req.supportingDocument)">View Document 📄</button>
                     <button *ngIf="req.status === AidRequestStatus.PENDING" class="action-btn text-indigo"
                         style="font-weight: bold;" (click)="openAssignModal(req)">Assign Donation</button>
                     <button *ngIf="req.status === AidRequestStatus.PENDING" class="action-btn text-rose"
@@ -144,7 +146,10 @@
     </table>
 
     <div *ngIf="!loading && filteredRequests.length === 0" class="no-data">
-        No aid requests found.
+        <div style="font-size: 2rem; margin-bottom: 12px;">🤝</div>
+        <div style="font-weight: 700; margin-bottom: 6px;">No aid requests found.</div>
+        <div style="font-size: 0.8rem; color: var(--text-3);">Total loaded: {{ aidRequests.length }}</div>
+        <button class="panel-action" style="margin-top: 12px;" (click)="refreshRequests()">Retry ⭮</button>
     </div>
 </div>
 
@@ -184,6 +189,37 @@
                 (click)="confirmAssignment()" [disabled]="loading || !selectedDonationId">
                 Confirm Assignment
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================== MODAL: VIEW DOCUMENT ============================================== -->
+<div class="modal-overlay" *ngIf="showDocModal" (click)="closeDocModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()"
+        style="max-width: 900px; width: 95%; height: 85vh; background: white; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+        
+        <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f9fafb;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-1); font-weight: 700;">Document Preview 📄</h3>
+            <div style="display: flex; gap: 0.8rem;">
+                <!-- Download button as option -->
+                <button class="action-btn text-indigo" (click)="downloadOrViewDoc(rawPreviewDoc!)" 
+                    style="background: #e0e7ff; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem;">
+                    Download ↓
+                </button>
+                <button (click)="closeDocModal()" 
+                    style="background: #eff6ff; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--indigo); font-weight: 900;">
+                    &times;
+                </button>
+            </div>
+        </div>
+
+        <div style="flex: 1; background: #525659; display: flex; align-items: center; justify-content: center;">
+            <!-- IFRAME FOR PDF OR OTHER DOCS -->
+            <iframe *ngIf="previewDocUrl" [src]="previewDocUrl" width="100%" height="100%" frameborder="0"></iframe>
+            
+            <div *ngIf="!previewDocUrl" style="color: white; text-align: center;">
+                <p>No document to display</p>
+            </div>
         </div>
     </div>
 </div>

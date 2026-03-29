@@ -2,12 +2,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TopbarComponent } from './topbar.component';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterModule } from '@angular/router';
+
 describe('TopbarComponent', () => {
   let component: TopbarComponent;
   let fixture: ComponentFixture<TopbarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RouterModule.forRoot([])],
       declarations: [TopbarComponent]
     })
     .compileComponents();

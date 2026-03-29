@@ -20,17 +20,16 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    // 2. Fallback: find user by email
+    // 2. Fallback: get current user profile
     const email = this.authService.getUserEmail();
     if (email) {
-      this.userService.getAll().subscribe({
-        next: (users) => {
-          const user = users.find(u => u.email === email);
+      this.userService.getProfile().subscribe({
+        next: (user) => {
           if (user && user.fullName) {
             this.firstName = user.fullName.trim().split(' ')[0];
           }
         },
-        error: (err: any) => console.error('Error fetching users for dashboard', err)
+        error: (err: any) => console.error('Error fetching user profile for dashboard', err)
       });
     }
   }

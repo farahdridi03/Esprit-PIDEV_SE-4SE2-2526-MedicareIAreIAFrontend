@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ClinicDashboardComponent } from './pages/clinic-dashboard/clinic-dashboard.component';
+import { ClinicEmergencyComponent } from './pages/clinic-emergency/clinic-emergency.component';
+import { ClinicAmbulancesComponent } from './pages/clinic-ambulances/clinic-ambulances.component';
 import { AuthGuard } from '../../../guards/auth.guard';
 
 const routes: Routes = [
@@ -12,6 +14,18 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: ClinicDashboardComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['CLINIC'] }
+  },
+  {
+    path: 'emergency',
+    component: ClinicEmergencyComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['CLINIC'] }
+  },
+  {
+    path: 'ambulances',
+    component: ClinicAmbulancesComponent,
     canActivate: [AuthGuard],
     data: { roles: ['CLINIC'] }
   }

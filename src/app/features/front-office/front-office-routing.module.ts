@@ -8,6 +8,7 @@ import { DonationsComponent } from './patient/pages/donations/donations.componen
 import { EmergencyComponent } from './patient/pages/emergency/emergency.component';
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
+import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
 import { AuthGuard } from '../../guards/auth.guard';
 
 const routes: Routes = [
@@ -34,6 +35,12 @@ const routes: Routes = [
   {
     path: 'patient/emergency',
     component: EmergencyComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/profile',
+    component: PatientProfileComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
