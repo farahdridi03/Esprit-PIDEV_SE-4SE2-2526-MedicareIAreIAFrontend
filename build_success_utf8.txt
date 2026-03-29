@@ -1,0 +1,117 @@
+﻿node.exe : Node.js version 
+v25.6.1 detected.
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Node.js  
+   version v25.6.1 detecte   
+ d.:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+Odd numbered Node.js 
+versions will not enter LTS 
+status and should not be 
+used for production. For 
+more information, please see 
+https://nodejs.org/en/about/p
+revious-releases/.
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+Application bundle generation failed. [9.518 seconds]
+
+[1m[31m[31mX [41;31m[[41
+;97mERROR[41;31m][0m 
+[1mTS2551: Property 
+'TOKEN_KEY' does not exist 
+on type 'AuthService'. Did 
+you mean 'TOKEN_K'?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/services/auth.ser
+vice.ts:28:46:
+[37m      28 Ôöé ...        
+     localStorage.setItem(thi
+s.[32mTOKEN_KEY[37m, 
+response.token);
+         ÔòÁ                 
+                          
+[32m~~~~~~~~~[0m
+
+  'TOKEN_K' is declared here.
+
+    src/app/services/auth.ser
+vice.ts:17:21:
+[37m      17 Ôöé     
+private readonly 
+[32mTOKEN_K[37m
+         ÔòÁ                 
+     [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2551: 
+Property 'TOKEN_KEY' does 
+not exist on type 
+'AuthService'. Did you mean 
+'TOKEN_K'?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/services/auth.ser
+vice.ts:41:37:
+[37m      41 Ôöé         loc
+alStorage.removeItem(this.[3
+2mTOKEN_KEY[37m);
+         ÔòÁ                 
+                     
+[32m~~~~~~~~~[0m
+
+  'TOKEN_K' is declared here.
+
+    src/app/services/auth.ser
+vice.ts:17:21:
+[37m      17 Ôöé     
+private readonly 
+[32mTOKEN_K[37m
+         ÔòÁ                 
+     [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2551: 
+Property 'TOKEN_KEY' does 
+not exist on type 
+'AuthService'. Did you mean 
+'TOKEN_K'?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/services/auth.ser
+vice.ts:47:41:
+[37m      47 Ôöé         
+return localStorage.getItem(t
+his.[32mTOKEN_KEY[37m);
+         ÔòÁ                 
+                         
+[32m~~~~~~~~~[0m
+
+  'TOKEN_K' is declared here.
+
+    src/app/services/auth.ser
+vice.ts:17:21:
+[37m      17 Ôöé     
+private readonly 
+[32mTOKEN_K[37m
+         ÔòÁ                 
+     [32m~~~~~~~[0m
+
+[39m[22m
