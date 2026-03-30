@@ -45,7 +45,7 @@ export class DoctorProfileComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.userId = this.authService.getUserId();
+    this.userId = this.authService.getUserId() || 0;
     this.loadProfile();
     this.loadClinics();
   }

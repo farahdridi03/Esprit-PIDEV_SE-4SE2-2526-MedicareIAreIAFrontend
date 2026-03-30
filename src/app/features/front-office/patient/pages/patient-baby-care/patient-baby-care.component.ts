@@ -634,9 +634,32 @@ export class PatientBabyCareComponent implements OnInit {
   }
 
 
+  get allUnifiedLogs(): any[] {
+    const diapersAsLogs = this.diaperRecords.map(d => ({
+      id: d.id,
+      isDiaperRecord: true,
+      timestamp: new Date(d.changedAt).getTime(),
+      time: new Date(d.changedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+      type: 'DIAPER',
+      icon: this.getDiaperIcon(d.diaperType),
+      title: 'Diaper Change',
+      detail: (d.diaperType || 'WET').charAt(0).toUpperCase() + (d.diaperType || 'WET').slice(1).toLowerCase() + ' Diaper',
+      badge: d.rashNoted ? 'Rash Noted' : 'Healthy Skin',
+      notes: d.notes,
+      originalDiaperRecord: d
+    }));
+    
+    // Filter out old backend 'DIAPER' journal entries to avoid duplicates if they exist
+    const pureJournals = this.journalLogs.filter(j => j.type !== 'DIAPER');
+    
+    const unified = [...pureJournals, ...diapersAsLogs];
+    return unified.sort((a, b) => b.timestamp - a.timestamp);
+  }
+
   get filteredLogs(): any[] {
-    if (this.journalFilter === 'all') return this.journalLogs;
-    return this.journalLogs.filter(l => l.type === this.journalFilter);
+    const unified = this.allUnifiedLogs;
+    if (this.journalFilter === 'all') return unified;
+    return unified.filter(l => l.type === this.journalFilter);
   }
 
   prevDay() { const d = new Date(this.journalDate); d.setDate(d.getDate() - 1); this.journalDate = d; }
@@ -725,6 +748,10 @@ export class PatientBabyCareComponent implements OnInit {
   }
 
   onEditJournalEntry(log: any) {
+    if (log.isDiaperRecord) {
+      this.onEditDiaper(log.originalDiaperRecord);
+      return;
+    }
     this.editingLogId = log.id;
     this.newEntry = { ...log, value: log.detail };
     this.activeSection = log.type.toLowerCase();
@@ -756,6 +783,10 @@ export class PatientBabyCareComponent implements OnInit {
   }
 
   onDeleteJournalEntry(log: any) {
+    if (log.isDiaperRecord) {
+      this.onDeleteDiaper(log.id);
+      return;
+    }
     this.confirmModalData = {
       title: 'Delete Record',
       message: `Are you sure you want to delete this ${log.title.toLowerCase()} record? This action cannot be undone.`,
@@ -813,8 +844,8 @@ export class PatientBabyCareComponent implements OnInit {
     const totalSeconds = this.parsedManualSeconds;
     if (!this.baby) return;
 
-    if (totalSeconds < 60 || totalSeconds > 86400) { // between 1 min and 24 hours
-        this.formError = "Sleep duration must be realistic (between 1 minute and 24 hours).";
+    if (totalSeconds <= 0 || totalSeconds > 86400) { // realistic bounds
+        this.formError = "Sleep duration must be realistic (greater than 0).";
         return;
     }
     
@@ -869,6 +900,7 @@ export class PatientBabyCareComponent implements OnInit {
   onSubmitDiaper() {
     if (!this.baby) return;
     this.isDiaperSubmitting = true;
+    this.formError = '';
     
     const record: any = {
       babyId: this.baby.id,
@@ -877,7 +909,7 @@ export class PatientBabyCareComponent implements OnInit {
       stoolColor: this.newDiaper.stoolColor || 'Yellow',
       stoolTexture: this.newDiaper.stoolTexture || 'Normal',
       notes: this.newDiaper.notes,
-      changedAt: new Date().toISOString()
+      changedAt: new Date().toISOString().slice(0, 19)
     };
 
     if (this.editingDiaperId || (this.editingLogId && this.newEntry.type === 'DIAPER')) {
@@ -899,7 +931,10 @@ export class PatientBabyCareComponent implements OnInit {
           this.resetDiaperForm();
           this.loadAllData();
         },
-        error: () => this.isDiaperSubmitting = false
+        error: (err) => {
+          this.isDiaperSubmitting = false;
+          this.formError = "Failed to update diaper log.";
+        }
       });
     } else {
       this.babyService.addDiaper(this.baby.id, record).subscribe({
@@ -908,7 +943,10 @@ export class PatientBabyCareComponent implements OnInit {
           this.resetDiaperForm();
           this.loadAllData();
         },
-        error: () => this.isDiaperSubmitting = false
+        error: (err) => {
+          this.isDiaperSubmitting = false;
+          this.formError = "Failed to save diaper log.";
+        }
       });
     }
   }

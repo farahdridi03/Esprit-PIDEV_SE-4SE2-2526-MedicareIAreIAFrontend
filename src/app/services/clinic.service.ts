@@ -14,9 +14,9 @@ export interface Clinic {
   providedIn: 'root'
 })
 export class ClinicService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/v1/clinics';
+  private apiUrl = 'http://localhost:8081/springsecurity/api/clinics';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllClinics(): Observable<Clinic[]> {
     return this.http.get<Clinic[]>(this.apiUrl).pipe(

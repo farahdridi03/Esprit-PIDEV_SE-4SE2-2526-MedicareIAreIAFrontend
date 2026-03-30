@@ -20,15 +20,11 @@ export class UserService {
     constructor(private http: HttpClient) { }
 
     getProfile(): Observable<any> {
-        return this.http.get(`${this.baseUrlLegacy}/profile`);
+        return this.http.get(`http://localhost:8081/springsecurity/api/profile/me`);
     }
 
     updateProfile(request: UpdateProfileRequest & { role?: string }): Observable<any> {
-        return this.http.put(`${this.baseUrlLegacy}/profile`, request);
-    }
-
-    getProfile(): Observable<any> {
-        return this.http.get(`http://localhost:8081/springsecurity/api/profile/me`);
+        return this.http.put(`${this.apiUrl}/profile`, request);
     }
 
     create(dto: UserRequestDTO): Observable<UserResponseDTO> {
