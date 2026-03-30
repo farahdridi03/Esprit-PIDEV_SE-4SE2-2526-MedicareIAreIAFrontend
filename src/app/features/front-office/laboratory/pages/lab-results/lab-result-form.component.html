@@ -1,256 +1,160 @@
-<div style="padding: 2rem;">
+<div class="form-container">
 
   <!-- HEADER -->
-  <div style="display:flex; align-items:center; gap:1rem; margin-bottom:2rem;">
-    <span style="background:#0d9488; color:white; padding:0.25rem 0.75rem;
-      border-radius:20px; font-size:0.75rem; font-weight:600;">
-      {{ isEditMode ? 'EDIT RESULT' : 'NEW RESULT' }}
-    </span>
-    <h2 style="flex:1; margin:0; font-size:1.5rem; font-weight:700; color:#111827;">
-      {{ isEditMode ? 'Edit Lab Result' : 'New Lab Result' }}
-    </h2>
-    <button (click)="cancelled.emit()"
-      style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#6b7280;">✕</button>
+  <div class="modal-header">
+    <div class="header-left">
+      <span class="status-badge">
+        {{ isEditMode ? 'EDIT RESULT' : 'NEW RESULT' }}
+      </span>
+      <h2>{{ isEditMode ? 'Edit Lab Result' : 'New Lab Result' }}</h2>
+    </div>
+    <button class="btn-close" (click)="cancelled.emit()">✕</button>
+  </div>
+
+  <!-- ERROR ALERT -->
+  <div class="alert-error" *ngIf="errorMessage">
+    <svg xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+    {{ errorMessage }}
   </div>
 
   <!-- SECTION 1: LAB TEST INFO -->
-  <div style="margin-bottom:1.5rem;">
-    <div style="border-left:3px solid #0d9488; padding-left:0.75rem;
-      font-size:0.75rem; font-weight:600; color:#6b7280; text-transform:uppercase;
-      letter-spacing:0.05em; margin-bottom:1rem;">Lab Test Info</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-      <div>
-        <label style="font-size:0.8rem; font-weight:600; color:#374151;">TEST NAME</label>
-        <input type="text" readonly
-          [value]="selectedLabTest?.name || 'Not specified'"
-          style="width:100%; padding:0.6rem 0.75rem; margin-top:0.25rem;
-            border:1px solid #e5e7eb; border-radius:8px; background:#f3f4f6;
-            font-size:0.875rem; color:#6b7280;">
+  <div class="form-section">
+    <div class="section-title">Lab Test Info</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>TEST NAME</label>
+        <input type="text" class="readonly" readonly [value]="selectedLabTest?.name || 'Not specified'">
       </div>
-      <div>
-        <label style="font-size:0.8rem; font-weight:600; color:#374151;">LABORATORY</label>
-        <input type="text" readonly
-          [value]="selectedLabTest?.laboratoryName || 'Not specified'"
-          style="width:100%; padding:0.6rem 0.75rem; margin-top:0.25rem;
-            border:1px solid #e5e7eb; border-radius:8px; background:#f3f4f6;
-            font-size:0.875rem; color:#6b7280;">
+      <div class="form-group">
+        <label>LABORATORY</label>
+        <input type="text" class="readonly" readonly [value]="selectedLabTest?.laboratoryName || 'Not specified'">
       </div>
     </div>
   </div>
 
   <!-- SECTION 2: LAB REQUEST -->
-  <div style="margin-bottom:1.5rem;">
-    <div style="border-left:3px solid #0d9488; padding-left:0.75rem;
-      font-size:0.75rem; font-weight:600; color:#6b7280; text-transform:uppercase;
-      letter-spacing:0.05em; margin-bottom:1rem;">Lab Request</div>
-    <div style="margin-bottom:1rem;">
-      <label style="font-size:0.8rem; font-weight:600; color:#374151;">
-        LAB REQUEST <span style="color:#ef4444;">*</span>
-      </label>
-      <select [(ngModel)]="form.labRequestId" name="labRequestId"
-        (change)="onRequestChange()"
-        [disabled]="isEditMode"
-        [style.border-color]="!form.labRequestId ? '#ef4444' : '#e5e7eb'"
-        style="width:100%; padding:0.6rem 0.75rem; margin-top:0.25rem;
-          border:1px solid #e5e7eb; border-radius:8px; font-size:0.875rem;">
-        <option [value]="null">Select a pending request...</option>
-        <option *ngFor="let req of pendingRequests" [value]="req.id">
-          #LR-{{ req.id }} — {{ req.patientName }} — {{ req.testType }}
-        </option>
-      </select>
-      <div *ngIf="!form.labRequestId" 
-        style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-        Lab request ID is required
+  <div class="form-section">
+    <div class="section-title">Lab Request</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>LAB REQUEST <span class="required">*</span></label>
+        <select [(ngModel)]="form.labRequestId" name="labRequestId" 
+                (change)="onRequestChange()" [disabled]="isEditMode"
+                [class.error-input]="!form.labRequestId">
+          <option [value]="null">Select a pending request...</option>
+          <option *ngFor="let req of pendingRequests" [value]="req.id">
+            #LR-{{ req.id }} — {{ req.patientName }} — {{ req.testType }}
+          </option>
+        </select>
+        <div class="error-msg" *ngIf="!form.labRequestId">
+          Lab request ID is required
+        </div>
       </div>
-    </div>
-    <div>
-      <label style="font-size:0.8rem; font-weight:600; color:#374151;">PATIENT NAME</label>
-      <input type="text" readonly
-        [value]="selectedRequest?.patientName || ''"
-        placeholder="Auto-filled from request"
-        style="width:100%; padding:0.6rem 0.75rem; margin-top:0.25rem;
-          border:1px solid #e5e7eb; border-radius:8px; background:#f3f4f6;
-          font-size:0.875rem; color:#6b7280;">
+      <div class="form-group">
+        <label>PATIENT NAME</label>
+        <input type="text" class="readonly" readonly 
+               [value]="selectedRequest?.patientName || ''" 
+               placeholder="Auto-filled from request">
+      </div>
     </div>
   </div>
 
   <!-- SECTION 3: RESULT DATA -->
-  <div style="margin-bottom:1.5rem;">
-    <div style="border-left:3px solid #0d9488; padding-left:0.75rem;
-      font-size:0.75rem; font-weight:600; color:#6b7280; text-transform:uppercase;
-      letter-spacing:0.05em; margin-bottom:1rem;">Result Data</div>
-    <div>
-      <div style="display:flex; justify-content:space-between;">
-        <label style="font-size:0.8rem; font-weight:600; color:#374151;">
-          RESULT DATA <span style="color:#ef4444;">*</span>
-        </label>
-        <span style="font-size:0.75rem; color:#9ca3af;">
-          {{ form.resultData.length }}/2000
-        </span>
-      </div>
-      <textarea [(ngModel)]="form.resultData" name="resultData"
-        rows="5" maxlength="2000"
-        placeholder="Enter detailed result data, measurements, observations..."
-        [style.border-color]="(!form.resultData || form.resultData.length < 10) ? '#ef4444' : '#e5e7eb'"
-        style="width:100%; padding:0.75rem; margin-top:0.25rem;
-          border:1px solid #e5e7eb; border-radius:8px; font-size:0.875rem;
-          resize:vertical; font-family:inherit;">
-      </textarea>
-      <div *ngIf="!form.resultData" 
-        style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
+  <div class="form-section">
+    <div class="section-title">Result Data</div>
+    <div class="form-group">
+      <label>RESULT DATA <span class="required">*</span></label>
+      <textarea [(ngModel)]="form.resultData" name="resultData" rows="6" maxlength="2000"
+                placeholder="Enter detailed result data, measurements, observations..."
+                [class.error-input]="(!form.resultData || form.resultData.length < 10)"></textarea>
+      <div class="char-limit">{{ form.resultData.length }}/2000</div>
+      
+      <div class="error-msg" *ngIf="!form.resultData">
         Result data is required
       </div>
-      <div *ngIf="form.resultData && form.resultData.length < 10" 
-        style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
+      <div class="error-msg" *ngIf="form.resultData && form.resultData.length < 10">
         Result data must be between 10 and 2000 characters
-      </div>
-      <div *ngIf="form.resultData && form.resultData.trim().length === 0" 
-        style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-        Result data cannot be only whitespace
       </div>
     </div>
   </div>
 
   <!-- SECTION 4: TECHNICIAN -->
-  <div style="margin-bottom:1.5rem;">
-    <div style="border-left:3px solid #0d9488; padding-left:0.75rem;
-      font-size:0.75rem; font-weight:600; color:#6b7280; text-transform:uppercase;
-      letter-spacing:0.05em; margin-bottom:1rem;">Technician Info</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-      <div>
-        <label style="font-size:0.8rem; font-weight:600; color:#374151;">
-          TECHNICIAN NAME <span style="color:#ef4444;">*</span>
-        </label>
+  <div class="form-section">
+    <div class="section-title">Technician Info</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>TECHNICIAN NAME <span class="required">*</span></label>
         <input type="text" [(ngModel)]="form.technicianName" name="technicianName"
-          placeholder="Enter technician full name"
-          [style.border-color]="hasTechnicianNameError() ? '#ef4444' : '#e5e7eb'"
-          style="width:100%; padding:0.6rem 0.75rem; margin-top:0.25rem;
-            border:1px solid #e5e7eb; border-radius:8px; font-size:0.875rem;">
-        <div *ngIf="!form.technicianName" 
-          style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
+               placeholder="Enter technician full name"
+               [class.error-input]="hasTechnicianNameError()">
+        <div class="error-msg" *ngIf="!form.technicianName">
           Technician name is required
         </div>
-        <div *ngIf="form.technicianName && form.technicianName.length < 3" 
-          style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-          Technician name must be between 3 and 100 characters
-        </div>
-        <div *ngIf="form.technicianName && form.technicianName.length >= 3 && !isValidTechnicianName()" 
-          style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-          Technician name can only contain letters, spaces, hyphens, and apostrophes
+        <div class="error-msg" *ngIf="form.technicianName && form.technicianName.length < 3">
+          Minimum 3 characters required
         </div>
       </div>
-      <div>
-        <label style="font-size:0.8rem; font-weight:600; color:#374151;">VERIFIED BY</label>
+      <div class="form-group">
+        <label>VERIFIED BY</label>
         <input type="text" [(ngModel)]="form.verifiedBy" name="verifiedBy"
-          placeholder="Enter verifier name (optional)"
-          [style.border-color]="hasVerifiedByError() ? '#ef4444' : '#e5e7eb'"
-          style="width:100%; padding:0.6rem 0.75rem; margin-top:0.25rem;
-            border:1px solid #e5e7eb; border-radius:8px; font-size:0.875rem;">
-        <div *ngIf="form.verifiedBy && form.verifiedBy.length > 100" 
-          style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-          Verified by must not exceed 100 characters
-        </div>
-        <div *ngIf="form.verifiedBy && form.verifiedBy.length <= 100 && !isValidVerifiedBy()" 
-          style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-          Verified by can only contain letters, spaces, hyphens, and apostrophes
+               placeholder="Enter verifier name (optional)"
+               [class.error-input]="hasVerifiedByError()">
+        <div class="error-msg" *ngIf="hasVerifiedByError()">
+          Invalid name or length exceeded
         </div>
       </div>
     </div>
   </div>
 
   <!-- SECTION 5: FINDINGS -->
-  <div style="margin-bottom:1.5rem;">
-    <div style="border-left:3px solid #0d9488; padding-left:0.75rem;
-      font-size:0.75rem; font-weight:600; color:#6b7280; text-transform:uppercase;
-      letter-spacing:0.05em; margin-bottom:1rem;">Clinical Findings</div>
-    <div style="margin-bottom:1rem;">
-      <label style="font-size:0.8rem; font-weight:600; color:#374151; display:block; margin-bottom:0.5rem;">
-        IS ABNORMAL
-      </label>
-      <div style="display:flex; gap:0.5rem;">
-        <button type="button"
-          [style.background]="!form.isAbnormal ? '#374151' : '#f3f4f6'"
-          [style.color]="!form.isAbnormal ? 'white' : '#374151'"
-          (click)="form.isAbnormal = false"
-          style="padding:0.4rem 1.25rem; border:none; border-radius:20px;
-            font-size:0.875rem; font-weight:600; cursor:pointer;">NO</button>
-        <button type="button"
-          [style.background]="form.isAbnormal ? '#ef4444' : '#f3f4f6'"
-          [style.color]="form.isAbnormal ? 'white' : '#374151'"
-          (click)="form.isAbnormal = true"
-          style="padding:0.4rem 1.25rem; border:none; border-radius:20px;
-            font-size:0.875rem; font-weight:600; cursor:pointer;">YES</button>
+  <div class="form-section">
+    <div class="section-title">Clinical Findings</div>
+    <div class="form-group">
+      <label>IS ABNORMAL</label>
+      <div class="pill-toggle">
+        <button type="button" class="pill-btn btn--no" 
+                [class.active]="!form.isAbnormal" (click)="form.isAbnormal = false">NO</button>
+        <button type="button" class="pill-btn btn--yes" 
+                [class.active]="form.isAbnormal" (click)="form.isAbnormal = true">YES</button>
       </div>
     </div>
-    <div *ngIf="form.isAbnormal">
-        <label style="font-size:0.8rem; font-weight:600; color:#374151;">ABNORMAL FINDINGS</label>
-        <textarea [(ngModel)]="form.abnormalFindings" name="abnormalFindings"
-          rows="3"
-          placeholder="Describe abnormal findings in detail..."
-          [style.border-color]="(!form.abnormalFindings || form.abnormalFindings.trim().length === 0) ? '#ef4444' : '#e5e7eb'"
-          style="width:100%; padding:0.75rem; margin-top:0.25rem;
-            border:1px solid #ef4444; border-radius:8px; font-size:0.875rem;
-            resize:vertical; font-family:inherit;">
-        </textarea>
-        <div *ngIf="!form.abnormalFindings || form.abnormalFindings.trim().length === 0" 
-          style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-          Abnormal findings are required when result is marked as abnormal
-        </div>
-        <div *ngIf="form.abnormalFindings && form.abnormalFindings.length > 1000" 
-          style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-          Abnormal findings must not exceed 1000 characters
-        </div>
-        <div *ngIf="form.abnormalFindings && form.abnormalFindings.trim().length === 0 && form.abnormalFindings.length > 0" 
-          style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-          Abnormal findings cannot be only whitespace when provided
-        </div>
+    
+    <div class="form-group" *ngIf="form.isAbnormal">
+      <label>ABNORMAL FINDINGS <span class="required">*</span></label>
+      <textarea [(ngModel)]="form.abnormalFindings" name="abnormalFindings" rows="4"
+                placeholder="Describe abnormal findings in detail..."
+                class="error-input" *ngIf="!form.abnormalFindings || form.abnormalFindings.trim().length === 0"></textarea>
+      <textarea [(ngModel)]="form.abnormalFindings" name="abnormalFindings" rows="4"
+                placeholder="Describe abnormal findings in detail..."
+                *ngIf="form.abnormalFindings && form.abnormalFindings.trim().length > 0"></textarea>
+      
+      <div class="error-msg" *ngIf="!form.abnormalFindings || form.abnormalFindings.trim().length === 0">
+        Required when marked as abnormal
       </div>
+    </div>
   </div>
 
   <!-- SECTION 6: STATUS -->
-  <div style="margin-bottom:1.5rem;">
-    <div style="border-left:3px solid #0d9488; padding-left:0.75rem;
-      font-size:0.75rem; font-weight:600; color:#6b7280; text-transform:uppercase;
-      letter-spacing:0.05em; margin-bottom:1rem;">Status</div>
-    <select [(ngModel)]="form.status" name="status"
-      [style.border-color]="!form.status ? '#ef4444' : '#e5e7eb'"
-      style="width:100%; padding:0.6rem 0.75rem;
-        border:1px solid #e5e7eb; border-radius:8px; font-size:0.875rem;">
-      <option value="PENDING">PENDING</option>
-      <option value="COMPLETED">COMPLETED</option>
-      <option value="ABNORMAL">ABNORMAL</option>
-      <option value="VERIFIED">VERIFIED</option>
-    </select>
-    <div *ngIf="!form.status" 
-      style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-      Status is required
+  <div class="form-section">
+    <div class="section-title">Status</div>
+    <div class="form-group">
+      <select [(ngModel)]="form.status" name="status">
+        <option value="PENDING">PENDING</option>
+        <option value="COMPLETED">COMPLETED</option>
+        <option value="ABNORMAL">ABNORMAL</option>
+        <option value="VERIFIED">VERIFIED</option>
+      </select>
     </div>
-    <div *ngIf="form.status === 'VERIFIED' && (!form.verifiedBy || form.verifiedBy.trim().length === 0)" 
-      style="color:#ef4444; font-size:0.75rem; margin-top:0.25rem;">
-      Verified by is required when status is VERIFIED
-    </div>
-  </div>
-
-  <!-- ERROR -->
-  <div *ngIf="errorMessage"
-    style="background:#fee2e2; color:#dc2626; padding:0.75rem 1rem;
-      border-radius:8px; font-size:0.875rem; margin-bottom:1rem;">
-    {{ errorMessage }}
   </div>
 
   <!-- FOOTER -->
-  <div style="display:flex; justify-content:flex-end; gap:1rem;
-    padding-top:1rem; border-top:1px solid #f3f4f6;">
-    <button (click)="cancelled.emit()"
-      style="padding:0.6rem 1.5rem; border:1px solid #d1d5db; border-radius:8px;
-        background:white; color:#374151; font-size:0.875rem; font-weight:600; cursor:pointer;">
-      Cancel
-    </button>
-    <button (click)="onSubmit()" [disabled]="isSubmitting"
-      style="padding:0.6rem 1.5rem; border:none; border-radius:8px;
-        background:#0d9488; color:white; font-size:0.875rem; font-weight:600;
-        cursor:pointer; display:flex; align-items:center; gap:0.5rem;">
-      {{ isSubmitting ? 'Saving...' : 'Save Result' }}
+  <div class="modal-footer">
+    <button class="btn btn--outline" (click)="cancelled.emit()">Cancel</button>
+    <button class="btn btn--primary" (click)="onSubmit()" [disabled]="isSubmitting">
+      <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Save' }} Result</span>
+      <span *ngIf="isSubmitting">Saving...</span>
     </button>
   </div>
 

@@ -5,7 +5,8 @@ import { LabTestResponse } from '../../../../../services/lab-test.service';
 
 @Component({
   selector: 'app-lab-result-form',
-  templateUrl: './lab-result-form.component.html'
+  templateUrl: './lab-result-form.component.html',
+  styleUrls: ['./lab-result-form.component.scss']
 })
 export class LabResultFormComponent implements OnInit {
 

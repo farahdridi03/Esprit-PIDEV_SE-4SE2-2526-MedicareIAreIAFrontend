@@ -49,6 +49,10 @@ export class LabRequestService {
     );
   }
 
+  getById(id: number): Observable<LabRequestResponse> {
+    return this.http.get<LabRequestResponse>(`${this.base}/lab-requests/${id}`);
+  }
+
   getByPatient(patientId: number): Observable<LabRequestResponse[]> {
     return this.http.get<LabRequestResponse[]>(
       `${this.base}/lab-requests/patient/${patientId}` 

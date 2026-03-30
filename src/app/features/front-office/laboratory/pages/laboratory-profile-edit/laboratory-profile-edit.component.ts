@@ -31,7 +31,11 @@ export class LaboratoryProfileEditComponent implements OnInit {
       photo: [''],
       laboratoryName: ['', Validators.required],
       laboratoryAddress: [''],
-      laboratoryPhone: ['']
+      laboratoryPhone: [''],
+      laboratoryEmail: [''],
+      openingHours: [''],
+      specializations: [''],
+      active: [null]
     });
   }
 
@@ -53,7 +57,11 @@ export class LaboratoryProfileEditComponent implements OnInit {
           photo: result.profile.photo,
           laboratoryName: result.laboratory.name || '',
           laboratoryAddress: result.laboratory.address || '',
-          laboratoryPhone: result.laboratory.phone || ''
+          laboratoryPhone: result.laboratory.phone || '',
+          laboratoryEmail: result.laboratory.email || '',
+          openingHours: result.laboratory.openingHours || '',
+          specializations: result.laboratory.specializations || '',
+          active: result.laboratory.active !== undefined ? result.laboratory.active : null
         });
         this.photoPreview = result.profile.photo || null;
         this.loading = false;

@@ -3,7 +3,9 @@ import { AuthResponse } from '../../models/auth-response.model';
 export const MOCK_AUTH_RESPONSE: AuthResponse = {
     token: 'fake-jwt-token',
     email: 'test@example.com',
-    role: 'PATIENT'
+    role: 'PATIENT',
+    id: 101,
+    fullName: 'Test Patient'
 };
 
 // A simulated Base64 encoded JWT payload for Patient role

@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +15,7 @@ import { AppointmentManagementComponent } from './pages/appointment-management/a
 import { LaboratoryListComponent } from './pages/laboratory-list/laboratory-list.component';
 import { LaboratoryFormComponent } from './pages/laboratory-form/laboratory-form.component';
 import { EmergencyManagementComponent } from './pages/emergency-management/emergency-management.component';
+import { ForumModule } from '../../forum/forum.module';
 
 
 @NgModule({
@@ -34,7 +36,10 @@ import { EmergencyManagementComponent } from './pages/emergency-management/emerg
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    BackOfficeRoutingModule
+    BackOfficeRoutingModule,
+    ForumModule
   ]
 })
 export class BackOfficeModule { }
+
+

@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
 import { LabTestService, LabTestResponse } from '../../../../services/lab-test.service';
 import { LabRequestService, LabRequestResponse } from '../../../../services/lab-request.service';
+import { Router } from '@angular/router';
+import { LaboratoryService } from '../../../../services/laboratory.service';
+import { LaboratoryResponse } from '../../../../models/laboratory.model';
 
 @Component({
   selector: 'app-lab-tests',
@@ -26,20 +29,35 @@ export class LabTestsComponent implements OnInit {
 
   searchQuery = '';
   selectedTestType = '';
+  currentLab: LaboratoryResponse | null = null;
 
   constructor(
     private authService: AuthService,
+    private laboratoryService: LaboratoryService,
     private labTestService: LabTestService,
-    private labRequestService: LabRequestService
+    private labRequestService: LabRequestService,
+    private router: Router
   ) {}
 
+  navigateToDashboard(): void {
+    this.router.navigate(['/front/laboratorystaff/dashboard']);
+  }
+
+
   ngOnInit(): void {
-    this.loadLabTests();
-    this.loadPendingRequests();
+    this.laboratoryService.getMyLaboratory().subscribe({
+      next: (lab) => {
+        this.currentLab = lab;
+        this.loadLabTests();
+        this.loadPendingRequests();
+      },
+      error: (err) => console.error('Error fetching lab profile:', err)
+    });
   }
 
   loadPendingRequests(): void {
-    this.labRequestService.getAllPending().subscribe({
+    if (!this.currentLab) return;
+    this.labRequestService.getPendingByLaboratory(this.currentLab.id).subscribe({
       next: (data: LabRequestResponse[]) => {
         this.pendingRequests = data;
       },
@@ -48,7 +66,8 @@ export class LabTestsComponent implements OnInit {
   }
 
   loadLabTests(): void {
-    this.labTestService.getAll().subscribe({
+    if (!this.currentLab) return;
+    this.labTestService.getByLaboratory(this.currentLab.id).subscribe({
       next: (data: LabTestResponse[]) => {
         this.tests = data;
         this.filteredTests = data;

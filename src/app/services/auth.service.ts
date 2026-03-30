@@ -24,6 +24,13 @@ export class AuthService {
             tap(response => {
                 if (response && response.token) {
                     localStorage.setItem(this.TOKEN_KEY, response.token);
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        id: response.id,
+                        email: response.email,
+                        role: response.role,
+                        fullName: response.fullName,
+                        token: response.token
+                    }));
                     this.authStatusSubject.next(true);
                 }
             })
@@ -40,6 +47,7 @@ export class AuthService {
 
     logout(): void {
         localStorage.removeItem(this.TOKEN_KEY);
+        localStorage.removeItem('currentUser');
         this.authStatusSubject.next(false);
         this.router.navigate(['/auth/login']);
     }

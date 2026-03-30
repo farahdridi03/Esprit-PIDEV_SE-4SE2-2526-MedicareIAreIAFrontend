@@ -11,6 +11,9 @@ import { LaboratoryListComponent } from './pages/laboratory-list/laboratory-list
 import { LaboratoryFormComponent } from './pages/laboratory-form/laboratory-form.component';
 import { EmergencyManagementComponent } from './pages/emergency-management/emergency-management.component';
 
+import { ForumModerationComponent } from '../../forum/pages/forum-moderation/forum-moderation.component';
+
+
 const routes: Routes = [
   {
     path: '',
@@ -22,9 +25,10 @@ const routes: Routes = [
       { path: 'appointments', component: AppointmentManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'emergency', component: EmergencyManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'events', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-      { path: 'forum', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'forum', component: ForumModerationComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'home-care', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'profile', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+
       {
         path: 'laboratories',
         canActivate: [AuthGuard],

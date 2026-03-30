@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   LabRequestService,
   LabRequestResponse,
@@ -17,20 +17,11 @@ export class LabRequestsComponent implements OnInit {
 
   requests: LabRequestResponse[] = [];
   filteredRequests: LabRequestResponse[] = [];
-  laboratories: Laboratory[] = [];
   userId = 0;
   today = '';
 
-  drawerOpen    = false;
-  drawerClosing = false;
-  labsLoading   = false;
-  editingId: number | null = null;
-
   isLoading     = false;
-  isSubmitting  = false;
-  submitSuccess = false;
   submitError   = '';
-  form!: FormGroup;
 
   statusFilter = 'ALL';
   dateFilter   = '30';
@@ -48,10 +39,10 @@ export class LabRequestsComponent implements OnInit {
   get pending()    { return this.requests.filter(r => r.status === 'PENDING').length; }
   get scheduled()  { return this.requests.filter(r => r.status === 'IN_PROGRESS').length; }
   get completed()  { return this.requests.filter(r => r.status === 'COMPLETED').length; }
-  get isEditMode() { return this.editingId !== null; }
+  get isEditMode() { return false; }
 
   constructor(
-    private fb:          FormBuilder,
+    private router:      Router,
     private labService:  LabRequestService,
     private authService: AuthService
   ) {}
@@ -76,54 +67,37 @@ export class LabRequestsComponent implements OnInit {
       console.log('Token starts with Bearer:', token.startsWith('Bearer'));
     }
 
-    this.form = this.fb.group({
-      laboratoryId:  [null, Validators.required],
-      testType:      ['',   [Validators.required, Validators.minLength(3)]],
-      scheduledAt:   ['',   Validators.required],
-      clinicalNotes: ['']
-    });
-
     this.loadRequests();
   }
 
-  loadLaboratories(): void {
-    this.labsLoading = true;
-    this.labService.getLaboratories().subscribe({
-      next: (labs: Laboratory[]) => { this.laboratories = labs; this.labsLoading = false; },
-      error: (err: unknown)      => { console.error('Labs error:', err); this.labsLoading = false; }
-    });
+  navigateToDashboard(): void {
+    this.router.navigate(['/front/patient/dashboard']);
+  }
+
+  goToCreate(): void {
+    this.router.navigate(['/front/patient/lab-requests/new']);
+  }
+
+  goToEdit(id: number): void {
+    this.router.navigate(['/front/patient/lab-requests/edit', id]);
   }
 
   loadRequests(): void {
-    console.log('=== DEBUG LOAD REQUESTS ===');
-    console.log('userId brut:', this.userId);
-    console.log('userId type:', typeof this.userId);
-    
     if (!this.userId || this.userId <= 0) {
-      console.error('Invalid user ID:', this.userId);
       this.isLoading = false;
-      this.submitError = 'Unable to load requests: Invalid user ID. Please log in again.';
       return;
     }
-    
-    // S'assurer que userId est un nombre entier
-    const cleanUserId = Math.floor(this.userId);
-    console.log('cleanUserId:', cleanUserId);
-    console.log('URL qui sera appelée:', `/springsecurity/api/lab-requests/patient/${cleanUserId}`);
-    
     this.isLoading = true;
-    this.labService.getByPatient(cleanUserId).subscribe({
+    this.labService.getByPatient(this.userId).subscribe({
       next: (data: LabRequestResponse[]) => {
-        console.log('Données reçues:', data);
         this.requests = data;
         this.applyFilters();
         this.isLoading = false;
       },
       error: (err: unknown) => { 
         console.error('Error loading lab requests:', err); 
-        console.error('Error details:', JSON.stringify(err, null, 2));
         this.isLoading = false;
-        this.submitError = 'Failed to load lab requests. Please try again.';
+        this.submitError = 'Failed to load lab requests.';
       }
     });
   }
@@ -134,7 +108,7 @@ export class LabRequestsComponent implements OnInit {
       result = result.filter(r => r.status === this.statusFilter);
     }
     if (this.dateFilter !== 'ALL') {
-      const days   = parseInt(this.dateFilter, 10);
+      const days = parseInt(this.dateFilter, 10);
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - days);
       result = result.filter(r => new Date(r.scheduledAt) >= cutoff);
@@ -143,87 +117,12 @@ export class LabRequestsComponent implements OnInit {
   }
 
   setStatusFilter(v: string): void { this.statusFilter = v; this.applyFilters(); }
-  setDateFilter(v: string):   void { this.dateFilter   = v; this.applyFilters(); }
+  setDateFilter(v: string): void { this.dateFilter = v; this.applyFilters(); }
 
   resetFilters(): void {
     this.statusFilter = 'ALL';
     this.dateFilter   = '30';
     this.applyFilters();
-  }
-
-  openDrawer(): void {
-    this.editingId     = null;
-    this.drawerClosing = false;
-    this.drawerOpen    = true;
-    this.submitError   = '';
-    this.form.reset();
-    this.loadLaboratories();
-  }
-
-  editRequest(req: LabRequestResponse): void {
-    this.editingId     = req.id;
-    this.drawerClosing = false;
-    this.drawerOpen    = true;
-    this.submitError   = '';
-    this.loadLaboratories();
-    this.form.patchValue({
-      laboratoryId:  req.laboratoryId,
-      testType:      req.testType,
-      scheduledAt:   req.scheduledAt?.slice(0, 16),
-      clinicalNotes: req.clinicalNotes || ''
-    });
-  }
-
-  closeDrawer(): void {
-    this.drawerClosing = true;
-    setTimeout(() => {
-      this.drawerOpen    = false;
-      this.drawerClosing = false;
-      this.editingId     = null;
-      this.submitError   = '';
-      this.form.reset();
-    }, 300);
-  }
-
-  onSubmit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
-    if (!this.userId || this.userId <= 0) { 
-      this.submitError = 'Session expired. Please log in again.'; 
-      return; 
-    }
-
-    const v = this.form.value;
-    const payload: LabRequestPayload = {
-      patientId:     this.userId,
-      laboratoryId:  Number(v.laboratoryId),
-      testType:      v.testType.trim(),
-      scheduledAt:   new Date(v.scheduledAt).toISOString().slice(0, 19),
-      clinicalNotes: v.clinicalNotes || '',
-      requestedBy:   'PATIENT',
-      doctorId:      null
-    };
-
-    this.isSubmitting = true;
-
-    const request$ = this.isEditMode
-      ? this.labService.update(this.editingId!, payload)
-      : this.labService.create(payload);
-
-    request$.subscribe({
-      next: () => {
-        this.isSubmitting  = false;
-        this.submitSuccess = true;
-        this.closeDrawer();
-        this.loadRequests();
-        setTimeout(() => { this.submitSuccess = false; }, 4000);
-      },
-      error: (err: unknown) => {
-        this.isSubmitting = false;
-        const e = err as { error?: { message?: string } };
-        this.submitError = e?.error?.message || 'An error occurred. Please try again.';
-        console.error(err);
-      }
-    });
   }
 
   deleteRequest(id: number): void {

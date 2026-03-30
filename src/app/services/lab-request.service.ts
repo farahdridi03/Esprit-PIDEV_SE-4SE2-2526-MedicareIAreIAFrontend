@@ -163,4 +163,17 @@ export class LabRequestService {
       { headers }
     );
   }
+
+  getPendingByLaboratory(laboratoryId: number): Observable<LabRequestResponse[]> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
+    return this.http.get<LabRequestResponse[]>(
+      `${this.base}/lab-requests/laboratory/${laboratoryId}/pending`,
+      { headers }
+    );
+  }
 }
+

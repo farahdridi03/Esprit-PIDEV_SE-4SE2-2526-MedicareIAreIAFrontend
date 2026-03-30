@@ -1,4 +1,15 @@
-<div class="lr-page">
+<div class="dashboard-wrapper">
+  <!-- Sidebar -->
+  <app-patient-sidebar></app-patient-sidebar>
+
+  <!-- Main Body -->
+  <div class="main-body">
+    <!-- Topbar -->
+    <app-patient-topbar></app-patient-topbar>
+
+    <!-- Page Content Area -->
+    <div class="content-area">
+      <div class="lr-page">
 
   <!-- ══════════════════════════════════════════════
        PAGE HEADER
@@ -9,16 +20,15 @@
       <h1 class="lr-header__title">Lab Requests Management</h1>
     </div>
     <div class="lr-header__actions">
-      <button class="btn-export">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
+      <button class="btn-back" (click)="navigateToDashboard()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
         </svg>
-        Export Data
+        Back to Dashboard
       </button>
-      <button class="btn-new" (click)="openDrawer()">
+
+      <button class="btn-new" (click)="goToCreate()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"/>
@@ -100,19 +110,12 @@
   <!-- ══════════════════════════════════════════════
        SUCCESS BANNER
   ══════════════════════════════════════════════ -->
-  <div class="alert-success" *ngIf="submitSuccess">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2.5">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-      <polyline points="22 4 12 14.01 9 11.01"/>
-    </svg>
-    {{ isEditMode ? 'Request updated successfully!' : 'Request submitted successfully!' }}
-  </div>
+
 
   <!-- ══════════════════════════════════════════════
        ERROR BANNER
   ══════════════════════════════════════════════ -->
-  <div class="alert-error" *ngIf="submitError && !drawerOpen">
+  <div class="alert-error" *ngIf="submitError">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" stroke-width="2">
       <circle cx="12" cy="12" r="10"/>
@@ -199,7 +202,7 @@
       </svg>
       <p class="lr-empty__title">No requests found</p>
       <p class="lr-empty__sub">Adjust your filters or create a new request</p>
-      <button class="btn-new" (click)="openDrawer()">New Request</button>
+      <button class="btn-new" (click)="goToCreate()">New Request</button>
     </div>
 
     <!-- Table -->
@@ -259,7 +262,7 @@
             <button *ngIf="req.status === 'PENDING'"
                     class="btn-icon btn-icon--edit"
                     title="Edit request"
-                    (click)="editRequest(req)">
+                    (click)="goToEdit(req.id)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -301,145 +304,6 @@
 
   </div>
 </div>
-
-<!-- ══════════════════════════════════════════════════════════
-     DRAWER OVERLAY
-══════════════════════════════════════════════════════════ -->
-<div class="drawer-overlay"
-     *ngIf="drawerOpen"
-     [class.drawer-overlay--closing]="drawerClosing"
-     (click)="closeDrawer()">
 </div>
-
-<!-- ══════════════════════════════════════════════════════════
-     DRAWER PANEL
-══════════════════════════════════════════════════════════ -->
-<div class="drawer"
-     *ngIf="drawerOpen"
-     [class.drawer--closing]="drawerClosing"
-     (click)="$event.stopPropagation()">
-
-  <!-- Header -->
-  <div class="drawer__header">
-    <div class="drawer__header-text">
-      <span class="drawer__eyebrow">CLINICAL SERVICES</span>
-      <h2 class="drawer__title">
-        {{ isEditMode ? 'Edit Lab Request' : 'New Lab Request' }}
-      </h2>
-      <p class="drawer__sub">
-        {{ isEditMode
-          ? 'Update the parameters of your existing request.'
-          : 'Fill in the details to schedule your diagnostic session.' }}
-      </p>
-    </div>
-    <button class="drawer__close" (click)="closeDrawer()" title="Close">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2">
-        <line x1="18" y1="6"  x2="6"  y2="18"/>
-        <line x1="6"  y1="6"  x2="18" y2="18"/>
-      </svg>
-    </button>
-  </div>
-
-  <!-- Body -->
-  <div class="drawer__body">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
-      <!-- Laboratory -->
-      <div class="field">
-        <label class="field__label">
-          Target Laboratory <span class="req-star">*</span>
-        </label>
-        <div class="field__select-wrap">
-          <select formControlName="laboratoryId"
-                  class="field__select"
-                  [disabled]="labsLoading">
-            <option [ngValue]="null" disabled>
-              {{ labsLoading ? 'Loading facilities…' : 'Select a facility' }}
-            </option>
-            <option *ngFor="let lab of laboratories" [value]="lab.id">
-              {{ lab.name }}
-            </option>
-          </select>
-          <svg class="field__arrow" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </div>
-        <span class="field__err"
-              *ngIf="form.get('laboratoryId')?.invalid && form.get('laboratoryId')?.touched">
-          Laboratory is required
-        </span>
-      </div>
-
-      <!-- Test type -->
-      <div class="field">
-        <label class="field__label">
-          Test Type / Panel <span class="req-star">*</span>
-        </label>
-        <input type="text"
-               formControlName="testType"
-               class="field__input"
-               placeholder="e.g. Complete Blood Count (CBC)" />
-        <span class="field__err"
-              *ngIf="form.get('testType')?.invalid && form.get('testType')?.touched">
-          Minimum 3 characters required
-        </span>
-      </div>
-
-      <!-- Scheduled date -->
-      <div class="field">
-        <label class="field__label">
-          Scheduled Date &amp; Time <span class="req-star">*</span>
-        </label>
-        <input type="datetime-local"
-               formControlName="scheduledAt"
-               class="field__input"
-               [min]="today" />
-        <span class="field__err"
-              *ngIf="form.get('scheduledAt')?.invalid && form.get('scheduledAt')?.touched">
-          Please select a future date and time
-        </span>
-      </div>
-
-      <!-- Clinical notes -->
-      <div class="field">
-        <label class="field__label">Clinical Notes
-          <span class="field__optional">(optional)</span>
-        </label>
-        <textarea formControlName="clinicalNotes"
-                  class="field__textarea"
-                  rows="4"
-                  placeholder="Additional instructions or context…"></textarea>
-      </div>
-
-      <!-- Error alert -->
-      <div class="alert-error" *ngIf="submitError">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8"  x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        {{ submitError }}
-      </div>
-
-      <!-- Footer -->
-      <div class="drawer__footer">
-        <button type="button" class="btn-cancel" (click)="closeDrawer()">
-          Cancel
-        </button>
-        <button type="submit" class="btn-submit" [disabled]="isSubmitting">
-          <span *ngIf="!isSubmitting">
-            {{ isEditMode ? 'Update Request' : 'Submit Request' }}
-          </span>
-          <span *ngIf="isSubmitting" class="submitting">
-            <span class="dot-spin"></span>
-            {{ isEditMode ? 'Updating…' : 'Submitting…' }}
-          </span>
-        </button>
-      </div>
-
-    </form>
-  </div>
+</div>
 </div>

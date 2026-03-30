@@ -26,6 +26,7 @@ import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle
 import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
 import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
+import { LabRequestFormComponent } from './patient/pages/lab-requests/lab-request-form/lab-request-form.component';
 
 // Doctor components
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
@@ -70,6 +71,7 @@ import { ContactComponent } from './pages/contact/contact.component';
     LifestyleListComponent,
     LifestyleFormComponent,
     LabRequestsComponent,
+    LabRequestFormComponent,
     DoctorDashboardComponent,
     DoctorProfileComponent,
     DoctorSidebarComponent,

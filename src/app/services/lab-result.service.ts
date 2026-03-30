@@ -44,6 +44,10 @@ export class LabResultService {
   getAll(): Observable<LabResultResponse[]> {
     return this.http.get<LabResultResponse[]>(this.baseUrl, { headers: this.getHeaders() });
   }
+
+  getByLaboratory(laboratoryId: number): Observable<LabResultResponse[]> {
+    return this.http.get<LabResultResponse[]>(`${this.baseUrl}/laboratory/${laboratoryId}`, { headers: this.getHeaders() });
+  }
   create(req: LabResultRequest): Observable<LabResultResponse> {
     return this.http.post<LabResultResponse>(this.baseUrl, req, { headers: this.getHeaders() });
   }

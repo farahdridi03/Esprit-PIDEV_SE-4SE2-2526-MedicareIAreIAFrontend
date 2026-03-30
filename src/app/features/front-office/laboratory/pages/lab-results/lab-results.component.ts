@@ -3,6 +3,9 @@ import { LabResultService, LabResultResponse } from '../../../../../services/lab
 import { LabTestService, LabTestResponse } from '../../../../../services/lab-test.service';
 import { LabRequestService, LabRequestResponse } from '../../../../../services/lab-request.service';
 import { LabResultFormComponent } from './lab-result-form.component';
+import { Router } from '@angular/router';
+import { LaboratoryService } from '../../../../../services/laboratory.service';
+import { LaboratoryResponse } from '../../../../../models/laboratory.model';
 
 @Component({
   selector: 'app-lab-results',
@@ -24,19 +27,34 @@ export class LabResultsComponent implements OnInit {
   editResult: LabResultResponse | null = null;
   viewResult: LabResultResponse | null = null;
   selectedLabTest: LabTestResponse | null = null;
+  currentLab: LaboratoryResponse | null = null;
 
   constructor(
     private labResultService: LabResultService,
-    private labTestService: LabTestService
+    private labTestService: LabTestService,
+    private laboratoryService: LaboratoryService,
+    private router: Router
   ) {}
 
+  navigateToDashboard(): void {
+    this.router.navigate(['/front/laboratorystaff/dashboard']);
+  }
+
+
   ngOnInit(): void {
-    this.loadResults();
-    this.loadLabTests();
+    this.laboratoryService.getMyLaboratory().subscribe({
+      next: (lab) => {
+        this.currentLab = lab;
+        this.loadResults();
+        this.loadLabTests();
+      },
+      error: (err) => console.error('Error fetching lab profile:', err)
+    });
   }
 
   loadResults(): void {
-    this.labResultService.getAll().subscribe({
+    if (!this.currentLab) return;
+    this.labResultService.getByLaboratory(this.currentLab.id).subscribe({
       next: (data: LabResultResponse[]) => {
         this.results = data;
         this.filteredResults = data;
@@ -47,7 +65,8 @@ export class LabResultsComponent implements OnInit {
   }
 
   loadLabTests(): void {
-    this.labTestService.getAll().subscribe({
+    if (!this.currentLab) return;
+    this.labTestService.getByLaboratory(this.currentLab.id).subscribe({
       next: (data: LabTestResponse[]) => { this.labTests = data; },
       error: (err: any) => console.error(err)
     });
