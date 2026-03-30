@@ -160,26 +160,26 @@
                     <button class="close-icon" (click)="closeRejectModal()">&times;</button>
                 </div>
                 
-                <p class="modal-desc">Veuillez indiquer le motif du rejet de cette commande. Le patient sera notifié instantanément.</p>
+                <p class="modal-desc">Please indicate the reason for rejecting this order. The patient will be notified instantly.</p>
                 
                 <form [formGroup]="rejectForm" (ngSubmit)="confirmReject()">
                     <div class="form-group">
-                        <label for="rejectReason">Motif du rejet <span class="required">*</span></label>
+                        <label for="rejectReason">Reason for rejection <span class="required">*</span></label>
                         <textarea id="rejectReason" formControlName="reason" 
-                            placeholder="Rupture de stock, ordonnance non valide, etc..."
+                            placeholder="Out of stock, invalid prescription, etc..."
                             [class.is-invalid]="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched"></textarea>
                         
                         <div class="error-feedback" *ngIf="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched">
-                            <span *ngIf="rejectForm.get('reason')?.errors?.['required']">Le motif est obligatoire.</span>
-                            <span *ngIf="rejectForm.get('reason')?.errors?.['minlength']">Le motif doit faire au moins 5 caractères.</span>
-                            <span *ngIf="rejectForm.get('reason')?.errors?.['maxlength']">Le motif ne peut pas dépasser 1000 caractères.</span>
+                            <span *ngIf="rejectForm.get('reason')?.errors?.['required']">Reason is required.</span>
+                            <span *ngIf="rejectForm.get('reason')?.errors?.['minlength']">Reason must be at least 5 characters.</span>
+                            <span *ngIf="rejectForm.get('reason')?.errors?.['maxlength']">Reason cannot exceed 1000 characters.</span>
                         </div>
                     </div>
                     
                     <div class="modal-actions">
-                        <button type="button" class="btn btn-outline" (click)="closeRejectModal()">Annuler</button>
+                        <button type="button" class="btn btn-outline" (click)="closeRejectModal()">Cancel</button>
                         <button type="submit" class="btn btn-danger" [disabled]="rejectForm.invalid">
-                            Confirmer le rejet
+                            Confirm rejection
                         </button>
                     </div>
                 </form>
@@ -190,49 +190,49 @@
         <div class="modal-overlay" *ngIf="showDispatchModal">
             <div class="modal dispatch-modal">
                 <div class="modal-header">
-                    <h3>Expédier la commande #{{ currentDispatchOrderId }}</h3>
+                    <h3>Dispatch order #{{ currentDispatchOrderId }}</h3>
                     <button class="close-icon" (click)="closeDispatchModal()">&times;</button>
                 </div>
                 
-                <p class="modal-desc">Sélectionnez une agence de livraison et un coursier disponible pour prendre en charge cette commande.</p>
+                <p class="modal-desc">Select a delivery agency and an available courier to handle this order.</p>
 
                 <form [formGroup]="dispatchForm" (ngSubmit)="confirmDispatch()">
                     <div class="form-group">
-                        <label for="agencySelect">Agence de livraison <span class="required">*</span></label>
+                        <label for="agencySelect">Delivery agency <span class="required">*</span></label>
                         <select id="agencySelect" class="form-control" formControlName="agencyId" (change)="onAgencyChange()"
                             [class.is-invalid]="dispatchForm.get('agencyId')?.invalid && dispatchForm.get('agencyId')?.touched">
-                            <option [ngValue]="null">--- Choisir une agence ---</option>
+                            <option [ngValue]="null">--- Choose an agency ---</option>
                             <option *ngFor="let agency of agencies" [ngValue]="agency.id">
                                 {{ agency.name }} ({{ agency.city }})
                             </option>
                         </select>
                         <div class="error-feedback" *ngIf="dispatchForm.get('agencyId')?.invalid && dispatchForm.get('agencyId')?.touched">
-                            L'agence est obligatoire.
+                            Agency is required.
                         </div>
                     </div>
 
                     <div class="form-group" *ngIf="dispatchForm.get('agencyId')?.value">
-                        <label for="agentSelect">Coursier disponible <span class="required">*</span></label>
+                        <label for="agentSelect">Available courier <span class="required">*</span></label>
                         <select id="agentSelect" class="form-control" formControlName="agentId"
                             [class.is-invalid]="dispatchForm.get('agentId')?.invalid && dispatchForm.get('agentId')?.touched">
-                            <option [ngValue]="null">--- Choisir un coursier ---</option>
+                            <option [ngValue]="null">--- Choose a courier ---</option>
                             <option *ngFor="let agent of agents" [ngValue]="agent.id">
                                 {{ agent.name }} - {{ agent.vehicleType }} ({{ agent.phoneNumber }})
                             </option>
                         </select>
                         <div class="error-feedback" *ngIf="dispatchForm.get('agentId')?.invalid && dispatchForm.get('agentId')?.touched">
-                            Le coursier est obligatoire.
+                            Courier is required.
                         </div>
                     </div>
 
                     <div *ngIf="dispatchForm.get('agencyId')?.value && agents.length === 0" class="alert alert-danger">
-                        <p>⚠️ Aucun coursier disponible pour cette agence actuellement.</p>
+                        <p>⚠️ No courier currently available for this agency.</p>
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" class="btn btn-outline" (click)="closeDispatchModal()">Annuler</button>
+                        <button type="button" class="btn btn-outline" (click)="closeDispatchModal()">Cancel</button>
                         <button type="submit" class="btn btn-primary" [disabled]="dispatchForm.invalid || isAssigning">
-                            {{ isAssigning ? 'Expédition en cours...' : 'Confirmer l\'expédition' }}
+                            {{ isAssigning ? 'Dispatching...' : 'Confirm dispatch' }}
                         </button>
                     </div>
                 </form>

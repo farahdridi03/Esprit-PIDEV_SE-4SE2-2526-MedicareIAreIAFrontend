@@ -7,12 +7,12 @@
         <div class="content-area">
             <div class="dashboard-header mb-4">
                 <div class="title-section">
-                    <h1>Gestion des Demandes</h1>
-                    <p class="subtitle">Gérez vos interventions et répondez aux nouvelles demandes de soins.</p>
+                    <h1>Request Management</h1>
+                    <p class="subtitle">Manage your interventions and respond to new care requests.</p>
                 </div>
                 <div class="header-actions">
                     <button class="action-btn outline" (click)="loadRequests()">
-                        <i class="bi bi-arrow-clockwise"></i> Actualiser
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
                     </button>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                 <div class="list-header mb-4">
                     <div class="search-box">
                         <i class="bi bi-search"></i>
-                        <input type="text" placeholder="Rechercher un patient ou un service...">
+                        <input type="text" placeholder="Search for a patient or a service...">
                     </div>
                 </div>
 
@@ -52,18 +52,18 @@
                         
                         <div class="item-actions">
                             <button class="btn-action accept" *ngIf="req.status === 'PENDING'" (click)="acceptRequest(req.id)">
-                                <i class="bi bi-check2"></i> Accepter
+                                <i class="bi bi-check2"></i> Accept
                             </button>
                             <button class="btn-action decline" *ngIf="req.status === 'PENDING'" (click)="declineRequest(req.id)">
-                                <i class="bi bi-x-lg"></i> Décliner
+                                <i class="bi bi-x-lg"></i> Decline
                             </button>
                             
                             <button class="btn-action start" *ngIf="req.status === 'ACCEPTED'" (click)="startRequest(req.id)">
-                                <i class="bi bi-play-fill"></i> Commencer
+                                <i class="bi bi-play-fill"></i> Start
                             </button>
                             
                             <button class="btn-action complete" *ngIf="req.status === 'IN_PROGRESS'" (click)="completeRequest(req.id)">
-                                <i class="bi bi-check-all"></i> Terminer
+                                <i class="bi bi-check-all"></i> Complete
                             </button>
 
                             <button class="btn-action details-btn" [routerLink]="['/front/home-care/requests', req.id]">
@@ -74,7 +74,7 @@
 
                     <div class="empty-list" *ngIf="requests.length === 0">
                         <i class="bi bi-inbox" style="font-size: 3rem; color: #cbd5e1;"></i>
-                        <p class="mt-3">Aucune demande trouvée.</p>
+                        <p class="mt-3">No requests found.</p>
                     </div>
                 </div>
 
@@ -83,49 +83,8 @@
                     <div class="medical-spinner"></div>
                 </div>
 
-                <!-- Complete Intervention Modal -->
-                <div class="modal-backdrop fade show" *ngIf="showCompleteModal"></div>
-                <div class="modal fade show d-block" *ngIf="showCompleteModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-                            <div class="modal-header bg-primary text-white p-4">
-                                <h5 class="modal-title d-flex align-items-center gap-2">
-                                    <i class="bi bi-check-circle-fill"></i> Terminer l'intervention
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" (click)="closeCompleteModal()"></button>
-                            </div>
-                            <div class="modal-body p-4">
-                                <form [formGroup]="completeForm">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Compte-rendu de l'intervention</label>
-                                        <textarea class="form-control rounded-3" rows="4" 
-                                            formControlName="providerNotes"
-                                            [ngClass]="{'is-invalid': completeForm.get('providerNotes')?.invalid && (completeForm.get('providerNotes')?.dirty || completeForm.get('providerNotes')?.touched)}"
-                                            placeholder="Détails de l'intervention, observations, recommandations..."></textarea>
-                                        <div class="invalid-feedback" *ngIf="completeForm.get('providerNotes')?.errors?.['required']">
-                                            Les notes sont obligatoires pour terminer l'intervention.
-                                        </div>
-                                        <div class="invalid-feedback" *ngIf="completeForm.get('providerNotes')?.errors?.['maxlength']">
-                                            Les notes ne peuvent pas dépasser 1000 caractères.
-                                        </div>
-                                        <div class="text-muted small mt-2 d-flex justify-content-between">
-                                            <span>Notez toute observation importante pour le patient.</span>
-                                            <span>{{ completeForm.get('providerNotes')?.value?.length || 0 }} / 1000</span>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer border-0 p-4 pt-0 gap-2">
-                                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" (click)="closeCompleteModal()">Annuler</button>
-                                <button type="button" class="btn btn-primary rounded-pill px-4" 
-                                    [disabled]="completeForm.invalid"
-                                    (click)="submitComplete()">
-                                    Confirmer la complétion
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+
             </div>
         </div>
     </div>

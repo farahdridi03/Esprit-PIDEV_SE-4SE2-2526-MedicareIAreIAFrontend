@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
 export class ProviderDashboardComponent implements OnInit, OnDestroy {
   requests: ServiceRequest[] = [];
   isLoading = true;
-  
+
   showCompleteModal = false;
   selectedRequestId: number | null = null;
   completeForm: FormGroup;
@@ -112,8 +112,8 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
 
   completeRequest(id: number): void {
     this.selectedRequestId = id;
-    this.completeForm.reset();
     this.showCompleteModal = true;
+    this.completeForm.reset();
   }
 
   submitComplete(): void {

@@ -107,6 +107,10 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
     this.orderService.getOrderById(this.orderId).subscribe({
       next: (data) => {
         this.order = data;
+        if (this.order.prescriptionImageUrl && !this.order.prescriptionImageUrl.startsWith('http')) {
+          this.order.prescriptionImageUrl = 'http://localhost:8081/springsecurity/uploads/prescriptions/' + 
+            this.order.prescriptionImageUrl.replace('/uploads/prescriptions/', '').replace('uploads/prescriptions/', '');
+        }
 
         // Connect to WebSocket notifications
         const userEmail = this.authService.getUserEmail();
