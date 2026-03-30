@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,6 +11,8 @@ import { AdminTopbarComponent } from './components/admin-topbar/admin-topbar.com
 import { UserManagementComponent } from './pages/user-management/user-management.component';
 import { LaboratoryListComponent } from './pages/laboratory-list/laboratory-list.component';
 import { LaboratoryFormComponent } from './pages/laboratory-form/laboratory-form.component';
+import { ForumModule } from '../../forum/forum.module';
+
 
 
 @NgModule({
@@ -26,7 +29,10 @@ import { LaboratoryFormComponent } from './pages/laboratory-form/laboratory-form
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    BackOfficeRoutingModule
+    BackOfficeRoutingModule,
+    ForumModule
   ]
 })
 export class BackOfficeModule { }
+
+

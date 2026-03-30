@@ -1,0 +1,39 @@
+<div class="trending-topics-card">
+  <div class="trending-header">
+    <i class="fas fa-fire trending-icon"></i>
+    <h3>Trending Topics</h3>
+  </div>
+
+  <div class="trending-content">
+    <div *ngIf="loading" class="trending-loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Finding hot topics...</p>
+    </div>
+
+    <div *ngIf="!loading && trendingCategories.length === 0" class="trending-empty">
+      <i class="fas fa-ghost"></i>
+      <p>No activity yet</p>
+    </div>
+
+    <ul *ngIf="!loading && trendingCategories.length > 0" class="trending-list">
+      <li *ngFor="let item of trendingCategories" (click)="onCategoryClick(item.category)" class="trending-item">
+        <div class="trending-item-left">
+          <div class="category-icon-wrap" [class.active-cat]="item.category === 'Nutrition'"> <!-- Example active -->
+             <i class="fas" [ngClass]="getCategoryIcon(item.category)"></i>
+          </div>
+          <span class="category-name">{{ item.category || 'General Health' }}</span>
+        </div>
+        <div class="category-stats">
+          <span class="post-count">{{ item.count }}</span>
+          <span class="post-label">posts</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="trending-footer">
+    <button class="view-all-btn">
+      See all active topics <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</div>

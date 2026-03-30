@@ -41,6 +41,11 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'forum',
+    loadChildren: () =>
+      import('../../forum/forum.module').then(m => m.ForumModule)
+  },
+  {
     path: 'patient/dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard],
