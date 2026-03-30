@@ -1,20 +1,20 @@
 <div class="post-form-container">
   <div class="form-header">
-    <h3>{{ isEditing ? 'Modifier le post' : 'Créer un nouveau post' }}</h3>
+    <h3>{{ isEditing ? 'Edit Post' : 'Create New Post' }}</h3>
     <button class="btn btn-outline-secondary" (click)="onCancel()">
-      <i class="fas fa-arrow-left"></i> Annuler
+      <i class="fas fa-arrow-left"></i> Cancel
     </button>
   </div>
 
   <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
     <div class="form-group">
-      <label for="title">Titre *</label>
+      <label for="title">Title *</label>
       <input 
         type="text" 
         id="title" 
         formControlName="title" 
         class="form-control"
-        placeholder="Entrez le titre du post..."
+        placeholder="Enter post title..."
         [class.is-invalid]="getFieldError('title')"
       >
       <div class="invalid-feedback" *ngIf="getFieldError('title')">
@@ -23,7 +23,7 @@
     </div>
 
     <div class="form-group">
-      <label for="category">Catégorie *</label>
+      <label for="category">Category *</label>
       <select 
         id="category" 
         formControlName="category" 
@@ -42,20 +42,47 @@
     </div>
 
     <div class="form-group">
-      <label for="content">Contenu *</label>
+      <label for="content">Content *</label>
       <textarea 
         id="content" 
         formControlName="content" 
         class="form-control"
         rows="8"
-        placeholder="Écrivez le contenu de votre post..."
+        placeholder="Write your post content..."
         [class.is-invalid]="getFieldError('content')"
       ></textarea>
       <div class="invalid-feedback" *ngIf="getFieldError('content')">
         {{ getFieldError('content') }}
       </div>
       <div class="character-count">
-        {{ postForm.get('content')?.value?.length || 0 }} / 2000 caractères
+        {{ postForm.get('content')?.value?.length || 0 }} / 2000 characters
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="image">Image (Optional)</label>
+      <div class="image-upload-container">
+        <input 
+          type="file" 
+          id="image" 
+          (change)="onFileSelected($event)" 
+          accept="image/*"
+          class="image-input"
+          #fileInput
+        >
+        <button type="button" class="btn btn-outline-secondary" (click)="fileInput.click()">
+          <i class="fas fa-image"></i> Choose an image
+        </button>
+        <span class="file-name" *ngIf="selectedFileName">{{ selectedFileName }}</span>
+      </div>
+      <div class="image-preview" *ngIf="imagePreview">
+        <img [src]="imagePreview" alt="Image Preview">
+        <button type="button" class="remove-image-btn" (click)="removeImage()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="invalid-feedback" *ngIf="getFieldError('image')">
+        {{ getFieldError('image') }}
       </div>
     </div>
 
@@ -67,11 +94,11 @@
       >
         <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
         <i class="fas fa-save" *ngIf="!loading"></i>
-        {{ loading ? 'Enregistrement...' : (isEditing ? 'Mettre à jour' : 'Créer') }}
+        {{ loading ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
       </button>
       
       <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
-        Annuler
+        Cancel
       </button>
     </div>
 

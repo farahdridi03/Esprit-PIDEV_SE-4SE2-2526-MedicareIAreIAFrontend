@@ -10,6 +10,7 @@ export interface Post {
   createdAt: string;
   category?: string;
   authorName: string;
+  imageUrl?: string;
   comments?: Comment[];
   likes?: Like[];
   likeCount?: number;
@@ -66,12 +67,36 @@ export class ForumService {
     return this.http.get<Post>(`${this.apiUrl}/api/forum/posts/${id}`);
   }
 
-  createPost(post: PostRequest): Observable<Post> {
-    return this.http.post<Post>(`${this.apiUrl}/api/forum/posts`, post);
+  createPost(post: PostRequest | FormData): Observable<Post> {
+    // Si c'est déjà du FormData, l'envoyer directement
+    if (post instanceof FormData) {
+      return this.http.post<Post>(`${this.apiUrl}/api/forum/posts`, post);
+    }
+
+    // Convertir PostRequest en FormData
+    const formData = new FormData();
+    formData.append('title', post.title);
+    formData.append('content', post.content);
+    formData.append('category', post.category || '');
+    formData.append('authorId', post.authorId.toString());
+
+    return this.http.post<Post>(`${this.apiUrl}/api/forum/posts`, formData);
   }
 
-  updatePost(id: number, post: PostRequest): Observable<Post> {
-    return this.http.put<Post>(`${this.apiUrl}/api/forum/posts/${id}`, post);
+  updatePost(id: number, post: PostRequest | FormData): Observable<Post> {
+    // Si c'est déjà du FormData, l'envoyer directement
+    if (post instanceof FormData) {
+      return this.http.put<Post>(`${this.apiUrl}/api/forum/posts/${id}`, post);
+    }
+
+    // Convertir PostRequest en FormData
+    const formData = new FormData();
+    formData.append('title', post.title);
+    formData.append('content', post.content);
+    formData.append('category', post.category || '');
+    formData.append('authorId', post.authorId.toString());
+
+    return this.http.put<Post>(`${this.apiUrl}/api/forum/posts/${id}`, formData);
   }
 
   deletePost(id: number): Observable<void> {
@@ -102,5 +127,9 @@ export class ForumService {
 
   deleteComment(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/api/forum/comments/${id}`);
+  }
+
+  getTrendingCategories(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/api/forum/trending-categories`);
   }
 }

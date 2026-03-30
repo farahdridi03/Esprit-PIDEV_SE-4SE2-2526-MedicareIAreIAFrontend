@@ -10,12 +10,14 @@ import { NonPatientGuard } from './guards/non-patient.guard';
 import { ForumModerationComponent } from './pages/forum-moderation/forum-moderation.component';
 import { ForumPublicComponent } from './pages/forum-public/forum-public.component';
 import { PostFormComponent } from './components/post-form/post-form.component';
+import { TrendingTopicsComponent } from './components/trending-topics/trending-topics.component';
 
 @NgModule({
   declarations: [
     ForumModerationComponent,
     ForumPublicComponent,
-    PostFormComponent
+    PostFormComponent,
+    TrendingTopicsComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ import { PostFormComponent } from './components/post-form/post-form.component';
   exports: [
     ForumModerationComponent,
     ForumPublicComponent,
-    PostFormComponent
+    PostFormComponent,
+    TrendingTopicsComponent
   ]
 })
 export class ForumModule { }

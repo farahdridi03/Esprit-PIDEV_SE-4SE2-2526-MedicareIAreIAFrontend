@@ -115,6 +115,94 @@
         color: #6c757d;
         margin-top: 5px;
       }
+
+      // Image upload styles
+      .image-upload-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+
+        .image-input {
+          display: none;
+        }
+
+        .btn {
+          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+          border: 1px solid #dee2e6;
+          color: #6c757d;
+          padding: 10px 20px;
+          border-radius: 6px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+          &:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            border-color: #adb5bd;
+            color: #495057;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+          }
+
+          i {
+            font-size: 14px;
+          }
+        }
+
+        .file-name {
+          font-size: 13px;
+          color: #6c757d;
+          font-style: italic;
+        }
+      }
+
+      .image-preview {
+        position: relative;
+        display: inline-block;
+        margin-top: 10px;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+        img {
+          max-width: 100%;
+          max-height: 300px;
+          display: block;
+          border-radius: 6px;
+        }
+
+        .remove-image-btn {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: rgba(220, 53, 69, 0.9);
+          border: none;
+          color: white;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+          &:hover {
+            background: rgba(200, 35, 51, 0.95);
+            transform: scale(1.1);
+          }
+
+          i {
+            font-size: 12px;
+          }
+        }
+      }
     }
 
     .form-actions {
