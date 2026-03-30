@@ -39,7 +39,12 @@ export class EventsDiscoveryComponent implements OnInit {
 
     request.subscribe({
       next: (res) => {
-        this.events = res;
+        // Preserve image from backend; only use default if truly absent
+        this.events = res.map(ev => ({
+          ...ev,
+          imageUrl: (ev.imageUrl && ev.imageUrl.trim() !== '') ? this.getImageUrl(ev.imageUrl) : this.getDefaultImage(ev.id),
+          attendeeImages: ev.attendeeImages || this.getMockAttendees(ev.id)
+        }));
         this.applyFilters();
         this.loading = false;
       },
@@ -75,5 +80,34 @@ export class EventsDiscoveryComponent implements OnInit {
 
   suggestEvent() {
     alert('Thank you for your interest! The "Suggest Event Idea" feature will be available in a future update.');
+  }
+
+  getImageUrl(imagePath: string | undefined): string {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http') || imagePath.startsWith('data:')) return imagePath;
+    return `http://localhost:8081/uploads/${imagePath}`;
+  }
+
+  private getDefaultImage(id: number): string {
+    const images = [
+      'https://images.unsplash.com/photo-1505751172107-1bc329bc0194?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1576091160550-2173599211d0?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1512678080530-7760d81faba6?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&q=80&w=800'
+    ];
+    return images[id % images.length];
+  }
+
+  private getMockAttendees(id: number): string[] {
+    const list = [
+      'https://i.pravatar.cc/150?u=1',
+      'https://i.pravatar.cc/150?u=2',
+      'https://i.pravatar.cc/150?u=3',
+      'https://i.pravatar.cc/150?u=4',
+      'https://i.pravatar.cc/150?u=5'
+    ];
+    // Return a random slice of 2 to 5 profiles
+    const count = (id % 4) + 2;
+    return list.slice(0, count);
   }
 }

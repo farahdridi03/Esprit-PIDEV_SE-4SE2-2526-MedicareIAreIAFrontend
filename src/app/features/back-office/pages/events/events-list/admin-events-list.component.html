@@ -40,7 +40,8 @@
             <tr *ngFor="let ev of filteredEvents">
                 <td>
                     <div class="ucell">
-                        <div class="mav ma1">{{ ev.title.substring(0,2).toUpperCase() }}</div>
+                        <div class="mav ma1" *ngIf="!ev.imageUrl">{{ ev.title.substring(0,2).toUpperCase() }}</div>
+                        <img *ngIf="ev.imageUrl" [src]="getImageUrl(ev.imageUrl)" alt="Event cover photo">
                         <div>
                             <div class="cn">{{ ev.title }}</div>
                             <div class="cs">{{ ev.description | slice:0:30 }}...</div>

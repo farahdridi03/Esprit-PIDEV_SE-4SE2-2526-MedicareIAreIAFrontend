@@ -1,28 +1,76 @@
 <div class="topbar">
-    <div class="toggle-menu">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
-    </div>
-
-    <div class="search-bar">
-        <span class="search-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-            </svg>
-        </span>
-        <input type="text" placeholder="Search users, events, forum...">
+    <div class="topbar-left">
+        <h2 class="page-title">Admin Dashboard</h2>
     </div>
 
     <div class="topbar-right">
-        <div class="user-profile" routerLink="/admin/profile" style="cursor: pointer;">
+        <!-- Notification Bell -->
+        <div class="notif-wrapper">
+          <div class="notif-bell" (click)="toggleNotifications()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="bell-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+            </svg>
+            <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+          </div>
+          
+          <!-- Dropdown -->
+          <div class="notif-dropdown" *ngIf="showNotifications">
+            <div class="notif-header">
+              <h4>Notifications</h4>
+              <div class="header-actions">
+                <button class="mark-all-btn" (click)="markAllRead()">Mark all read</button>
+                <button class="clear-all-btn" (click)="clearAll()">🗑️ Clear all</button>
+              </div>
+            </div>
+            
+            <div class="notif-list">
+              <div *ngFor="let notif of notifications" 
+                   class="notif-item" 
+                   [class.unread]="!notif.isRead"
+                   (click)="goToEvent(notif.targetId, notif.id)">
+                
+                <button class="notif-delete" (click)="deleteNotification(notif.id, $event)">✕</button>
+
+                <div class="notif-icon">
+                  <span *ngIf="notif.type === 'EVENT_JOIN'">👤</span>
+                  <span *ngIf="notif.type !== 'EVENT_JOIN'">🔔</span>
+                </div>
+                
+                <div class="notif-content">
+                  <p class="notif-msg">{{ notif.message }}</p>
+                  <small class="notif-time">{{ notif.createdAt | date:'short' }}</small>
+                  
+                  <!-- Action Buttons for PENDING Join Requests -->
+                  <div class="notif-actions" *ngIf="notif.type === 'EVENT_JOIN' && notif.participationStatus === 'PENDING'">
+                    <button class="btn-accept" (click)="acceptParticipation(notif.participationId, notif, $event)">
+                      ✅ Accept
+                    </button>
+                    <button class="btn-reject" (click)="rejectParticipation(notif.participationId, notif, $event)">
+                      ❌ Reject
+                    </button>
+                  </div>
+
+                  <!-- Status Badges for Processed Requests -->
+                  <div class="status-badge-container" *ngIf="notif.type === 'EVENT_JOIN' && notif.participationStatus !== 'PENDING'">
+                    <span class="status-badge confirmed" *ngIf="notif.participationStatus === 'CONFIRMED'">✅ Accepted</span>
+                    <span class="status-badge rejected" *ngIf="notif.participationStatus === 'REJECTED'">❌ Rejected</span>
+                  </div>
+                </div>
+              </div>
+            
+              <div *ngIf="notifications.length === 0" class="notif-empty">
+                <span class="empty-icon">🔔</span>
+                <p>No new notifications</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="user-profile">
             <div class="avatar">{{ initials }}</div>
             <div class="user-info">
                 <span class="user-name">{{ firstName }}</span>
-                <span class="user-id">System Administrator</span>
+                <span class="user-role">ADMIN</span>
             </div>
         </div>
     </div>

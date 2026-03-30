@@ -1,7 +1,14 @@
 import { inject, NgModule } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
+import { EventDetailComponent } from './features/front-office/patient/pages/event-detail/event-detail.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
+  {
+    path: 'front/events/:id',
+    component: EventDetailComponent,
+    canActivate: [AuthGuard]
+  },
   {
     path: 'front',
     loadChildren: () =>

@@ -21,6 +21,10 @@ export interface MedicalEvent {
   platformName?: string;
   meetingLink?: string;
   meetingPassword?: string;
+  
+  // Custom Fields for UI
+  imageUrl?: string;
+  attendeeImages?: string[]; // Optional: URLs of participant avatars
 }
 
 export interface EventRegistration {

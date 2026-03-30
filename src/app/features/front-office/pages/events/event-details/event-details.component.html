@@ -1,82 +1,141 @@
-<div class="event-details-container" *ngIf="event">
-    
-    <div class="back-link" routerLink="../">
-        ← Back to Events
+<div class="event-page" *ngIf="event">
+    <!-- HERO SECTION -->
+    <div class="hero-container">
+        <div class="hero-bg" [style.background-image]="'url(' + getImageUrl(event.imageUrl) + ')'"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content">
+            <div class="hero-navigation" routerLink="../">
+                <span class="back-arrow">←</span> Back to Discovery
+            </div>
+            
+            <div class="hero-main">
+                <div class="badges">
+                    <span class="type-badge" [ngClass]="event.eventType === 'ONLINE' ? 'online' : 'physical'">
+                        {{ event.eventType }}
+                    </span>
+                    <span class="status-badge" *ngIf="userRegistration">
+                        {{ userRegistration.status === 'VALIDATED' ? '✓ Registered' : '⏳ Pending' }}
+                    </span>
+                </div>
+                <h1 class="event-title">{{ event.title }}</h1>
+            </div>
+        </div>
     </div>
 
-    <div class="event-header">
-        <div class="badges">
-            <span class="badge" [ngClass]="event.eventType === 'ONLINE' ? 'bg-teal' : 'bg-indigo'">
-                {{ event.eventType }}
-            </span>
-            <span class="badge validation-badge" *ngIf="userRegistration">
-                {{ userRegistration.status === 'VALIDATED' ? '✓ Registration Validated' : '⏳ Registration Pending' }}
-            </span>
-        </div>
-        <h1>{{ event.title }}</h1>
-        <div class="event-meta">
-            📅 {{ event.date | date:'fullDate' }} at {{ event.date | date:'shortTime' }}
-        </div>
-    </div>
-
-    <div class="event-content">
-        <div class="main-info">
-            <div class="info-section">
-                <h3>About This Event</h3>
-                <p>{{ event.description }}</p>
-            </div>
-
-            <!-- PHYSICAL LOGISTICS -->
-            <div class="info-section logistic-box" *ngIf="event.eventType === 'PHYSICAL'">
-                <h3>📍 Venue & Location</h3>
-                <p><strong>{{ event.venueName }}</strong></p>
-                <p>{{ event.address }}</p>
-                <p>{{ event.city }}, {{ event.postalCode }}</p>
-                <p>{{ event.country }}</p>
-                <p style="margin-top: 1rem; color: #6b7280; font-size: 0.9rem;">
-                    Capacity: {{ event.capacity }} attendees maximum
-                </p>
-            </div>
-
-             <!-- ONLINE LOGISTICS -->
-             <div class="info-section logistic-box online" *ngIf="event.eventType === 'ONLINE'">
-                <h3>💻 Virtual Meeting Details</h3>
-                <p><strong>Platform:</strong> {{ event.platformName }}</p>
-                
-                <div *ngIf="userRegistration?.status === 'VALIDATED'; else hiddenLink">
-                    <p style="margin-top: 1rem;"><strong>Meeting Link:</strong> <a [href]="event.meetingLink" target="_blank" class="meet-link">{{ event.meetingLink }}</a></p>
-                    <p *ngIf="event.meetingPassword"><strong>Password:</strong> <span class="pwd">{{ event.meetingPassword }}</span></p>
+    <div class="page-body">
+        <div class="layout-grid">
+            <!-- LEFT: MAIN CONTENT -->
+            <div class="main-column">
+                <div class="glass-meta">
+                    <div class="meta-item">
+                        <span class="icon">📅</span>
+                        <div class="meta-text">
+                            <label>Event Date</label>
+                            <span>{{ event.date | date:'EEEE, MMM d, yyyy' }}</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">⏰</span>
+                        <div class="meta-text">
+                            <label>Starting At</label>
+                            <span>{{ event.date | date:'h:mm a' }}</span>
+                        </div>
+                    </div>
                 </div>
 
-                <ng-template #hiddenLink>
-                    <div class="hidden-alert">
-                       🔒 The meeting link will be visible <strong>after</strong> your registration is validated by an administrator.
+                <section class="details-section">
+                    <h2 class="section-title">About This Event</h2>
+                    <div class="description-text">
+                        {{ event.description }}
                     </div>
-                </ng-template>
-            </div>
-        </div>
+                </section>
 
-        <div class="action-sidebar">
-            <div class="register-card" *ngIf="!userRegistration">
-                <h3>Join this Event</h3>
-                <p>Reserve your spot to gain access to the venue or meeting link.</p>
-                <button class="join-btn" (click)="register()" [disabled]="registering">
-                    {{ registering ? 'Processing...' : 'Register Now' }}
-                </button>
+                <!-- LOGISTICS SECTION -->
+                <section class="details-section logistics" *ngIf="event.eventType === 'PHYSICAL'">
+                    <h2 class="section-title">📍 Venue & Location</h2>
+                    <div class="logistics-card">
+                        <div class="venue-info">
+                            <h3>{{ event.venueName }}</h3>
+                            <address>
+                                {{ event.address }}<br>
+                                {{ event.city }}, {{ event.postalCode }}<br>
+                                {{ event.country }}
+                            </address>
+                        </div>
+                        <div class="capacity-info">
+                            <span class="capacity-count">{{ event.capacity }}</span>
+                            <span class="capacity-label">Max Attendees</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="details-section logistics" *ngIf="event.eventType === 'ONLINE' && event.platformName">
+                    <h2 class="section-title">💻 Virtual Meeting Details</h2>
+                    <div class="logistics-card online">
+                        <div class="platform-header">
+                            <span class="platform-tag">{{ event.platformName }}</span>
+                        </div>
+                        
+                        <div *ngIf="userRegistration?.status === 'VALIDATED'; else hiddenLink" class="link-reveal">
+                            <div class="link-group">
+                                <label>Direct Link</label>
+                                <a [href]="event.meetingLink" target="_blank">{{ event.meetingLink }}</a>
+                            </div>
+                            <div class="link-group" *ngIf="event.meetingPassword">
+                                <label>Passcode</label>
+                                <code class="passcode">{{ event.meetingPassword }}</code>
+                            </div>
+                        </div>
+
+                        <ng-template #hiddenLink>
+                            <div class="access-lock">
+                                <span class="lock-icon">🔒</span>
+                                <p>Meeting link is visible after registration is <strong>validated</strong>.</p>
+                            </div>
+                        </ng-template>
+                    </div>
+                </section>
             </div>
 
-            <div class="register-card registered" *ngIf="userRegistration">
-                <div class="success-icon">🎉</div>
-                <h3>You're enrolled!</h3>
-                <p>Your registration ID is #{{ userRegistration.id }}.</p>
-                <button class="view-regs-btn" routerLink="/front/my-event-registrations">View My Registrations</button>
+            <!-- RIGHT: SIDEBAR -->
+            <div class="sidebar-column">
+                <div class="action-card" [class.unauthenticated]="!userId" [class.registered]="userRegistration">
+                    <div class="card-inner">
+                        <div *ngIf="!userRegistration">
+                            <h3>Secure Your Spot</h3>
+                            <p>Register now to receive access codes and venue details once confirmed.</p>
+                            <button class="primary-btn pulse" (click)="register()" [disabled]="registering">
+                                {{ registering ? 'Registering...' : 'Register Now' }}
+                            </button>
+                        </div>
+
+                        <div *ngIf="userRegistration" class="registered-view">
+                            <div class="success-check">✓</div>
+                            <h3>You're In!</h3>
+                            <p>You have successfully registered for this event.</p>
+                            <div class="reg-id">ID: #{{ userRegistration.id }}</div>
+                            <button class="secondary-btn" routerLink="/front/my-registrations">
+                                Manage Registrations
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="loader" *ngIf="loading">Loading event details...</div>
+<div class="loader-overlay" *ngIf="loading">
+    <div class="loader-content">
+        <div class="spinner"></div>
+        <p>Fetching event details...</p>
+    </div>
+</div>
 
-<div *ngIf="toastMessage" [ngClass]="toastType === 'error' ? 'toast-error' : 'toast-success'">
-  {{ toastMessage }}
+<div class="toast-system" *ngIf="toastMessage">
+    <div class="toast" [ngClass]="toastType">
+        <span class="toast-icon">{{ toastType === 'success' ? '✅' : '❌' }}</span>
+        <span class="toast-text">{{ toastMessage }}</span>
+    </div>
 </div>

@@ -113,4 +113,20 @@ export class EventDetailsComponent implements OnInit {
       this.toastMessage = null;
     }, 4000);
   }
+
+  getImageUrl(imagePath: string | undefined): string {
+    if (!imagePath || imagePath.trim() === '') return this.getDefaultImage(this.eventId);
+    if (imagePath.startsWith('http') || imagePath.startsWith('data:')) return imagePath;
+    return `http://localhost:8081/uploads/${imagePath}`;
+  }
+
+  private getDefaultImage(id: number): string {
+    const images = [
+      'https://images.unsplash.com/photo-1505751172107-1bc329bc0194?auto=format&fit=crop&q=80&w=1200',
+      'https://images.unsplash.com/photo-1576091160550-2173599211d0?auto=format&fit=crop&q=80&w=1200',
+      'https://images.unsplash.com/photo-1512678080530-7760d81faba6?auto=format&fit=crop&q=80&w=1200',
+      'https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&q=80&w=1200'
+    ];
+    return images[id % images.length];
+  }
 }

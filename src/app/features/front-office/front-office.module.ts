@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { EventsDiscoveryComponent } from './pages/events/events-discovery/events-discovery.component';
 import { EventDetailsComponent } from './pages/events/event-details/event-details.component';
 import { MyRegistrationsComponent } from './pages/events/my-registrations/my-registrations.component';
+import { PatientEventsComponent } from './patient/pages/events/patient-events.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { MyRegistrationsComponent } from './pages/events/my-registrations/my-reg
     DoctorProfileComponent,
     EventsDiscoveryComponent,
     EventDetailsComponent,
-    MyRegistrationsComponent
+    MyRegistrationsComponent,
+    PatientEventsComponent
   ],
   imports: [
     CommonModule,

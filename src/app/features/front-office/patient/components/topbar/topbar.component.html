@@ -18,6 +18,68 @@
     </div>
 
     <div class="topbar-right">
+        <!-- Notification Bell -->
+        <div class="notif-wrapper">
+          <div class="notif-bell" (click)="toggleNotifications()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="bell-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+            </svg>
+            <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+          </div>
+          
+          <!-- Dropdown -->
+          <div class="notif-dropdown" *ngIf="showNotifications">
+            <div class="notif-header">
+              <h4>My Notifications</h4>
+              <div class="header-actions">
+                <button class="mark-all-btn" (click)="markAllRead()">Mark all read</button>
+                <button class="clear-all-btn" (click)="clearAll()">🗑️ Clear all</button>
+              </div>
+            </div>
+            
+            <div class="notif-list">
+              <div *ngFor="let notif of notifications" 
+                   class="notif-item" 
+                   [class.unread]="!notif.isRead"
+                   (click)="markRead(notif.id)">
+                
+                <button class="notif-delete" (click)="deleteNotification(notif.id, $event)">✕</button>
+
+                <div class="notif-content">
+                  <p class="notif-msg">{{ notif.message }}</p>
+                  
+                  <!-- Ticket Card for Accepted Participation -->
+                  <div class="ticket-card" *ngIf="notif.type === 'PARTICIPATION_ACCEPTED'" [id]="'ticket-' + notif.id">
+                    <div class="ticket-header">🎟️ EVENT TICKET</div>
+                    <div class="ticket-body">
+                      <h3>{{ notif.eventTitle }}</h3>
+                      <div class="ticket-status-row">
+                        <span class="status-conf">✅ Confirmed</span>
+                        <span class="ticket-id">#{{ notif.participationId }}</span>
+                      </div>
+                      <p class="ticket-date">📅 {{ notif.eventDate | date:'fullDate' }}</p>
+                      <div class="ticket-barcode">
+                        <span>||| | || || || | ||| | ||</span>
+                        <span>SC-{{ notif.participationId }}-{{ notif.targetId }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="btn-download" *ngIf="notif.type === 'PARTICIPATION_ACCEPTED'" (click)="downloadTicket(notif, $event)">
+                    ⬇️ Download Ticket
+                  </button>
+
+                  <small class="notif-time">{{ notif.createdAt | date:'short' }}</small>
+                </div>
+              </div>
+            
+              <div *ngIf="notifications.length === 0" class="notif-empty">
+                <span class="empty-icon">🔔</span>
+                <p>No new notifications</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="user-profile">
             <div class="avatar">{{ initials || 'U' }}</div>

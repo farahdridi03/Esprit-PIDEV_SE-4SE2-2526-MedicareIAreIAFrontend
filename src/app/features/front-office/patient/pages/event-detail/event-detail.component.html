@@ -1,0 +1,149 @@
+<div class="page-container" *ngIf="loading; else content">
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading event details...</p>
+  </div>
+</div>
+
+<ng-template #content>
+  <div class="event-details-hero" *ngIf="event">
+    <div class="hero-image-overlay">
+      <img [src]="event.imageUrl || 'https://images.unsplash.com/photo-1505751172107-16016a260844?auto=format&fit=crop&q=80&w=2070'" 
+           alt="Event Hero" 
+           class="hero-img">
+    </div>
+    
+    <div class="hero-content">
+      <div class="breadcrumb" (click)="goBack()">
+        <span class="icon">←</span> Back to Events
+      </div>
+      
+      <div class="title-section">
+        <div class="badge-wrapper">
+          <span class="type-badge" [class.physical]="event.eventType === 'PHYSICAL'" [class.online]="event.eventType === 'ONLINE'">
+            {{ event.eventType === 'PHYSICAL' ? '📍 PHYSICAL' : '💻 ONLINE' }}
+          </span>
+          <span class="date-badge">{{ event.date | date:'MMM dd, yyyy' }}</span>
+        </div>
+        <h1>{{ event.title }}</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content-layout" *ngIf="event">
+    <div class="container">
+      <div class="grid-layout">
+        <!-- Left Column: Description & Media -->
+        <div class="info-column">
+          <section class="details-section glass-card">
+            <h2 class="section-title">About this event</h2>
+            <p class="description">{{ event.description }}</p>
+          </section>
+
+          <section class="logistics-section glass-card" *ngIf="event.eventType === 'PHYSICAL'">
+            <h2 class="section-title">📍 Venue Details</h2>
+            <div class="venue-info">
+              <div class="info-item">
+                <span class="label">Name:</span>
+                <span class="value">{{ event.venueName }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Address:</span>
+                <span class="value">{{ event.address }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Location:</span>
+                <span class="value">{{ event.city }}, {{ event.country }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Capacity:</span>
+                <span class="value">{{ event.capacity }} people maximum</span>
+              </div>
+            </div>
+            <!-- Mock Map Placeholder -->
+            <div class="map-placeholder">
+              <div class="map-overlay">
+                <span class="map-icon">🗺️</span>
+                <p>Location Map Enabled</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="logistics-section glass-card" *ngIf="event.eventType === 'ONLINE'">
+            <h2 class="section-title">💻 Digital Connection</h2>
+            <div class="venue-info">
+              <div class="info-item">
+                <span class="label">Platform:</span>
+                <span class="value">{{ event.platformName }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Access Link:</span>
+                <a [href]="event.meetingLink" target="_blank" class="value link">{{ event.meetingLink }}</a>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right Column: Registration Card -->
+        <div class="sidebar-column">
+          <div class="registration-card sticky-card">
+            <div class="card-content">
+              <div class="date-time-block">
+                <div class="calendar-icon">
+                  <span class="month">{{ event.date | date:'MMM' }}</span>
+                  <span class="day">{{ event.date | date:'dd' }}</span>
+                </div>
+                <div class="time-info">
+                  <p class="full-date">{{ event.date | date:'EEEE, MMMM d, yyyy' }}</p>
+                  <p class="time">{{ event.date | date:'HH:mm' }} (Local Time)</p>
+                </div>
+              </div>
+
+              <div class="stats-block">
+                <div class="stat">
+                  <div class="avatars">
+                    <img src="https://i.pravatar.cc/150?u=1" alt="Attendee">
+                    <img src="https://i.pravatar.cc/150?u=2" alt="Attendee">
+                    <img src="https://i.pravatar.cc/150?u=3" alt="Attendee">
+                    <span class="more">+12</span>
+                  </div>
+                  <span class="stat-label">Already joined!</span>
+                </div>
+              </div>
+
+              <div class="action-buttons">
+                <button *ngIf="!isParticipating" 
+                        class="btn-primary join-btn" 
+                        [disabled]="submitting" 
+                        (click)="toggleParticipation()">
+                  <span class="btn-icon">✅</span>
+                  {{ submitting ? 'Processing...' : 'Join Event' }}
+                </button>
+                
+                <button *ngIf="isParticipating" 
+                        class="btn-secondary cancel-btn" 
+                        [disabled]="submitting" 
+                        (click)="toggleParticipation()">
+                  <span class="btn-icon">❌</span>
+                  {{ submitting ? 'Processing...' : 'Cancel Participation' }}
+                </button>
+
+                <p class="participation-status" *ngIf="isParticipating">
+                  <span class="success-icon">✨</span> You are registered for this event!
+                </p>
+              </div>
+
+              <div class="share-block">
+                <p>Invite your colleagues:</p>
+                <div class="social-icons">
+                  <span class="social-icon">🔗</span>
+                  <span class="social-icon">📧</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

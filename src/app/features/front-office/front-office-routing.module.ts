@@ -10,6 +10,7 @@ import { AuthGuard } from '../../guards/auth.guard';
 import { EventsDiscoveryComponent } from './pages/events/events-discovery/events-discovery.component';
 import { EventDetailsComponent } from './pages/events/event-details/event-details.component';
 import { MyRegistrationsComponent } from './pages/events/my-registrations/my-registrations.component';
+import { PatientEventsComponent } from './patient/pages/events/patient-events.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,12 @@ const routes: Routes = [
   {
     path: 'patient/dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/events',
+    component: PatientEventsComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },

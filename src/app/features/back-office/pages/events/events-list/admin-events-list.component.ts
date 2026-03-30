@@ -66,4 +66,10 @@ export class AdminEventsListComponent implements OnInit {
   createEvent() {
     this.router.navigate(['/admin/events/create']);
   }
+
+  getImageUrl(imagePath: string | undefined): string {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http') || imagePath.startsWith('data:')) return imagePath;
+    return `http://localhost:8081/uploads/${imagePath}`;
+  }
 }
