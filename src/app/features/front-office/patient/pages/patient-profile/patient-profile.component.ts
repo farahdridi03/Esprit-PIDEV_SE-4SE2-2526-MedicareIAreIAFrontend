@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
-import { PatientService } from '../../../../../services/patient.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../../../services/auth.service';
+import { PatientService } from '../../../../../services/patient.service';
+import { UserService } from '../../../../../services/user.service';
 
 @Component({
   selector: 'app-patient-profile',
@@ -9,28 +10,54 @@ import { AuthService } from '../../../../../services/auth.service';
   styleUrls: ['./patient-profile.component.scss']
 })
 export class PatientProfileComponent implements OnInit {
-  profileData: any = {
-    fullName: '',
-    email: '',
-    password: '',
-    phone: '',
-    birthDate: '',
-    gender: 'MALE',
-    bloodType: 'O_POS',
-    emergencyContactName: '',
-    emergencyContactPhone: '',
-    profileImage: ''
-  };
-
+  profileForm: FormGroup;
+  user: any = null;
+  isLoading = true;
+  showSuccess = false;
   errorMessage: string = '';
-  successMessage: string = '';
   patientId: number | null = null;
+  profileImage: string = '';
+
+  defaultMamaAvatar = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=512&auto=format&fit=crop';
+
+  get parentRole() {
+    return this.authService.getParentRole();
+  }
+
+  get userName() {
+    const fullName = this.authService.getUserFullName() || 'User';
+    return fullName.split(' ')[0];
+  }
 
   constructor(
-    private patientService: PatientService, 
-    private authService: AuthService,
+    private fb: FormBuilder,
+    public authService: AuthService,
+    private patientService: PatientService,
     private userService: UserService
-  ) { }
+  ) {
+    this.profileForm = this.fb.group({
+      fullName: ['', Validators.required],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+      phone: ['', Validators.required],
+      birthDate: [''],
+      gender: ['MALE'],
+      bloodType: ['O_POS'],
+      emergencyContactName: [''],
+      emergencyContactPhone: [''],
+      address: [''],
+      relationship: [''],
+      notifications: [true],
+      marketing: [false]
+    });
+  }
+
+  ngOnInit(): void {
+    // Fill with email from token by default
+    const emailFromToken = this.authService.getUserEmail() ?? '';
+    this.patientId = this.authService.getUserId();
+    
+    this.loadUserProfile();
+  }
 
   // Handle profile photo selection
   onFileSelected(event: any): void {
@@ -38,66 +65,86 @@ export class PatientProfileComponent implements OnInit {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.profileData.profileImage = reader.result as string;
+        this.profileImage = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
   }
 
-  ngOnInit(): void {
-    // Fill with email from token by default
-    this.profileData.email = this.authService.getUserEmail?.() ?? '';
-    this.patientId = this.authService.getUserId?.() ?? null;
-
+  loadUserProfile() {
+    this.isLoading = true;
     if (this.patientId) {
-      // Retrieve full patient data
+      // Retrieve full patient data from backend
       this.patientService.getById(this.patientId).subscribe({
         next: (user: any) => {
           if (user) {
-            this.profileData.fullName = user.fullName || '';
-            this.profileData.email = user.email || '';
-            this.profileData.phone = user.phone || '';
-            this.profileData.birthDate = user.birthDate || '';
-            this.profileData.gender = user.gender || 'MALE';
-            this.profileData.bloodType = user.bloodType || 'O_POS';
-            this.profileData.emergencyContactName = user.emergencyContactName || '';
-            this.profileData.emergencyContactPhone = user.emergencyContactPhone || '';
+            this.user = user;
+            this.profileForm.patchValue({
+              fullName: user.fullName || '',
+              email: user.email || '',
+              phone: user.phone || '',
+              birthDate: user.birthDate || '',
+              gender: user.gender || 'MALE',
+              bloodType: user.bloodType || 'O_POS',
+              emergencyContactName: user.emergencyContactName || '',
+              emergencyContactPhone: user.emergencyContactPhone || '',
+              address: user.address || '',
+              relationship: user.relationship || this.parentRole.badge
+            });
+            this.profileImage = user.profileImage || '';
           }
+          this.isLoading = false;
         },
-        error: (err: any) => console.error('Could not load patient profile details', err)
+        error: (err: any) => {
+          console.error('Could not load patient profile details', err);
+          this.isLoading = false;
+        }
       });
+    } else {
+      // Fallback if no patientId
+      this.isLoading = false;
     }
   }
 
+  saveProfile() {
+    if (this.profileForm.valid && this.patientId) {
+      this.isLoading = true;
+      this.errorMessage = '';
+      this.showSuccess = false;
 
-  onSubmit() {
-    this.errorMessage = '';
-    this.successMessage = '';
+      // Prepare payload (merging form values and profile image)
+      const payload: any = { 
+        ...this.profileForm.getRawValue(),
+        profileImage: this.profileImage 
+      };
 
-    if (!this.patientId) {
-       this.errorMessage = 'User not securely identified.';
-       return;
-    }
+      // Update patient details via PatientService
+      this.patientService.update(this.patientId, payload).subscribe({
+        next: (response: any) => {
+          console.log('Patient profile updated', response);
+          this.showSuccess = true;
+          this.isLoading = false;
+          
+          // Clear success toast after 3 seconds
+          setTimeout(() => this.showSuccess = false, 3000);
 
-    const payload: any = { ...this.profileData };
-
-    // Update patient details
-    this.patientService.update(this.patientId, payload).subscribe({
-      next: (response: any) => {
-        console.log('Patient profile updated', response);
-        this.successMessage = 'Your settings have been securely updated.';
-      },
-      error: (error: any) => {
-        console.error('Error updating patient profile', error);
-        this.errorMessage = 'Update error: ' + (error.error?.message || '');
-      }
-    });
-
-    // If profile image changed, update via user service
-    if (this.profileData.profileImage) {
-      this.userService.updateProfile({ fullName: this.profileData.fullName, email: this.profileData.email, password: this.profileData.password, profileImage: this.profileData.profileImage }).subscribe({
-        next: () => console.log('Profile image updated'),
-        error: err => console.error('Error updating profile image', err)
+          // If profile image changed, also update global user profile
+          if (this.profileImage) {
+            this.userService.updateProfile({ 
+              fullName: payload.fullName, 
+              email: payload.email, 
+              profileImage: this.profileImage 
+            }).subscribe({
+              next: () => console.log('Profile image updated via UserService'),
+              error: err => console.error('Error updating profile image via UserService', err)
+            });
+          }
+        },
+        error: (error: any) => {
+          console.error('Error updating patient profile', error);
+          this.errorMessage = 'Update error: ' + (error.error?.message || 'Unknown error');
+          this.isLoading = false;
+        }
       });
     }
   }

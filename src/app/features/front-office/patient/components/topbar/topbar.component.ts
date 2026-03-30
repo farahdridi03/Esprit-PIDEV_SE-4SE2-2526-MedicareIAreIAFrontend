@@ -4,7 +4,7 @@ import { AuthService } from '../../../../../services/auth.service';
 import { NotificationService, AppNotification } from '../../../../../services/notification.service';
 
 @Component({
-  selector: 'app-topbar',
+  selector: 'app-patient-topbar',
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.scss']
 })

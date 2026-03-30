@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FrontOfficeComponent } from './front-office.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { FrontOfficeComponent } from './front-office.component';
 
 describe('FrontOfficeComponent', () => {
   let component: FrontOfficeComponent;

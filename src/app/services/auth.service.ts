@@ -16,6 +16,7 @@ export class AuthService {
     private readonly baseUrl = 'http://localhost:8081/springsecurity/auth';
     private readonly TOKEN_KEY = 'auth_token';
 
+
     private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
     public authStatus$ = this.authStatusSubject.asObservable();
 
@@ -103,6 +104,9 @@ export class AuthService {
             return null;
         }
     }
+    getHomeCareServices(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
+    }
 
     getUserId(): number | null {
         const token = this.getToken();
@@ -110,10 +114,41 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
-            return decoded.userId || decoded.id || null;
+            const id = decoded.userId || decoded.id || decoded.providerId;
+            return id ? Number(id) : null;
         } catch (error) {
             return null;
         }
+    }
+
+    getUserGender(): string {
+        const token = this.getToken();
+        if (!token) return 'UNKNOWN';
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.gender || 'UNKNOWN';
+        } catch (error) {
+            return 'UNKNOWN';
+        }
+    }
+
+    getParentRole() {
+        const gender = this.getUserGender();
+        if (gender === 'FEMALE') {
+            return {
+                label: 'Maman',
+                badge: 'MAMA'
+            };
+        } else if (gender === 'MALE') {
+            return {
+                label: 'Papa',
+                badge: 'PAPA'
+            };
+        }
+        return {
+            label: 'Parent',
+            badge: 'PARENT'
+        };
     }
 
     getUserFullName(): string | null {
@@ -122,7 +157,15 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
-            return decoded.fullName || decoded.name || null;
+            // On essaie plusieurs clés communes dans un JWT Spring Security + fallback sur sub (email)
+            const name = decoded.fullName || decoded.fullname || decoded.name;
+            if (name) return name;
+
+            const sub = decoded.sub || decoded.email;
+            if (sub && sub.includes('@')) {
+                return sub.split('@')[0];
+            }
+            return sub || null;
         } catch (error) {
             return null;
         }

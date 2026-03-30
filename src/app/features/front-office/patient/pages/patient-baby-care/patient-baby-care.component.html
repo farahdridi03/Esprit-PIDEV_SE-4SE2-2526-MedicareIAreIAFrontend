@@ -1,0 +1,1014 @@
+<div class="baby-care-module-wrapper">
+
+  <!-- LOADING -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="brand">Baby Care</div>
+    <div class="spinner"></div>
+    <p>Preparing {{ baby?.name || 'your' }} space...</p>
+  </div>
+
+  <!-- ONBOARDING (First Time) -->
+  <div class="onboarding-container premium-design" *ngIf="!isLoading && isFirstTime">
+    <!-- Abstract background shapes -->
+    <div class="bg-shape bg-shape-pink"></div>
+    <div class="bg-shape bg-shape-yellow"></div>
+    <div class="bg-shape bg-shape-teal"></div>
+
+    <div class="onboarding-content">
+      <div class="onboarding-header">
+        <button class="btn-back">
+          <i class="fas fa-chevron-left" style="color: #4a7c74"></i>
+        </button>
+        <div class="title-group">
+          <h1 class="serif-title">BABY'S PROFILE</h1>
+          <p class="subtitle">Visible only to your care network</p>
+        </div>
+      </div>
+
+      <!-- Central Photo Blob -->
+      <div class="photo-blob-container" [class.photo-error]="!onboardingPhoto && formError">
+        <label class="photo-blob">
+          <input type="file" (change)="handlePhotoUpload($event, false)" accept="image/*" hidden>
+
+          <img *ngIf="onboardingPhoto" [src]="onboardingPhoto" alt="Baby Preview"
+            style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block;">
+
+          <ng-container *ngIf="!onboardingPhoto">
+            <i class="fas fa-camera"></i>
+            <span>Add a photo</span>
+          </ng-container>
+
+          <div class="edit-overlay" *ngIf="onboardingPhoto">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+        </label>
+      </div>
+
+      <div class="onboarding-form" [formGroup]="onboardingForm">
+
+        <div class="premium-field" [class.field-error]="onboardingForm.get('name')?.invalid && onboardingForm.get('name')?.touched">
+          <label>Baby's Name</label>
+          <input type="text" formControlName="name" placeholder="E.g. Sofia">
+          <span class="error-text" *ngIf="onboardingForm.get('name')?.hasError('required') && onboardingForm.get('name')?.touched">This field is required</span>
+          <span class="error-text" *ngIf="onboardingForm.get('name')?.hasError('minlength') && onboardingForm.get('name')?.touched">Name must be at least 2 characters</span>
+        </div>
+
+        <div class="premium-field" [class.field-error]="onboardingForm.get('birthDate')?.invalid && onboardingForm.get('birthDate')?.touched">
+          <label>Date of birth</label>
+          <input type="date" formControlName="birthDate">
+          <span class="error-text" *ngIf="onboardingForm.get('birthDate')?.hasError('required') && onboardingForm.get('birthDate')?.touched">Date is required</span>
+          <span class="error-text" *ngIf="onboardingForm.get('birthDate')?.hasError('futureDate') && onboardingForm.get('birthDate')?.touched">Date cannot be in the future</span>
+          <span class="error-text" *ngIf="onboardingForm.get('birthDate')?.hasError('tooOld') && onboardingForm.get('birthDate')?.touched">Max 1 year old (App is for babies)</span>
+        </div>
+
+        <div class="premium-field has-icon" [class.field-error]="onboardingForm.get('gender')?.invalid && onboardingForm.get('gender')?.touched">
+          <label>Gender</label>
+          <select formControlName="gender">
+            <option value="" disabled selected>Select gender</option>
+            <option value="MALE">Boy</option>
+            <option value="FEMALE">Girl</option>
+          </select>
+          <span class="error-text" *ngIf="onboardingForm.get('gender')?.invalid && onboardingForm.get('gender')?.touched">Please select a gender</span>
+          <i class="fas fa-chevron-down field-icon" style="color: #4a7c74;"></i>
+        </div>
+
+        <div class="form-row" style="display: flex; gap: 15px;">
+          <div class="premium-field" style="flex: 1;" [class.field-error]="onboardingForm.get('birthWeight')?.invalid && onboardingForm.get('birthWeight')?.touched">
+            <label>Weight (kg)</label>
+            <input type="number" step="0.1" formControlName="birthWeight" placeholder="3.2">
+            <span class="error-text" *ngIf="onboardingForm.get('birthWeight')?.hasError('required') && onboardingForm.get('birthWeight')?.touched">Required</span>
+            <span class="error-text" *ngIf="(onboardingForm.get('birthWeight')?.hasError('min') || onboardingForm.get('birthWeight')?.hasError('max')) && onboardingForm.get('birthWeight')?.touched">Invalid (0-15kg)</span>
+          </div>
+          <div class="premium-field" style="flex: 1;" [class.field-error]="onboardingForm.get('birthHeight')?.invalid && onboardingForm.get('birthHeight')?.touched">
+            <label>Height (cm)</label>
+            <input type="number" formControlName="birthHeight" placeholder="50">
+            <span class="error-text" *ngIf="onboardingForm.get('birthHeight')?.hasError('required') && onboardingForm.get('birthHeight')?.touched">Required</span>
+            <span class="error-text" *ngIf="(onboardingForm.get('birthHeight')?.hasError('min') || onboardingForm.get('birthHeight')?.hasError('max')) && onboardingForm.get('birthHeight')?.touched">Invalid (0-80cm)</span>
+          </div>
+        </div>
+
+        <div class="priority-section" style="margin-top: 1.5rem;" [class.field-error]="onboardingForm.get('priorities')?.invalid && onboardingForm.get('priorities')?.touched">
+          <label style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px; display: block;">What
+            matters most?</label>
+          <div class="priority-chips">
+            <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('feeding')"
+              (click)="togglePriority('feeding')">🍼 Feeding</span>
+            <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('sleep')"
+              (click)="togglePriority('sleep')">😴 Sleep</span>
+            <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('vaccines')"
+              (click)="togglePriority('vaccines')">💉 Vaccines</span>
+            <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('health')"
+              (click)="togglePriority('health')">🩺 Health</span>
+            <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('self-care')"
+              (click)="togglePriority('self-care')">💝 Self-care</span>
+          </div>
+          <span class="error-text" *ngIf="onboardingForm.get('priorities')?.invalid && onboardingForm.get('priorities')?.touched">Please choose at least one priority</span>
+        </div>
+
+        <div class="form-error-banner" *ngIf="formError">
+           <i class="fas fa-exclamation-circle"></i> {{ formError }}
+        </div>
+
+        <button class="btn-premium-continue" (click)="saveOnboarding()">
+          Save & Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD SHELL (Unified with App) -->
+  <div class="baby-care-module app-shell platform-layout" *ngIf="!isLoading && !isFirstTime && baby">
+    <!-- Sidebar -->
+    <aside class="side-nav platform-sidebar">
+      <div class="brand-header">
+        <div class="logo-blob">🍼</div>
+        <div class="brand-text">
+          <h3>First Baby Care</h3>
+          <span>{{ parentRole.badge }} Companion</span>
+        </div>
+      </div>
+
+      <div class="side-nav-menu">
+        <ul>
+          <li *ngFor="let s of sections" [class.active]="activeSection === s.id" (click)="setSection(s.id)">
+            <div class="icon-wrap"><i [class]="s.icon"></i></div>
+            <span class="label">{{ s.label }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="side-nav-footer">
+        <div class="mini-profile" [routerLink]="['/front/patient/profile']" style="cursor: pointer;">
+          <img [src]="defaultMamaAvatar" [alt]="userName">
+          <div class="info">
+            <span class="name">{{ authService.getUserFullName() }}</span>
+            <span class="role">{{ parentRole.badge }}</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Body -->
+    <div class="main-body-wrapper">
+      <!-- Immersive Content Area -->
+      <main class="content-area centered-layout">
+        <div class="page-container">
+          <div class="back-dashboard-top" [routerLink]="['/front/patient/dashboard']" 
+               style="display: flex; align-items: center; gap: 6px; color: #4a7c74; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+          </div>
+
+          <!-- Header Section -->
+          <header class="page-header-banner" *ngIf="activeSection !== 'onboarding' && activeSection !== 'sleep'">
+            <div class="greeting-row">
+              <h1 class="serif-title">Hello, <span class="italic">{{ userName }}</span></h1>
+              <div class="baby-meta-pill">
+                <span class="baby-name">{{ baby.name }}</span>
+                <span class="divider"></span>
+                <span class="baby-age">{{ baby.ageText }}</span>
+              </div>
+            </div>
+          </header>
+
+          <!-- Dynamic Content Sections -->
+          <ng-container *ngIf="baby && !isFirstTime">
+            <!-- Dashboard View -->
+            <div class="section-container" *ngIf="activeSection === 'dashboard'">
+
+              <!-- Hero: Baby Focus -->
+              <div class="dashboard-hero">
+                <div class="baby-main-card">
+                  <div class="portrait-container">
+                    <div class="portrait" (click)="fileInput.click()">
+                      <img [src]="baby.photoUrl || defaultBabyAvatar" [alt]="baby.name"
+                        style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                      <label class="edit-overlay" (click)="$event.stopPropagation()">
+                        <i class="fas fa-camera"></i>
+                        <input #fileInput type="file" (change)="handlePhotoUpload($event, true)" accept="image/*"
+                          hidden>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="details">
+                    <h2 class="serif-title">{{ baby.name }}</h2>
+                    <span class="age-badge">{{ baby.ageText }}</span>
+                    <div class="meta">
+                      <span>Birth Weight <strong>{{ baby.weightAtBirth }}kg</strong></span>
+                      <span>Birth Height <strong>{{ baby.heightAtBirth }}cm</strong></span>
+                    </div>
+                  </div>
+
+                  <div class="next-event">
+                    <div class="label">Next Checkup</div>
+                    <div class="val serif-title">{{ baby.nextCheckupDate }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Today's Status -->
+              <span class="dashboard-section-label">Today's Status</span>
+              <div class="glance-grid">
+                <div class="today-card">
+                  <div class="icon-box"><i class="fas fa-syringe"></i></div>
+                  <div class="label">Vaccination Status</div>
+                  <div class="val serif-title">{{ baby.nextVaccineDate || 'Coming soon' }}</div>
+                </div>
+                <div class="today-card">
+                  <div class="icon-box"><i class="fas fa-baby-bottle"></i></div>
+                  <div class="label">Last Feeding</div>
+                  <div class="val serif-title">{{ summaries.feeding.lastTime }}</div>
+                </div>
+                <div class="today-card">
+                  <div class="icon-box"><i class="fas fa-moon"></i></div>
+                  <div class="label">Sleep Insights</div>
+                  <div class="val serif-title">{{ getSleepQuality(summaries.sleep.totalMins) }}</div>
+                </div>
+              </div>
+
+              <!-- Priority AI Support -->
+              <div class="ai-feature-highlight">
+                <div class="text-side">
+                  <h3 class="serif-title">Personalized <span class="italic">Guidance</span></h3>
+                  <p>{{ baby.aiContextualMessage }}</p>
+                  <button class="btn-ask" (click)="setSection('ai-help')">Ask Mama-AI <i
+                      class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="tip-card">
+                  <h4><i class="fas fa-sparkles"></i> ADVICE FOR {{ baby.name | uppercase }}</h4>
+                  <p>{{ baby.dailyTip }}</p>
+                </div>
+              </div>
+
+              <!-- Auxiliary Footer Grid -->
+              <div class="dashboard-footer-grid">
+                <div class="secondary-card safety-card">
+                  <div class="icon-box red"><i class="fas fa-shield-heart"></i></div>
+                  <div class="info">
+                    <h4 class="serif-text">Safety Checkpoints</h4>
+                    <p>Always consult your pediatrician if you notice respiratory distress or lethargy.</p>
+                  </div>
+                </div>
+                <div class="secondary-card">
+                  <div class="icon-box green"><i class="fas fa-leaf"></i></div>
+                  <div class="info">
+                    <h4 class="serif-text">Wellness Reminder</h4>
+                    <p>{{ parentRole.label }}, don't forget to hydrate. You're doing an amazing job.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Vaccination View -->
+            <div class="section-container" *ngIf="activeSection === 'vaccination'">
+              <div class="timeline-card">
+                <header>
+                  <h2 class="serif-text">Vaccination <span class="italic">Timeline</span></h2>
+                  <p>{{ baby.name }}'s personalized immunization schedule</p>
+                </header>
+
+                <div class="progress-ring">
+                  <div class="pct-circle">{{ baby.milestoneProgress }}%</div>
+                  <div class="info">
+                    <h4>{{ baby.milestoneProgress >= 100 ? 'All scheduled vaccines completed! 🌟' : 'Immunization
+                      Journey' }}</h4>
+                    <p *ngIf="baby.milestoneProgress < 100">{{ baby.name }} is on track. Next: {{ baby.nextVaccineName
+                      }}.</p>
+                    <p *ngIf="baby.milestoneProgress >= 100">Congratulations! {{ baby.name }} is fully protected for
+                      this stage.</p>
+                  </div>
+                </div>
+
+                <div class="timeline">
+                  <div class="timeline-step" *ngFor="let v of vaccineTimeline"
+                    [class.locked]="!v.isClickable && v.status !== 'done'">
+                    <div class="marker" [class.done]="v.status === 'done'" [class.due]="v.status === 'due'"
+                      [class.locked]="!v.isClickable && v.status !== 'done'">
+                      <i class="fas fa-lock" *ngIf="!v.isClickable && v.status !== 'done'"></i>
+                    </div>
+                    <div class="step-label">
+                      {{ v.milestoneLabel }}
+                      <span class="badge" [class.done]="v.status === 'done'" [class.upcoming]="v.status === 'upcoming'"
+                        [class.due]="v.status === 'due'">
+                        {{ v.badge }}
+                      </span>
+                    </div>
+                    <div class="vaccine-item-card" [class.upcoming]="v.status === 'upcoming'"
+                      [class.due]="v.status === 'due'" [class.locked]="!v.isClickable && v.status !== 'done'">
+                      <div class="card-header">
+                        <h5 [class.strikethrough]="v.status === 'done'">{{ v.name }} — {{ v.description }}</h5>
+                        <button *ngIf="v.isClickable && v.status === 'due'" class="btn-mark-done"
+                          (click)="markAsDone(v.name)">
+                          <i class="fas fa-check"></i> Mark Done
+                        </button>
+                        <button *ngIf="v.status === 'done'" class="btn-mark-undo" (click)="onResetVaccine(v)">
+                          <i class="fas fa-undo"></i> Undo
+                        </button>
+                        <span class="lock-label" *ngIf="!v.isClickable && v.status !== 'done'">
+                          <i class="fas fa-lock-alt"></i> {{ v.unlockMessage }}
+                        </span>
+                      </div>
+                      <p>{{ v.detail }}</p>
+                      <div class="item-footer">
+                        <span class="status-tag" [class.done]="v.status === 'done'"
+                          [class.upcoming]="v.status === 'upcoming'" [class.due]="v.status === 'due'">
+                          {{ v.status === 'done' ? '✓ Done' : (v.status === 'due' ? '⏰ Due' : (v.isClickable ? '📅
+                          Available' : '🔒 Locked')) }}
+                        </span>
+                        <span class="date">{{ v.status === 'done' ? v.completedDate : v.milestoneDate }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Feeding & Nutrition View -->
+            <div class="section-container feeding-section" *ngIf="activeSection === 'feeding'">
+              <div class="feeding-header">
+                <div class="feeding-header-bg">
+                  <div class="decor-circle"></div>
+                </div>
+                <h2 class="serif-text">Feeding &amp; <span class="italic">Nutrition</span></h2>
+                <p>Tracking {{ baby.name }}'s daily intake</p>
+              </div>
+
+              <!-- Fast Summaries -->
+              <!-- Breastfeeding Dashboard -->
+              <div *ngIf="summaries.breast.sessionCount > 0" style="margin-bottom: 20px;">
+                <h3 class="serif-text" style="font-size: 1.1rem; margin-top: 10px; margin-bottom: 10px;">🤱
+                  Breastfeeding Summary</h3>
+                <div class="glance-grid">
+                  <div class="today-card">
+                    <div class="label">Total Sessions</div>
+                    <div class="val">{{ summaries.breast.sessionCount }}</div>
+                    <div class="sub">{{ summaries.breast.totalMins }} mins total</div>
+                  </div>
+                  <div class="today-card">
+                    <div class="label">Last Breastfeed</div>
+                    <div class="val" style="font-size: 1.1rem;">{{ summaries.breast.lastTime }}</div>
+                    <div class="sub">Log status: Complete</div>
+                  </div>
+                  <div class="today-card">
+                    <div class="label">Sides Breakdown</div>
+                    <div class="val" style="font-size: 1.1rem;">L:{{ summaries.breast.leftCount }} R:{{
+                      summaries.breast.rightCount }}</div>
+                    <div class="sub">Both: {{ summaries.breast.bothCount }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottle Dashboard -->
+              <div *ngIf="summaries.bottle.sessionCount > 0" style="margin-bottom: 20px;">
+                <h3 class="serif-text" style="font-size: 1.1rem; margin-top: 10px; margin-bottom: 10px;">🍼 Bottle
+                  Feeding Summary</h3>
+                <div class="glance-grid">
+                  <div class="today-card">
+                    <div class="label">Today's Total</div>
+                    <div class="val">{{ summaries.bottle.totalMl }} ml</div>
+                    <div class="sub">Across {{ summaries.bottle.sessionCount }} sessions</div>
+                  </div>
+                  <div class="today-card">
+                    <div class="label">Last Bottle</div>
+                    <div class="val" style="font-size: 1.1rem;">{{ summaries.bottle.lastTime }}</div>
+                    <div class="sub">Log status: Complete</div>
+                  </div>
+                  <div class="today-card">
+                    <div class="label">Average</div>
+                    <div class="val">{{ summaries.bottle.avgMl }} ml</div>
+                    <div class="sub">Per session today</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="empty-journal"
+                *ngIf="summaries.breast.sessionCount === 0 && summaries.bottle.sessionCount === 0"
+                style="padding: 1rem; text-align: center; color: #64748b; margin-bottom: 1.5rem;">
+                <i class="fas fa-baby-bottle"
+                  style="font-size: 1.5rem; color: #cbd5e1; margin-bottom: 0.5rem; display: block;"></i>
+                <p>No feeding sessions logged today</p>
+              </div>
+
+              <!-- Quick Log Action -->
+              <div class="log-action-card">
+                <header>
+                  <div class="action-icon"><i class="fas fa-plus"></i></div>
+                  <div class="action-info">
+                    <h3>Quick Feeding Log</h3>
+                    <p>Add a new session in one tap</p>
+                  </div>
+                </header>
+
+                <div class="log-tabs">
+                  <button class="log-tab" [class.active]="newEntry.subType === 'BREAST'"
+                    (click)="newEntry.subType = 'BREAST'; formError = ''">🤱 Breast</button>
+                  <button class="log-tab" [class.active]="newEntry.subType === 'BOTTLE'"
+                    (click)="newEntry.subType = 'BOTTLE'; formError = ''">🍼 Bottle</button>
+                </div>
+
+                <div class="log-controls">
+                  <div class="control-group" *ngIf="newEntry.subType === 'BOTTLE'">
+                    <label>Amount (ml)</label>
+                    <input type="number" [(ngModel)]="newEntry.quantity" (ngModelChange)="formError = ''" class="control-input" [class.input-error]="formError && (newEntry.quantity > 1000 || newEntry.quantity <= 0)">
+                  </div>
+                  <ng-container *ngIf="newEntry.subType === 'BREAST'">
+                    <div class="control-group">
+                      <label>Side</label>
+                      <div class="side-selector">
+                        <button [class.active]="newEntry.side === 'LEFT'" (click)="newEntry.side = 'LEFT'">L</button>
+                        <button [class.active]="newEntry.side === 'RIGHT'" (click)="newEntry.side = 'RIGHT'">R</button>
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label>Duration (mins)</label>
+                      <input type="number" [(ngModel)]="newEntry.duration" (ngModelChange)="formError = ''" class="control-input" [class.input-error]="formError && (newEntry.duration > 7200 || newEntry.duration <= 0)" placeholder="e.g. 15">
+                    </div>
+                  </ng-container>
+                </div>
+
+                <div class="error-text" *ngIf="formError && activeSection === 'feeding'" style="margin: -10px 0 15px 0; text-align: center;">
+                  <i class="fas fa-exclamation-circle"></i> {{ formError }}
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn-save-round" style="flex: 1;"
+                    (click)="newEntry.type = 'FEEDING'; newEntry.value = newEntry.subType === 'BOTTLE' ? (newEntry.quantity + 'ml') : (newEntry.side + ' side, ' + newEntry.duration + 'm'); submitJournalEntry()">
+                    {{ editingLogId ? 'Update Log' : 'Log Feeding' }}
+                  </button>
+                  <button *ngIf="editingLogId" class="btn-cancel-round" (click)="cancelJournalEdit()" style="background: #64748b; width: 100px;">Cancel</button>
+                </div>
+              </div>
+
+              <!-- Nutritional Guide (Traditional) -->
+              <div class="guide-divider">NUTRITIONAL GUIDE</div>
+
+              <div class="age-tabs">
+                <button class="age-tab" [class.active]="activeAgeTab === '0-3'" (click)="selectAgeTab('0-3')">0–3
+                  mo</button>
+                <button class="age-tab" [class.active]="activeAgeTab === '4-6'" (click)="selectAgeTab('4-6')">4–6
+                  mo</button>
+                <button class="age-tab" [class.active]="activeAgeTab === '7-9'" (click)="selectAgeTab('7-9')">7–9
+                  mo</button>
+                <button class="age-tab" [class.active]="activeAgeTab === '10-12'" (click)="selectAgeTab('10-12')">10–12
+                  mo</button>
+                <button class="age-tab" [class.active]="activeAgeTab === '1-2yr'" (click)="selectAgeTab('1-2yr')">1–2
+                  yr</button>
+              </div>
+
+              <div class="feeding-guide-card">
+                <h3 class="serif-text">{{ feedingGuides[activeAgeTab].title }}</h3>
+                <p>{{ feedingGuides[activeAgeTab].description }}</p>
+                <div class="guide-tags">
+                  <span class="guide-tag green" *ngFor="let tag of feedingGuides[activeAgeTab].tags">{{ tag }}</span>
+                </div>
+              </div>
+
+              <div class="gentle-foods-section">
+                <div class="section-label">GENTLE FIRST FOODS</div>
+                <div class="foods-grid">
+                  <div class="food-card" *ngFor="let food of feedingGuides[activeAgeTab].foods" 
+                       [class.selected-food]="selectedFood === food"
+                       (click)="selectedFood = selectedFood === food ? null : food"
+                       style="cursor: pointer;">
+                    <div class="food-emoji">{{ food.emoji }}</div>
+                    <div class="food-name">{{ food.name }}</div>
+                    <div class="food-benefit">{{ food.benefit }}</div>
+                  </div>
+                </div>
+
+                <div class="recipe-card-details" *ngIf="selectedFood?.recipe">
+                  <h3 class="serif-text recipe-header-title">
+                    <span class="emoji">{{ selectedFood.emoji }}</span> {{ selectedFood.name }}
+                  </h3>
+                  <div class="recipe-tags">
+                    <span class="guide-tag green">{{ selectedFood.recipe.tag }}</span>
+                  </div>
+                  <p class="recipe-intro">{{ selectedFood.recipe.intro }}</p>
+
+                  <h4 class="recipe-section-title">INGRÉDIENTS</h4>
+                  <ul class="recipe-list ingredients-list">
+                    <li *ngFor="let ing of selectedFood.recipe.ingredients">{{ ing }}</li>
+                  </ul>
+
+                  <h4 class="recipe-section-title">PRÉPARATION</h4>
+                  <ol class="recipe-list steps-list">
+                    <li *ngFor="let step of selectedFood.recipe.steps">{{ step }}</li>
+                  </ol>
+                </div>
+              </div>
+
+              <div class="avoid-card">
+                <div class="avoid-header">⚠️ Foods to Avoid Before 12 Months</div>
+                <p>Honey · Cow's milk as main drink · Salt &amp; added sugar · Whole nuts · Raw eggs · Unpasteurized
+                  cheese · Caffeine</p>
+              </div>
+            </div>
+
+            <!-- Sleep Tracking View (Desktop Concept) -->
+            <div class="sleep-section-desktop" *ngIf="activeSection === 'sleep'">
+              <header class="app-header">
+                <h1 class="welcome-text">Hello, <span class="teal-italic">{{ userName }}</span> 👋</h1>
+                <p class="subtitle">{{ currentFormattedDate }} &middot; Tracking for {{ baby.name }}</p>
+              </header>
+
+              <div class="tip-card-wide">
+                <div class="tip-icon">💡</div>
+                <div class="tip-content">
+                  <strong>Advice of the day</strong><br>
+                  At {{ baby.ageText }}, {{ baby.name }} should sleep between 14h and 17h per day. Sleep cycles
+                  last about 50 minutes — it's normal if they wake up often!
+                </div>
+              </div>
+
+              <div class="section-title-wrap">
+                <h2>Sleep &amp; Rest</h2>
+                <p>Resting hours for {{ baby.name }}'s growth</p>
+              </div>
+
+              <div class="sleep-stats-grid">
+                <div class="sleep-stat-card">
+                  <div class="stat-label">Total sleep</div>
+                  <div class="stat-val">{{ displayDuration(summaries.sleep.totalSecs || (summaries.sleep.totalMins *
+                    60)) }}</div>
+                  <div class="stat-sub">/ 14h today's target</div>
+                </div>
+                <div class="sleep-stat-card">
+                  <div class="stat-label">Naps</div>
+                  <div class="stat-val">{{ summaries.sleep.count }}</div>
+                  <div class="stat-sub">Sessions today</div>
+                </div>
+                <div class="sleep-stat-card">
+                  <div class="stat-label">Avg duration</div>
+                  <div class="stat-val">{{ displayDuration((summaries.sleep.totalSecs || (summaries.sleep.totalMins *
+                    60)) / (summaries.sleep.count || 1)) }}</div>
+                  <div class="stat-sub">Per nap</div>
+                </div>
+                <div class="sleep-stat-card">
+                  <div class="stat-label">Quality</div>
+                  <div class="stat-val"><span class="quality-badge" [ngClass]="{'bg-teal': true}">{{
+                      getSleepQuality((summaries.sleep.totalSecs || (summaries.sleep.totalMins * 60)) / 60) }}</span>
+                  </div>
+                  <div class="stat-sub">Based on duration</div>
+                </div>
+              </div>
+
+              <div class="grid-2-cols">
+                <div class="card timer-card">
+                  <div class="timer-top-grid">
+                    <div class="moon-icon-wrapper">
+                      <span class="moon-emoji">🌙</span>
+                    </div>
+                    <div class="timer-info-mobile">
+                      <h3>Sleep timer</h3>
+                      <p>{{ currentSleepTimer ? 'Sleeping now...' : 'Tap to start sleep log' }}</p>
+                    </div>
+                  </div>
+
+                  <div class="timer-display-huge">
+                    {{ currentSleepTimer ? currentSleepTimer.elapsed : '00:00:00' }}
+                  </div>
+
+                  <div class="sleep-progress-bar-wrap">
+                    <div class="progress-labels">
+                      <span>0h</span>
+                      <span>0%</span>
+                      <span>14h target</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                      <div class="progress-bar-fill"
+                        [style.width.%]="Math.min((summaries.sleep.totalMins / (14 * 60)) * 100, 100)"></div>
+                    </div>
+                  </div>
+
+                  <div class="timer-controls">
+                    <div class="main-actions" *ngIf="!manualSleep.show">
+                      <button class="btn-start-sleep" *ngIf="!currentSleepTimer" (click)="startSleepTimer()">
+                        <i class="fas fa-play"></i> Start sleep
+                      </button>
+                      <button class="btn-stop-sleep" *ngIf="currentSleepTimer" (click)="stopSleepTimer()">
+                        <i class="fas fa-stop"></i> Woke up
+                      </button>
+                    </div>
+
+                    <div class="manual-form animate-in" *ngIf="manualSleep.show">
+                      <div class="manual-form-header">
+                        <h4>Add manual sleep</h4>
+                        <span class="manual-close-btn" (click)="manualSleep.show = false">
+                          <i class="fas fa-times"></i>
+                        </span>
+                      </div>
+
+                      <!-- Duration Section -->
+                      <div class="form-group-wrap">
+                        <label class="group-label">Duration</label>
+                        <div class="duration-presets">
+                          <button *ngFor="let p of manualSleep.presets" class="preset-btn"
+                            [class.active]="manualSleep.duration === p" (click)="manualSleep.duration = p">
+                            {{ p < 60 ? p + ' min' : (p/60) + 'h' + (p%60 !==0 ? ' ' + (p%60) : '' ) }} </button>
+                        </div>
+                        <div class="duration-input-wrap">
+                          <input type="text" [(ngModel)]="manualSleep.duration" class="main-duration-input" 
+                            [class.input-error]="formError && manualSleep.show" placeholder="e.g. 1h 30m">
+                          <div class="duration-hint" *ngIf="parsedManualSeconds > 0 && !(formError && manualSleep.show)">= {{ displayDuration(parsedManualSeconds) }}</div>
+                          <div class="error-text" style="font-size: 11px; margin-top: 4px;" *ngIf="formError && manualSleep.show">{{ formError }}</div>
+                        </div>
+                      </div>
+
+                      <div class="manual-footer-v2">
+                        <button class="btn-cancel-v2" (click)="manualSleep.show = false">Cancel</button>
+                        <button class="btn-save-v2" (click)="submitManualSleep()">Save log</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="manual-toggle-link" *ngIf="!currentSleepTimer"
+                    (click)="manualSleep.show = !manualSleep.show">
+                    {{ manualSleep.show ? 'Back to timer' : 'Add manually instead?' }}
+                  </div>
+                </div>
+
+                <div class="card chart-card">
+                  <div class="chart-header">
+                    <div class="chart-icon-box">📊</div>
+                    <div class="chart-info">
+                      <h3>Current week</h3>
+                      <p>Sleep day</p>
+                    </div>
+                  </div>
+
+                  <div class="chart-bars">
+                    <div class="bar-col" *ngFor="let day of weekData">
+                      <div class="bar-val">{{ displayChartDuration(day.totalSeconds || 0) }}</div>
+                      <div class="bar" [style.height.%]="Math.max(((day.totalSeconds || 0) / (16 * 3600)) * 100, 8)"
+                           [class.today]="day.isToday"></div>
+                      <div class="bar-lbl">{{ day.day }}</div>
+                    </div>
+                  </div>
+
+                  <div class="chart-legend">
+                    <span class="legend-item"><span class="dot today-dot"></span> Today</span>
+                    <span class="legend-item"><span class="dot other-dot"></span> Other days</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sleep-history-list">
+                <h3 class="history-title">Nap history</h3>
+                <div class="history-filter">
+                  <button class="filter-btn" [class.active]="historyFilter === 'today'"
+                    (click)="historyFilter = 'today'">Today</button>
+                  <button class="filter-btn" [class.active]="historyFilter === 'yesterday'"
+                    (click)="historyFilter = 'yesterday'">Yesterday</button>
+                  <button class="filter-btn" [class.active]="historyFilter === 'history'"
+                    (click)="historyFilter = 'history'">History</button>
+                </div>
+
+                <div class="history-actions-bar" *ngIf="getFilteredSleepLogs().length > 0">
+                  <button class="action-btn-v2" (click)="toggleSelectAll()">
+                    <i class="far" [class.fa-check-square]="selectedLogIds.size === getFilteredSleepLogs().length" [class.fa-square]="selectedLogIds.size !== getFilteredSleepLogs().length"></i>
+                    {{ selectedLogIds.size === getFilteredSleepLogs().length ? 'Deselect All' : 'Select All' }}
+                  </button>
+                  <button class="action-btn-v2 delete-all" *ngIf="selectedLogIds.size > 0" (click)="deleteSelectedLogs()">
+                    <i class="fas fa-trash-alt"></i> Delete Selected ({{ selectedLogIds.size }})
+                  </button>
+                </div>
+
+                <ng-container *ngFor="let log of getFilteredSleepLogs()">
+                  <div class="sleep-history-item" [class.is-selected]="isLogSelected(log.id)" (click)="toggleSelectLog(log.id)">
+                    <div class="item-left">
+                      <div class="action-checkbox">
+                        <i class="fas" [class.fa-check-circle]="isLogSelected(log.id)" [class.fa-circle]="!isLogSelected(log.id)"></i>
+                      </div>
+                      <div class="dot-indicator"></div>
+                      <div class="history-label">{{ log.sleepType || 'Nap' }}</div>
+                      <div class="history-time">{{ log.time }} &middot; {{ log.manual ? 'Manual log' : 'Timer log' }}
+                      </div>
+                    </div>
+                    <div class="history-duration">{{ formatFullDuration(log) }}</div>
+                    <button class="btn-delete-log" (click)="$event.stopPropagation(); onDeleteSleepLog(log)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </ng-container>
+                <div *ngIf="getFilteredSleepLogs().length === 0"
+                  style="color: #888; font-size: 0.9rem; text-align: center; padding: 10px 0;">
+                  No naps found for this period.
+                </div>
+              </div>
+            </div>
+
+            <!-- Diaper Tracking View -->
+            <!-- Diaper Tracking View -->
+            <div class="section-container diaper-section" *ngIf="activeSection === 'diaper'">
+              <div class="feeding-header">
+                <div class="feeding-header-bg">
+                  <div class="decor-circle" style="background: #14b8a6;"></div>
+                </div>
+                <h2 class="serif-text">Diaper <span class="italic">Tracker</span></h2>
+                <p>Hygiene and hydration monitoring</p>
+              </div>
+
+              <div class="glance-grid">
+                <div class="today-card">
+                  <div class="label">Total Changes</div>
+                  <div class="val">{{ summaries.diaper.total }}</div>
+                  <div class="sub">Changes today</div>
+                </div>
+                <div class="today-card">
+                  <div class="label">Wet / Dirty</div>
+                  <div class="val">{{ summaries.diaper.wet }} / {{ summaries.diaper.dirty }}</div>
+                  <div class="sub">Ratio today</div>
+                </div>
+                <div class="today-card">
+                  <div class="label">History</div>
+                  <div class="val">{{ diaperRecords.length }}</div>
+                  <div class="sub">Total records</div>
+                </div>
+              </div>
+
+              <!-- Add/Edit Log Form -->
+              <div class="log-action-card diaper-log-card">
+                <div class="log-tabs">
+                  <button class="log-tab" [class.active]="newDiaper.type === 'WET'" (click)="newDiaper.type = 'WET'">💧
+                    Wet</button>
+                  <button class="log-tab" [class.active]="newDiaper.type === 'DIRTY'"
+                    (click)="newDiaper.type = 'DIRTY'">💩 Dirty</button>
+                  <button class="log-tab" [class.active]="newDiaper.type === 'MIXED'"
+                    (click)="newDiaper.type = 'MIXED'">🌈 Mixed</button>
+                </div>
+
+                <div class="log-controls">
+                  <div class="control-group">
+                    <label>Rash noted?</label>
+                    <input type="checkbox" [(ngModel)]="newDiaper.rash" style="width: 20px; height: 20px;">
+                  </div>
+                  <div class="control-group" *ngIf="newDiaper.type !== 'WET'">
+                    <label>Notes (optional)</label>
+                    <input type="text" [(ngModel)]="newDiaper.notes" class="control-input"
+                      placeholder="e.g. Yellow, soft texture...">
+                  </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn-save-round" (click)="onSubmitDiaper()" [disabled]="isDiaperSubmitting"
+                    style="flex: 1;">
+                    {{ isDiaperSubmitting ? 'Saving...' : (editingDiaperId || editingLogId ? 'Update Diaper' : 'Log Diaper Change') }}
+                  </button>
+                  <button *ngIf="editingDiaperId || editingLogId" class="btn-save-round" (click)="resetDiaperForm(); editingLogId = null;"
+                    style="background: #64748b; width: 100px;">Cancel</button>
+                </div>
+              </div>
+
+              <!-- Diaper History List -->
+              <div class="journal-list" style="margin-top: 30px;">
+                <h3 class="serif-text" style="font-size: 1.2rem; margin-bottom: 15px;">Recent Diaper Changes</h3>
+                <div *ngIf="diaperRecords.length === 0" style="text-align: center; padding: 40px; color: #888;">
+                  <p>No diaper changes recorded yet.</p>
+                </div>
+
+                <div class="journal-card" *ngFor="let d of diaperRecords"
+                  style="margin-bottom: 12px; position: relative;">
+                  <div class="journal-header"
+                    style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="display: flex; gap: 15px;">
+                      <div class="journal-icon" [style.background]="'#f1f5f9'">{{ getDiaperIcon(d.diaperType) }}</div>
+                      <div>
+                        <div class="journal-entry-title">{{ d.diaperType | titlecase }} Diaper</div>
+                        <div class="journal-entry-detail">
+                          {{ formatDate(d.changedAt) }} · {{ d.rashNoted ? '⚠️ Rash Noted' : '✓ Skin Healthy' }}
+                          <div *ngIf="d.notes" style="font-style: italic; color: #64748b; margin-top: 4px;">"{{ d.notes
+                            }}"</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                      <button (click)="onEditDiaper(d)"
+                        style="background: none; border: none; font-size: 1rem; cursor: pointer;"
+                        title="Edit">✏️</button>
+                      <button (click)="onDeleteDiaper(d.id)"
+                        style="background: none; border: none; font-size: 1rem; cursor: pointer;"
+                        title="Delete">🗑️</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Premium Health View -->
+            <div class="section-container premium-health-section" *ngIf="activeSection === 'health'">
+              
+              <!-- Health Hero Header -->
+              <div class="premium-health-hero">
+                <div class="hero-bg-accent"></div>
+                <div class="hero-content">
+                  <div class="hero-icon-box heartbeat-anim">
+                    <i class="fas fa-heartbeat"></i>
+                  </div>
+                  <div class="hero-text">
+                    <h2 class="serif-title">Health & <span class="italic">Vitals</span></h2>
+                    <p>Monitoring wellness and recent checks for <strong>{{ baby.name }}</strong></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Vitals Summary Cards -->
+              <div class="premium-vitals-grid">
+                <div class="vital-card temperature-card" [ngClass]="{'is-fever': summaries.health.status !== 'Normal'}">
+                  <div class="vital-header">
+                    <div class="vital-icon"><i class="fas fa-thermometer-half"></i></div>
+                    <span class="vital-status-badge">{{ summaries.health.status }}</span>
+                  </div>
+                  <div class="vital-body">
+                    <div class="vital-label">Latest Temperature</div>
+                    <div class="vital-value">{{ summaries.health.latest }}<span class="unit">°C</span></div>
+                  </div>
+                  <div class="vital-footer">
+                    <i class="fas fa-check-circle"></i> Log status: Verified
+                  </div>
+                </div>
+
+                <div class="vital-card ai-insight-card">
+                  <div class="vital-header">
+                    <div class="vital-icon ai-icon"><i class="fas fa-sparkles"></i></div>
+                    <span class="vital-status-badge ai-badge">AI Insight</span>
+                  </div>
+                  <div class="vital-body">
+                    <div class="vital-label">Guidance</div>
+                    <div class="vital-insight-text">
+                      <span *ngIf="summaries.health.status === 'Normal'">{{ baby.name }}'s last reading was perfectly normal. Keep ensuring they are comfortable and well hydrated!</span>
+                      <span *ngIf="summaries.health.status !== 'Normal'">Elevated temperature detected. Please monitor {{ baby.name }} closely and consult a pediatrician if symptoms persist.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Interactive Log Action -->
+              <div class="premium-log-action-card">
+                <div class="premium-log-layout">
+                  <div class="log-info-side">
+                    <div class="icon-blob"><i class="fas fa-plus"></i></div>
+                    <div>
+                      <h3>Log New Reading</h3>
+                      <p>Add a new temperature check for {{ baby.name }}.</p>
+                    </div>
+                  </div>
+                  <div class="log-input-side">
+                    <div class="input-wrapper">
+                      <i class="fas fa-temperature-high input-icon"></i>
+                      <input type="text" [(ngModel)]="newEntry.value" class="premium-input" placeholder="e.g. 37.2">
+                      <span class="input-suffix">°C</span>
+                    </div>
+                    <p class="error-text" *ngIf="formError" style="margin-top: 10px; font-weight: 600;">{{ formError }}</p>
+                    <button class="btn-premium-action health-btn" (click)="newEntry.type = 'TEMPERATURE'; submitJournalEntry()" [disabled]="!newEntry.value">
+                       {{ editingLogId ? 'Update Record' : 'Save Record' }} <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button *ngIf="editingLogId && newEntry.type === 'TEMPERATURE'" class="btn-cancel-round" (click)="cancelJournalEdit()" style="margin-top: 10px; width: 100%;">Cancel Edit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!-- Journal View -->
+            <div class="section-container journal-section" *ngIf="activeSection === 'journal'">
+              <!-- Header -->
+              <div class="journal-header">
+                <div class="day-log-label">DAILY LOG</div>
+                <h2 class="serif-text">{{ baby.name }}'s <span class="italic">Journal</span></h2>
+              </div>
+
+              <!-- Date Navigator -->
+              <div class="date-navigator">
+                <button class="nav-arrow" (click)="prevDay()">‹</button>
+                <div class="date-center">
+                  <div class="date-today">{{ journalDateLabel }}</div>
+                  <div class="date-full">{{ journalDateFormatted }}</div>
+                </div>
+                <button class="nav-arrow" (click)="nextDay()">›</button>
+              </div>
+
+              <!-- Filter Tabs -->
+              <div class="journal-filter-tabs">
+                <button class="j-tab" [class.active]="journalFilter === 'all'" (click)="setJournalFilter('all')">🗒
+                  All</button>
+                <button class="j-tab" [class.active]="journalFilter === 'FEEDING'"
+                  (click)="setJournalFilter('FEEDING')">🍼 Feeding</button>
+                <button class="j-tab" [class.active]="journalFilter === 'SLEEP'" (click)="setJournalFilter('SLEEP')">🌙
+                  Sleep</button>
+                <button class="j-tab" [class.active]="journalFilter === 'DIAPER'"
+                  (click)="setJournalFilter('DIAPER')">💧 Diaper</button>
+                <button class="j-tab" [class.active]="journalFilter === 'TEMPERATURE'" (click)="setJournalFilter('TEMPERATURE')">🌡️
+                  Temp</button>
+              </div>
+
+              <!-- Timeline -->
+              <div class="journal-timeline">
+                <ng-container *ngFor="let log of filteredLogs">
+                  <div class="timeline-row">
+                    <div class="timeline-time">{{ log.time }}</div>
+                    <div class="timeline-icon-wrap">
+                      <div class="timeline-dot-line"></div>
+                      <div class="timeline-icon-bubble">{{ log.icon }}</div>
+                    </div>
+                    <div class="timeline-log-card">
+                      <div class="log-info-v2">
+                        <div class="log-title">{{ log.title }}</div>
+                        <div class="log-detail">{{ log.detail }}</div>
+                        <span class="log-badge">{{ log.badge }}</span>
+                        <div *ngIf="log.notes" class="log-notes-v2">"{{ log.notes }}"</div>
+                      </div>
+                      <div class="log-actions-v2">
+                        <button class="log-action-btn edit" (click)="onEditJournalEntry(log)" title="Modifier">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="log-action-btn delete" (click)="onDeleteJournalEntry(log)" title="Supprimer">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <div class="empty-journal" *ngIf="filteredLogs.length === 0">
+                  <div class="empty-icon">📋</div>
+                  <p>No entries yet for this filter.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Help View -->
+            <div class="section-container" *ngIf="activeSection === 'ai-help'">
+              <div class="ai-briefing-card">
+                <span class="ai-tag">✨ DATA BRIEFING</span>
+                <h3>Today's Insight for {{ baby.name }}</h3>
+                <p>{{ baby.aiContextualMessage }}</p>
+                <div class="briefing-stats">
+                  <div class="stat"><span>Sleep</span> <strong>{{ summaries.sleep.totalMins / 60 | number:'1.1-1'
+                      }}h</strong></div>
+                  <div class="stat"><span>Feeding</span> <strong>{{ summaries.feeding.totalMl }} ml</strong></div>
+                  <div class="stat"><span>Status</span> <strong>{{ summaries.health.status }}</strong></div>
+                </div>
+              </div>
+
+              <div class="ai-companion-card" style="margin-top: 2rem;">
+                <h3>Ask <span class="italic">Anything</span></h3>
+                <p>I can help with questions about feeding schedules or sleep improvements.</p>
+                <div class="search-wrap" style="position: relative; margin-top: 2rem;">
+                  <input type="text" placeholder="Ask anything... e.g. Why is my baby crying?"
+                    style="width: 100%; padding: 1.5rem 2rem; border-radius: 100px; border: none; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                  <button
+                    style="position: absolute; right: 10px; top: 10px; bottom: 10px; width: 60px; border-radius: 50%; border: none; background: #112a46; color: white;">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Settings View -->
+            <div class="section-container" *ngIf="activeSection === 'settings'">
+              <div class="timeline-card">
+                <header>
+                  <h2 class="serif-text">Module <span class="italic">Settings</span></h2>
+                  <p>Manage notification and profile preferences for {{ baby.name }}</p>
+                </header>
+
+                <div class="vaccine-item-card">
+                  <h5>Daily Reminders</h5>
+                  <p>Receive notifications for feeding and diaper logs to keep {{ baby.name }}'s routine consistent.</p>
+                  <div class="item-footer">
+                    <span>Push Notifications</span>
+                    <span class="status-tag done">Enabled</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div> <!-- End Page Container -->
+      </main> <!-- End Content Area -->
+    </div> <!-- End Main Body Wrapper -->
+  </div> <!-- End App Shell -->
+  <!-- PREMIUM CONFIRMATION MODAL -->
+  <div class="premium-modal-overlay animate-fade-in" *ngIf="confirmModalData" (click)="closeConfirmModal()">
+    <div class="premium-modal-card animate-scale-up" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-icon-blob">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="modal-title-group">
+          <h3 class="serif-title">{{ confirmModalData.title }}</h3>
+          <p class="modal-subtitle">Action required</p>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p>{{ confirmModalData.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" (click)="closeConfirmModal()">Cancel</button>
+        <button class="btn-modal-confirm" (click)="executeConfirmAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+</div> <!-- End Module Wrapper -->

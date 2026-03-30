@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { RegisterComponent } from './register.component';
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -13,7 +14,8 @@ describe('RegisterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, ReactiveFormsModule, RouterModule.forRoot([])],
-      declarations: [RegisterComponent]
+      declarations: [RegisterComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

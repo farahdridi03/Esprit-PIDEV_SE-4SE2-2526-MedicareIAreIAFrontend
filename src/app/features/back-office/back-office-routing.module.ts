@@ -7,6 +7,7 @@ import { AuthGuard } from '../../guards/auth.guard';
 
 import { UserManagementComponent } from './pages/user-management/user-management.component';
 import { DonationsManagementComponent } from './pages/donations-management/donations-management.component';
+import { AppointmentManagementComponent } from './pages/appointment-management/appointment-management.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'users', component: UserManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'donations', component: DonationsManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'appointments', component: AppointmentManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

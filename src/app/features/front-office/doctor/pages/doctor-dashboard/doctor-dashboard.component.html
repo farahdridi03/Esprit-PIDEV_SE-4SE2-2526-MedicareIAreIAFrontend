@@ -1,6 +1,6 @@
 <div class="doctor-wrapper">
     <!-- Sidebar -->
-    <app-doctor-sidebar></app-doctor-sidebar>
+    <app-doctor-sidebar [currentView]="currentView" (viewChange)="setView($event)"></app-doctor-sidebar>
 
     <!-- Main Content -->
     <div class="main-body">
@@ -9,37 +9,69 @@
         <div class="content-area">
             <!-- Welcome Banner -->
             <div class="welcome-banner">
-                <div class="banner-text">
-                    <h1>Welcome back, Dr. {{ firstName || 'User' }}!</h1>
-                </div>
+                <div class="banner-content">
+                    <div class="banner-text">
+                        <span class="greeting">Hello,</span>
+                        <h1>Dr. {{ firstName || 'User' }}</h1>
+                        <p>Here is an overview of your activities for today.</p>
+                    </div>
 
-                <div class="banner-stats">
-                    <div class="stat-card">
-                        <div class="label">Total Patients</div>
-                        <div class="value"></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Today's Appointments</div>
-                        <div class="value"></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Pending Reviews</div>
-                        <div class="value"></div>
+                    <div class="banner-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <div class="stat-data">
+                                <div class="value">{{ totalPatientsCount }}</div>
+                                <div class="label">Total Patients</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon highlight-yellow"><i class="fas fa-calendar-check"></i></div>
+                            <div class="stat-data">
+                                <div class="value">{{ todayAppointments.length }}</div>
+                                <div class="label">Today's Appointments</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon highlight-purple"><i class="fas fa-star-half-alt"></i></div>
+                            <div class="stat-data">
+                                <div class="value">{{ getPendingReviews() }}</div>
+                                <div class="label">New Reviews</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
-                <!-- Schedule Section -->
+            <!-- Dashboard Grid (Overview) -->
+            <div class="dashboard-grid" *ngIf="currentView === 'overview'">
+                <!-- Schedule Highlights (Summary) -->
                 <div class="schedule-section">
                     <div class="section-header">
-                        <h3>Today's Schedule</h3>
-                        <a href="#">View All →</a>
+                        <h3>Schedule Highlights</h3>
+                        <a (click)="setView('overview')" style="cursor:pointer;" routerLink="/front/doctor/patients">Manage All →</a>
                     </div>
 
-                    <div class="schedule-list">
-                      
+                    <div class="summary-content">
+                        <div *ngIf="isLoadingAppointments" class="loader">Calculating...</div>
+                        
+                        <div *ngIf="!isLoadingAppointments" class="stats-row">
+                            <div class="summary-item">
+                                <span class="num">{{ todayAppointments.length }}</span>
+                                <span class="lbl">Total Today</span>
+                            </div>
+                            <div class="summary-item highlight-orange">
+                                <span class="num">{{ getPendingCount() }}</span>
+                                <span class="lbl">To Confirm</span>
+                            </div>
+                            <div class="summary-item highlight-green">
+                                <span class="num">{{ getLiveCount() }}</span>
+                                <span class="lbl">Live Sessions</span>
+                            </div>
+                        </div>
+
+                        <div class="quick-notif" *ngIf="getPendingCount() > 0">
+                            🔔 You have <strong>{{ getPendingCount() }}</strong> appointments waiting for your confirmation in the Patients section.
+                        </div>
                     </div>
                 </div>
 
@@ -50,24 +82,44 @@
                     </div>
                     <div class="calendar-placeholder">
                         <div class="calendar-header">
-                            <span class="month">March 2026</span>
+                            <span class="month">{{ monthNames[calendarDate.getMonth()] }} {{ calendarDate.getFullYear() }}</span>
                             <div class="nav-btns">
-                                <button>&lt;</button>
-                                <button>&gt;</button>
+                                <button (click)="prevMonth()">&lt;</button>
+                                <button (click)="nextMonth()">&gt;</button>
                             </div>
                         </div>
                         <div class="calendar-days">
-                            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                            <span *ngFor="let dayName of dayNames">{{ dayName }}</span>
                         </div>
                         <div class="calendar-grid">
-                            <!-- Simple mock grid -->
-                            <span class="muted">23</span><span class="muted">24</span><span class="muted">25</span><span class="muted">26</span><span class="muted">27</span><span class="muted">28</span><span>1</span>
-                            <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
-                            <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
-                            <span>16</span><span>17</span><span>18</span><span>19</span><span class="today">20</span><span>21</span><span>22</span>
+                            <div *ngFor="let day of calendarDays" 
+                                 class="cal-day" 
+                                 [class.muted]="!day.currentMonth"
+                                 [class.today]="day.isToday"
+                                 [class.selected]="day.dateStr === selectedDateStr"
+                                 (click)="selectDay(day.dateStr)">
+                                {{ day.day }}
+                                <div class="appt-dot" *ngIf="day.hasAppointments"></div>
+                                <div class="appt-count" *ngIf="day.hasAppointments && day.currentMonth">{{ day.count }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Main Calendar View -->
+            <div class="calendar-main-view" *ngIf="currentView === 'calendar'">
+                <app-doctor-calendar-calendar></app-doctor-calendar-calendar>
+            </div>
+
+            <!-- Calendar Settings View -->
+            <div class="calendar-settings-view" *ngIf="currentView === 'settings'">
+                <app-doctor-calendar-settings (navigateToCalendar)="setView('calendar')"></app-doctor-calendar-settings>
+            </div>
+
+            <!-- Calendar Exceptions View -->
+            <div class="calendar-exceptions-view" *ngIf="currentView === 'exceptions'">
+                <app-doctor-calendar-exceptions></app-doctor-calendar-exceptions>
             </div>
 
         </div>

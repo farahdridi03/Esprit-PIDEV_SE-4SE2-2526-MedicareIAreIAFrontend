@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BabyCare - Sleep Tracker</title>
+<style>
+  :root {
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-dark: #085041;
+    --coral: #D85A30;
+    --amber: #EF9F27;
+    --blue: #3b82f6;
+    --bg: #f4f6f8;
+    --surface: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border: rgba(0,0,0,0.08);
+  }
+  body, html {
+    margin: 0; padding: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text-main);
+  }
+  * { box-sizing: border-box; }
+  
+  /* Topnav */
+  .topnav {
+    position: fixed; top: 0; left: 0; right: 0; height: 64px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; z-index: 100;
+  }
+  .brand { font-size: 1.25rem; font-weight: 600; }
+  .brand span { color: var(--teal); }
+  .top-right { display: flex; align-items: center; gap: 16px; }
+  .bell { position: relative; font-size: 1.2rem; cursor: pointer; }
+  .bell-dot { position: absolute; top: 0; right: -2px; width: 8px; height: 8px; background: red; border-radius: 50%; }
+  .baby-pill { background: var(--teal-light); color: var(--teal-dark); padding: 6px 16px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; }
+  
+  /* Layout */
+  .layout { display: flex; padding-top: 64px; min-height: 100vh; }
+  
+  /* Sidebar */
+  .sidebar { width: 220px; background: var(--surface); border-right: 1px solid var(--border); position: fixed; top: 64px; bottom: 0; padding: 24px 16px; overflow-y: auto; }
+  .nav-section { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin: 16px 0 8px 12px; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; transition: 0.2s; }
+  .nav-item:hover { background: #f9fafb; }
+  .nav-item.active { background: var(--teal-light); color: var(--teal-dark); }
+  
+  /* Main Content */
+  .main-content { margin-left: 220px; padding: 32px; width: 100%; max-width: 1100px; display: flex; flex-direction: column; gap: 24px; }
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main-content { margin-left: 0; padding: 16px; }
+  }
+  
+  /* Header */
+  .header-name { font-size: 2rem; margin: 0; font-weight: 600; }
+  .header-name span { color: var(--teal); font-style: italic; }
+  .header-sub { color: var(--text-muted); margin: 4px 0 0 0; }
+  
+  /* Tip */
+  .tip-card { background: var(--teal-light); color: var(--teal-dark); padding: 16px 20px; border-radius: 16px; display: flex; gap: 16px; align-items: flex-start; }
+  
+  /* Grid */
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+  .stat-card { border-left: 3px solid var(--teal); }
+  .stat-val { font-size: 1.75rem; font-weight: 600; margin-bottom: 4px; }
+  .stat-label { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+  .quality-badge { display: inline-block; padding: 6px 12px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; }
+  .bg-teal { background: var(--teal-light); color: var(--teal-dark); }
+  .bg-blue { background: #e0f2fe; color: #0369a1; }
+  .bg-amber { background: #fef3c7; color: #92400e; }
+  .bg-coral { background: #ffedd5; color: #c2410c; }
+  
+  /* Layout columns */
+  .col-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 900px) { .col-2 { grid-template-columns: 1fr; } }
+  
+  /* Timer */
+  .timer-card { text-align: center; }
+  .timer-icon { width: 48px; height: 48px; background: var(--teal-light); border-radius: 12px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: 0.3s; }
+  .timer-icon.pulse { animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(29, 158, 117, 0.4); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(29, 158, 117, 0); } 100% { transform: scale(1); } }
+  .timer-display { font-size: 52px; font-weight: 400; font-family: monospace; letter-spacing: 4px; margin: 24px 0; transition: color 0.3s; }
+  .timer-display.running { color: var(--teal); }
+  .progress-bg { height: 8px; background: #e5e7eb; border-radius: 10px; overflow: hidden; margin-bottom: 24px; position: relative; }
+  .progress-fill { height: 100%; background: var(--teal); width: 0%; transition: width 0.5s; }
+  .progress-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; display: block; font-weight: 600; text-align: right; }
+  .btn { width: 100%; padding: 16px; border-radius: 50px; border: none; font-size: 1rem; font-weight: 600; color: white; cursor: pointer; transition: 0.3s; background: var(--teal); }
+  .btn.running { background: var(--coral); }
+  
+  /* Chart */
+  .chart-card { display: flex; flex-direction: column; }
+  .chart-title { font-weight: 600; margin-bottom: 24px; }
+  .chart-bars { display: flex; align-items: flex-end; justify-content: space-between; height: 200px; padding-top: 20px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 6px;}
+  .bar-val { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; }
+  .bar { width: 32px; background: var(--teal-light); border-radius: 6px 6px 0 0; transition: height 0.3s; min-height: 4px; }
+  .bar.today { background: var(--teal); }
+  .bar-lbl { font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; font-weight: 600; }
+  
+  /* History */
+  .history-filter { display: flex; gap: 8px; margin-bottom: 20px; }
+  .filter-btn { padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-weight: 600; color: var(--text-muted); transition: 0.2s; }
+  .filter-btn.active { background: var(--text-main); color: white; border-color: var(--text-main); }
+  .history-list { display: flex; flex-direction: column; gap: 12px; }
+  .history-item { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--border); animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+  .history-item:last-child { border: none; padding-bottom: 0; }
+  .h-left { display: flex; align-items: center; gap: 12px; }
+  .h-dot { width: 10px; height: 10px; background: var(--teal); border-radius: 50%; }
+  .h-title { font-weight: 600; }
+  .h-time { color: var(--text-muted); font-size: 0.85rem; }
+  .h-dur { font-weight: 600; background: var(--bg); padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; }
+  .empty-state { text-align: center; color: var(--text-muted); padding: 20px 0; }
+  .empty-state span { font-size: 2rem; display: block; margin-bottom: 8px; }
+  
+  /* Footer */
+  footer { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 24px; margin-top: auto; }
+</style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <div class="topnav">
+    <div class="brand">Baby<span>Care</span></div>
+    <div class="top-right">
+      <div class="bell">🔔<div class="bell-dot"></div></div>
+      <div class="baby-pill">bilel &middot; 1 mois</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <div class="nav-section">Principal</div>
+      <div class="nav-item" onclick="navigate(this)">🏠 Accueil</div>
+      <div class="nav-item active" onclick="navigate(this)">🌙 Sommeil</div>
+      
+      <div class="nav-section">Suivi</div>
+      <div class="nav-item" onclick="navigate(this)">🍼 Tétée</div>
+      <div class="nav-item" onclick="navigate(this)">💧 Couches</div>
+      <div class="nav-item" onclick="navigate(this)">🌡️ Santé</div>
+      <div class="nav-item" onclick="navigate(this)">💉 Vaccins</div>
+      <div class="nav-item" onclick="navigate(this)">📏 Croissance</div>
+      
+      <div class="nav-section">Compte</div>
+      <div class="nav-item" onclick="navigate(this)">⚙️ Paramètres</div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <header>
+        <h1 class="header-name">Bonjour, <span>aymen</span> 👋</h1>
+        <p class="header-sub" id="current-date"></p>
+      </header>
+
+      <div class="tip-card">
+        <div style="font-size: 1.5rem">💡</div>
+        <div>
+          <strong>Conseil du jour</strong><br>
+          À 1 mois, bilel a besoin de 14 à 17 heures de sommeil par jour, réparties en plusieurs siestes. Suivez ses signaux de fatigue (bâillements, frottements d'yeux) !
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="grid-4">
+        <div class="card stat-card">
+          <div class="stat-val" id="st-total">0.0h</div>
+          <div>Total Sleep</div>
+          <div class="stat-label">/ 14h cible</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-val" id="st-count">0</div>
+          <div>Nap Sessions</div>
+          <div class="stat-label">Sessions aujourd'hui</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-val" id="st-avg">0m</div>
+          <div>Average Duration</div>
+          <div class="stat-label">Par sieste</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-val"><span class="quality-badge bg-coral" id="st-qual">Insuffisant</span></div>
+          <div>Quality Badge</div>
+          <div class="stat-label">Sur objectif 14h</div>
+        </div>
+      </div>
+
+      <!-- Main Layout Columns -->
+      <div class="col-2">
+        <!-- Sleep Timer -->
+        <div class="card timer-card">
+          <div class="timer-icon" id="timerIcon">🌙</div>
+          <h3 style="margin: 0">Minuteur sommeil</h3>
+          <p style="color: var(--text-muted); margin: 4px 0 0 0;" id="timerStatus">Prêt à dormir</p>
+          
+          <div class="timer-display" id="timerDisplay">00:00:00</div>
+          
+          <div style="text-align: left; margin-bottom: 24px;">
+            <div class="progress-bg">
+              <div class="progress-fill" id="timerProgress"></div>
+            </div>
+            <span class="progress-text" id="progressPct">0% de l'objectif</span>
+          </div>
+          
+          <button class="btn" id="timerBtn" onclick="toggleSleep()">Démarrer</button>
+        </div>
+
+        <!-- Weekly Chart -->
+        <div class="card chart-card">
+          <div class="chart-title">Aperçu de la semaine</div>
+          <div class="chart-bars" id="weekChart">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- History Section -->
+      <div class="card">
+        <div class="history-filter">
+          <button class="filter-btn active" onclick="filterHistory('today', this)">Aujourd'hui</button>
+          <button class="filter-btn" onclick="filterHistory('week', this)">Cette semaine</button>
+          <button class="filter-btn" onclick="filterHistory('all', this)">Tout</button>
+        </div>
+        <div class="history-list" id="historyList">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <footer>BabyCare &copy; 2026 &middot; Suivi de bilel</footer>
+    </div>
+  </div>
+
+<!-- Interactive Logic -->
+<script>
+  // Initial Date
+  document.getElementById('current-date').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  const STATE = {
+    running: false,
+    intervalMs: 1000,
+    interval: null,
+    startTime: null,
+    seconds: 0,
+    targetSecs: 14 * 3600,
+    totalTodaySecs: 0,
+    filter: 'today',
+    
+    // Mocks
+    weekData: [
+      { day: 'Lun', hours: 13.5 },
+      { day: 'Mar', hours: 14.2 },
+      { day: 'Mer', hours: 12.8 },
+      { day: 'Jeu', hours: 15.0 },
+      { day: 'Ven', hours: 13.2 },
+      { day: 'Sam', hours: 14.5 }
+    ],
+    sessions: [
+      { 
+        id: 1, 
+        start: new Date(new Date().setHours(10, 0, 0, 0)), 
+        end: new Date(new Date().setHours(11, 30, 0, 0)), 
+        duration: 90 * 60 
+      },
+      { 
+        id: 2, 
+        start: new Date(new Date().setHours(14, 15, 0, 0)), 
+        end: new Date(new Date().setHours(16, 0, 0, 0)), 
+        duration: 105 * 60 
+      }
+    ]
+  };
+
+  function isToday(date) {
+    const today = new Date();
+    return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+  }
+
+  // Formatting helpers
+  function formatTime(totalSecs) {
+    const h = Math.floor(totalSecs / 3600).toString().padStart(2, '0');
+    const m = Math.floor((totalSecs % 3600) / 60).toString().padStart(2, '0');
+    const s = Math.floor(totalSecs % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+  
+  function getT(d) {
+     return d.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+  }
+
+  function toggleSleep() {
+    STATE.running = !STATE.running;
+    const btn = document.getElementById('timerBtn');
+    const icon = document.getElementById('timerIcon');
+    const display = document.getElementById('timerDisplay');
+    const status = document.getElementById('timerStatus');
+
+    if (STATE.running) {
+      STATE.startTime = new Date();
+      STATE.seconds = 0;
+      btn.innerText = "Arrêter";
+      btn.classList.add("running");
+      icon.classList.add("pulse");
+      display.classList.add("running");
+      status.innerText = "Bébé dort en ce moment...";
+      
+      STATE.interval = setInterval(() => {
+        STATE.seconds++;
+        updateDisplay();
+        updateStats(true); // real-time visual update of total hours processing
+      }, STATE.intervalMs);
+    } else {
+      clearInterval(STATE.interval);
+      btn.innerText = "Démarrer";
+      btn.classList.remove("running");
+      icon.classList.remove("pulse");
+      display.classList.remove("running");
+      status.innerText = "Prêt à dormir";
+      
+      if (STATE.seconds >= 10) {
+        saveSession();
+      } else {
+        alert("Session trop courte pour être sauvegardée ! (Il faut 10 secondes minimum)");
+        STATE.seconds = 0;
+        updateDisplay();
+        updateStats();
+      }
+    }
+  }
+
+  function updateDisplay() {
+    const currentDisp = STATE.running ? STATE.seconds : 0;
+    document.getElementById('timerDisplay').innerText = formatTime(currentDisp);
+    
+    const combinedSecs = STATE.totalTodaySecs + (STATE.running ? STATE.seconds : 0);
+    let pct = (combinedSecs / STATE.targetSecs) * 100;
+    if (pct > 100) pct = 100;
+    
+    document.getElementById('timerProgress').style.width = pct + '%';
+    document.getElementById('progressPct').innerText = Math.floor(pct) + "% de l'objectif";
+  }
+
+  function saveSession() {
+    const end = new Date();
+    // Reconstruct exact start time to prevent drift
+    const start = new Date(end.getTime() - (STATE.seconds * 1000));
+    STATE.sessions.unshift({
+      id: Date.now(),
+      start: start,
+      end: end,
+      duration: STATE.seconds
+    });
+    STATE.seconds = 0;
+    updateStats();
+    renderHistory();
+  }
+
+  function updateStats(isRunning = false) {
+    const todaySessions = STATE.sessions.filter(s => isToday(s.start));
+    STATE.totalTodaySecs = todaySessions.reduce((acc, s) => acc + s.duration, 0);
+    
+    const combinedSecs = STATE.totalTodaySecs + (isRunning ? STATE.seconds : 0);
+    const count = todaySessions.length;
+    const avg = count ? Math.floor(STATE.totalTodaySecs / count / 60) : 0;
+    const hrs = (combinedSecs / 3600).toFixed(1);
+
+    document.getElementById('st-total').innerText = hrs + 'h';
+    document.getElementById('st-count').innerText = count;
+    document.getElementById('st-avg').innerText = avg + 'm';
+
+    const pct = combinedSecs / STATE.targetSecs;
+    const badge = document.getElementById('st-qual');
+    badge.className = 'quality-badge'; 
+    
+    if (pct >= 0.70) {
+      badge.innerText = 'Excellent';
+      badge.classList.add('bg-teal');
+    } else if (pct >= 0.45) {
+      badge.innerText = 'Bien';
+      badge.classList.add('bg-blue');
+    } else if (pct >= 0.20) {
+      badge.innerText = 'Moyen';
+      badge.classList.add('bg-amber');
+    } else {
+      badge.innerText = 'Insuffisant';
+      badge.classList.add('bg-coral');
+    }
+
+    renderWeekChart(combinedSecs);
+  }
+
+  function renderWeekChart(liveCombinedSecs = null) {
+    const chart = document.getElementById('weekChart');
+    chart.innerHTML = '';
+    
+    const days = [...STATE.weekData];
+    const todayHrs = liveCombinedSecs !== null ? (liveCombinedSecs / 3600) : (STATE.totalTodaySecs / 3600);
+    
+    days.push({
+      day: 'Auj',
+      hours: todayHrs,
+      isToday: true
+    });
+
+    const maxH = 18; // Max bound
+    
+    days.forEach(d => {
+      const p = (d.hours / maxH) * 100;
+      const html = `
+        <div class="bar-col">
+          <div class="bar-val">${d.hours.toFixed(1)}h</div>
+          <div class="bar ${d.isToday ? 'today' : ''}" style="height: ${Math.max(p, 2)}%"></div>
+          <div class="bar-lbl">${d.day}</div>
+        </div>
+      `;
+      chart.innerHTML += html;
+    });
+  }
+
+  function filterHistory(filter, btnElement) {
+    STATE.filter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btnElement.classList.add('active');
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('historyList');
+    list.innerHTML = '';
+
+    let filtered = STATE.sessions;
+    if (STATE.filter === 'today') {
+      filtered = STATE.sessions.filter(s => isToday(s.start));
+    }
+    // For 'week' or 'all', display everything due to simple mock
+
+    if (filtered.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <span>😴</span>
+          Aucune sieste enregistrée.
+        </div>`;
+      return;
+    }
+
+    filtered.forEach(s => {
+      const mins = Math.floor(s.duration / 60);
+      let durText = mins + ' min';
+      if (mins >= 60) durText = Math.floor(mins/60) + 'h ' + (mins%60) + 'm';
+
+      list.innerHTML += `
+        <div class="history-item">
+          <div class="h-left">
+            <div class="h-dot"></div>
+            <div>
+              <div class="h-title">Sieste</div>
+              <div class="h-time">${getT(s.start)} &rarr; ${getT(s.end)}</div>
+            </div>
+          </div>
+          <div class="h-dur">${durText}</div>
+        </div>
+      `;
+    });
+  }
+
+  function navigate(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Boot UI
+  updateDisplay();
+  updateStats();
+  renderHistory();
+</script>
+</body>
+</html>

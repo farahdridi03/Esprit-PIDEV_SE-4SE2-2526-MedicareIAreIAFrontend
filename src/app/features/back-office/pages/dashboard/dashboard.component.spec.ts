@@ -1,8 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { DashboardComponent } from './dashboard.component';
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+// Mock Chart.js which is used in ngAfterViewInit
+(window as any).Chart = class {
+  constructor() {}
+  static register() {}
+};
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -17,7 +23,8 @@ describe('DashboardComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      declarations: [DashboardComponent]
+      declarations: [DashboardComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

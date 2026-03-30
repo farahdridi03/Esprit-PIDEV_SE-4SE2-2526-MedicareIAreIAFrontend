@@ -1,23 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-import { SidebarComponent } from './sidebar.component';
-import { Router } from '@angular/router';
+import { PatientSidebarComponent } from './sidebar.component';
+import { AuthService } from '../../../../../services/auth.service';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterModule } from '@angular/router';
 
-describe('SidebarComponent', () => {
-  let component: SidebarComponent;
-  let fixture: ComponentFixture<SidebarComponent>;
+describe('PatientSidebarComponent', () => {
+  let component: PatientSidebarComponent;
+  let fixture: ComponentFixture<PatientSidebarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterModule.forRoot([])],
-      declarations: [SidebarComponent]
+      imports: [HttpClientTestingModule],
+      declarations: [PatientSidebarComponent],
+      providers: [
+        { provide: AuthService, useValue: { logout: jasmine.createSpy('logout') } }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SidebarComponent);
+    fixture = TestBed.createComponent(PatientSidebarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -25,14 +29,10 @@ describe('SidebarComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should call authService.logout on logout()', () => {
+    const authService = TestBed.inject(AuthService);
+    component.logout();
+    expect(authService.logout).toHaveBeenCalled();
+  });
 });
-
-export class PatientSidebarComponent {
-
-    constructor(private router: Router) { }
-
-    logout() {
-        this.router.navigate(['/front']);
-    }
-
-}

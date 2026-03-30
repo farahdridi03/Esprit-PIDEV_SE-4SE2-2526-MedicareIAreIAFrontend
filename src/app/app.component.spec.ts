@@ -26,3 +26,5 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('MediCareAI');
   });
 });
+
+

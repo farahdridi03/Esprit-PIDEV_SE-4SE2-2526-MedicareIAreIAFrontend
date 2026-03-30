@@ -10,6 +10,11 @@ import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
 import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
 import { AuthGuard } from '../../guards/auth.guard';
+import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-list/patient-doctors-list.component';
+import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
+import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
+import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
+import { PatientBabyCareComponent } from './patient/pages/patient-baby-care/patient-baby-care.component';
 
 const routes: Routes = [
   {
@@ -33,8 +38,32 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
+    path: 'patient/appointments',
+    component: PatientAppointmentsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
     path: 'patient/emergency',
     component: EmergencyComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/doctors',
+    component: PatientDoctorsListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/doctors/:id',
+    component: PatientDoctorDetailComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/baby-care',
+    component: PatientBabyCareComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
@@ -53,6 +82,12 @@ const routes: Routes = [
   {
     path: 'doctor/profile',
     component: DoctorProfileComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['DOCTOR'] }
+  },
+  {
+    path: 'doctor/patients',
+    component: DoctorPatientsComponent,
     canActivate: [AuthGuard],
     data: { roles: ['DOCTOR'] }
   },
@@ -94,5 +129,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class FrontOfficeRoutingModule { }
-
-

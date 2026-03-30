@@ -1,0 +1,233 @@
+// Brand Colors
+$primary-green: #0e7c66;
+$bg-light: #f9fafb;
+$text-dark: #1f2937;
+$text-muted: #6b7280;
+
+.patient-layout {
+  display: flex; height: 100vh; overflow: hidden; font-family: 'DM Sans', sans-serif;
+  .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background-color: $bg-light; }
+  .content-wrapper { flex: 1; overflow-y: auto; padding: 2.5rem; }
+}
+
+.appointments-page {
+  max-width: 900px; margin: 0 auto;
+
+  .view-header {
+    display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;
+    .btn-back { background: #fff; border: 1px solid #e5e7eb; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: $text-dark; transition: 0.2s; &:hover { border-color: $primary-green; color: $primary-green; transform: scale(1.05); } }
+    h2 { font-size: 1.4rem; font-weight: 700; color: $text-dark; margin: 0; }
+  }
+
+  .tabs {
+    display: flex; border-radius: 50px; background: #fff; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin: 0 auto 30px auto; max-width: 500px;
+    button { flex: 1; border: none; padding: 12px; border-radius: 50px; font-weight: 700; color: $text-muted; transition: 0.3s; font-size: 14px; background: transparent; cursor: pointer; }
+    button.active { background: $primary-green; color: #fff; box-shadow: 0 4px 15px rgba(14, 124, 102, 0.2); }
+  }
+
+  .loading, .empty-state { text-align: center; padding: 60px; color: $text-muted; background: #fff; border-radius: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+
+  .appointment-card {
+    background: #fff; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border-left: 6px solid $primary-green; transition: 0.3s;
+    &:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
+    &.card-alt { border-left-color: #22c55e; .specialty { background: #f0fdf4; color: #166534; } .btn-view { background: #22c55e; } }
+    &.past { border-left-color: #94a3b8; } &.cancelled { border-left-color: #ef4444; }
+    .appt-header { display: flex; justify-content: space-between; margin-bottom: 20px; .doctor-profile { display: flex; gap: 16px; align-items: center; .avatar-box { position: relative; width: 60px; height: 60px; background: #f3f4f6; border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 30px; .status-dot { position: absolute; bottom:-2px; right:-2px; width:14px; height:14px; background:#22c55e; border:2px solid #fff; border-radius:50%; z-index:2; } .doc-pic { width:100%; height:100%; object-fit:cover; border-radius:18px; } } .doctor-info { h3 { margin:0; font-size:1.1rem; color:$text-dark; font-weight:700; } .specialty { display:inline-block; background:#f0fdf4; color:$primary-green; font-size:10px; font-weight:800; padding:4px 12px; border-radius:50px; margin-top:6px; } } } .status-badge { font-size:11px; font-weight:800; padding:5px 14px; border-radius:50px; background:#f0fdf4; color:#166534; &.status-past { background:#f1f5f9; color:#64748b; } &.status-cancelled { background:#fef2f2; color:#991b1b; } } }
+    .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px; margin-bottom: 20px; .detail-box { background: #f9fafb; padding: 12px; border-radius: 16px; display: flex; align-items: center; gap: 12px; .icon { font-size: 1.2rem; } .text { label { font-size: 10px; font-weight: 600; color: #9ca3af; text-transform: uppercase; display: block; } span { font-size: 13px; font-weight: 700; color: #4b5563; } } } }
+    .appt-actions { display: flex; gap: 12px; border-top: 1px solid #f3f4f6; padding-top: 20px; 
+      button { flex: 1; padding: 14px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; 
+        &.btn-cancel { border: 1.5px solid #fecaca; color: #ef4444; background: transparent; &:hover { background: #fef2f2; } } 
+        &.btn-delete { border: 1.5px solid #fecaca; color: #ef4444; background: transparent; &:hover { background: #fef2f2; } }
+        &.btn-view { background: $primary-green; color: #fff; &:hover { transform: scale(1.02); } } 
+      } 
+    }
+  }
+
+  // Details & Teleconsultation UI
+  .details-container {
+    .main-detail-card {
+      background: white; border-radius: 28px; padding: 2.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.05); margin-bottom: 2rem;
+      .detail-hero {
+        display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 2.5rem;
+        .hero-avatar { width: 110px; height: 110px; border-radius: 34px; background: #f3f4f6; position: relative; margin-bottom: 1.2rem;
+          img { width: 100%; height: 100%; border-radius: 34px; object-fit: cover; }
+          .online-pill { position: absolute; bottom: 6px; right: 6px; width: 22px; height: 22px; background: #22c55e; border: 4px solid #fff; border-radius: 50%; }
+        }
+        h3 { font-size: 1.6rem; color: $text-dark; font-weight: 800; margin: 0 0 0.4rem 0; }
+        .spec { background: #f0fdf4; color: $primary-green; padding: 6px 18px; border-radius: 50px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+      }
+      .info-grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; border-top: 1px solid #f1f5f9; padding-top: 2rem; .info-item { display: flex; gap: 1.2rem; align-items: center; .ico-box { width: 52px; height: 52px; background: #f9fafb; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; } .txt { label { font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 700; display: block; } span { font-size: 14px; color: $text-dark; font-weight: 700; } } } }
+    }
+
+    // Teleconsultation Styling (Video Call)
+    .tele-card-full {
+      position: relative; border-radius: 32px; background: #111; height: 500px; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      
+      // Waiting Room State
+      .waiting-view {
+        height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px;
+        background: radial-gradient(circle at center, #1a3a34 0%, #111 100%); color: #fff;
+        .loader-ring { width: 80px; height: 80px; border: 6px solid rgba(255,255,255,0.1); border-top-color: $primary-green; border-radius: 50%; animation: spin 1.5s infinite linear; margin-bottom: 24px; }
+        h4 { font-size: 1.5rem; margin-bottom: 12px; }
+        p { opacity: 0.7; font-size: 14px; max-width: 300px; line-height: 1.6; }
+      }
+
+      // Live Video Call View
+      .live-video-view {
+        height: 100%; position: relative;
+        .remote-video { width: 100%; height: 100%; object-fit: cover; }
+        
+        .patient-pip {
+          position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; background: #222; border-radius: 16px; border: 2px solid rgba(255,255,255,0.2); overflow: hidden; z-index: 10;
+          img { width:100%; height:100%; object-fit:cover; }
+        }
+
+        .video-controls {
+          position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; align-items: center; z-index: 10;
+          .ctrl-btn { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: #fff; border: none; cursor: pointer; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; transition: 0.3s; &:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); } }
+          .btn-end { background: #ef4444; &:hover { background: #dc2626; } }
+          .active { background: $primary-green; }
+        }
+
+        .user-tag { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 50px; color: #fff; font-size: 12px; font-weight: 700; z-index: 10; display: flex; align-items: center; gap: 8px; .rec-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; } }
+      }
+    }
+
+    .map-section-card {
+      position: relative; background: #fff; border-radius: 28px; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      .map-preview { height: 200px; background-size: cover; background-position: center; width: 100%; position: relative; &::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to bottom, rgba(255,255,255,0) 20%, rgba(255,255,255,1) 95%); }
+        .map-pin { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); width: 50px; height: 50px; background: $primary-green; border: 4px solid #fff; border-radius: 50% 50% 50% 0; display: flex; align-items: center; justify-content: center; &::after { content: '🏥'; transform: rotate(45deg); font-size: 20px; } }
+      }
+      .location-info-bar { position: relative; padding: 1.5rem 2rem; background: #fff; display: flex; justify-content: space-between; align-items: center; .loc-text { h4 { margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: $text-dark; } p { margin: 0; font-size: 13px; color: $text-muted; } }
+        .btn-maps-action { background: $primary-green; color: #fff; padding: 10px 20px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; &:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14, 124, 102, 0.3); } }
+      }
+    }
+
+    .section-card {
+      background: #fff; border-radius: 28px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+      h4 { margin: 0 0 1.2rem 0; font-size: 1rem; color: $text-dark; font-weight: 800; display: flex; align-items: center; gap: 12px; }
+      p { margin: 0; color: #4b5563; line-height: 1.6; font-size: 14px; font-weight: 500; }
+      .timeline { padding-left: 1.5rem; border-left: 2px dashed #f1f5f9; position: relative; margin: 1rem 0 0.5rem 0.75rem;
+        .step { position: relative; padding-bottom: 1.5rem; &::before { content: ''; position: absolute; left: calc(-1.5rem - 7px); top: 0; width: 14px; height: 14px; background: #f1f5f9; border-radius: 50%; border: 3px solid #fff; } &.active::before { background: $primary-green; box-shadow: 0 0 0 5px rgba(14, 124, 102, 0.1); } .s-txt { font-weight: 700; color: $text-dark; font-size: 13px; display: block; } .s-sub { font-size: 11px; color: #9ca3af; } &:last-child { padding-bottom: 0; } }
+      }
+    }
+  }
+}
+
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* --- PREMIUM CUSTOM MODAL --- */
+.modal-overlay-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.65); /* Rich Slate Overlay */
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-card-premium {
+  background: white;
+  width: 90%;
+  max-width: 440px;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: slideInUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: 32px;
+}
+
+.modal-header-visual {
+  text-align: center;
+  margin-bottom: 30px;
+
+  .icon-circle-danger {
+    width: 64px;
+    height: 64px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    
+    i {
+      color: #ef4444;
+      font-size: 26px;
+    }
+  }
+
+  h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}
+
+.modal-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  button {
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-cancel-soft {
+    background: #f1f5f9;
+    color: #475569;
+    &:hover { background: #e2e8f0; }
+  }
+
+  .btn-confirm-danger {
+    background: #ef4444;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover:not(:disabled) { 
+        background: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+  }
+}
+
+.spinner-mini {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -19,7 +19,11 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-    updateProfile(request: UpdateProfileRequest): Observable<any> {
+    getProfile(): Observable<any> {
+        return this.http.get(`${this.baseUrlLegacy}/profile`);
+    }
+
+    updateProfile(request: UpdateProfileRequest & { role?: string }): Observable<any> {
         return this.http.put(`${this.baseUrlLegacy}/profile`, request);
     }
 
