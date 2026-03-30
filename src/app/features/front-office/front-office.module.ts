@@ -35,6 +35,7 @@ import { PatientProfileSettingsComponent } from './patient/pages/patient-profile
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
 
 import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
+import { LabRequestFormComponent } from './patient/pages/lab-requests/lab-request-form/lab-request-form.component';
 
 
 
@@ -66,7 +67,8 @@ import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.
     LifestyleFormComponent,
     PatientProfileSettingsComponent,
     PatientProfileEditComponent,
-    LabRequestsComponent
+    LabRequestsComponent,
+    LabRequestFormComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,125 @@
+<div class="dashboard-wrapper">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Body -->
+  <div class="main-body">
+    <!-- Topbar -->
+    <app-topbar></app-topbar>
+
+    <!-- Page Content Area -->
+    <div class="content-area">
+      <div class="form-page-container">
+        
+        <!-- Header Section (Matches Screenshot) -->
+        <div class="form-header">
+          <div class="form-header__content">
+            <span class="form-header__eyebrow">CLINICAL SERVICES</span>
+            <h1 class="form-header__title">
+              {{ isEditMode ? 'Edit Lab Request' : 'New Lab Request' }}
+            </h1>
+            <p class="form-header__sub">
+              {{ isEditMode 
+                ? 'Update the parameters of your existing diagnostic request.' 
+                : 'Fill in the details to schedule your diagnostic session.' }}
+            </p>
+          </div>
+          <button class="form-header__close" (click)="cancel()" title="Back to List">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Form Body (Matches Screenshot Fields) -->
+        <div class="form-card">
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            
+            <!-- Target Laboratory -->
+            <div class="field">
+              <label class="field__label">
+                Target Laboratory <span class="req-star">*</span>
+              </label>
+              <div class="field__select-wrap">
+                <select formControlName="laboratoryId" class="field__select">
+                  <option [ngValue]="null" disabled>Select a facility</option>
+                  <option *ngFor="let lab of laboratories" [value]="lab.id">
+                    {{ lab.name }}
+                  </option>
+                </select>
+                <svg class="field__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </div>
+              <span class="field__err" *ngIf="form.get('laboratoryId')?.invalid && form.get('laboratoryId')?.touched">
+                Please select a laboratory facility.
+              </span>
+            </div>
+
+            <!-- Test Type / Panel -->
+            <div class="field">
+              <label class="field__label">
+                Test Type / Panel <span class="req-star">*</span>
+              </label>
+              <input type="text" formControlName="testType" class="field__input"
+                     placeholder="e.g. Complete Blood Count (CBC)" />
+              <span class="field__err" *ngIf="form.get('testType')?.invalid && form.get('testType')?.touched">
+                A valid test type is required (min 3 characters).
+              </span>
+            </div>
+
+            <!-- Scheduled Date & Time -->
+            <div class="field">
+              <label class="field__label">
+                Scheduled Date & Time <span class="req-star">*</span>
+              </label>
+              <input type="datetime-local" formControlName="scheduledAt" class="field__input"
+                     [min]="today" />
+              <span class="field__err" *ngIf="form.get('scheduledAt')?.invalid && form.get('scheduledAt')?.touched">
+                Please select a valid future date and time.
+              </span>
+            </div>
+
+            <!-- Clinical Notes -->
+            <div class="field">
+              <label class="field__label">
+                Clinical Notes <span class="field__optional">(optional)</span>
+              </label>
+              <textarea formControlName="clinicalNotes" class="field__textarea" rows="4"
+                        placeholder="Additional instructions or context..."></textarea>
+            </div>
+
+            <!-- Error Banner -->
+            <div class="form-error" *ngIf="submitError">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {{ submitError }}
+            </div>
+
+            <!-- Action Footer -->
+            <div class="form-footer">
+              <button type="button" class="btn-cancel" (click)="cancel()">
+                Cancel
+              </button>
+              <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+                <span *ngIf="!isSubmitting">
+                  {{ isEditMode ? 'Update Request' : 'Submit Request' }}
+                </span>
+                <span *ngIf="isSubmitting" class="loader-text">
+                  <span class="dot-spin"></span>
+                  Processing...
+                </span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

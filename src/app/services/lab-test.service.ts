@@ -47,11 +47,12 @@ export class LabTestService {
   }
 
   getAll(): Observable<LabTestResponse[]> {
-  return this.http.get<LabTestResponse[]>(
-    'http://localhost:8081/springsecurity/api/lab-tests',
-    { headers: this.getHeaders() }
-  );
-}
+    return this.http.get<LabTestResponse[]>(this.baseUrl, { headers: this.getHeaders() });
+  }
+
+  getByLaboratory(laboratoryId: number): Observable<LabTestResponse[]> {
+    return this.http.get<LabTestResponse[]>(`${this.baseUrl}/laboratory/${laboratoryId}`, { headers: this.getHeaders() });
+  }
 
   create(request: LabTestRequest): Observable<LabTestResponse> {
     return this.http.post<LabTestResponse>(

@@ -20,7 +20,10 @@ export interface LaboratoryResponse {
   email: string;
   openingHours: string;
   specializations: string;
+  active: boolean;
   isActive: boolean;
+  totalStaff: number;
+  totalTests: number;
   createdAt: string;
 }
 

@@ -27,6 +27,7 @@ import { PatientProfileSettingsComponent } from './patient/pages/patient-profile
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
 import { LifestyleDetailComponent } from './patient/pages/lifestyle-detail/lifestyle-detail.component';
 import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
+import { LabRequestFormComponent } from './patient/pages/lab-requests/lab-request-form/lab-request-form.component';
 
 import { AuthGuard } from '../../guards/auth.guard';
 
@@ -109,6 +110,18 @@ const routes: Routes = [
   {
     path: 'patient/lab-requests',
     component: LabRequestsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lab-requests/new',
+    component: LabRequestFormComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lab-requests/edit/:id',
+    component: LabRequestFormComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
