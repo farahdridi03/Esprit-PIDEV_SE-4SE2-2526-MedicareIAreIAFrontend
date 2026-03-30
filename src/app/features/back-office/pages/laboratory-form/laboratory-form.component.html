@@ -1,0 +1,114 @@
+<div class="form-page">
+  <div class="form-card">
+
+    <!-- Card Header -->
+    <div class="card-header">
+      <span class="badge-management">🔬 MANAGEMENT</span>
+      <h1 class="card-title">{{ isEditMode ? 'Edit Laboratory' : 'Add New Laboratory' }}</h1>
+      <p class="card-subtitle">Complete the profile for the diagnostic facility below.</p>
+    </div>
+
+    <!-- Loading -->
+    <div class="spinner-wrap" *ngIf="isLoading">
+      <div class="spinner"></div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading" novalidate>
+
+      <!-- Laboratory Name -->
+      <div class="field full">
+        <label class="field-label">
+          <span class="field-icon">🔬</span> Laboratory Name
+        </label>
+        <input type="text" formControlName="name" placeholder="e.g. Central City Diagnostic Lab" class="field-input"
+          [class.invalid]="f['name'].invalid && f['name'].touched" />
+        <span class="field-error" *ngIf="f['name'].touched && f['name'].errors?.['required']">Name is required</span>
+        <span class="field-error" *ngIf="f['name'].touched && (f['name'].errors?.['minlength'] || f['name'].errors?.['maxlength'])">Name must be between 3 and 100 characters</span>
+      </div>
+
+      <!-- Full Address -->
+      <div class="field full">
+        <label class="field-label">
+          <span class="field-icon">📍</span> Full Address
+        </label>
+        <textarea formControlName="address" rows="3" placeholder="Street address, building, suite, city, and zip code" class="field-input"
+          [class.invalid]="f['address'].invalid && f['address'].touched"></textarea>
+        <span class="field-error" *ngIf="f['address'].touched && f['address'].errors?.['required']">Address is required</span>
+        <span class="field-error" *ngIf="f['address'].touched && (f['address'].errors?.['minlength'] || f['address'].errors?.['maxlength'])">Address must be between 5 and 200 characters</span>
+      </div>
+
+      <!-- Phone + Email -->
+      <div class="field-row">
+        <div class="field half">
+          <label class="field-label">
+            <span class="field-icon">📞</span> Contact Number
+          </label>
+          <input type="text" formControlName="phone" placeholder="+1 (555) 000-0000" class="field-input"
+            [class.invalid]="f['phone'].invalid && f['phone'].touched" />
+          <span class="field-error" *ngIf="f['phone'].touched && f['phone'].errors?.['required']">Phone is required</span>
+          <span class="field-error" *ngIf="f['phone'].touched && f['phone'].errors?.['pattern']">Phone must be exactly 8 digits</span>
+        </div>
+        <div class="field half">
+          <label class="field-label">
+            <span class="field-icon">📧</span> Email
+          </label>
+          <input type="email" formControlName="email" placeholder="contact@laboratory.com" class="field-input"
+            [class.invalid]="f['email'].invalid && f['email'].touched" />
+          <span class="field-error" *ngIf="f['email'].touched && f['email'].errors?.['required']">Email is required</span>
+          <span class="field-error" *ngIf="f['email'].touched && f['email'].errors?.['email']">Email format is invalid</span>
+        </div>
+      </div>
+
+      <!-- Opening Hours -->
+      <div class="field full">
+        <label class="field-label">
+          <span class="field-icon">🕐</span> Opening Hours
+        </label>
+        <input type="text" formControlName="openingHours" placeholder="e.g. Mon-Fri 8:00-18:00" class="field-input"
+          [class.invalid]="f['openingHours'].invalid && f['openingHours'].touched" />
+        <span class="field-error" *ngIf="f['openingHours'].touched && f['openingHours'].errors?.['required']">Opening hours is required</span>
+      </div>
+
+      <!-- Specializations -->
+      <div class="field full">
+        <label class="field-label">
+          <span class="field-icon">🧬</span> Specializations <span class="optional">(optional)</span>
+        </label>
+        <input type="text" formControlName="specializations" placeholder="e.g. Hematology, Biochemistry, Microbiology" class="field-input" />
+      </div>
+
+      <!-- Active Status -->
+      <div class="field full toggle-row">
+        <div class="toggle-info">
+          <span class="field-label">Active Status</span>
+          <span class="toggle-desc">Allow this laboratory to process orders immediately.</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" formControlName="isActive" />
+          <span class="toggle-track">
+            <span class="toggle-thumb"></span>
+          </span>
+        </label>
+      </div>
+
+      <!-- Buttons -->
+      <div class="form-actions">
+        <button type="button" class="btn-discard" (click)="discard()">Discard Changes</button>
+        <button type="submit" class="btn-save" [disabled]="isSaving">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          {{ isSaving ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Register Laboratory') }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <p class="footer-note">© 2024 MedicareAI Systems. All clinical data is encrypted.</p>
+</div>
+
+<!-- Snackbar -->
+<div class="snackbar" [class.visible]="snackbarVisible" [class.error]="snackbarType === 'error'">
+  {{ snackbarMsg }}
+</div>

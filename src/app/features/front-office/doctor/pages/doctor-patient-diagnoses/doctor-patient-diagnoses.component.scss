@@ -1,0 +1,17 @@
+.doctor-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f7fafc;
+}
+
+.main-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-area {
+  flex-grow: 1;
+  padding: 30px;
+  overflow-y: auto;
+}

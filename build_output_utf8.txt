@@ -1,0 +1,187 @@
+﻿[33mظإ»[39m Building...
+[32mظ£¤[39m Building...
+Application bundle generation failed. [5.382 seconds]
+
+node.exe : [1m[31m[31mX [4
+1;31m[[41;97mERROR[41;31m][
+0m [1mNG8002: Can't bind to 
+'formGroup' since it isn't a 
+known property of 'form'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:\Use
+rs\Fathi\AppData\Roaming\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: ([1m[31m  
+  [31mX...r-compiler][0m:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+
+    src/app/features/front-off
+ice/patient/components/passwor
+d-modal/password-modal.compone
+nt.html:8:14:
+[37m      8 ظ¤é         
+<form [32m[formGroup]="passwo
+rdForm"[37m 
+(ngSubmit)="onSubmit()">
+        ظـ╡               [32
+m~~~~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+  Error occurs in the 
+template of component 
+PasswordModalComponent.
+
+    src/app/features/front-off
+ice/patient/components/passwor
+d-modal/password-modal.compone
+nt.ts:7:15:
+[37m      7 ظ¤é   
+templateUrl: [32m'./password-
+modal.component.html'[37m,
+        ظـ╡                [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mNG8001: 
+'app-sidebar' is not a known 
+element:
+1. If 'app-sidebar' is an 
+Angular component, then 
+verify that it is part of 
+this module.
+2. If 'app-sidebar' is a Web 
+Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' to 
+the '@NgModule.schemas' of 
+this component to suppress 
+this message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/patient/pages/patient-prof
+ile-settings/patient-profile-s
+ettings.component.html:2:4:
+[37m      2 ظ¤é     [32m<app
+-sidebar>[37m</app-sidebar>
+        ظـ╡     
+[32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component PatientP
+rofileSettingsComponent.
+
+    src/app/features/front-off
+ice/patient/pages/patient-prof
+ile-settings/patient-profile-s
+ettings.component.ts:8:15:
+[37m      8 ظ¤é   
+templateUrl: [32m'./patient-p
+rofile-settings.component.html
+'[37m,
+        ظـ╡                [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mNG8001: 
+'app-topbar' is not a known 
+element:
+1. If 'app-topbar' is an 
+Angular component, then 
+verify that it is part of 
+this module.
+2. If 'app-topbar' is a Web 
+Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' to 
+the '@NgModule.schemas' of 
+this component to suppress 
+this message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/patient/pages/patient-prof
+ile-settings/patient-profile-s
+ettings.component.html:5:8:
+[37m      5 ظ¤é         [32m
+<app-topbar>[37m</app-topbar>
+        ظـ╡         
+[32m~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component PatientP
+rofileSettingsComponent.
+
+    src/app/features/front-off
+ice/patient/pages/patient-prof
+ile-settings/patient-profile-s
+ettings.component.ts:8:15:
+[37m      8 ظ¤é   
+templateUrl: [32m'./patient-p
+rofile-settings.component.html
+'[37m,
+        ظـ╡                [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mNG8001: 
+'app-password-modal' is not a 
+known element:
+1. If 'app-password-modal' is 
+an Angular component, then 
+verify that it is part of 
+this module.
+2. If 'app-password-modal' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' to 
+the '@NgModule.schemas' of 
+this component to suppress 
+this message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/patient/pages/patient-prof
+ile-settings/patient-profile-s
+ettings.component.html:131:0:
+[37m      131 ظ¤é 
+[32m<app-password-modal 
+*ngIf="showPasswordModal" 
+(close)="closePassw[37m...
+          ظـ╡ [32m~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component PatientP
+rofileSettingsComponent.
+
+    src/app/features/front-off
+ice/patient/pages/patient-prof
+ile-settings/patient-profile-s
+ettings.component.ts:8:15:
+[37m      8 ظ¤é   
+templateUrl: [32m'./patient-p
+rofile-settings.component.html
+'[37m,
+        ظـ╡                [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+[39m[22m

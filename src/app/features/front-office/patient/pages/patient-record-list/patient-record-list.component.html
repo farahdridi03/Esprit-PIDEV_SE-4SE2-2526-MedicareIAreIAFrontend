@@ -1,0 +1,115 @@
+<div class="list-wrapper">
+    <app-sidebar></app-sidebar>
+    <div class="main-body">
+        <app-topbar></app-topbar>
+        <div class="content-area">
+            <div class="container-header">
+                <h1>{{ title }}</h1>
+                <button class="back-btn" routerLink="/front/patient/medical-record">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    Back to Record
+                </button>
+            </div>
+
+            <div class="table-card box">
+                <div *ngIf="loading" class="loading">Loading records...</div>
+                
+                <div *ngIf="!loading && data.length === 0" class="no-data">
+                    No {{ type }} found in your medical record.
+                </div>
+
+                <div class="table-responsive" *ngIf="!loading && data.length > 0">
+                    <table class="record-table">
+                        <!-- Consultations -->
+                        <ng-container *ngIf="type === 'consultations'">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Doctor</th>
+                                    <th>Specialty</th>
+                                    <th>Status</th>
+                                    <th>Observations</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of data">
+                                    <td class="bold">{{ item.date | date:'mediumDate' }}</td>
+                                    <td>{{ item.doctorName }}</td>
+                                    <td>{{ item.specialty }}</td>
+                                    <td><span class="status-badge" [ngClass]="item.status.toLowerCase()">{{ item.status }}</span></td>
+                                    <td>{{ item.observations || 'N/A' }}</td>
+                                </tr>
+                            </tbody>
+                        </ng-container>
+
+                        <!-- Prescriptions -->
+                        <ng-container *ngIf="type === 'prescriptions'">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Medication</th>
+                                    <th>Dosage</th>
+                                    <th>Instructions</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of data">
+                                    <td>{{ item.date | date:'mediumDate' }}</td>
+                                    <td class="bold">{{ item.medication }}</td>
+                                    <td>{{ item.dosage }}</td>
+                                    <td>{{ item.instructions }}</td>
+                                    <td>
+                                        <button class="download-btn" (click)="downloadPrescription(item)">
+                                            Download
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-container>
+
+                        <!-- Treatments -->
+                        <ng-container *ngIf="type === 'treatments'">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Dosage</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of data">
+                                    <td class="bold">{{ item.treatmentType }}</td>
+                                    <td>{{ item.description }}</td>
+                                    <td>{{ item.dosage }}</td>
+                                    <td>{{ item.startDate | date:'shortDate' }} - {{ item.endDate | date:'shortDate' }}</td>
+                                    <td><span class="status-dot" [ngClass]="item.status.toLowerCase()"></span> {{ item.status }}</td>
+                                </tr>
+                            </tbody>
+                        </ng-container>
+
+                        <!-- Diagnoses -->
+                        <ng-container *ngIf="type === 'diagnoses'">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of data">
+                                    <td class="bold">{{ item.type }}</td>
+                                    <td>{{ item.description }}</td>
+                                </tr>
+                            </tbody>
+                        </ng-container>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

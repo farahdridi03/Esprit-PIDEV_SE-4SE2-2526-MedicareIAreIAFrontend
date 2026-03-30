@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-// jwt-decode 4.x uses named export
 import { jwtDecode } from 'jwt-decode';
 import { AuthResponse } from '../models/auth-response.model';
 import { LoginRequest } from '../models/login-request.model';
@@ -15,8 +14,6 @@ import { RegisterRequest } from '../models/register-request.model';
 export class AuthService {
     private readonly baseUrl = 'http://localhost:8081/springsecurity/auth';
     private readonly TOKEN_KEY = 'auth_token';
-
-
     private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
     public authStatus$ = this.authStatusSubject.asObservable();
 
@@ -33,9 +30,12 @@ export class AuthService {
         );
     }
 
-    // Le backend renvoie du texte brut pour /register -> spécifier responseType: 'text'
     register(payload: RegisterRequest): Observable<string> {
-        return this.http.post(`${this.baseUrl}/register`, payload, { responseType: 'text' }) as Observable<string>;
+        return this.http.post(
+            `${this.baseUrl}/register`,
+            payload,
+            { responseType: 'text' }
+        ) as Observable<string>;
     }
 
     logout(): void {
@@ -48,10 +48,14 @@ export class AuthService {
         return localStorage.getItem(this.TOKEN_KEY);
     }
 
+    // ✅ Unified — now just uses the main User ID
+    getPatientId(): number {
+        return this.getUserId() || 0;
+    }
+
     isAuthenticated(): boolean {
         const token = this.getToken();
         if (!token) return false;
-
         try {
             const decoded: any = jwtDecode(token);
             const currentTime = Math.floor(Date.now() / 1000);
@@ -64,10 +68,8 @@ export class AuthService {
     getUserRole(): string | null {
         const token = this.getToken();
         if (!token) return null;
-
         try {
             const decoded: any = jwtDecode(token);
-            // Le rôle peut venir sous forme de chaîne ou de tableau
             let role: string | null = null;
             if (typeof decoded.role === 'string') {
                 role = decoded.role;
@@ -76,16 +78,11 @@ export class AuthService {
             } else if (decoded.roles && Array.isArray(decoded.roles) && decoded.roles.length > 0) {
                 role = decoded.roles[0];
             }
-
             if (!role && decoded.authorities && Array.isArray(decoded.authorities) && decoded.authorities.length > 0) {
-                // parfois Spring Security met les authorities
                 const first = decoded.authorities[0];
                 role = typeof first === 'string' ? first : (first.authority || null);
             }
-
             if (!role) return null;
-
-            // Supprimer le préfixe ROLE_ si présent
             return role.replace(/^ROLE_/, '');
         } catch (error) {
             return null;
@@ -95,10 +92,8 @@ export class AuthService {
     getUserEmail(): string | null {
         const token = this.getToken();
         if (!token) return null;
-
         try {
             const decoded: any = jwtDecode(token);
-            // Typically Spring Security puts the username (email) in 'sub'
             return decoded.sub || decoded.email || null;
         } catch (error) {
             return null;
@@ -114,8 +109,8 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
-            const id = decoded.userId || decoded.id || decoded.providerId;
-            return id ? Number(id) : null;
+            const userId = decoded.id || decoded.userId || decoded.providerId;
+            return userId ? parseInt(userId, 10) : null;
         } catch (error) {
             return null;
         }
@@ -135,32 +130,20 @@ export class AuthService {
     getParentRole() {
         const gender = this.getUserGender();
         if (gender === 'FEMALE') {
-            return {
-                label: 'Maman',
-                badge: 'MAMA'
-            };
+            return { label: 'Maman', badge: 'MAMA' };
         } else if (gender === 'MALE') {
-            return {
-                label: 'Papa',
-                badge: 'PAPA'
-            };
+            return { label: 'Papa', badge: 'PAPA' };
         }
-        return {
-            label: 'Parent',
-            badge: 'PARENT'
-        };
+        return { label: 'Parent', badge: 'PARENT' };
     }
 
     getUserFullName(): string | null {
         const token = this.getToken();
         if (!token) return null;
-
         try {
             const decoded: any = jwtDecode(token);
-            // On essaie plusieurs clés communes dans un JWT Spring Security + fallback sur sub (email)
             const name = decoded.fullName || decoded.fullname || decoded.name;
             if (name) return name;
-
             const sub = decoded.sub || decoded.email;
             if (sub && sub.includes('@')) {
                 return sub.split('@')[0];
@@ -169,5 +152,47 @@ export class AuthService {
         } catch (error) {
             return null;
         }
+    }
+    forgotPassword(email: string): Observable<string> {
+        return this.http.post(
+            `${this.baseUrl}/forgot-password`,
+            { email },
+            { responseType: 'text' }
+        ) as Observable<string>;
+    }
+
+    resetPassword(token: string, newPassword: string): Observable<string> {
+        return this.http.post(
+            `${this.baseUrl}/reset-password`,
+            { token, newPassword },
+            { responseType: 'text' }
+        ) as Observable<string>;
+    }
+
+    getLaboratoryId(): number | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.laboratoryId ?? null;
+        } catch { return null; }
+    }
+
+    getFullName(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.fullName ?? null;
+        } catch { return null; }
+    }
+
+    getRole(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.role ?? null;
+        } catch { return null; }
     }
 }

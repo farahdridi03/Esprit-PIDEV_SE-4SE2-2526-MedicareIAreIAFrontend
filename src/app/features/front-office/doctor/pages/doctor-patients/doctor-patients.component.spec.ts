@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { DoctorPatientsComponent } from './doctor-patients.component';
 import { ChangeDetectorRef } from '@angular/core';
@@ -5,10 +6,21 @@ import { AuthService } from '../../../../../services/auth.service';
 import { AppointmentService } from '../../../../../services/appointment.service';
 import { of, throwError } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+=======
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
+import { DoctorPatientsComponent } from './doctor-patients.component';
+>>>>>>> origin/frontVersion1
 
 describe('DoctorPatientsComponent', () => {
   let component: DoctorPatientsComponent;
   let fixture: ComponentFixture<DoctorPatientsComponent>;
+<<<<<<< HEAD
   
   // Mocks
   let mockAuthService: any;
@@ -35,6 +47,22 @@ describe('DoctorPatientsComponent', () => {
         { provide: AppointmentService, useValue: mockAppointmentService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
+=======
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      declarations: [DoctorPatientsComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of({ get: (key: string) => (key === 'id' ? '1' : null) })
+          }
+        }
+      ]
+>>>>>>> origin/frontVersion1
     })
     .compileComponents();
 
@@ -43,6 +71,7 @@ describe('DoctorPatientsComponent', () => {
     fixture.detectChanges();
   });
 
+<<<<<<< HEAD
   it('should create the component', () => {
     expect(component).toBeTruthy();
   });
@@ -155,4 +184,9 @@ describe('DoctorPatientsComponent', () => {
     component.setMode('all');
     expect(component.displayMode).toBe('all');
   });
+=======
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+>>>>>>> origin/frontVersion1
 });

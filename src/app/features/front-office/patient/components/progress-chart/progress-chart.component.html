@@ -1,0 +1,28 @@
+<div class="chart-container">
+    <div class="chart-header">
+        <h4>{{ title }}</h4>
+    </div>
+    <div class="svg-wrapper">
+        <svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid meet" class="chart-svg">
+            <!-- Grid Lines -->
+            <line x1="20" y1="20" x2="20" y2="130" class="axis-line" />
+            <line x1="20" y1="130" x2="380" y2="130" class="axis-line" />
+
+            <!-- The Path -->
+            <path [attr.d]="chartPath" class="data-line" />
+
+            <!-- Data Points -->
+            <g *ngFor="let p of points">
+                <circle [attr.cx]="p.x" [attr.cy]="p.y" r="4" class="data-point">
+                    <title>{{ p.label }}: {{ p.value }}</title>
+                </circle>
+            </g>
+        </svg>
+    </div>
+    <div class="chart-footer" *ngIf="points.length > 0">
+        <span class="date-range">{{ points[0].label }} — {{ points[points.length - 1].label }}</span>
+    </div>
+    <div class="empty-chart" *ngIf="points.length === 0">
+        <p>Not enough records to visualize.</p>
+    </div>
+</div>

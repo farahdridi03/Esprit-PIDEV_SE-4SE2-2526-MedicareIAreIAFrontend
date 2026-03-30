@@ -1,0 +1,270 @@
+﻿
+> medi-care-ai@0.0.0 build
+> ng build
+
+[33mظإ»[39m Building...
+[32mظ£¤[39m Building...
+Application bundle generation failed. [8.302 seconds]
+
+node.exe : [1m[33m[33mظû▓ 
+[43;33m[[43;30mWARNING[43;33
+m][0m [1mNG8107: The left 
+side of this optional chain 
+operation does not include 
+'null' or 'undefined' in its 
+type, therefore the '?.' 
+operator can be replaced with 
+the '.' operator.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:\Use
+rs\Fathi\AppData\Roaming\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: ([1m[33m  
+  [33mظ...r-compiler][0m:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-treatm
+ents/doctor-treatments.compone
+nt.html:27:81:
+[37m      27 ظ¤é ..." [ngClas
+s]="item.status?.[32mtoLowerC
+ase[37m()">{{ item.status 
+}}</spa...
+         ظـ╡                  
+            
+[32m~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorTreatmentsComponent.
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-treatm
+ents/doctor-treatments.compone
+nt.ts:7:15:
+[37m      7 ظ¤é   
+templateUrl: [32m'./doctor-tr
+eatments.component.html'[37m,
+        ظـ╡                [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;
+97mERROR[41;31m][0m 
+[1mNG9: Property 
+'doctorName' does not exist 
+on type 'Consultation'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.html:32:40:
+[37m      32 ظ¤é             
+                <td>{{ 
+item.[32mdoctorName[37m || 
+'N/A' }}</td>
+         ظـ╡                  
+                       
+[32m~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorConsultationsComponent.
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.ts:8:15:
+[37m      8 ظ¤é   
+templateUrl: [32m'./doctor-co
+nsultations.component.html'[3
+7m,
+        ظـ╡                [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mNG9: 
+Property 'doctorName' does 
+not exist on type 
+'Consultation'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.html:59:94:
+[37m      59 ظ¤é ...del)]="cu
+rrentConsultation.[32mdoctorN
+ame[37m" 
+class="form-control" pla...
+         ظـ╡                  
+             
+[32m~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorConsultationsComponent.
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.ts:8:15:
+[37m      8 ظ¤é   
+templateUrl: [32m'./doctor-co
+nsultations.component.html'[3
+7m,
+        ظـ╡                [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mNG9: 
+Property 'doctorName' does 
+not exist on type 
+'Consultation'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.html:59:94:
+[37m      59 ظ¤é ...del)]="cu
+rrentConsultation.[32mdoctorN
+ame[37m" 
+class="form-control" pla...
+         ظـ╡                  
+             
+[32m~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorConsultationsComponent.
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.ts:8:15:
+[37m      8 ظ¤é   
+templateUrl: [32m'./doctor-co
+nsultations.component.html'[3
+7m,
+        ظـ╡                [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2353: 
+Object literal may only 
+specify known properties, and 
+'patientId' does not exist in 
+type 'Consultation'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.ts:34:13:
+[37m      34 ظ¤é     return 
+{ [32mpatientId[37m: 
+this.patientId || 0, date: 
+'', notes: '', ...
+         ظـ╡              
+[32m~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'getByPatientId' 
+does not exist on type 
+'ConsultationService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.ts:39:29:
+[37m      39 ظ¤é ...this.cons
+ultationService.[32mgetByPati
+entId[37m(this.patientId).sub
+scri...
+         ظـ╡                  
+           
+[32m~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'data' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.ts:40:13:
+[37m      40 ظ¤é       next: 
+([32mdata[37m) => {
+         ظـ╡              
+[32m~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS7006: 
+Parameter 'err' implicitly 
+has an 'any' type.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.ts:44:14:
+[37m      44 ظ¤é       
+error: ([32merr[37m) => {
+         ظـ╡               
+[32m~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR
+[41;31m][0m [1mTS2339: 
+Property 'patientId' does not 
+exist on type 
+'Consultation'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front-off
+ice/doctor/pages/doctor-consul
+tations/doctor-consultations.c
+omponent.ts:75:31:
+[37m      75 ظ¤é       this.c
+urrentConsultation.[32mpatien
+tId[37m = this.patientId;
+         ظـ╡                  
+              
+[32m~~~~~~~~~[0m
+
+[39m[22m

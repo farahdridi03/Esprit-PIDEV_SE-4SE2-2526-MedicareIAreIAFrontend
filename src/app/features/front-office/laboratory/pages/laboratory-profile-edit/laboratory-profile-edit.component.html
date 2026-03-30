@@ -1,0 +1,110 @@
+<div class="dashboard-wrapper">
+    <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
+
+    <div class="main-body">
+        <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
+
+        <div class="content-area">
+            <div class="edit-container" *ngIf="!loading; else loadingTpl">
+                <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+                    <div class="profile-grid">
+                        <!-- Basic Info Card -->
+                        <div class="profile-card basic-info-card">
+                            <div class="photo-section">
+                                <label class="photo-label" for="photo-upload">
+                                    <div class="photo-placeholder" *ngIf="!photoPreview">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 4.5v15m7.5-7.5h-15" />
+                                        </svg>
+                                        <span>Upload</span>
+                                    </div>
+                                    <img [src]="photoPreview" *ngIf="photoPreview" class="profile-photo" alt="Profile Photo">
+                                    <input type="file" id="photo-upload" (change)="onFileSelected($event)" accept="image/*" hidden>
+                                    <div class="photo-overlay">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                                        </svg>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" formControlName="fullName" placeholder="Enter your full name">
+                                    <span class="error-text" *ngIf="profileForm.get('fullName')?.touched && profileForm.get('fullName')?.errors?.['required']">
+                                        Full name is required
+                                    </span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Birth Date</label>
+                                    <input type="date" formControlName="birthDate">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="tel" formControlName="phone" placeholder="Enter your phone number">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Email (Locked)</label>
+                                    <input type="email" formControlName="email">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Laboratory Info Card -->
+                        <div class="profile-card lab-info-card">
+                            <div class="card-header">
+                                <h3>Laboratory Information</h3>
+                            </div>
+
+                            <div class="info-grid">
+                                <div class="form-group full-width">
+                                    <label>Laboratory Name</label>
+                                    <input type="text" formControlName="laboratoryName" placeholder="Enter laboratory name">
+                                    <span class="error-text" *ngIf="profileForm.get('laboratoryName')?.touched && profileForm.get('laboratoryName')?.errors?.['required']">
+                                        Laboratory name is required
+                                    </span>
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <label>Address</label>
+                                    <textarea formControlName="laboratoryAddress" placeholder="Enter laboratory address"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Laboratory Phone</label>
+                                    <input type="tel" formControlName="laboratoryPhone" placeholder="Enter laboratory phone">
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+                                <div class="actions">
+                                    <button type="button" class="btn-cancel" (click)="onCancel()" [disabled]="saving">Cancel</button>
+                                    <button type="submit" class="btn-save" [disabled]="profileForm.invalid || saving">
+                                        <span class="spinner" *ngIf="saving"></span>
+                                        {{ saving ? 'Saving...' : 'Save Changes' }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <ng-template #loadingTpl>
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading profile form...</p>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

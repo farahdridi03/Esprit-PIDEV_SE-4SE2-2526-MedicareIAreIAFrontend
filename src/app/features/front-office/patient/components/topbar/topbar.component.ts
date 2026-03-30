@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { NotificationService, AppNotification } from '../../../../../services/notification.service';
+=======
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { UserService } from '../../../../../services/user.service';
+import { AuthService } from '../../../../../services/auth.service';
+import { PatientService } from '../../../../../services/patient.service';
+>>>>>>> origin/frontVersion1
 
 @Component({
   selector: 'app-patient-topbar',
@@ -11,6 +19,7 @@ import { NotificationService, AppNotification } from '../../../../../services/no
 export class TopbarComponent implements OnInit, OnDestroy {
   firstName: string = 'User';
   initials: string = 'U';
+<<<<<<< HEAD
   profileImage: string | null = null;
   currentUserId: number | null = null;
 
@@ -18,10 +27,16 @@ export class TopbarComponent implements OnInit, OnDestroy {
   unreadCount = 0;
   showDropdown = false;
   private pollInterval: any;
+=======
+  photo: string | null = null;
+
+  private profileSub?: Subscription;
+>>>>>>> origin/frontVersion1
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
+<<<<<<< HEAD
     private notifService: NotificationService,
     private elRef: ElementRef
   ) {}
@@ -48,14 +63,57 @@ export class TopbarComponent implements OnInit, OnDestroy {
         error: (err: any) => console.error('Error fetching user profile for topbar', err)
       });
     }
+=======
+    private patientService: PatientService
+  ) {}
+
+  ngOnInit() {
+    // 1. Immediately populate name from JWT — zero-delay, no flicker
+    const nameFromToken = this.authService.getUserFullName();
+    if (nameFromToken) {
+      this.setNames(nameFromToken);
+    }
+
+    // 2. React to profile$ stream updates (name + photo)
+    this.profileSub = this.userService.profile$.subscribe(user => {
+      if (user) {
+        if (user.fullName) this.setNames(user.fullName);
+        if (user.photo) this.photo = user.photo;
+      }
+    });
+
+    // 3. Try the legacy /user/profile (falls back to JWT on 500)
+    this.userService.refreshProfile();
+
+    // 4. Load the patient profile — the only reliable source for the photo field
+    this.patientService.getMe().subscribe({
+      next: (patient) => {
+        if (patient) {
+          if (patient.fullName) this.setNames(patient.fullName);
+          // Push photo into the shared profile$ stream so everyone gets it
+          this.userService.setProfile({ photo: patient.photo ?? undefined });
+          this.photo = patient.photo || null;
+        }
+      },
+      error: () => { /* silently ignore — name is already set from JWT */ }
+    });
+  }
+
+  ngOnDestroy() {
+    this.profileSub?.unsubscribe();
+>>>>>>> origin/frontVersion1
   }
 
   private setNames(fullName: string) {
     if (!fullName) return;
+<<<<<<< HEAD
     const parts = fullName.trim().split(' ');
+=======
+    const parts = fullName.trim().split(/\s+/);
+>>>>>>> origin/frontVersion1
     this.firstName = parts[0];
-    this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
-    if (!this.initials) this.initials = this.firstName[0].toUpperCase();
+    this.initials = parts.map(n => (n ? n[0] : '')).join('').toUpperCase();
+    if (!this.initials) this.initials = this.firstName[0]?.toUpperCase() || 'U';
   }
 
   // ==== NOTIFICATIONS ====

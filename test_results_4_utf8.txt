@@ -1,0 +1,78 @@
+﻿[32m29 03 2026 17:14:38.989:INFO [karma-server]: [39mKarma v6.4.4 server started at http://localhost:9877/
+[32m29 03 2026 17:14:38.991:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m29 03 2026 17:14:39.011:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m29 03 2026 17:14:39.712:INFO [Chrome Headless 146.0.0.0 (Windows 10)]: [39mConnected on socket O1zKLfbbTQ21PheGAAAB with id 30758265
+Chrome Headless 146.0.0.0 (Windows 10): Executed 0 of 96[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 1 of 96[32m SUCCESS[39m (0 secs / 0.131 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 2 of 96[32m SUCCESS[39m (0 secs / 0.143 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 3 of 96[32m SUCCESS[39m (0 secs / 0.154 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 4 of 96[32m SUCCESS[39m (0 secs / 0.163 secs)
+[1A[2KERROR: [36m'Error updating clinic profile:', Error: Update failed
+Error: Update failed
+    at errorFactory (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-edit/clinic-profile-edit.component.spec.ts:93:70)
+    at Observable._subscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:51)
+    at Observable._trySubscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+    at Observable.subscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:22:21)
+    at ClinicProfileEditComponent.onSubmit (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-edit/clinic-profile-edit.component.ts:92:47)
+    at UserContext.apply (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-edit/clinic-profile-edit.component.spec.ts:95:19)
+    at _ZoneDelegate.invoke (http://localhost:9877/_karma_webpack_/webpack:/node_modules/zone.js/fesm2015/zone.js:369:28)
+    at ProxyZoneSpec.onInvoke (http://localhost:9877/_karma_webpack_/webpack:/node_modules/zone.js/fesm2015/zone-testing.js:2081:39)[39m
+Chrome Headless 146.0.0.0 (Windows 10): Executed 4 of 96[32m SUCCESS[39m (0 secs / 0.163 secs)
+ERROR: 'Error updating clinic profile:', Error: Update failed
+Error: Update failed
+    at errorFactory (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-edit/clinic-profile-edit.component.spec.ts:93:70)
+    at Observable._subscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:51)
+    at Observable._trySubscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+    at Observable.subscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:22:21)
+    at ClinicProfileEditComponent.onSubmit (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-edit/clinic-profile-edit.component.ts:92:47)
+    at UserContext.apply (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-edit/clinic-profile-edit.component.spec.ts:95:19)
+    at _ZoneDelegate.invoke (http://localhost:9877/_karma_webpack_/webpack:/node_modules/zone.js/fesm2015/zone.js:369:28)
+    at ProxyZoneSpec.onInvoke (http://localhost:9877/_karma_webpack_/webpack:/node_modules/zone.js/fesm2015/zone-testing.js:2081:39)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 5 of 96[32m SUCCESS[39m (0 secs / 0.171 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 6 of 96[32m SUCCESS[39m (0 secs / 0.177 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 7 of 96[32m SUCCESS[39m (0 secs / 0.192 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 8 of 96[32m SUCCESS[39m (0 secs / 0.196 secs)
+[1A[2K[31mChrome Headless 146.0.0.0 (Windows 10) ClinicProfileSettingsComponent should display clinic-specific info when loaded FAILED[39m
+	TypeError: Cannot read properties of null (reading 'textContent')
+	    at UserContext.apply (src/app/features/front-office/clinic/pages/clinic-profile-settings/clinic-profile-settings.component.spec.ts:71:52)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:369:28)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:2081:39)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:34)
+	    at ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:111:43)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:216:38)
+	    at UserContext.<anonymous> (node_modules/zone.js/fesm2015/zone-testing.js:234:32)
+	    at <Jasmine>
+Chrome Headless 146.0.0.0 (Windows 10): Executed 9 of 96[31m (1 FAILED)[39m (0 secs / 0.201 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 10 of 96[31m (1 FAILED)[39m (0 secs / 0.204 secs)
+[1A[2KERROR: [36m'Error loading clinic profile:', Error: Failed
+Error: Failed
+    at errorFactory (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-settings/clinic-profile-settings.component.spec.ts:89:58)
+    at Observable._subscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:51)
+    at Observable._trySubscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+    at Observable.subscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:22:21)
+    at ClinicProfileSettingsComponent.loadProfile (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-settings/clinic-profile-settings.component.ts:24:32)
+    at ClinicProfileSettingsComponent.call [as ngOnInit] (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-settings/clinic-profile-settings.component.ts:20:10)
+    at callHookInternal (http://localhost:9877/_karma_webpack_/webpack:/node_modules/@angular/core/fesm2022/core.mjs:5154:14)
+    at callHook (http://localhost:9877/_karma_webpack_/webpack:/node_modules/@angular/core/fesm2022/core.mjs:5181:13)[39m
+Chrome Headless 146.0.0.0 (Windows 10): Executed 10 of 96[31m (1 FAILED)[39m (0 secs / 0.204 secs)
+ERROR: 'Error loading clinic profile:', Error: Failed
+Error: Failed
+    at errorFactory (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-settings/clinic-profile-settings.component.spec.ts:89:58)
+    at Observable._subscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:51)
+    at Observable._trySubscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+    at Observable.subscribe (http://localhost:9877/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:22:21)
+    at ClinicProfileSettingsComponent.loadProfile (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-settings/clinic-profile-settings.component.ts:24:32)
+    at ClinicProfileSettingsComponent.call [as ngOnInit] (http://localhost:9877/_karma_webpack_/webpack:/src/app/features/front-office/clinic/pages/clinic-profile-settings/clinic-profile-settings.component.ts:20:10)
+    at callHookInternal (http://localhost:9877/_karma_webpack_/webpack:/node_modules/@angular/core/fesm2022/core.mjs:5154:14)
+    at callHook (http://localhost:9877/_karma_webpack_/webpack:/node_modules/@angular/core/fesm2022/core.mjs:5181:13)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 11 of 96[31m (1 FAILED)[39m (0 secs / 0.208 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 11 of 96[31m (1 FAILED)[39m (skipped 85) (0.258 secs / 0.208 secs)
+[31mTOTAL: 1 FAILED, 10 SUCCESS[39m

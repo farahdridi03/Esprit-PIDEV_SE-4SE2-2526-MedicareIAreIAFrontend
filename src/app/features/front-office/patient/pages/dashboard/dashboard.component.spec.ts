@@ -1,18 +1,33 @@
+
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
+import { of, throwError } from 'rxjs';
+
+
 import { DashboardComponent } from './dashboard.component';
+<<<<<<< HEAD
 import { AuthService } from '../../../../../services/auth.service';
 import { UserService } from '../../../../../services/user.service';
 import { AppointmentService } from '../../../../../services/appointment.service';
 import { AppointmentDTO } from '../../../../../models/appointment.model';
+=======
+import { UserService } from '../../../../../services/user.service';
+import { AuthService } from '../../../../../services/auth.service';
+>>>>>>> origin/frontVersion1
 
 describe('DashboardComponent', () => {
 
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
+<<<<<<< HEAD
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let userServiceSpy: jasmine.SpyObj<UserService>;
   let appointmentServiceSpy: jasmine.SpyObj<AppointmentService>;
@@ -51,6 +66,26 @@ describe('DashboardComponent', () => {
     userServiceSpy.getProfile.and.returnValue(of(mockUser));
     appointmentServiceSpy.getPatientAppointments.and.returnValue(of(mockAppointments));
 
+=======
+  let mockUserService: jasmine.SpyObj<UserService>;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
+
+  beforeEach(async () => {
+    mockUserService = jasmine.createSpyObj('UserService', ['getProfile']);
+    mockAuthService = jasmine.createSpyObj('AuthService', ['getUserFullName']);
+
+    mockUserService.getProfile.and.returnValue(of({ fullName: 'John Patient' } as any));
+    mockAuthService.getUserFullName.and.returnValue('Jane Patient');
+
+    await TestBed.configureTestingModule({
+
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      declarations: [DashboardComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
+    })
+    .compileComponents();
+>>>>>>> origin/frontVersion1
 
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
@@ -61,6 +96,7 @@ describe('DashboardComponent', () => {
     expect(component).toBeTruthy();
   });
 
+<<<<<<< HEAD
   it('should initialize firstName from AuthService first, then UserService', () => {
     // Before userService returns: (OnInit start)
     fixture.detectChanges();
@@ -91,5 +127,21 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
     expect(component.nextAppointment).toBeNull();
     expect(component.appointmentCount).toBe(0);
+=======
+  it('should load first name from authService initially', () => {
+    // ngOnInit split the fullName and use the first part
+    expect(mockAuthService.getUserFullName).toHaveBeenCalled();
+  });
+
+  it('should update name from userService profile', () => {
+    expect(mockUserService.getProfile).toHaveBeenCalled();
+    expect(component.firstName).toBe('John'); 
+  });
+
+  it('should use auth name if profile fails', () => {
+    mockUserService.getProfile.and.returnValue(throwError(() => new Error('Error')));
+    component.ngOnInit();
+    expect(component.firstName).toBe('Jane'); // From AuthService mock return 'Jane Patient'
+>>>>>>> origin/frontVersion1
   });
 });

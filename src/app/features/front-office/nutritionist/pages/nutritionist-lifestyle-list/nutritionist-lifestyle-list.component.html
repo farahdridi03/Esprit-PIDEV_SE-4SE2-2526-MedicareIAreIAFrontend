@@ -1,0 +1,121 @@
+<div class="lifestyle-list-wrapper">
+    <app-nutritionist-sidebar></app-nutritionist-sidebar>
+    <div class="main-body">
+        <app-nutritionist-topbar></app-nutritionist-topbar>
+        <div class="content-area">
+            <div class="list-container">
+                
+                <header class="list-header">
+                    <div class="header-text">
+                        <h1>{{ title }}</h1>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-back" [routerLink]="getBackLink()">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                            </svg>
+                            Back
+                        </button>
+                        <button class="btn-create-small" *ngIf="canCreate()" (click)="onCreate()">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            {{ type === 'plans' ? 'Add Plan' : (type === 'goals' ? 'New Goal' : 'New Tracking') }}
+                        </button>
+                    </div>
+                </header>
+
+                <div class="list-card">
+                    <div class="loading-spinner" *ngIf="isLoading">
+                        <p>Loading data...</p>
+                    </div>
+
+                    <div class="table-responsive" *ngIf="!isLoading && data.length > 0">
+                        <table class="record-table">
+                            <thead>
+                                <!-- Goals Header -->
+                                <tr *ngIf="type === 'goals'">
+                                    <th>Category</th>
+                                    <th>Target Value</th>
+                                    <th>Baseline</th>
+                                    <th>Target Date</th>
+                                    <th>Status</th>
+                                    <th *ngIf="canEditDelete()">Actions</th>
+                                </tr>
+                                <!-- Plans Header -->
+                                <tr *ngIf="type === 'plans'">
+                                    <th>Title</th>
+                                    <th *ngIf="type !== 'plans'">Description</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Status</th>
+                                    <th *ngIf="canEditDelete()">Actions</th>
+                                </tr>
+                                <!-- Tracking Header -->
+                                <tr *ngIf="type === 'tracking'">
+                                    <th>Goal Id</th>
+                                    <th>Value</th>
+                                    <th>Date</th>
+                                    <th>Notes</th>
+                                    <th *ngIf="canEditDelete()">Actions</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of data">
+                                    <!-- Goals Row -->
+                                    <ng-container *ngIf="type === 'goals'">
+                                        <td class="bold">{{ item.category }}</td>
+                                        <td>{{ item.targetValue }}</td>
+                                        <td>{{ item.baselineValue }}</td>
+                                        <td>{{ item.targetDate | date }}</td>
+                                        <td><span class="badge" [ngClass]="item.status.toLowerCase()">{{ item.status }}</span></td>
+                                    </ng-container>
+
+                                    <!-- Plans Row -->
+                                    <ng-container *ngIf="type === 'plans'">
+                                        <td class="bold">{{ item.title }}</td>
+                                        <td *ngIf="type !== 'plans'">{{ item.description }}</td>
+                                        <td>{{ item.startDate | date }}</td>
+                                        <td>{{ item.endDate | date }}</td>
+                                        <td><span class="badge" [ngClass]="item.status.toLowerCase()">{{ item.status }}</span></td>
+                                    </ng-container>
+
+                                    <!-- Tracking Row -->
+                                    <ng-container *ngIf="type === 'tracking'">
+                                        <td class="bold">Goal #{{ item.goalId }}</td>
+                                        <td>{{ item.value }}</td>
+                                        <td>{{ item.date | date }}</td>
+                                        <td>{{ item.notes }}</td>
+                                    </ng-container>
+
+
+
+                                    <td class="actions" *ngIf="canEditDelete()">
+                                        
+                                        <button class="action-btn view" *ngIf="type === 'plans'" title="View Details" (click)="onView(item.id)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.301 8.844 6.88 5.4 12 5.4c5.12 0 8.697 3.321 9.964 6.278.141.25.141.544 0 .794-1.267 2.957-4.844 6.4-9.964 6.4-5.12 0-8.697-3.321-9.964-6.278L2.036 12.322z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                                        </button>
+
+                                        <button class="action-btn" *ngIf="canEditDelete()" title="Edit" (click)="onEdit(item.id)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>
+                                        </button>
+                                        <button class="action-btn delete" *ngIf="canEditDelete()" title="Delete" (click)="onDelete(item.id)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="empty-list" *ngIf="!isLoading && data.length === 0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                        <p>No records found for {{ title }}.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

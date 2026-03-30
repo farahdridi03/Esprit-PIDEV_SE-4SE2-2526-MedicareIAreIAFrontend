@@ -4,10 +4,14 @@ import { BackOfficeComponent } from './back-office.component';
 
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AuthGuard } from '../../guards/auth.guard';
-
 import { UserManagementComponent } from './pages/user-management/user-management.component';
+<<<<<<< HEAD
 import { DonationsManagementComponent } from './pages/donations-management/donations-management.component';
 import { AppointmentManagementComponent } from './pages/appointment-management/appointment-management.component';
+=======
+import { LaboratoryListComponent } from './pages/laboratory-list/laboratory-list.component';
+import { LaboratoryFormComponent } from './pages/laboratory-form/laboratory-form.component';
+>>>>>>> origin/frontVersion1
 
 const routes: Routes = [
   {
@@ -16,8 +20,27 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'users', component: UserManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+<<<<<<< HEAD
       { path: 'donations', component: DonationsManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'appointments', component: AppointmentManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+=======
+      { path: 'emergency', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'forum', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'donations', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'home-care', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'profile', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      {
+        path: 'laboratories',
+        canActivate: [AuthGuard],
+        data: { roles: ['ADMIN'] },
+        children: [
+          { path: '', component: LaboratoryListComponent },
+          { path: 'new', component: LaboratoryFormComponent },
+          { path: 'edit/:id', component: LaboratoryFormComponent }
+        ]
+      },
+>>>>>>> origin/frontVersion1
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

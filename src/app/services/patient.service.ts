@@ -19,6 +19,14 @@ export class PatientService {
         return this.http.get<PatientResponseDTO>(`${this.apiUrl}/${id}`);
     }
 
+    getMe(): Observable<PatientResponseDTO> {
+        return this.http.get<PatientResponseDTO>(`${this.apiUrl}/me`);
+    }
+
+    getMyPatients(): Observable<PatientResponseDTO[]> {
+        return this.http.get<PatientResponseDTO[]>(`${this.apiUrl}/my-patients`);
+    }
+
     getAll(): Observable<PatientResponseDTO[]> {
         return this.http.get<PatientResponseDTO[]>(this.apiUrl);
     }
@@ -33,5 +41,9 @@ export class PatientService {
 
     toggleEnabled(id: number): Observable<void> {
         return this.http.patch<void>(`${this.apiUrl}/${id}/toggle`, {});
+    }
+
+    updateProfile(dto: PatientRequestDTO): Observable<PatientResponseDTO> {
+        return this.http.put<PatientResponseDTO>(`${this.apiUrl}/profile`, dto);
     }
 }

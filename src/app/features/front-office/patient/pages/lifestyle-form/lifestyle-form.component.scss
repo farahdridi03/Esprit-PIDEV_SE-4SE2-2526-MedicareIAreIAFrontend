@@ -1,0 +1,138 @@
+$primary-green: #0e7c66;
+$text-dark: #111827;
+$text-light: #6b7280;
+$bg-light: #f9fafb;
+$white: #ffffff;
+$border: #e5e7eb;
+
+.lifestyle-form-wrapper {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: $bg-light;
+}
+
+.main-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: $text-dark;
+        margin: 0;
+    }
+
+    .btn-cancel {
+        background: transparent;
+        color: $text-light;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        &:hover { color: $text-dark; }
+    }
+}
+
+.form-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    border: 1px solid $border;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: $text-dark;
+    }
+
+    input, select {
+        padding: 0.75rem 1rem;
+        border: 1px solid $border;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+
+        &:focus {
+            outline: none;
+            border-color: $primary-green;
+            box-shadow: 0 0 0 3px rgba($primary-green, 0.1);
+        }
+    }
+
+    .error-msg {
+        color: #dc2626;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin-top: 0.25rem;
+        display: block;
+    }
+}
+
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1.5rem;
+    border-top: 1px solid $border;
+
+    .btn-submit {
+        background: $primary-green;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover:not(:disabled) {
+            background: darken($primary-green, 5%);
+            transform: translateY(-1px);
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+}
+
+@media (max-width: 640px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}

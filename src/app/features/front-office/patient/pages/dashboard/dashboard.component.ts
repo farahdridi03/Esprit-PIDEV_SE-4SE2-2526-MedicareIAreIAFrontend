@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
       this.firstName = fullNameFromToken.trim().split(' ')[0];
       return;
     }
+<<<<<<< HEAD
 
     // Refresh from profile API
     this.userService.getProfile().subscribe({
@@ -64,5 +65,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (err) => console.error('Error loading next appt', err)
     });
+=======
+>>>>>>> origin/frontVersion1
   }
 }

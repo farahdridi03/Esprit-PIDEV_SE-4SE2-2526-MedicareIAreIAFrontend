@@ -10,6 +10,7 @@ import { AuthService } from '../../../../../services/auth.service';
 export class LaboratoryStaffTopbarComponent implements OnInit {
   firstName: string = 'Staff';
   initials: string = 'L';
+  photo: string | null = null;
 
   constructor(private userService: UserService, private authService: AuthService) {}
 
@@ -20,6 +21,7 @@ export class LaboratoryStaffTopbarComponent implements OnInit {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
+        this.photo = (user as any).photo || null;
       },
       error: (err) => {
         console.error('Error fetching laboratory staff profile', err);
@@ -28,10 +30,16 @@ export class LaboratoryStaffTopbarComponent implements OnInit {
   }
 
   private loadUserInfo() {
-    const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.setNames(fullName);
-    }
+    this.userService.profile$.subscribe(user => {
+      if (user) {
+        if (user.fullName) {
+          this.setNames(user.fullName);
+        }
+        this.photo = (user as any).photo || null;
+      }
+    });
+    // Trigger initial load if not already loaded
+    this.userService.refreshProfile();
   }
 
   private setNames(fullName: string) {

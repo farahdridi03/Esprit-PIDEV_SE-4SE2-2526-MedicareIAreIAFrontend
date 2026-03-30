@@ -1,0 +1,180 @@
+<div class="doctor-wrapper">
+    <app-doctor-sidebar></app-doctor-sidebar>
+    <div class="main-body">
+        <app-doctor-topbar></app-doctor-topbar>
+        
+        <div class="content-area" *ngIf="!loading && patient">
+            <!-- Glassmorphism Header -->
+            <div class="record-header">
+                <div class="patient-profile">
+                    <div class="avatar-container" [class.has-photo]="patient.photo">
+                        <img [src]="patient.photo" *ngIf="patient.photo" alt="Patient Avatar" class="avatar">
+                        <div *ngIf="!patient.photo" class="avatar-initials">
+                            {{ patient.fullName.charAt(0).toUpperCase() }}
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h2>{{ patient.fullName }}</h2>
+                        <span class="role-badge">ID: #{{ patient.id }}</span>
+                    </div>
+                </div>
+                <button class="back-btn" routerLink="/front/doctor/patients">
+                    <span>←</span> Back to Patients
+                </button>
+            </div>
+
+            <!-- Enhanced Info Pills -->
+            <div class="health-info-panel">
+                <div class="info-item">
+                    <span class="label">Gender</span>
+                    <span class="value">{{ patient.gender || 'Not specified' }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Blood Type</span>
+                    <span class="value blood-type">{{ patient.bloodType || 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Phone</span>
+                    <span class="value">{{ patient.phone || 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Birth Date</span>
+                    <span class="value">{{ patient.birthDate | date:'longDate' || 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Height</span>
+                    <span class="value">{{ patient.height ? patient.height + ' cm' : 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Weight</span>
+                    <span class="value">{{ patient.weight ? patient.weight + ' kg' : 'N/A' }}</span>
+                </div>
+            </div>
+
+            <!-- Compact Tags for Secondary Data -->
+            <div class="medical-arrays">
+                <div class="record-card">
+                    <h4>Allergies</h4>
+                    <ul *ngIf="patient.allergies && patient.allergies.length > 0; else noAllergies">
+                        <li *ngFor="let allergy of patient.allergies">{{ allergy }}</li>
+                    </ul>
+                    <ng-template #noAllergies><p class="muted">No known allergies</p></ng-template>
+                </div>
+                <div class="record-card">
+                    <h4>Chronic Diseases</h4>
+                    <ul *ngIf="patient.diseases && patient.diseases.length > 0; else noDiseases">
+                        <li *ngFor="let disease of patient.diseases">{{ disease }}</li>
+                    </ul>
+                    <ng-template #noDiseases><p class="muted">No chronic conditions</p></ng-template>
+                </div>
+            </div>
+
+            <!-- Dashboard Card Grid -->
+            <div class="dashboard-grid">
+                <!-- Consultations Card -->
+                <div class="dashboard-card border-blue">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="icon">🩺</span>
+                            <h3>Recent Consultations</h3>
+                        </div>
+                        <button class="btn-view-all" [routerLink]="['/front/doctor/patient', patientId, 'consultations']">View All</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="item-list" *ngIf="recentConsultations.length > 0; else noCons">
+                            <div class="list-item" *ngFor="let cons of recentConsultations">
+                                <div class="item-main">
+                                    <strong>{{ cons.date | date:'mediumDate' }}</strong>
+                                    <span class="text-muted">ID: #{{ cons.id }}</span>
+                                </div>
+                                <div class="item-sub text-truncate">{{ cons.observations || 'Routine checkup' }}</div>
+                            </div>
+                        </div>
+                        <ng-template #noCons><p class="empty-text">No consultation history.</p></ng-template>
+                    </div>
+                </div>
+
+                <!-- Treatments Card -->
+                <div class="dashboard-card border-purple">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="icon">🩹</span>
+                            <h3>Active Treatments</h3>
+                        </div>
+                        <button class="btn-view-all" [routerLink]="['/front/doctor/patient', patientId, 'treatments-list']">View All</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="item-list" *ngIf="recentTreatments.length > 0; else noTreatments">
+                            <div class="list-item" *ngFor="let treatment of recentTreatments">
+                                <div class="item-main">
+                                    <strong>{{ treatment.treatmentType || 'Treatment' }}</strong>
+                                    <span class="badge" [ngClass]="treatment.status?.toLowerCase() || 'ongoing'">{{ treatment.status || 'Ongoing' }}</span>
+                                </div>
+                                <div class="item-sub">{{ treatment.startDate | date:'shortDate' }} — {{ treatment.endDate ? (treatment.endDate | date:'shortDate') : 'Present' }}</div>
+                            </div>
+                        </div>
+                        <ng-template #noTreatments><p class="empty-text">No active treatment plans.</p></ng-template>
+                    </div>
+                </div>
+
+                <!-- Prescriptions Card -->
+                <div class="dashboard-card border-orange">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="icon">💊</span>
+                            <h3>Recent Prescriptions</h3>
+                        </div>
+                        <button class="btn-view-all" [routerLink]="['/front/doctor/patient', patientId, 'prescriptions-list']">View All</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="item-list" *ngIf="recentPrescriptions.length > 0; else noPrescriptions">
+                            <div class="list-item" *ngFor="let prescript of recentPrescriptions">
+                                <div class="item-main">
+                                    <strong>{{ prescript.medication || prescript.medicationName || 'Medication' }}</strong>
+                                    <span class="text-muted">{{ prescript.date | date:'mediumDate' }}</span>
+                                </div>
+                                <div class="item-sub text-truncate">{{ prescript.dosage }} — {{ prescript.instructions || 'As directed' }}</div>
+                            </div>
+                        </div>
+                        <ng-template #noPrescriptions><p class="empty-text">No recent prescriptions.</p></ng-template>
+                    </div>
+                </div>
+
+                <!-- Diagnoses Card -->
+                <div class="dashboard-card border-red">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="icon">🔬</span>
+                            <h3>Key Diagnoses</h3>
+                        </div>
+                        <button class="btn-view-all" [routerLink]="['/front/doctor/patient', patientId, 'diagnoses-list']">View All</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="item-list" *ngIf="recentDiagnoses.length > 0; else noDiagnoses">
+                            <div class="list-item" *ngFor="let diag of recentDiagnoses">
+                                <div class="item-main">
+                                    <strong>{{ diag.type || 'Diagnosis' }}</strong>
+                                    <span class="text-muted">Verified</span>
+                                </div>
+                                <div class="item-sub text-truncate">{{ diag.description || 'Confirmed condition' }}</div>
+                            </div>
+                        </div>
+                        <ng-template #noDiagnoses><p class="empty-text">No recorded diagnoses.</p></ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-area loading-state" *ngIf="loading">
+            <p>Loading medical record...</p>
+        </div>
+
+        <div class="content-area error-state" *ngIf="!loading && !patient">
+            <div style="text-align: center; padding: 60px; background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <span style="font-size: 48px;">⚠️</span>
+                <p style="font-size: 18px; color: #4a5568; margin: 20px 0;">We couldn't find the record for this patient.</p>
+                <button routerLink="/front/doctor/patients" class="btn btn-primary" style="background: #3182ce; color: #fff; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer;">Return to Patient List</button>
+            </div>
+        </div>
+    </div>
+</div>

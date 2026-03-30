@@ -58,8 +58,15 @@
         </div>
 
         <div class="user-profile">
+<<<<<<< HEAD
             <div class="avatar" *ngIf="!profileImage">{{ initials || 'U' }}</div>
             <img class="avatar" *ngIf="profileImage" [src]="profileImage" style="object-fit: cover; border: 2px solid #0e7c66;">
+=======
+            <div class="avatar">
+                <img [src]="photo!" *ngIf="photo" class="topbar-photo" alt="Profile">
+                <span *ngIf="!photo">{{ initials || 'U' }}</span>
+            </div>
+>>>>>>> origin/frontVersion1
             <div class="user-info">
                 <span class="user-name">{{ firstName || 'User' }}</span>
             </div>

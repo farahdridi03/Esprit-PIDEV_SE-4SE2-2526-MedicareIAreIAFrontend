@@ -1,0 +1,162 @@
+<div class="doctor-wrapper">
+    <app-doctor-sidebar></app-doctor-sidebar>
+    <div class="main-body">
+        <app-doctor-topbar></app-doctor-topbar>
+        
+        <div class="content-area">
+            <!-- Header Section -->
+            <div class="embedded-crud-card box mt-3" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #edf2f7;">
+                <div class="header-flex" *ngIf="patient" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="patient-avatar" style="width: 50px; height: 50px; border-radius: 12px; background: #0e7c66; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; overflow: hidden; border: 1px solid #edf2f7;">
+                            <img [src]="patient.photo" *ngIf="patient.photo" style="width: 100%; height: 100%; object-fit: cover;">
+                            <span *ngIf="!patient.photo">{{ patient.fullName.charAt(0) || 'P' }}</span>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0; color: #2d3748; font-weight: 700;">{{ patient.fullName }} Consultations</h3>
+                            <span style="font-size: 13px; color: #718096;">Patient ID: #{{ patientId }}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-sm" (click)="openAddForm()" *ngIf="!showForm && !viewMode" style="background: #38a169; color: white; padding: 10px 20px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s;">+ New Consultation</button>
+                        <button class="btn btn-sm btn-secondary" routerLink="../record" *ngIf="!showForm && !viewMode" style="background: #f1f5f9; color: #475569; padding: 10px 20px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Back to Record</button>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" *ngIf="loading" style="text-align: center; padding: 60px; color: #718096;">
+                    <p>Loading records...</p>
+                </div>
+
+                <!-- List Table -->
+                <div class="data-table-container" *ngIf="!loading && !showForm && !viewMode" style="overflow-x: auto;">
+                    <table class="data-table" *ngIf="consultations.length > 0; else noData" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; background: #f8fafc; border-bottom: 2px solid #edf2f7;">
+                                <th style="padding: 16px; color: #4a5568; font-weight: 700; font-size: 14px;">Date</th>
+                                <th style="padding: 16px; color: #4a5568; font-weight: 700; font-size: 14px;">Doctor</th>
+                                <th style="padding: 16px; color: #4a5568; font-weight: 700; font-size: 14px;">Observations</th>
+                                <th style="padding: 16px; color: #4a5568; font-weight: 700; font-size: 14px; text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of consultations" style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+                                <td style="padding: 16px;">
+                                    <div style="display: flex; flex-direction: column;">
+                                        <strong style="color: #2d3748;">{{ item.date | date:'mediumDate' }}</strong>
+                                        <span style="font-size: 12px; color: #a0aec0;">{{ item.date | date:'shortTime' }}</span>
+                                    </div>
+                                </td>
+                                <td style="padding: 16px; color: #4a5568;">Dr. {{ item.doctorId }}</td>
+                                <td style="padding: 16px;">
+                                    <div style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #4a5568;">
+                                        {{ item.observations || 'No observations recorded' }}
+                                    </div>
+                                </td>
+                                <td class="action-cells" style="padding: 16px;">
+                                    <button class="action-btn" (click)="openView(item)" title="View Details">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.301 8.844 6.88 5.4 12 5.4c5.12 0 8.697 3.321 9.964 6.278.141.25.141.544 0 .794-1.267 2.957-4.844 6.4-9.964 6.4-5.12 0-8.697-3.321-9.964-6.278L2.036 12.322z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                                    </button>
+                                    <button class="action-btn edit" (click)="openEditForm(item)" title="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>
+                                    </button>
+                                    <button class="action-btn delete" (click)="deleteConsultation(item.id!)" title="Delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                                    </button>
+                                    <a [routerLink]="['../consultation', item.id]" class="action-btn" title="Manage" style="background: #faf5ff; color: #805ad5; border-color: #e9d8fd;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ng-template #noData>
+                        <div class="empty-state" style="padding: 80px; text-align: center; color: #a0aec0;">
+                            <p style="font-size: 18px; font-weight: 500;">No consultations found.</p>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <!-- Detail View Card -->
+                <div class="detail-view" *ngIf="viewMode && currentViewItem" style="background: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; animation: fadeIn 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px;">
+                        <div>
+                            <h4 style="margin: 0; font-size: 22px; color: #1a202c;">Consultation Details</h4>
+                            <p style="margin: 5px 0 0 0; color: #718096;">ID: #{{ currentViewItem.id }} • Verified Record</p>
+                        </div>
+                        <button (click)="closeView()" style="background: white; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">Close View</button>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px;">
+                        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <label style="display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #a0aec0; font-weight: 700; margin-bottom: 10px;">General Information</label>
+                            <p style="margin: 8px 0;"><strong>Date:</strong> {{ currentViewItem.date | date:'fullDate' }}</p>
+                            <p style="margin: 8px 0;"><strong>Time:</strong> {{ currentViewItem.date | date:'shortTime' }}</p>
+                            <p style="margin: 8px 0;"><strong>Doctor:</strong> Dr. {{ currentViewItem.doctorId }}</p>
+                            <p style="margin: 8px 0;"><strong>Height:</strong> {{ currentViewItem.height ? currentViewItem.height + ' cm' : 'N/A' }}</p>
+                            <p style="margin: 8px 0;"><strong>Weight:</strong> {{ currentViewItem.weight ? currentViewItem.weight + ' kg' : 'N/A' }}</p>
+                        </div>
+                        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <label style="display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #a0aec0; font-weight: 700; margin-bottom: 10px;">Primary Observations</label>
+                            <p style="margin: 0; line-height: 1.6; color: #4a5568;">{{ currentViewItem.observations || 'No observations recorded for this session.' }}</p>
+                        </div>
+                        <div style="grid-column: span 2; background: #fffaf0; padding: 20px; border-radius: 12px; border: 1px dashed #fbd38d;">
+                            <label style="display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #dd6b20; font-weight: 700; margin-bottom: 10px;">Clinical Notes</label>
+                            <p style="margin: 0; line-height: 1.6; color: #744210;">{{ currentViewItem.notes || 'No additional clinical notes.' }}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px; display: flex; gap: 12px; justify-content: flex-end;">
+                        <button class="btn-premium btn-save" (click)="openEditForm(currentViewItem)">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>
+                            Edit Consultation
+                        </button>
+                        <a [routerLink]="['../consultation', currentViewItem.id]" class="btn-premium" style="background: #805ad5; color: white; text-decoration: none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
+                            Manage Content
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Form Section -->
+                <div class="form-container" *ngIf="showForm" style="background: #fff; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; margin-top: 20px;">
+                    <h4 style="margin-top: 0; margin-bottom: 25px; color: #2d3748; font-size: 20px; font-weight: 700;">{{ isEdit ? 'Edit Consultation' : 'New Consultation Record' }}</h4>
+                    <form (ngSubmit)="saveConsultation()" #consultationForm="ngForm">
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #4a5568; font-size: 14px;">Date & Time <span style="color: #e53e3e;">*</span></label>
+                            <input type="datetime-local" name="date" [(ngModel)]="currentConsultation.date" #date="ngModel" required class="form-control" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px;">
+                            <div *ngIf="date.invalid && (date.dirty || date.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Consultation date and time are required.
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #4a5568; font-size: 14px;">Observations <span style="color: #e53e3e;">*</span></label>
+                            <textarea name="observations" [(ngModel)]="currentConsultation.observations" #observations="ngModel" required class="form-control" rows="5" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px;"></textarea>
+                            <div *ngIf="observations.invalid && (observations.dirty || observations.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Observations are required.
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 30px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #4a5568; font-size: 14px;">Internal Notes (Optional)</label>
+                            <textarea name="notes" [(ngModel)]="currentConsultation.notes" class="form-control" rows="3" style="width: 100%; padding: 12px 16px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 15px; background: #f8fafc;"></textarea>
+                        </div>
+                        
+                        <div class="form-actions" style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 25px; border-top: 1px solid #edf2f7;">
+                            <button type="button" class="btn btn-secondary" (click)="cancelForm()" style="padding: 12px 24px; background: #f1f5f9; color: #475569; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Discard</button>
+                            <button type="submit" class="btn" [disabled]="!consultationForm.valid" style="padding: 12px 30px; background: #38a169; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;" [style.opacity]="consultationForm.valid ? '1' : '0.5'">Save Consultation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>

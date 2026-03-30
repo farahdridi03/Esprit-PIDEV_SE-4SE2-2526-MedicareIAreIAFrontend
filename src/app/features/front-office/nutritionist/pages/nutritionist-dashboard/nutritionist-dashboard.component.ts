@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { PatientService } from '../../../../../services/patient.service';
+import { ConsultationService } from '../../../../../services/consultation.service';
+import { LifestyleService } from '../../../../../services/lifestyle.service';
+import { forkJoin, catchError, of } from 'rxjs';
 
 @Component({
     selector: 'app-nutritionist-dashboard',
@@ -10,11 +14,23 @@ import { AuthService } from '../../../../../services/auth.service';
 export class NutritionistDashboardComponent implements OnInit {
   firstName: string = 'Nutritionist';
   initials: string = 'N';
+  
+  totalPatients: number = 0;
+  totalConsultations: number = 0;
+  totalMealPlans: number = 0;
 
-  constructor(private userService: UserService, private authService: AuthService) {}
+  constructor(
+    private userService: UserService, 
+    private authService: AuthService,
+    private patientService: PatientService,
+    private consultationService: ConsultationService,
+    private lifestyleService: LifestyleService
+  ) {}
 
   ngOnInit() {
     this.loadUserInfo();
+    this.loadStats();
+    
     this.userService.getProfile().subscribe({
       next: (user) => {
         if (user && user.fullName) {
@@ -34,6 +50,23 @@ export class NutritionistDashboardComponent implements OnInit {
     }
   }
 
+  private loadStats() {
+    forkJoin({
+      patients: this.patientService.getAll().pipe(catchError(() => of([]))),
+      consultations: this.consultationService.getAll().pipe(catchError(() => of([]))),
+      planCount: this.lifestyleService.getPlanCount().pipe(catchError(() => of(0)))
+    }).subscribe({
+      next: (res) => {
+        this.totalPatients = res.patients.length;
+        this.totalConsultations = res.consultations.length;
+        this.totalMealPlans = res.planCount;
+      },
+      error: (err) => {
+        console.error('Error loading dashboard stats', err);
+      }
+    });
+  }
+
   private setNames(fullName: string) {
     if (!fullName) return;
     const parts = fullName.split(' ');
@@ -42,3 +75,5 @@ export class NutritionistDashboardComponent implements OnInit {
     if (!this.initials) this.initials = this.firstName[0].toUpperCase();
   }
 }
+
+

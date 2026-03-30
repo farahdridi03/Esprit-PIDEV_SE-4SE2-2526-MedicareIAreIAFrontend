@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
+import { ClinicResponseDTO, ClinicUpdateRequestDTO } from '../models/clinic.model';
 
 export interface Clinic {
   id: number;
@@ -26,5 +27,13 @@ export class ClinicService {
         return of([]);
       })
     );
+  }
+
+  getMe(): Observable<ClinicResponseDTO> {
+    return this.http.get<ClinicResponseDTO>(`${this.apiUrl}/me`);
+  }
+
+  updateProfile(request: ClinicUpdateRequestDTO): Observable<ClinicResponseDTO> {
+    return this.http.put<ClinicResponseDTO>(`${this.apiUrl}/profile`, request);
   }
 }

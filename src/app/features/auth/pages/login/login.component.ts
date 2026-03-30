@@ -20,7 +20,6 @@ export class LoginComponent {
     private router: Router,
     private doctorService: DoctorService
   ) {
-    console.log('LoginComponent initialized'); // Debug log
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -29,18 +28,21 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    console.log('onSubmit called');
     if (this.loginForm.valid) {
+<<<<<<< HEAD
       const { rememberMe, ...loginData } = this.loginForm.value;
       console.log('Form is valid, calling login with data:', loginData);
       
       this.authService.login(loginData).subscribe({
+=======
+      this.authService.login(this.loginForm.value).subscribe({
+>>>>>>> origin/frontVersion1
         next: (response) => {
-          console.log('Login successful response:', response);
           const role = response.role || this.authService.getUserRole();
           this.redirectBasedOnRole(role);
         },
         error: (err) => {
+<<<<<<< HEAD
           console.error('Login error full response:', err);
           if (err.status === 400) {
             this.errorMessage = err.error?.message || 'Mauvaise requête. Vérifiez le format (Email/password).';
@@ -49,10 +51,14 @@ export class LoginComponent {
           } else {
             this.errorMessage = err.error?.message || err.error || 'Erreur lors de la connexion. Vérifiez le serveur.';
           }
+=======
+          this.errorMessage = err.error?.message || 'Identifiants invalides';
+>>>>>>> origin/frontVersion1
         }
       });
     } else {
       this.loginForm.markAllAsTouched();
+<<<<<<< HEAD
       this.errorMessage = 'Please fill out all fields correctly.';
       console.warn('Form is invalid:', this.loginForm.errors);
       Object.keys(this.loginForm.controls).forEach(key => {
@@ -61,21 +67,34 @@ export class LoginComponent {
           console.warn(`Control ${key} errors:`, controlErrors);
         }
       });
+=======
+      this.errorMessage = 'Veuillez remplir correctement tous les champs.';
+>>>>>>> origin/frontVersion1
     }
   }
 
   private redirectBasedOnRole(role: string | null) {
     if (!role) {
-      console.warn('No role provided for redirection');
       this.router.navigate(['/front']);
       return;
     }
 
     const cleanRole = role.replace(/^ROLE_/, '').toUpperCase();
-    console.log('Redirecting for role:', cleanRole);
 
-    let targetRoute = '/front';
+    const routes: { [key: string]: string } = {
+      'ADMIN': '/admin/dashboard',
+      'DOCTOR': '/front/doctor/dashboard',
+      'PATIENT': '/front/patient/dashboard',
+      'NUTRITIONIST': '/front/nutritionist/dashboard',
+      'LABORATORY_STAFF': '/front/laboratorystaff/dashboard',
+      'LABORATORYSTAFF': '/front/laboratorystaff/dashboard',
+      'PHARMACIST': '/front/pharmacist',
+      'CLINIC': '/front/clinic',
+      'HOME_CARE_PROVIDER': '/front/home-care',
+      'VISITOR': '/front',
+    };
 
+<<<<<<< HEAD
     switch (cleanRole) {
       case 'ADMIN':
         targetRoute = '/admin/dashboard';
@@ -124,3 +143,9 @@ export class LoginComponent {
   }
 }
 
+=======
+    const target = routes[cleanRole] ?? '/front';
+    this.router.navigate([target]);
+  }
+}
+>>>>>>> origin/frontVersion1

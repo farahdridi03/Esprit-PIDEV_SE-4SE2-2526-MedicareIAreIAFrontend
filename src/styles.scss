@@ -47,3 +47,119 @@ body {
 app-root {
   width: 100%;
 }
+
+/* Global Action Button Styles */
+.action-cells {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #718096;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+
+  &:hover {
+    color: #3182ce;
+    border-color: #3182ce;
+    background: #ebf8ff;
+  }
+
+  &.edit:hover {
+    color: #38a169;
+    border-color: #38a169;
+    background: #f0fff4;
+  }
+
+  &.delete:hover {
+    color: #e53e3e;
+    border-color: #e53e3e;
+    background: #fff5f5;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Premium Form Buttons */
+.btn-premium {
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  height: auto;
+  line-height: 1.5;
+
+  &.btn-save {
+    background: #38a169;
+    color: white;
+    box-shadow: 0 4px 12px rgba(56, 161, 105, 0.2);
+    &:hover:not(:disabled) {
+      background: #2f855a;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(56, 161, 105, 0.3);
+    }
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &.btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    &:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+  }
+
+  &.btn-add-item {
+    background: white;
+    color: #3182ce;
+    border: 2px dashed #cbd5e0;
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    margin-top: 10px;
+    &:hover {
+      border-color: #3182ce;
+      background: #ebf8ff;
+      color: #2b6cb0;
+    }
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Global Validation Styles */
+.error-msg {
+  color: #e53e3e;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 5px;
+  display: block;
+}

@@ -41,6 +41,11 @@
             "styles": [
               "src/styles.scss"
             ],
+            "optimization": {
+              "fonts": {
+                "inline": false
+              }
+            },
             "scripts": []
           },
           "configurations": {
@@ -69,6 +74,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "src/proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "MediCareAI:build:production"

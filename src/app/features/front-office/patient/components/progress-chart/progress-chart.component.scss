@@ -1,0 +1,84 @@
+.chart-container {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-header {
+    margin-bottom: 12px;
+    h4 {
+        margin: 0;
+        font-size: 14px;
+        color: #4a5568;
+        font-weight: 600;
+    }
+}
+
+.svg-wrapper {
+    flex: 1;
+    min-height: 120px;
+    position: relative;
+}
+
+.chart-svg {
+    width: 100%;
+    height: 100%;
+    
+    .axis-line {
+        stroke: #e2e8f0;
+        stroke-width: 1;
+    }
+
+    .data-line {
+        fill: none;
+        stroke: #0e7c66;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: drawPath 2s ease forwards;
+    }
+
+    .data-point {
+        fill: white;
+        stroke: #0e7c66;
+        stroke-width: 2;
+        transition: all 0.2s;
+        cursor: pointer;
+
+        &:hover {
+            fill: #0e7c66;
+            r: 6;
+        }
+    }
+}
+
+.chart-footer {
+    margin-top: 8px;
+    text-align: center;
+    .date-range {
+        font-size: 10px;
+        color: #a0aec0;
+        font-weight: 500;
+    }
+}
+
+.empty-chart {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cbd5e0;
+    font-size: 13px;
+    font-style: italic;
+}
+
+@keyframes drawPath {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
