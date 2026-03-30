@@ -255,6 +255,8 @@ export class RegisterComponent implements OnInit {
         birthDate: formValue.birthDate,
       };
 
+      console.log('📝 Initial Payload:', finalPayload);
+
       if (role === 'PATIENT') {
         finalPayload = { ...finalPayload,
           gender: formValue.gender,
@@ -301,15 +303,16 @@ export class RegisterComponent implements OnInit {
         };
       }
 
-      console.log('✅ PAYLOAD:', finalPayload);
+      console.log('🚀 Final Registration Payload:', finalPayload);
 
       this.authService.register(finalPayload).subscribe({
         next: (res) => {
-          console.log('✅ SUCCESS:', res);
+          console.log('✅ Registration SUCCESS:', res);
           this.router.navigate(['/auth/login']);
         },
         error: (err: any) => {
-          console.error('❌ ERROR:', err);
+          console.error('❌ Registration ERROR:', err);
+          console.log('❌ Error Body:', err.error);
           this.errorMessage = err.error?.message || err.error || err.message || 'Erreur lors de l\'inscription';
         }
       });
@@ -317,4 +320,4 @@ export class RegisterComponent implements OnInit {
       this.registerForm.markAllAsTouched();
     }
   }
-}
+}

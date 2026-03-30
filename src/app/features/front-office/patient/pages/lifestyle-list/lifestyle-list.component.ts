@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LifestyleService } from '../../../../../services/lifestyle.service';
 import { LifestyleGoal, LifestylePlan, ProgressTracking } from '../../../../../models/lifestyle.model';
 import { AuthService } from '../../../../../services/auth.service';
+import { PatientService } from '../../../../../services/patient.service';
 
 @Component({
   selector: 'app-lifestyle-list',
@@ -21,7 +22,8 @@ export class LifestyleListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private lifestyleService: LifestyleService,
-    private authService: AuthService
+    private authService: AuthService,
+    private patientService: PatientService
   ) { }
 
   ngOnInit(): void {
@@ -51,22 +53,43 @@ export class LifestyleListComponent implements OnInit {
     }
   }
 
-    loadData(): void {
-        this.isLoading = true;
-        const fetchObs = this.patientId 
-            ? this.getPatientSpecificData() 
-            : this.getMyData();
+  loadData(): void {
+    this.isLoading = true;
 
-        if (!fetchObs) {
-            this.isLoading = false;
-            return;
-        }
-
+    if (this.patientId) {
+      // Nutritionist viewing a patient
+      const fetchObs = this.getPatientSpecificData(this.patientId);
+      if (fetchObs) {
         fetchObs.subscribe({
-            next: (data: any[]) => this.handleSuccess(data),
-            error: (err: any) => this.isLoading = false
+          next: (data: any[]) => this.handleSuccess(data),
+          error: (err: any) => this.isLoading = false
         });
+      } else {
+        this.isLoading = false;
+      }
+    } else {
+      // Patient viewing their own data
+      this.patientService.getMe().subscribe({
+        next: (profile) => {
+          const id = profile?.id;
+          if (id) {
+            const fetchObs = this.getPatientSpecificData(id);
+            if (fetchObs) {
+              fetchObs.subscribe({
+                next: (data: any[]) => this.handleSuccess(data),
+                error: (err: any) => this.isLoading = false
+              });
+            } else {
+              this.isLoading = false;
+            }
+          } else {
+            this.isLoading = false;
+          }
+        },
+        error: () => this.isLoading = false
+      });
     }
+  }
 
   private getMyData(): any {
     switch (this.type) {
@@ -77,12 +100,12 @@ export class LifestyleListComponent implements OnInit {
     }
   }
 
-  private getPatientSpecificData(): any {
-    if (!this.patientId) return null;
+  private getPatientSpecificData(id: number): any {
+    if (!id) return null;
     switch (this.type) {
-      case 'goals': return this.lifestyleService.getGoalsByPatientId(this.patientId);
-      case 'plans': return this.lifestyleService.getPlansByPatientId(this.patientId);
-      case 'tracking': return this.lifestyleService.getTrackingsByPatientId(this.patientId);
+      case 'goals': return this.lifestyleService.getGoalsByPatientId(id);
+      case 'plans': return this.lifestyleService.getPlansByPatientId(id);
+      case 'tracking': return this.lifestyleService.getTrackingsByPatientId(id);
       default: return null;
     }
   }

@@ -6,6 +6,7 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { DashboardComponent } from './patient/pages/dashboard/dashboard.component';
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
+
 import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 import { DoctorMedicalRecordComponent } from './doctor/pages/doctor-medical-record/doctor-medical-record.component';
 import { DoctorConsultationsComponent } from './doctor/pages/doctor-consultations/doctor-consultations.component';
@@ -25,6 +26,8 @@ import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle
 import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
 import { LifestyleDetailComponent } from './patient/pages/lifestyle-detail/lifestyle-detail.component';
+import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
+
 import { AuthGuard } from '../../guards/auth.guard';
 
 const routes: Routes = [
@@ -43,6 +46,7 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
+
     path: 'patient/profile',
     component: PatientProfileSettingsComponent,
     canActivate: [AuthGuard],
@@ -99,6 +103,12 @@ const routes: Routes = [
   {
     path: 'patient/lifestyle-wellness/:type',
     component: LifestyleListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lab-requests',
+    component: LabRequestsComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },

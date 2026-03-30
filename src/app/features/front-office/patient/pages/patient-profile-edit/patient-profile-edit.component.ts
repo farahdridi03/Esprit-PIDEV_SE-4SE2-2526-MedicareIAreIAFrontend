@@ -95,9 +95,14 @@ export class PatientProfileEditComponent implements OnInit {
     };
 
     this.patientService.updateProfile(request).subscribe({
-      next: () => {
+      next: (savedPatient) => {
         this.saving = false;
-        this.userService.refreshProfile(); // Refresh global profile state
+        // Push the updated photo into the shared profile stream so the topbar
+        // reflects the change immediately without requiring a page refresh
+        this.userService.setProfile({
+          fullName: savedPatient.fullName,
+          photo: savedPatient.photo ?? undefined
+        });
         this.router.navigate(['/front/patient/profile']);
       },
       error: (err) => {

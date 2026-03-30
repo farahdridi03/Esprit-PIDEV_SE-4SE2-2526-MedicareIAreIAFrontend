@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { UserRequestDTO, UserResponseDTO } from '../models/user.model';
+import { jwtDecode } from 'jwt-decode';
 
 export interface UpdateProfileRequest {
     fullName: string;
@@ -56,8 +57,58 @@ export class UserService {
 
     getProfile(): Observable<UserResponseDTO> {
         return this.http.get<UserResponseDTO>(`${this.baseUrlLegacy}/profile`).pipe(
-            tap(user => this.profileSubject.next(user))
+            tap(user => this.profileSubject.next(user)),
+            catchError(err => {
+                console.warn('Profile endpoint failed, falling back to JWT data.', err);
+                // Build a minimal profile from the JWT token
+                const fallback = this.buildProfileFromToken();
+                if (fallback) {
+                    this.profileSubject.next(fallback);
+                    return of(fallback);
+                }
+                return of(null as any);
+            })
         );
+    }
+
+    private buildProfileFromToken(): UserResponseDTO | null {
+        try {
+            const token = localStorage.getItem('auth_token');
+            if (!token) return null;
+            const decoded: any = jwtDecode(token);
+            const fullName =
+                decoded.fullName ||
+                decoded.fullname ||
+                decoded.name ||
+                (decoded.sub && decoded.sub.includes('@') ? decoded.sub.split('@')[0] : decoded.sub) ||
+                'User';
+            return {
+                id: decoded.id || decoded.userId || 0,
+                fullName,
+                email: decoded.sub || decoded.email || '',
+                role: decoded.role || '',
+                enabled: true
+            } as UserResponseDTO;
+        } catch {
+            return null;
+        }
+    }
+
+    /**
+     * Directly push a full or partial profile update into the stream.
+     * Use this after saving the patient profile so the topbar photo updates immediately.
+     */
+    setProfile(partial: Partial<UserResponseDTO>): void {
+        const current = this.profileSubject.getValue();
+        if (current) {
+            this.profileSubject.next({ ...current, ...partial });
+        } else {
+            // Build from token and merge
+            const base = this.buildProfileFromToken();
+            if (base) {
+                this.profileSubject.next({ ...base, ...partial });
+            }
+        }
     }
 
     refreshProfile(): void {

@@ -11,6 +11,7 @@ import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/docto
 import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
+
 import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 import { DoctorMedicalRecordComponent } from './doctor/pages/doctor-medical-record/doctor-medical-record.component';
 import { DoctorConsultationsComponent } from './doctor/pages/doctor-consultations/doctor-consultations.component';
@@ -32,6 +33,9 @@ import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
+
+import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
+
 
 
 @NgModule({
@@ -61,7 +65,8 @@ import { PatientProfileEditComponent } from './patient/pages/patient-profile-edi
     LifestyleListComponent,
     LifestyleFormComponent,
     PatientProfileSettingsComponent,
-    PatientProfileEditComponent
+    PatientProfileEditComponent,
+    LabRequestsComponent
   ],
   imports: [
     CommonModule,
@@ -70,6 +75,7 @@ import { PatientProfileEditComponent } from './patient/pages/patient-profile-edi
     ReactiveFormsModule,
     LifestyleSharedModule,
     LayoutModule
+
   ]
 })
 export class FrontOfficeModule { }

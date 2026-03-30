@@ -48,6 +48,11 @@ export class AuthService {
         return localStorage.getItem(this.TOKEN_KEY);
     }
 
+    // ✅ Unified — now just uses the main User ID
+    getPatientId(): number {
+        return this.getUserId() || 0;
+    }
+
     isAuthenticated(): boolean {
         const token = this.getToken();
         if (!token) return false;
@@ -95,6 +100,7 @@ export class AuthService {
         }
     }
 
+
     getUserId(): number | null {
         const token = this.getToken();
         if (!token) return null;
@@ -114,6 +120,7 @@ export class AuthService {
         );
     }
 
+
     getUserFullName(): string | null {
         const token = this.getToken();
         if (!token) return null;
@@ -131,7 +138,6 @@ export class AuthService {
         }
     }
 
-    // ✅ Forgot Password
     forgotPassword(email: string): Observable<string> {
         return this.http.post(
             `${this.baseUrl}/forgot-password`,
@@ -140,12 +146,38 @@ export class AuthService {
         ) as Observable<string>;
     }
 
-    // ✅ Reset Password
     resetPassword(token: string, newPassword: string): Observable<string> {
         return this.http.post(
             `${this.baseUrl}/reset-password`,
             { token, newPassword },
             { responseType: 'text' }
         ) as Observable<string>;
+    }
+
+    getLaboratoryId(): number | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.laboratoryId ?? null;
+        } catch { return null; }
+    }
+
+    getFullName(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.fullName ?? null;
+        } catch { return null; }
+    }
+
+    getRole(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.role ?? null;
+        } catch { return null; }
     }
 }

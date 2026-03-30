@@ -36,36 +36,46 @@ export class LifestyleWellnessComponent implements OnInit {
 
   loadData(): void {
     this.isLoading = true;
-    // In a real scenario, we'd filter by userId if the backend doesn't handle it via token
+    
     this.patientService.getMe().subscribe({
       next: (profile) => {
         this.patient = profile;
         console.log('DEBUG: Patient profile loaded in lifestyle-wellness:', this.patient);
+        
+        const patientId = this.patient?.id;
+        if (patientId) {
+          this.loadPatientLifestyleData(patientId);
+        } else {
+          this.isLoading = false;
+        }
+      },
+      error: () => {
+        this.isLoading = false;
       }
     });
+  }
 
-    this.lifestyleService.getGoals().subscribe({
+  private loadPatientLifestyleData(patientId: number): void {
+    this.lifestyleService.getGoalsByPatientId(patientId).subscribe({
       next: (goals) => {
         this.recentGoals = goals.slice(0, 3);
       },
       complete: () => this.checkLoading()
     });
 
-    this.lifestyleService.getPlans().subscribe({
+    this.lifestyleService.getPlansByPatientId(patientId).subscribe({
       next: (plans) => {
         this.recentPlans = plans.slice(0, 3);
       },
       complete: () => this.checkLoading()
     });
 
-    this.lifestyleService.getTrackings().subscribe({
+    this.lifestyleService.getTrackingsByPatientId(patientId).subscribe({
       next: (trackings) => {
         this.recentTrackings = trackings.slice(0, 3);
       },
       complete: () => this.checkLoading()
     });
-
-
   }
 
   private checkLoading(): void {

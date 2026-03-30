@@ -1,0 +1,7 @@
+[32m29 03 2026 14:26:14.847:INFO [karma-server]: [39mKarma v6.4.4 server started at http://localhost:9877/
+[32m29 03 2026 14:26:14.849:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m29 03 2026 14:26:14.854:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m29 03 2026 14:26:15.910:INFO [Chrome Headless 146.0.0.0 (Windows 10)]: [39mConnected on socket E2xs9Z0lQmFUHZQ4AAAB with id 66570743
+Chrome Headless 146.0.0.0 (Windows 10): Executed 0 of 0[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 146.0.0.0 (Windows 10): Executed 0 of 0[32m SUCCESS[39m (0.001 secs / 0 secs)
+[32mTOTAL: 0 SUCCESS[39m
