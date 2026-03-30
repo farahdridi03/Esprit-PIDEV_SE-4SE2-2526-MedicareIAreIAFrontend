@@ -1,0 +1,67 @@
+<div class="patient-layout">
+  <app-patient-sidebar></app-patient-sidebar>
+  <div class="main-content">
+    <app-patient-topbar></app-patient-topbar>
+    
+    <div class="content-wrapper">
+      <div class="page-header">
+        <h1>Find a Nutritionist</h1>
+        <p>Book an appointment with our trusted medical professionals</p>
+      </div>
+
+      <div class="filters-container">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search by name or specialty..." 
+                 [(ngModel)]="searchTerm" (input)="filterNutritionists()">
+        </div>
+        <div class="filter-box">
+          <select [(ngModel)]="selectedSpecialty" (change)="filterNutritionists()">
+            <option value="">All Specialties</option>
+            <option *ngFor="let spec of specialties" [value]="spec">{{ spec }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="loading-state" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading Nutritionists...</p>
+      </div>
+
+      <div class="error-state" *ngIf="error">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>{{ error }}</p>
+      </div>
+
+      <div class="Nutritionists-grid" *ngIf="!isLoading && !error">
+        <div class="Nutritionist-card" *ngFor="let Nutritionist of filteredNutritionists" (click)="viewProfile(Nutritionist.id)">
+          <div class="card-photo-wrapper">
+            <img *ngIf="Nutritionist.profilePicture"
+                 [src]="Nutritionist.profilePicture"
+                 class="card-photo"
+                 [alt]="Nutritionist.fullName">
+            <div *ngIf="!Nutritionist.profilePicture"
+                 class="card-photo-placeholder">
+              {{ Nutritionist.fullName ? Nutritionist.fullName.charAt(0).toUpperCase() : 'D' }}
+            </div>
+            <span class="specialty-badge">{{ Nutritionist.specialty }}</span>
+          </div>
+          <div class="card-info">
+            <p class="card-name">
+              {{ Nutritionist.fullName && Nutritionist.fullName.startsWith('Dr') 
+                 ? Nutritionist.fullName 
+                 : 'Dr. ' + Nutritionist.fullName }}
+            </p>
+            <p class="card-clinic">{{ Nutritionist.clinicName || 'Independent' }}</p>
+            <p class="card-fee">{{ Nutritionist.consultationFee }} DT</p>
+          </div>
+        </div>
+
+        <div class="no-results" *ngIf="filteredNutritionists.length === 0">
+          <p>No Nutritionists found matching your criteria.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -12,8 +12,13 @@ import { forkJoin, catchError, of } from 'rxjs';
     styleUrls: ['./nutritionist-dashboard.component.scss']
 })
 export class NutritionistDashboardComponent implements OnInit {
+  currentView: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients' = 'overview';
   firstName: string = 'Nutritionist';
   initials: string = 'N';
+
+  setView(view: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients') {
+    this.currentView = view;
+  }
   
   totalPatients: number = 0;
   totalConsultations: number = 0;

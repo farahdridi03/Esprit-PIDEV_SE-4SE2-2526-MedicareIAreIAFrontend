@@ -35,7 +35,7 @@ export class PharmacistTopbarComponent implements OnInit {
         if (user.fullName) {
           this.setNames(user.fullName);
         }
-        this.photo = (user as any).photo || null;
+        this.photo = (user as any).photo || (user as any).profileImage || null;
       }
     });
     // Trigger initial load if not already loaded

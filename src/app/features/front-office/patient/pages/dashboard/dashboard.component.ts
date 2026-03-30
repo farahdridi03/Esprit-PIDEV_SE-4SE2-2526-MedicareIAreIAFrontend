@@ -24,16 +24,14 @@ export class DashboardComponent implements OnInit {
     // 1. Try to get name directly from JWT token
     const fullNameFromToken = this.authService.getUserFullName();
     if (fullNameFromToken) {
-      this.firstName = fullNameFromToken.trim().split(' ')[0];
-      return;
+      this.firstName = fullNameFromToken.trim().split(/\s+/)[0];
     }
-<<<<<<< HEAD
 
     // Refresh from profile API
     this.userService.getProfile().subscribe({
       next: (user) => {
         if (user && user.fullName) {
-          this.firstName = user.fullName.split(' ')[0];
+          this.firstName = user.fullName.trim().split(/\s+/)[0];
         }
       },
       error: (err) => console.error('Error fetching user profile', err)
@@ -57,7 +55,7 @@ export class DashboardComponent implements OnInit {
 
         const upcoming = data
           .filter(a => a.date >= todayStr && (a.status === 'BOOKED' || a.status === 'CONFIRMED'))
-          .sort((a,b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime));
+          .sort((a,b) => a.date.localeCompare(b.date) || (a.startTime || '').localeCompare(b.startTime || ''));
 
         if (upcoming.length > 0) {
           this.nextAppointment = upcoming[0];
@@ -65,7 +63,5 @@ export class DashboardComponent implements OnInit {
       },
       error: (err) => console.error('Error loading next appt', err)
     });
-=======
->>>>>>> origin/frontVersion1
   }
 }

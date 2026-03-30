@@ -1,0 +1,288 @@
+[33m❯[39m Building...
+[32m✔[39m Building...
+Application bundle generation failed. [5.424 seconds]
+
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG9: Property 'profileImage' does not exist on type 'TopbarComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/components/topbar/topbar.component.html:62:40:
+[37m      62 │ ...iv class="avatar" *ngIf="![32mprofileImage[37m">{{ initials || 'U' }}</...
+         ╵                              [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component TopbarComponent.
+
+    src/app/features/front-office/patient/components/topbar/topbar.component.ts:10:15:
+[37m      10 │   templateUrl: [32m'./topbar.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG9: Property 'profileImage' does not exist on type 'TopbarComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/components/topbar/topbar.component.html:63:39:
+[37m      63 │ ...img class="avatar" *ngIf="[32mprofileImage[37m" [src]="profileImage" st...
+         ╵                              [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component TopbarComponent.
+
+    src/app/features/front-office/patient/components/topbar/topbar.component.ts:10:15:
+[37m      10 │   templateUrl: [32m'./topbar.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG9: Property 'profileImage' does not exist on type 'TopbarComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/components/topbar/topbar.component.html:63:60:
+[37m      63 │ ...gIf="profileImage" [src]="[32mprofileImage[37m" style="object-fit: cove...
+         ╵                              [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component TopbarComponent.
+
+    src/app/features/front-office/patient/components/topbar/topbar.component.ts:10:15:
+[37m      10 │   templateUrl: [32m'./topbar.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-sidebar' is not a known element:
+1. If 'app-sidebar' is an Angular component, then verify that it is part of this module.
+2. If 'app-sidebar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/lifestyle-detail/lifestyle-detail.component.html:2:4:
+[37m      2 │     [32m<app-sidebar *ngIf="userRole === 'PATIENT'">[37m</app-sidebar>
+        ╵     [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LifestyleDetailComponent.
+
+    src/app/features/front-office/patient/pages/lifestyle-detail/lifestyle-detail.component.ts:9:15:
+[37m      9 │   templateUrl: [32m'./lifestyle-detail.component.html'[37m,
+        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-topbar' is not a known element:
+1. If 'app-topbar' is an Angular component, then verify that it is part of this module.
+2. If 'app-topbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/lifestyle-detail/lifestyle-detail.component.html:6:8:
+[37m      6 │         [32m<app-topbar *ngIf="userRole === 'PATIENT'">[37m</app-topbar>
+        ╵         [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LifestyleDetailComponent.
+
+    src/app/features/front-office/patient/pages/lifestyle-detail/lifestyle-detail.component.ts:9:15:
+[37m      9 │   templateUrl: [32m'./lifestyle-detail.component.html'[37m,
+        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-sidebar' is not a known element:
+1. If 'app-sidebar' is an Angular component, then verify that it is part of this module.
+2. If 'app-sidebar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/lifestyle-form/lifestyle-form.component.html:2:4:
+[37m      2 │     [32m<app-sidebar>[37m</app-sidebar>
+        ╵     [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LifestyleFormComponent.
+
+    src/app/features/front-office/patient/pages/lifestyle-form/lifestyle-form.component.ts:13:15:
+[37m      13 │   templateUrl: [32m'./lifestyle-form.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-topbar' is not a known element:
+1. If 'app-topbar' is an Angular component, then verify that it is part of this module.
+2. If 'app-topbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/lifestyle-form/lifestyle-form.component.html:4:8:
+[37m      4 │         [32m<app-topbar>[37m</app-topbar>
+        ╵         [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LifestyleFormComponent.
+
+    src/app/features/front-office/patient/pages/lifestyle-form/lifestyle-form.component.ts:13:15:
+[37m      13 │   templateUrl: [32m'./lifestyle-form.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-sidebar' is not a known element:
+1. If 'app-sidebar' is an Angular component, then verify that it is part of this module.
+2. If 'app-sidebar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/lifestyle-list/lifestyle-list.component.html:2:4:
+[37m      2 │     [32m<app-sidebar>[37m</app-sidebar>
+        ╵     [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LifestyleListComponent.
+
+    src/app/features/front-office/patient/pages/lifestyle-list/lifestyle-list.component.ts:10:15:
+[37m      10 │   templateUrl: [32m'./lifestyle-list.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-topbar' is not a known element:
+1. If 'app-topbar' is an Angular component, then verify that it is part of this module.
+2. If 'app-topbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/lifestyle-list/lifestyle-list.component.html:4:8:
+[37m      4 │         [32m<app-topbar>[37m</app-topbar>
+        ╵         [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LifestyleListComponent.
+
+    src/app/features/front-office/patient/pages/lifestyle-list/lifestyle-list.component.ts:10:15:
+[37m      10 │   templateUrl: [32m'./lifestyle-list.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-sidebar' is not a known element:
+1. If 'app-sidebar' is an Angular component, then verify that it is part of this module.
+2. If 'app-sidebar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/lifestyle-wellness/lifestyle-wellness.component.html:3:4:
+[37m      3 │     [32m<app-sidebar>[37m</app-sidebar>
+        ╵     [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LifestyleWellnessComponent.
+
+    src/app/features/front-office/patient/pages/lifestyle-wellness/lifestyle-wellness.component.ts:10:15:
+[37m      10 │   templateUrl: [32m'./lifestyle-wellness.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-topbar' is not a known element:
+1. If 'app-topbar' is an Angular component, then verify that it is part of this module.
+2. If 'app-topbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/lifestyle-wellness/lifestyle-wellness.component.html:8:8:
+[37m      8 │         [32m<app-topbar>[37m</app-topbar>
+        ╵         [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LifestyleWellnessComponent.
+
+    src/app/features/front-office/patient/pages/lifestyle-wellness/lifestyle-wellness.component.ts:10:15:
+[37m      10 │   templateUrl: [32m'./lifestyle-wellness.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-sidebar' is not a known element:
+1. If 'app-sidebar' is an Angular component, then verify that it is part of this module.
+2. If 'app-sidebar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/medical-record/medical-record.component.html:3:4:
+[37m      3 │     [32m<app-sidebar>[37m</app-sidebar>
+        ╵     [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component MedicalRecordComponent.
+
+    src/app/features/front-office/patient/pages/medical-record/medical-record.component.ts:42:17:
+[37m      42 │     templateUrl: [32m'./medical-record.component.html'[37m,
+         ╵                  [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-topbar' is not a known element:
+1. If 'app-topbar' is an Angular component, then verify that it is part of this module.
+2. If 'app-topbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/medical-record/medical-record.component.html:8:8:
+[37m      8 │         [32m<app-topbar>[37m</app-topbar>
+        ╵         [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component MedicalRecordComponent.
+
+    src/app/features/front-office/patient/pages/medical-record/medical-record.component.ts:42:17:
+[37m      42 │     templateUrl: [32m'./medical-record.component.html'[37m,
+         ╵                  [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-sidebar' is not a known element:
+1. If 'app-sidebar' is an Angular component, then verify that it is part of this module.
+2. If 'app-sidebar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/patient-profile-edit/patient-profile-edit.component.html:2:4:
+[37m      2 │     [32m<app-sidebar>[37m</app-sidebar>
+        ╵     [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component PatientProfileEditComponent.
+
+    src/app/features/front-office/patient/pages/patient-profile-edit/patient-profile-edit.component.ts:9:15:
+[37m      9 │   templateUrl: [32m'./patient-profile-edit.component.html'[37m,
+        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-topbar' is not a known element:
+1. If 'app-topbar' is an Angular component, then verify that it is part of this module.
+2. If 'app-topbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/patient-profile-edit/patient-profile-edit.component.html:5:8:
+[37m      5 │         [32m<app-topbar>[37m</app-topbar>
+        ╵         [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component PatientProfileEditComponent.
+
+    src/app/features/front-office/patient/pages/patient-profile-edit/patient-profile-edit.component.ts:9:15:
+[37m      9 │   templateUrl: [32m'./patient-profile-edit.component.html'[37m,
+        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-sidebar' is not a known element:
+1. If 'app-sidebar' is an Angular component, then verify that it is part of this module.
+2. If 'app-sidebar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/patient-profile-settings/patient-profile-settings.component.html:2:4:
+[37m      2 │     [32m<app-sidebar>[37m</app-sidebar>
+        ╵     [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component PatientProfileSettingsComponent.
+
+    src/app/features/front-office/patient/pages/patient-profile-settings/patient-profile-settings.component.ts:8:15:
+[37m      8 │   templateUrl: [32m'./patient-profile-settings.component.html'[37m,
+        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-topbar' is not a known element:
+1. If 'app-topbar' is an Angular component, then verify that it is part of this module.
+2. If 'app-topbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/patient-profile-settings/patient-profile-settings.component.html:5:8:
+[37m      5 │         [32m<app-topbar>[37m</app-topbar>
+        ╵         [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component PatientProfileSettingsComponent.
+
+    src/app/features/front-office/patient/pages/patient-profile-settings/patient-profile-settings.component.ts:8:15:
+[37m      8 │   templateUrl: [32m'./patient-profile-settings.component.html'[37m,
+        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-sidebar' is not a known element:
+1. If 'app-sidebar' is an Angular component, then verify that it is part of this module.
+2. If 'app-sidebar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/patient-record-list/patient-record-list.component.html:2:4:
+[37m      2 │     [32m<app-sidebar>[37m</app-sidebar>
+        ╵     [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component PatientRecordListComponent.
+
+    src/app/features/front-office/patient/pages/patient-record-list/patient-record-list.component.ts:8:15:
+[37m      8 │   templateUrl: [32m'./patient-record-list.component.html'[37m,
+        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG8001: 'app-topbar' is not a known element:
+1. If 'app-topbar' is an Angular component, then verify that it is part of this module.
+2. If 'app-topbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/patient/pages/patient-record-list/patient-record-list.component.html:4:8:
+[37m      4 │         [32m<app-topbar>[37m</app-topbar>
+        ╵         [32m~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component PatientRecordListComponent.
+
+    src/app/features/front-office/patient/pages/patient-record-list/patient-record-list.component.ts:8:15:
+[37m      8 │   templateUrl: [32m'./patient-record-list.component.html'[37m,
+        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+npm notice
+npm notice New minor version of npm available! 11.8.0 -> 11.12.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.1
+npm notice To update run: npm install -g npm@11.12.1
+npm notice

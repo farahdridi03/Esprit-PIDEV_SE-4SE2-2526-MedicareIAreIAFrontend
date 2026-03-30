@@ -29,20 +29,15 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-<<<<<<< HEAD
       const { rememberMe, ...loginData } = this.loginForm.value;
       console.log('Form is valid, calling login with data:', loginData);
-      
+
       this.authService.login(loginData).subscribe({
-=======
-      this.authService.login(this.loginForm.value).subscribe({
->>>>>>> origin/frontVersion1
         next: (response) => {
           const role = response.role || this.authService.getUserRole();
           this.redirectBasedOnRole(role);
         },
         error: (err) => {
-<<<<<<< HEAD
           console.error('Login error full response:', err);
           if (err.status === 400) {
             this.errorMessage = err.error?.message || 'Mauvaise requête. Vérifiez le format (Email/password).';
@@ -51,25 +46,11 @@ export class LoginComponent {
           } else {
             this.errorMessage = err.error?.message || err.error || 'Erreur lors de la connexion. Vérifiez le serveur.';
           }
-=======
-          this.errorMessage = err.error?.message || 'Identifiants invalides';
->>>>>>> origin/frontVersion1
         }
       });
     } else {
       this.loginForm.markAllAsTouched();
-<<<<<<< HEAD
       this.errorMessage = 'Please fill out all fields correctly.';
-      console.warn('Form is invalid:', this.loginForm.errors);
-      Object.keys(this.loginForm.controls).forEach(key => {
-        const controlErrors = this.loginForm.get(key)?.errors;
-        if (controlErrors != null) {
-          console.warn(`Control ${key} errors:`, controlErrors);
-        }
-      });
-=======
-      this.errorMessage = 'Veuillez remplir correctement tous les champs.';
->>>>>>> origin/frontVersion1
     }
   }
 
@@ -88,47 +69,13 @@ export class LoginComponent {
       'NUTRITIONIST': '/front/nutritionist/dashboard',
       'LABORATORY_STAFF': '/front/laboratorystaff/dashboard',
       'LABORATORYSTAFF': '/front/laboratorystaff/dashboard',
-      'PHARMACIST': '/front/pharmacist',
-      'CLINIC': '/front/clinic',
+      'PHARMACIST': '/front/pharmacist/dashboard',
+      'CLINIC': '/front/clinic/dashboard',
       'HOME_CARE_PROVIDER': '/front/home-care',
       'VISITOR': '/front',
     };
 
-<<<<<<< HEAD
-    switch (cleanRole) {
-      case 'ADMIN':
-        targetRoute = '/admin/dashboard';
-        break;
-      case 'DOCTOR':
-        targetRoute = '/front/doctor/dashboard';
-        break;
-      case 'PATIENT':
-        targetRoute = '/front/patient/dashboard';
-        break;
-      case 'NUTRITIONIST':
-        targetRoute = '/front/nutritionist/dashboard';
-        break;
-      case 'LABORATORY':
-        targetRoute = '/front/laboratory';
-        break;
-      case 'PHARMACIST':
-        targetRoute = '/front/pharmacist/dashboard';
-        break;
-      case 'CLINIC':
-        targetRoute = '/front/clinic/dashboard';
-        break;
-      case 'VISITOR':
-        targetRoute = '/front';
-        break;
-      case 'HOME_CARE_PROVIDER':
-      case 'HOME_CARE':
-        targetRoute = '/front/home-care';
-        break;
-      default:
-        console.warn('Unknown role, defaulting to /front:', cleanRole);
-        targetRoute = '/front';
-        break;
-    }
+    let targetRoute = routes[cleanRole] ?? '/front';
 
     console.log('Target route identified:', targetRoute);
     this.router.navigate([targetRoute]).then(success => {
@@ -142,10 +89,3 @@ export class LoginComponent {
     });
   }
 }
-
-=======
-    const target = routes[cleanRole] ?? '/front';
-    this.router.navigate([target]);
-  }
-}
->>>>>>> origin/frontVersion1

@@ -33,14 +33,10 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
       next: (user) => {
-<<<<<<< HEAD
-        if (user && user.fullName) this.setNames(user.fullName);
-=======
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
-        this.photo = (user as any).photo || null;
->>>>>>> origin/frontVersion1
+        this.photo = (user as any).photo || (user as any).profileImage || null;
       },
       error: (err) => console.error('Error fetching clinic profile', err)
     });
@@ -84,7 +80,6 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
     this.dispatchingAlertId = alertData.id;
     this.dispatchMessage = '';
 
-    // Step 1: Find an available ambulance
     this.ambulanceService.getAll().subscribe({
       next: (ambulances) => {
         const available = ambulances.filter(
@@ -92,7 +87,7 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
         );
 
         if (available.length === 0) {
-          this.dispatchMessage = '⚠️ No ambulance available. All are currently on duty.';
+          this.dispatchMessage = '⚠️ No ambulance available.';
           this.dispatchSuccess = false;
           this.dispatchingAlertId = null;
           return;
@@ -100,69 +95,55 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
 
         const ambulance = available[0];
 
-        // Step 2: Mark ambulance as ON_DUTY and set destination coordinates
         this.ambulanceService.update(ambulance.id, {
-          clinicId: ambulance.clinicId,
+          ...ambulance,
           currentLat: alertData.latitude,
           currentLng: alertData.longitude,
-          licensePlate: ambulance.licensePlate,
           status: 'ON_DUTY'
         }).subscribe({
           next: () => {
-            // Step 3: Resolve the alert
             this.emergencyService.updateAlertStatus(alertData.id, 'RESOLVED').subscribe({
               next: () => {
                 this.notifications = this.notifications.filter(a => a.id !== alertData.id);
-                const plate = ambulance.licensePlate || `#${ambulance.id}`;
-                this.dispatchMessage = `✅ Ambulance ${plate} dispatched successfully. Alert resolved.`;
+                this.dispatchMessage = `✅ Ambulance dispatched successfully.`;
                 this.dispatchSuccess = true;
                 this.dispatchingAlertId = null;
-                // Auto-hide message after 4 seconds
                 setTimeout(() => { this.dispatchMessage = ''; }, 4000);
               },
               error: () => {
-                this.dispatchMessage = '⚠️ Ambulance dispatched but failed to resolve alert.';
+                this.dispatchMessage = '⚠️ Error resolving alert.';
                 this.dispatchSuccess = false;
                 this.dispatchingAlertId = null;
               }
             });
           },
           error: () => {
-            this.dispatchMessage = '❌ Failed to dispatch ambulance. Please try again.';
+            this.dispatchMessage = '❌ Failed to dispatch ambulance.';
             this.dispatchSuccess = false;
             this.dispatchingAlertId = null;
           }
         });
-      },
-      error: () => {
-        this.dispatchMessage = '❌ Could not load ambulances.';
-        this.dispatchSuccess = false;
-        this.dispatchingAlertId = null;
       }
     });
   }
 
   private loadUserInfo() {
-<<<<<<< HEAD
+    // Immediate load from Auth Service
     const fullName = this.authService.getUserFullName();
     if (fullName) this.setNames(fullName);
-=======
+
+    // Reactive subscription
     this.userService.profile$.subscribe(user => {
       if (user) {
-        if (user.fullName) {
-          this.setNames(user.fullName);
-        }
-        this.photo = (user as any).photo || null;
+        if (user.fullName) this.setNames(user.fullName);
+        this.photo = (user as any).photo || (user as any).profileImage || null;
       }
     });
-    // Trigger initial load if not already loaded
-    this.userService.refreshProfile();
->>>>>>> origin/frontVersion1
   }
 
   private setNames(fullName: string) {
     if (!fullName) return;
-    const parts = fullName.split(' ');
+    const parts = fullName.trim().split(/\s+/);
     this.firstName = parts[0];
     this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
     if (!this.initials) this.initials = this.firstName[0].toUpperCase();

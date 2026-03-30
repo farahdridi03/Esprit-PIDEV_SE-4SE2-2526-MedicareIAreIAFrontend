@@ -1,6 +1,6 @@
 <div class="nutritionist-wrapper">
     <!-- Sidebar -->
-    <app-nutritionist-sidebar></app-nutritionist-sidebar>
+    <app-nutritionist-sidebar [currentView]="currentView" (viewChange)="setView($event)"></app-nutritionist-sidebar>
 
     <!-- Main Content -->
     <div class="main-body">
@@ -8,7 +8,7 @@
 
         <div class="content-area">
             <!-- Welcome Banner -->
-            <div class="welcome-banner">
+            <div class="welcome-banner" *ngIf="currentView === 'overview'">
                 <div class="banner-text">
                     <h1>Welcome back, {{ firstName || 'Nutritionist' }}!</h1>
                     <p>Track your patients' dietary progress and upcoming sessions today.</p>
@@ -31,7 +31,7 @@
             </div>
 
             <!-- Main Dashboard Grid -->
-            <div class="dashboard-grid">
+            <div class="dashboard-grid" *ngIf="currentView === 'overview'">
                 
                 <!-- Left Column (2/3) -->
                 <div class="left-column">
@@ -76,6 +76,21 @@
                     </div>
                 </div>
 
+            </div>
+
+            <!-- Main Calendar View -->
+            <div class="calendar-main-view" *ngIf="currentView === 'calendar'">
+                <app-doctor-calendar-calendar></app-doctor-calendar-calendar>
+            </div>
+
+            <!-- Calendar Settings View -->
+            <div class="calendar-settings-view" *ngIf="currentView === 'settings'">
+                <app-doctor-calendar-settings (navigateToCalendar)="setView('calendar')"></app-doctor-calendar-settings>
+            </div>
+
+            <!-- Calendar Exceptions View -->
+            <div class="calendar-exceptions-view" *ngIf="currentView === 'exceptions'">
+                <app-doctor-calendar-exceptions></app-doctor-calendar-exceptions>
             </div>
 
         </div>

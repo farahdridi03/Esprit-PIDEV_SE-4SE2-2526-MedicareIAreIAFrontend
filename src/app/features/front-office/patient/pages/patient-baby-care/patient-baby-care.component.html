@@ -20,8 +20,8 @@
           <i class="fas fa-chevron-left" style="color: #4a7c74"></i>
         </button>
         <div class="title-group">
-          <h1 class="serif-title">BABY'S PROFILE</h1>
-          <p class="subtitle">Visible only to your care network</p>
+          <h1 class="serif-title">{{ isEditingProfile ? 'EDIT PROFILE' : 'BABY\'S PROFILE' }}</h1>
+          <p class="subtitle">{{ isEditingProfile ? 'Update your baby\'s information' : 'Visible only to your care network' }}</p>
         </div>
       </div>
 
@@ -110,7 +110,12 @@
         </div>
 
         <button class="btn-premium-continue" (click)="saveOnboarding()">
-          Save & Continue
+          {{ isEditingProfile ? 'Save Changes' : 'Save & Continue' }}
+        </button>
+        <button *ngIf="isEditingProfile" class="btn-cancel-edit" 
+                (click)="isEditingProfile = false; isFirstTime = false; editingBabyId = null;"
+                style="margin-top: 10px; background: transparent; border: none; color: #64748b; font-size: 14px; cursor: pointer; display: block; width: 100%;">
+          Cancel and Go Back
         </button>
       </div>
     </div>
@@ -125,6 +130,37 @@
         <div class="brand-text">
           <h3>First Baby Care</h3>
           <span>{{ parentRole.badge }} Companion</span>
+        </div>
+      </div>
+
+      <!-- Baby Selector -->
+      <div class="baby-context-switcher" *ngIf="allBabies.length > 0">
+        <div class="current-context" (click)="showBabyMenu = !showBabyMenu">
+          <img [src]="baby.photoUrl || defaultBabyAvatar" class="mini-portrait">
+          <div class="context-info">
+            <span class="context-name">{{ baby.name }}</span>
+            <span class="context-status">Active Profile</span>
+          </div>
+          <i class="fas fa-chevron-down ms-auto" style="font-size: 10px; color: #94a3b8;"></i>
+        </div>
+        
+        <div class="context-dropdown animate-in" *ngIf="showBabyMenu">
+          <div class="dropdown-item" *ngFor="let b of allBabies" 
+               [class.active]="b.id === baby.id" 
+               (click)="selectBaby(b); showBabyMenu = false"
+               style="display: flex; align-items: center;">
+            <img [src]="b.photoUrl || defaultBabyAvatar" class="dropdown-thumb">
+            <span style="flex: 1;">{{ b.name }}</span>
+            <div class="item-actions" style="display: flex; gap: 10px; margin-left: 10px;">
+              <i class="fas fa-edit edit-icon" (click)="editBabyProfile(b, $event)" title="Edit Profile"></i>
+              <i class="fas fa-trash-alt delete-icon" (click)="deleteBabyProfile(b.id, $event)" title="Delete Profile"></i>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item add-new" (click)="addNewBaby(); showBabyMenu = false">
+            <div class="thumb-plus"><i class="fas fa-plus"></i></div>
+            <span>Add New Baby</span>
+          </div>
         </div>
       </div>
 
@@ -202,6 +238,10 @@
                   <div class="next-event">
                     <div class="label">Next Checkup</div>
                     <div class="val serif-title">{{ baby.nextCheckupDate }}</div>
+                    <button class="btn-edit-profile-mini" (click)="editActiveBabyProfile()" 
+                            style="margin-top: 10px; font-size: 11px; padding: 4px 8px; border-radius: 20px; border: 1px solid #cbd5e1; background: white; color: #64748b; cursor: pointer;">
+                      <i class="fas fa-pen"></i> Edit Profile
+                    </button>
                   </div>
                 </div>
               </div>
@@ -428,7 +468,7 @@
                   </ng-container>
                 </div>
 
-                <div class="error-text" *ngIf="formError && activeSection === 'feeding'" style="margin: -10px 0 15px 0; text-align: center;">
+                <div class="error-text" *ngIf="formError && newEntry.type === 'FEEDING'" style="margin: -10px 0 15px 0; text-align: center;">
                   <i class="fas fa-exclamation-circle"></i> {{ formError }}
                 </div>
 
@@ -852,7 +892,7 @@
                   <div class="log-info-side">
                     <div class="icon-blob"><i class="fas fa-plus"></i></div>
                     <div>
-                      <h3>Log New Reading</h3>
+                      <h3>Log Temperature Reading</h3>
                       <p>Add a new temperature check for {{ baby.name }}.</p>
                     </div>
                   </div>
@@ -862,7 +902,7 @@
                       <input type="text" [(ngModel)]="newEntry.value" class="premium-input" placeholder="e.g. 37.2">
                       <span class="input-suffix">°C</span>
                     </div>
-                    <p class="error-text" *ngIf="formError" style="margin-top: 10px; font-weight: 600;">{{ formError }}</p>
+                    <p class="error-text" *ngIf="formError && newEntry.type === 'TEMPERATURE'" style="margin-top: 10px; font-weight: 600;">{{ formError }}</p>
                     <button class="btn-premium-action health-btn" (click)="newEntry.type = 'TEMPERATURE'; submitJournalEntry()" [disabled]="!newEntry.value">
                        {{ editingLogId ? 'Update Record' : 'Save Record' }} <i class="fas fa-arrow-right"></i>
                     </button>

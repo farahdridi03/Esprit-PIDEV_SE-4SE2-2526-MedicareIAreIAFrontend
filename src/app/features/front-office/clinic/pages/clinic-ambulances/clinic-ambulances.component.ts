@@ -88,8 +88,36 @@ export class ClinicAmbulancesComponent implements OnInit {
     this.editingId = null;
   }
 
+  fieldErrors: any = {};
+
+  validate(): boolean {
+    this.fieldErrors = {};
+    let isValid = true;
+
+    if (!this.form.licensePlate || this.form.licensePlate.trim().length === 0) {
+      this.fieldErrors.licensePlate = 'La plaque d\'immatriculation est requise.';
+      isValid = false;
+    } else if (!/^[A-Z0-9- ]+$/.test(this.form.licensePlate)) {
+      this.fieldErrors.licensePlate = 'Format de plaque invalide (A-Z, 0-9 uniquement).';
+      isValid = false;
+    }
+
+    if (this.form.currentLat === undefined || this.form.currentLat === null || this.form.currentLat < -90 || this.form.currentLat > 90) {
+      this.fieldErrors.currentLat = 'Latitude invalide (-90 à 90).';
+      isValid = false;
+    }
+
+    if (this.form.currentLng === undefined || this.form.currentLng === null || this.form.currentLng < -180 || this.form.currentLng > 180) {
+      this.fieldErrors.currentLng = 'Longitude invalide (-180 à 180).';
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
   submitForm() {
-    if (!this.form.licensePlate) return;
+    this.error = '';
+    if (!this.validate()) return;
     
     // Ensure clinicId is set if missing (safety check)
     if (!this.form.clinicId) {
@@ -114,6 +142,7 @@ export class ClinicAmbulancesComponent implements OnInit {
         this.showForm = false;
         this.editingId = null;
         this.error = '';
+        this.fieldErrors = {};
       },
       error: (err) => {
         console.error(err);

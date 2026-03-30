@@ -40,7 +40,11 @@
                 [(ngModel)]="form.licensePlate"
                 name="licensePlate"
                 placeholder="e.g. AMB-001"
-                required />
+                required 
+                [class.input-error]="fieldErrors.licensePlate" />
+              <div class="field-error-msg" *ngIf="fieldErrors.licensePlate">
+                <i class="fas fa-exclamation-circle"></i> {{ fieldErrors.licensePlate }}
+              </div>
             </div>
             
             <div class="form-group">
@@ -53,7 +57,7 @@
 
             <div class="modal-actions">
               <button type="button" class="btn-cancel" (click)="cancelForm()">Cancel</button>
-              <button type="submit" class="btn-submit" [disabled]="submitting || !form.licensePlate">
+              <button type="submit" class="btn-submit" [disabled]="submitting">
                 {{ submitting ? 'Saving...' : (editingId ? 'Update' : 'Add Ambulance') }}
               </button>
             </div>

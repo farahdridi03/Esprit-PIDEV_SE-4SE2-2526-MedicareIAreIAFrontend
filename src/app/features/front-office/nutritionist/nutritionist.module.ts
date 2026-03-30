@@ -15,6 +15,7 @@ import { NutritionistLifestyleFormComponent } from './pages/nutritionist-lifesty
 import { LifestyleSharedModule } from '../patient/lifestyle-shared.module';
 import { NutritionistProfileEditComponent } from './pages/nutritionist-profile-edit/nutritionist-profile-edit.component';
 import { NutritionistProfileSettingsComponent } from './pages/nutritionist-profile-settings/nutritionist-profile-settings.component';
+import { ProviderCalendarSharedModule } from '../doctor/provider-calendar-shared.module';
 
 const routes: Routes = [
     {
@@ -71,6 +72,7 @@ const routes: Routes = [
         FormsModule,
         ReactiveFormsModule,
         LifestyleSharedModule,
+        ProviderCalendarSharedModule,
         LayoutModule
     ]
 })

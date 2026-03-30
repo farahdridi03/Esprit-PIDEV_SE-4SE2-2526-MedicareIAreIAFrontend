@@ -8,10 +8,7 @@ import { DonationsComponent } from './patient/pages/donations/donations.componen
 import { EmergencyComponent } from './patient/pages/emergency/emergency.component';
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
-<<<<<<< HEAD
 import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
-=======
-
 import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 import { DoctorMedicalRecordComponent } from './doctor/pages/doctor-medical-record/doctor-medical-record.component';
 import { DoctorConsultationsComponent } from './doctor/pages/doctor-consultations/doctor-consultations.component';
@@ -32,13 +29,12 @@ import { PatientProfileSettingsComponent } from './patient/pages/patient-profile
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
 import { LifestyleDetailComponent } from './patient/pages/lifestyle-detail/lifestyle-detail.component';
 import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
-
->>>>>>> origin/frontVersion1
 import { AuthGuard } from '../../guards/auth.guard';
 import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-list/patient-doctors-list.component';
 import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
+import { PatientNutritionistsListComponent } from './patient/pages/patient-nutritionists-list/patient-nutritionists-list.component';
+import { PatientNutritionistDetailComponent } from './patient/pages/patient-nutritionist-detail/patient-nutritionist-detail.component';
 import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
-import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 import { PatientBabyCareComponent } from './patient/pages/patient-baby-care/patient-baby-care.component';
 
 const routes: Routes = [
@@ -57,7 +53,6 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
-<<<<<<< HEAD
     path: 'patient/donations',
     component: DonationsComponent,
     canActivate: [AuthGuard],
@@ -88,6 +83,18 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
+    path: 'patient/nutritionists',
+    component: PatientNutritionistsListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/nutritionists/:id',
+    component: PatientNutritionistDetailComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
     path: 'patient/baby-care',
     component: PatientBabyCareComponent,
     canActivate: [AuthGuard],
@@ -95,11 +102,13 @@ const routes: Routes = [
   },
   {
     path: 'patient/profile',
-    component: PatientProfileComponent,
-=======
-
-    path: 'patient/profile',
     component: PatientProfileSettingsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/profile-legacy',
+    component: PatientProfileComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
@@ -152,15 +161,8 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
-    path: 'patient/lifestyle-wellness/:type',
-    component: LifestyleListComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['PATIENT'] }
-  },
-  {
     path: 'patient/lab-requests',
     component: LabRequestsComponent,
->>>>>>> origin/frontVersion1
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
@@ -183,8 +185,6 @@ const routes: Routes = [
     data: { roles: ['DOCTOR'] }
   },
   {
-<<<<<<< HEAD
-=======
     path: 'doctor/appointments',
     component: DoctorPatientsComponent,
     canActivate: [AuthGuard],
@@ -227,38 +227,26 @@ const routes: Routes = [
     data: { roles: ['DOCTOR'] }
   },
   {
->>>>>>> origin/frontVersion1
     path: 'nutritionist',
-    loadChildren: () =>
-      import('./nutritionist/nutritionist.module')
-        .then(m => m.NutritionistModule)
+    loadChildren: () => import('./nutritionist/nutritionist.module').then(m => m.NutritionistModule)
   },
   {
     path: 'laboratorystaff',
-    loadChildren: () =>
-      import('./laboratory/laboratory.module')
-        .then(m => m.LaboratoryStaffModule)
+    loadChildren: () => import('./laboratory/laboratory.module').then(m => m.LaboratoryStaffModule)
   },
   {
     path: 'home-care',
-    loadChildren: () =>
-      import('./home-care/home-care.module')
-        .then(m => m.HomeCareModule)
+    loadChildren: () => import('./home-care/home-care.module').then(m => m.HomeCareModule)
   },
   {
     path: 'pharmacist',
-    loadChildren: () =>
-      import('./pharmacist/pharmacist.module')
-        .then(m => m.PharmacistModule)
+    loadChildren: () => import('./pharmacist/pharmacist.module').then(m => m.PharmacistModule)
   },
   {
     path: 'clinic',
-    loadChildren: () =>
-      import('./clinic/clinic.module')
-        .then(m => m.ClinicModule)
+    loadChildren: () => import('./clinic/clinic.module').then(m => m.ClinicModule)
   }
 ];
-
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

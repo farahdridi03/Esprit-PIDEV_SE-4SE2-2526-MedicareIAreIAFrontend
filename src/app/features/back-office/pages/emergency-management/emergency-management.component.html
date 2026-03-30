@@ -1,0 +1,89 @@
+<div class="page-header">
+    <div>
+        <h1>Emergency <em>Alerts</em></h1>
+        <p>Monitor and manage all patient emergency alerts across the platform</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn-refresh" (click)="loadAlerts()" [disabled]="loading">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            Refresh Alerts
+        </button>
+    </div>
+</div>
+
+<div class="filter-bar">
+    <div class="filter-tabs">
+        <button *ngFor="let s of statuses" class="filter-tab" [class.active]="selectedStatus === s" (click)="onFilterChange(s)">
+            {{ s }}
+        </button>
+    </div>
+</div>
+
+<div class="panel">
+    <div *ngIf="loading" class="loader">
+        <div class="spinner"></div>
+        <p>Fetching alerts from server...</p>
+    </div>
+
+    <div *ngIf="error" class="error-msg">
+        <span>⚠️</span> {{ error }}
+    </div>
+
+    <div class="alerts-grid" *ngIf="!loading && !error && filteredAlerts.length > 0">
+        <div *ngFor="let alert of filteredAlerts" class="alert-card" [class]="getSeverityClass(alert.severity)">
+            <div class="alert-side-accent" [class]="getSeverityClass(alert.severity)"></div>
+            <div class="alert-inner">
+                <div class="alert-top">
+                    <div class="severity-badge" [class]="getSeverityClass(alert.severity)">
+                        {{ getSeverityIcon(alert.severity) }} {{ alert.severity }}
+                    </div>
+                    <div class="status-tag" [class]="getStatusClass(alert.status)">
+                        {{ alert.status }}
+                    </div>
+                </div>
+
+                <div class="patient-preview">
+                    <div class="avatar">{{ (alert.patientName || 'P')[0].toUpperCase() }}</div>
+                    <div class="details">
+                        <div class="name">{{ alert.patientName || 'Unknown' }}</div>
+                        <div class="id">Alert ID #{{ alert.id }}</div>
+                    </div>
+                </div>
+
+                <div class="alert-meta">
+                    <div class="meta-row">
+                        <span class="m-icon">🕒</span>
+                        <span class="m-text">{{ formatDate(alert.createdAt) }}</span>
+                    </div>
+                    <div class="meta-row" *ngIf="alert.emergencyPhone">
+                        <span class="m-icon">📞</span>
+                        <span class="m-text">{{ alert.emergencyPhone }}</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="m-icon">📍</span>
+                        <span class="m-text">{{ alert.latitude | number:'1.2-2' }}, {{ alert.longitude | number:'1.2-2' }}</span>
+                    </div>
+                </div>
+
+                <div class="alert-actions">
+                    <button *ngIf="alert.status === 'PENDING'" class="act-btn acknowledge" (click)="updateStatus(alert, 'ACKNOWLEDGED')" [disabled]="updatingId === alert.id">
+                        {{ updatingId === alert.id ? '...' : 'Acknowledge' }}
+                    </button>
+                    <button *ngIf="alert.status === 'ACKNOWLEDGED' || alert.status === 'CLINIC_NOTIFIED'" class="act-btn resolve" (click)="updateStatus(alert, 'RESOLVED')" [disabled]="updatingId === alert.id">
+                        {{ updatingId === alert.id ? '...' : 'Resolve' }}
+                    </button>
+                    <span *ngIf="alert.status === 'RESOLVED'" class="final-msg">✓ Resolved</span>
+                    <span *ngIf="alert.status === 'CANCELED'" class="final-msg canceled">✕ Canceled</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && !error && filteredAlerts.length === 0" class="no-alerts">
+        <div class="empty-box">☕</div>
+        <h3>No alerts found</h3>
+        <p>No emergency alerts currently match your filter.</p>
+    </div>
+</div>

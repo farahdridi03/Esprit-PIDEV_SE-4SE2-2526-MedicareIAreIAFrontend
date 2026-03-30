@@ -1,9 +1,9 @@
 <div class="lifestyle-detail-wrapper">
-    <app-sidebar *ngIf="userRole === 'PATIENT'"></app-sidebar>
+    <app-patient-sidebar *ngIf="userRole === 'PATIENT'"></app-patient-sidebar>
     <app-nutritionist-sidebar *ngIf="userRole === 'NUTRITIONIST'"></app-nutritionist-sidebar>
     
     <div class="main-body">
-        <app-topbar *ngIf="userRole === 'PATIENT'"></app-topbar>
+        <app-patient-topbar *ngIf="userRole === 'PATIENT'"></app-patient-topbar>
         <app-nutritionist-topbar *ngIf="userRole === 'NUTRITIONIST'"></app-nutritionist-topbar>
         
         <div class="content-area">

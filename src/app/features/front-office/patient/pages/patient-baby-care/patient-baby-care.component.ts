@@ -21,6 +21,8 @@ export class PatientBabyCareComponent implements OnInit {
   isDiaperSubmitting: boolean = false;
   editingDiaperId: number | null = null;
   editingLogId: number | null = null;
+  isEditingProfile: boolean = false;
+  editingBabyId: number | null = null;
   confirmModalData: { title: string, message: string, onConfirm: () => void } | null = null;
   newDiaper: any = { type: 'WET', rash: false, stoolColor: 'Yellow', stoolTexture: 'Normal', notes: '' };
   manualSleep: any = { 
@@ -244,14 +246,22 @@ export class PatientBabyCareComponent implements OnInit {
     });
   }
 
+  allBabies: BabyProfile[] = [];
+  selectedBabyId: number | null = null;
+  showBabyMenu: boolean = false;
+  
   checkBabyProfile() {
     const userId = this.authService.getUserId();
     if (!userId) return;
 
     this.babyService.getProfileByPatientId(userId).subscribe({
-      next: (profile: BabyProfile) => {
-        if (profile) {
-          this.loadAllData(); // Use loadAllData to fetch all dashboard related data
+      next: (profiles: BabyProfile[]) => {
+        this.allBabies = profiles;
+        if (profiles.length > 0) {
+          // Default to the first one or a previously selected one
+          const savedId = localStorage.getItem('selected_baby_id');
+          const found = profiles.find(p => p.id === Number(savedId));
+          this.selectBaby(found || profiles[0]);
         } else {
           this.isFirstTime = true;
           this.isLoading = false;
@@ -262,6 +272,71 @@ export class PatientBabyCareComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  selectBaby(profile: BabyProfile) {
+    this.selectedBabyId = profile.id;
+    localStorage.setItem('selected_baby_id', profile.id.toString());
+    this.isFirstTime = false;
+    this.loadAllData(profile.id);
+  }
+
+  addNewBaby() {
+    this.isFirstTime = true;
+    this.isEditingProfile = false;
+    this.editingBabyId = null;
+    this.onboardingForm.reset();
+    this.onboardingPhoto = null;
+    localStorage.removeItem('onboarding_photo');
+  }
+
+  editBabyProfile(profile: BabyProfile, event?: Event) {
+    if (event) event.stopPropagation();
+    this.isEditingProfile = true;
+    this.editingBabyId = profile.id;
+    this.isFirstTime = true;
+    this.onboardingPhoto = profile.photoUrl || null;
+    
+    this.onboardingForm.patchValue({
+      name: profile.name,
+      birthDate: profile.birthDate,
+      gender: profile.gender,
+      birthWeight: profile.birthWeight,
+      birthHeight: profile.birthHeight,
+      priorities: profile.priorities || []
+    });
+    this.showBabyMenu = false;
+  }
+
+  editActiveBabyProfile() {
+    if (!this.baby) return;
+    const profile = this.allBabies.find(p => p.id === this.baby!.id);
+    if (profile) this.editBabyProfile(profile);
+  }
+
+  deleteBabyProfile(babyId: number, event: Event) {
+    event.stopPropagation();
+    if (confirm("Are you sure you want to delete this baby profile? This action cannot be undone.")) {
+      this.babyService.deleteProfile(babyId).subscribe({
+        next: () => {
+          this.allBabies = this.allBabies.filter(b => b.id !== babyId);
+          if (this.selectedBabyId === babyId) {
+            if (this.allBabies.length > 0) {
+              this.selectBaby(this.allBabies[0]);
+            } else {
+              this.isFirstTime = true;
+              this.baby = null;
+              this.selectedBabyId = null;
+            }
+          }
+          this.showBabyMenu = false;
+        },
+        error: (err) => {
+          alert("Error deleting profile. Please try again.");
+          console.error(err);
+        }
+      });
+    }
   }
 
   saveOnboarding() {
@@ -278,18 +353,37 @@ export class PatientBabyCareComponent implements OnInit {
 
     this.formError = '';
     const data = { ...this.onboardingForm.value, photoUrl: this.onboardingPhoto };
-    this.babyService.createProfile(parentId, data).subscribe({
-      next: (profile) => {
-        this.isFirstTime = false;
-        this.formError = '';
-        localStorage.removeItem('onboarding_photo');
-        this.loadAllData(); // Use loadAllData after onboarding
-      },
-      error: (err) => {
-        this.formError = "Error creating profile. Please check the fields.";
-        console.error(err);
-      }
-    });
+
+    if (this.isEditingProfile && this.editingBabyId) {
+      this.babyService.updateProfile(this.editingBabyId, data).subscribe({
+        next: (profile) => {
+          this.isFirstTime = false;
+          this.isEditingProfile = false;
+          this.editingBabyId = null;
+          this.formError = '';
+          this.checkBabyProfile();
+        },
+        error: (err) => {
+          this.formError = "Error updating profile. Please check the fields.";
+          console.error(err);
+        }
+      });
+    } else {
+      this.babyService.createProfile(parentId, data).subscribe({
+        next: (profile) => {
+          this.isFirstTime = false;
+          this.formError = '';
+          localStorage.removeItem('onboarding_photo');
+          this.selectedBabyId = profile.id;
+          localStorage.setItem('selected_baby_id', profile.id.toString());
+          this.checkBabyProfile(); // Refresh list and load data
+        },
+        error: (err) => {
+          this.formError = "Error creating profile. Please check the fields.";
+          console.error(err);
+        }
+      });
+    }
   }
 
   handlePhotoUpload(event: any, isDashboard: boolean = true): void {
@@ -322,32 +416,28 @@ export class PatientBabyCareComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  loadAllData() {
-    const userId = this.authService.getUserId();
-    if (!userId) return;
+  loadAllData(profileId?: number) {
+    const targetId = profileId || this.selectedBabyId;
+    if (!targetId) return;
     this.isLoading = true;
 
-    this.babyService.getProfileByPatientId(userId).subscribe({
-      next: (profile) => {
+    this.babyService.getDashboard(targetId).subscribe({
+      next: (dash) => {
         this.isFirstTime = false;
-        this.babyService.getDashboard(profile.id).subscribe(dash => {
-          this.baby = dash;
-          if (dash.weeklySleep) {
-            this.weekData = dash.weeklySleep.map((d: any, index: number) => ({
-              ...d,
-              isToday: index === (dash.weeklySleep?.length || 0) - 1
-            }));
-          }
-          this.isLoading = false;
-          this.loadSummaries();
-          this.loadVaccines(profile.id);
-          this.loadJournal(profile.id);
-          this.loadDiapers(profile.id);
-        });
-
+        this.baby = dash;
+        if (dash.weeklySleep) {
+          this.weekData = dash.weeklySleep.map((d: any, index: number) => ({
+            ...d,
+            isToday: index === (dash.weeklySleep?.length || 0) - 1
+          }));
+        }
+        this.isLoading = false;
+        this.loadSummaries();
+        this.loadVaccines(targetId);
+        this.loadJournal(targetId);
+        this.loadDiapers(targetId);
       },
       error: () => {
-        this.isFirstTime = true;
         this.isLoading = false;
       }
     });
@@ -400,9 +490,15 @@ export class PatientBabyCareComponent implements OnInit {
     };
 
     this.babyService.addJournalEntry(this.baby.id, 'SLEEP', value, '', metadata)
-      .subscribe(() => {
-        this.currentSleepTimer = null;
-        this.loadAllData();
+      .subscribe({
+        next: () => {
+          this.currentSleepTimer = null;
+          this.loadAllData();
+        },
+        error: (err) => {
+          alert('Could not save nap record. Please try again.');
+          console.error(err);
+        }
       });
   }
 
@@ -568,6 +664,7 @@ export class PatientBabyCareComponent implements OnInit {
 
   setSection(id: string) {
     this.activeSection = id;
+    this.formError = ''; // Reset any validation errors when switching sections
   }
 
   togglePriority(p: string) {

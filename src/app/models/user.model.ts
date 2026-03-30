@@ -7,6 +7,7 @@ export interface UserResponseDTO {
     phone?: string;
     birthDate?: string;
     photo?: string;
+    profileImage?: string;
 }
 
 export interface UserRequestDTO {

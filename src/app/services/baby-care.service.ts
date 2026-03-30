@@ -157,10 +157,10 @@ export class BabyCareService {
     );
   }
 
-  getProfileByPatientId(patientId: number): Observable<BabyProfile> {
-    return this.http.get<any>(`${this.apiUrl}/profile/${patientId}`).pipe(
-      map(backendProfile => {
-        const profile: BabyProfile = {
+  getProfileByPatientId(patientId: number): Observable<BabyProfile[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/profile/${patientId}`).pipe(
+      map(backendProfiles => {
+        const profiles: BabyProfile[] = backendProfiles.map(backendProfile => ({
           id: backendProfile.id,
           name: backendProfile.name,
           birthDate: backendProfile.birthDate,
@@ -170,11 +170,14 @@ export class BabyCareService {
           parentId: backendProfile.patientId || patientId,
           photoUrl: backendProfile.photoUrl,
           priorities: backendProfile.preferences?.map((p: any) => p.priorityType) || []
-        };
-        const profiles = this.getProfiles().filter(p => p.parentId !== patientId);
-        profiles.push(profile);
-        this.saveProfiles(profiles);
-        return profile;
+        }));
+        
+        // Sync local storage
+        const currentProfiles = this.getProfiles().filter(p => p.parentId !== patientId);
+        currentProfiles.push(...profiles);
+        this.saveProfiles(currentProfiles);
+        
+        return profiles;
       })
     );
   }
@@ -375,14 +378,80 @@ export class BabyCareService {
 
 
   updateProfilePhoto(babyId: number, photoUrl: string): Observable<BabyProfile> {
-    const profiles = this.getProfiles();
-    const index = profiles.findIndex(p => p.id === babyId);
-    if (index !== -1) {
-      profiles[index].photoUrl = photoUrl;
-      this.saveProfiles(profiles);
-      return of(profiles[index]);
-    }
-    return throwError(() => new Error('Not found'));
+    return this.http.post<any>(`${this.apiUrl}/profile/${babyId}/photo`, photoUrl).pipe(
+      map(backendProfile => {
+        const updated: BabyProfile = {
+          id: backendProfile.id,
+          name: backendProfile.name,
+          birthDate: backendProfile.birthDate,
+          gender: backendProfile.gender,
+          birthWeight: backendProfile.birthWeight,
+          birthHeight: backendProfile.birthHeight,
+          parentId: backendProfile.patientId,
+          photoUrl: backendProfile.photoUrl,
+          priorities: backendProfile.preferences?.map((p: any) => p.priorityType) || []
+        };
+        
+        const profiles = this.getProfiles();
+        const index = profiles.findIndex(p => p.id === babyId);
+        if (index !== -1) {
+          profiles[index] = updated;
+          this.saveProfiles(profiles);
+        }
+        return updated;
+      })
+    );
+  }
+
+  updateProfile(babyId: number, profileData: any): Observable<BabyProfile> {
+    const endpoint = `${this.apiUrl}/profile/${babyId}`;
+    
+    const requestBody = {
+      name: profileData.name,
+      birthDate: profileData.birthDate,
+      gender: profileData.gender || 'UNKNOWN',
+      birthWeight: profileData.birthWeight || 0,
+      birthHeight: profileData.birthHeight || 0,
+      photoUrl: profileData.photoUrl,
+      priorities: profileData.priorities || []
+    };
+
+    return this.http.put<any>(endpoint, requestBody).pipe(
+      map((backendProfile: any) => {
+        const profiles = this.getProfiles();
+        const updated: BabyProfile = {
+          id: backendProfile.id || babyId,
+          parentId: backendProfile.patientId || backendProfile.parentId,
+          name: profileData.name,
+          birthDate: profileData.birthDate,
+          gender: profileData.gender || 'UNKNOWN',
+          birthWeight: profileData.birthWeight || 0,
+          birthHeight: profileData.birthHeight || 0,
+          photoUrl: profileData.photoUrl,
+          priorities: profileData.priorities || []
+        };
+        
+        const index = profiles.findIndex(p => p.id === babyId);
+        if (index !== -1) {
+          profiles[index] = updated;
+        } else {
+          profiles.push(updated);
+        }
+        this.saveProfiles(profiles);
+        
+        return updated;
+      })
+    );
+  }
+
+  deleteProfile(babyId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/profile/${babyId}`).pipe(
+      map(res => {
+        const profiles = this.getProfiles().filter(p => p.id !== babyId);
+        this.saveProfiles(profiles);
+        return res;
+      })
+    );
   }
 
   private getTimeAgo(timestamp: number): string {

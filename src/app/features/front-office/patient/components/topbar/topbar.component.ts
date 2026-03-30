@@ -1,15 +1,9 @@
-<<<<<<< HEAD
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
-import { AuthService } from '../../../../../services/auth.service';
-import { NotificationService, AppNotification } from '../../../../../services/notification.service';
-=======
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { PatientService } from '../../../../../services/patient.service';
->>>>>>> origin/frontVersion1
+import { NotificationService, AppNotification } from '../../../../../services/notification.service';
 
 @Component({
   selector: 'app-patient-topbar',
@@ -19,98 +13,66 @@ import { PatientService } from '../../../../../services/patient.service';
 export class TopbarComponent implements OnInit, OnDestroy {
   firstName: string = 'User';
   initials: string = 'U';
-<<<<<<< HEAD
-  profileImage: string | null = null;
+  photo: string | null = null;
   currentUserId: number | null = null;
 
+  // Notifications
   notifications: AppNotification[] = [];
   unreadCount = 0;
   showDropdown = false;
+  
   private pollInterval: any;
-=======
-  photo: string | null = null;
-
   private profileSub?: Subscription;
->>>>>>> origin/frontVersion1
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
-<<<<<<< HEAD
+    private patientService: PatientService,
     private notifService: NotificationService,
     private elRef: ElementRef
   ) {}
 
   ngOnInit() {
-    this.startPolling();
-
-    // 1. Try to get name directly from JWT token
-    const fullNameFromToken = this.authService.getUserFullName();
-    if (fullNameFromToken) {
-      this.setNames(fullNameFromToken);
-    }
-
-    // 2. Fetch current user profile to get profile picture
-    const email = this.authService.getUserEmail();
-    if (email) {
-      this.userService.getProfile().subscribe({
-        next: (user) => {
-          if (user) {
-            if (user.fullName) this.setNames(user.fullName);
-            this.profileImage = user.profileImage || null;
-          }
-        },
-        error: (err: any) => console.error('Error fetching user profile for topbar', err)
-      });
-    }
-=======
-    private patientService: PatientService
-  ) {}
-
-  ngOnInit() {
-    // 1. Immediately populate name from JWT — zero-delay, no flicker
+    // 1. Name and ID from token (immediate)
     const nameFromToken = this.authService.getUserFullName();
     if (nameFromToken) {
       this.setNames(nameFromToken);
     }
+    this.currentUserId = this.authService.getUserId();
 
-    // 2. React to profile$ stream updates (name + photo)
+    // 2. React to profile$ stream updates
     this.profileSub = this.userService.profile$.subscribe(user => {
       if (user) {
         if (user.fullName) this.setNames(user.fullName);
-        if (user.photo) this.photo = user.photo;
+        if ((user as any).photo) this.photo = (user as any).photo;
+        if ((user as any).profileImage) this.photo = (user as any).profileImage;
       }
     });
 
-    // 3. Try the legacy /user/profile (falls back to JWT on 500)
-    this.userService.refreshProfile();
+    // 3. Start Notification Polling
+    this.startPolling();
 
-    // 4. Load the patient profile — the only reliable source for the photo field
+    // 4. Fetch Patient Profile specifically for the photo
     this.patientService.getMe().subscribe({
       next: (patient) => {
         if (patient) {
           if (patient.fullName) this.setNames(patient.fullName);
-          // Push photo into the shared profile$ stream so everyone gets it
-          this.userService.setProfile({ photo: patient.photo ?? undefined });
+          this.userService.setProfile({ photo: patient.photo ?? undefined } as any);
           this.photo = patient.photo || null;
         }
       },
-      error: () => { /* silently ignore — name is already set from JWT */ }
+      error: () => {}
     });
   }
 
   ngOnDestroy() {
+    if (this.pollInterval) clearInterval(this.pollInterval);
     this.profileSub?.unsubscribe();
->>>>>>> origin/frontVersion1
   }
 
   private setNames(fullName: string) {
     if (!fullName) return;
-<<<<<<< HEAD
-    const parts = fullName.trim().split(' ');
-=======
     const parts = fullName.trim().split(/\s+/);
->>>>>>> origin/frontVersion1
     this.firstName = parts[0];
     this.initials = parts.map(n => (n ? n[0] : '')).join('').toUpperCase();
     if (!this.initials) this.initials = this.firstName[0]?.toUpperCase() || 'U';
@@ -118,9 +80,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
 
   // ==== NOTIFICATIONS ====
   private startPolling(): void {
-    const id = this.authService.getUserId();
-    if (id) {
-      this.currentUserId = id;
+    if (this.currentUserId) {
       this.refreshNotifs();
       this.pollInterval = setInterval(() => this.refreshNotifs(), 3000);
     }
@@ -130,10 +90,6 @@ export class TopbarComponent implements OnInit, OnDestroy {
     if (!this.currentUserId) return;
     this.notifications = this.notifService.getPatientNotifications(this.currentUserId);
     this.unreadCount = this.notifications.filter(n => !n.read).length;
-  }
-
-  ngOnDestroy(): void {
-    if (this.pollInterval) clearInterval(this.pollInterval);
   }
 
   toggleDropdown(): void {

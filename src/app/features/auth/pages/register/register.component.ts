@@ -19,8 +19,9 @@ export class RegisterComponent implements OnInit {
     { value: 'DOCTOR', label: 'Doctor' },
     { value: 'CLINIC', label: 'Clinic' },
     { value: 'PHARMACIST', label: 'Pharmacist' },
-  { value: 'LABORATORY_STAFF', label: 'Laboratory Staff' }, // ✅ corrigé
+    { value: 'LABORATORY_STAFF', label: 'Laboratory Staff' },
     { value: 'PATIENT', label: 'Patient' },
+    { value: 'NUTRITIONIST', label: 'Nutritionist' },
     { value: 'HOME_CARE_PROVIDER', label: 'Home Care Provider' }
   ];
 
@@ -41,7 +42,6 @@ export class RegisterComponent implements OnInit {
   ];
 
   consultationModes = [
-<<<<<<< HEAD
     { value: 'ONLINE', label: 'Online' },
     { value: 'IN_PERSON', label: 'In Person' },
     { value: 'BOTH', label: 'Both' }
@@ -62,15 +62,7 @@ export class RegisterComponent implements OnInit {
 
   homeCareServicesList: any[] = [];
   clinics: Clinic[] = [];
-=======
-    { value: 'IN_PERSON', label: 'In Person' },
-    { value: 'ONLINE', label: 'Video Call' },
-    { value: 'BOTH', label: 'Both' }
-  ];
 
-  homeCareServicesList: any[] = [];
-
->>>>>>> origin/frontVersion1
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -87,35 +79,22 @@ export class RegisterComponent implements OnInit {
       bloodType: ['O_POS'],
       emergencyContactName: [''],
       emergencyContactPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
-<<<<<<< HEAD
+      height: [null],
+      weight: [null],
       chronicDiseases: [''],
       drugAllergies: [''],
       hereditaryDiseases: [''],
-=======
-      height: [null],
-      weight: [null],
-      allergies: [''],
-      diseases: [''],
->>>>>>> origin/frontVersion1
       specialty: [''],
       licenseNumber: [''],
       consultationFee: [0],
       consultationMode: ['BOTH'],
-<<<<<<< HEAD
       clinicId: [null],
-=======
->>>>>>> origin/frontVersion1
       // Clinic fields
       clinicName: [''],
       clinicAddress: [''],
       clinicPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
-<<<<<<< HEAD
-      emergencyPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
-      ambulancePhone: ['', [Validators.pattern('^[0-9]{8}$')]],
-=======
-      emergencyPhone: ['', [Validators.pattern('^[0-9]{3}$')]],
-      ambulancePhone: ['', [Validators.pattern('^[0-9]{3}$')]],
->>>>>>> origin/frontVersion1
+      emergencyPhone: ['', [Validators.pattern('^[0-9]{3,8}$')]],
+      ambulancePhone: ['', [Validators.pattern('^[0-9]{3,8}$')]],
       // Pharmacist fields
       pharmacyName: [''],
       pharmacyAddress: [''],
@@ -137,29 +116,7 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
     this.onRoleChange();
     this.loadHomeCareServices();
-<<<<<<< HEAD
     this.loadClinics();
-  }
-
-  onFileChange(event: any) {
-    // Stub implementation
-    const file = event.target.files[0];
-    if (file) {
-      this.registerForm.patchValue({
-        certificationDocument: file
-      });
-    }
-  }
-
-  onServiceChange(event: any) {
-    // Stub implementation
-    const selectedServices = this.registerForm.get('selectedServices') as import('@angular/forms').FormArray;
-    if (event.target.checked) {
-      selectedServices.push(this.fb.control(event.target.value));
-    } else {
-      const index = selectedServices.controls.findIndex(x => x.value === event.target.value);
-      selectedServices.removeAt(index);
-    }
   }
 
   loadClinics() {
@@ -167,8 +124,6 @@ export class RegisterComponent implements OnInit {
       next: (data: Clinic[]) => this.clinics = data,
       error: (err: any) => console.error('Error loading clinics', err)
     });
-=======
->>>>>>> origin/frontVersion1
   }
 
   loadHomeCareServices() {
@@ -189,78 +144,50 @@ export class RegisterComponent implements OnInit {
       const isNutritionist = role === 'NUTRITIONIST';
       const isClinic = role === 'CLINIC';
       const isPharmacist = role === 'PHARMACIST';
-      const isLabStaff = role === 'LABORATORY';
+      const isLabStaff = role === 'LABORATORY_STAFF' || role === 'LABORATORY';
       const isHomeCare = role === 'HOME_CARE_PROVIDER';
 
       const genderCtrl = this.registerForm.get('gender');
       const bloodTypeCtrl = this.registerForm.get('bloodType');
       const emNameCtrl = this.registerForm.get('emergencyContactName');
       const emPhoneCtrl = this.registerForm.get('emergencyContactPhone');
-<<<<<<< HEAD
-      
-=======
       const heightCtrl = this.registerForm.get('height');
       const weightCtrl = this.registerForm.get('weight');
-      const allergiesCtrl = this.registerForm.get('allergies');
-      const diseasesCtrl = this.registerForm.get('diseases');
+      const chronicDiseasesCtrl = this.registerForm.get('chronicDiseases');
+      const drugAllergiesCtrl = this.registerForm.get('drugAllergies');
+      const hereditaryDiseasesCtrl = this.registerForm.get('hereditaryDiseases');
 
-      const isDoctor = role === 'DOCTOR';
-      const isNutritionist = role === 'NUTRITIONIST';
->>>>>>> origin/frontVersion1
       const specialtyCtrl = this.registerForm.get('specialty');
       const licenseCtrl = this.registerForm.get('licenseNumber');
       const feeCtrl = this.registerForm.get('consultationFee');
       const modeCtrl = this.registerForm.get('consultationMode');
-<<<<<<< HEAD
-=======
+      const clinicIdCtrl = this.registerForm.get('clinicId');
 
-      const isClinic = role === 'CLINIC';
->>>>>>> origin/frontVersion1
       const clinicNameCtrl = this.registerForm.get('clinicName');
       const clinicAddressCtrl = this.registerForm.get('clinicAddress');
       const clinicPhoneCtrl = this.registerForm.get('clinicPhone');
       const clinicEmergencyCtrl = this.registerForm.get('emergencyPhone');
       const clinicAmbulanceCtrl = this.registerForm.get('ambulancePhone');
-<<<<<<< HEAD
-=======
 
-      const isPharmacist = role === 'PHARMACIST';
->>>>>>> origin/frontVersion1
       const pharmacyNameCtrl = this.registerForm.get('pharmacyName');
       const pharmacyAddressCtrl = this.registerForm.get('pharmacyAddress');
       const pharmacyPhoneCtrl = this.registerForm.get('pharmacyPhone');
       const pharmacyEmailCtrl = this.registerForm.get('pharmacyEmail');
-<<<<<<< HEAD
-      const labNameCtrl = this.registerForm.get('labName');
-      const labAddressCtrl = this.registerForm.get('labAddress');
-      const labPhoneCtrl = this.registerForm.get('labPhone');
-      const certDocCtrl = this.registerForm.get('certificationDocument');
-      const servicesCtrl = this.registerForm.get('selectedServices');
 
-      // Clear all existing validators first to avoid overlapping logic
-      [
-        genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, 
-        clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
-        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl, labNameCtrl, labAddressCtrl,
-        labPhoneCtrl, certDocCtrl, servicesCtrl
-=======
-
-      const isLabStaff = role === 'LABORATORY_STAFF';
       const labNameCtrl = this.registerForm.get('labName');
       const labAddressCtrl = this.registerForm.get('labAddress');
       const labPhoneCtrl = this.registerForm.get('labPhone');
 
-      const isHomeCare = role === 'HOME_CARE_PROVIDER';
       const certDocCtrl = this.registerForm.get('certificationDocument');
       const servicesCtrl = this.registerForm.get('selectedServices');
 
       // Reset validators
-      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, allergiesCtrl, diseasesCtrl,
-        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
+      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, 
+        chronicDiseasesCtrl, drugAllergiesCtrl, hereditaryDiseasesCtrl,
+        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, clinicIdCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
         pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
         labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
->>>>>>> origin/frontVersion1
       ].forEach(ctrl => {
         ctrl?.clearValidators();
         ctrl?.updateValueAndValidity();
@@ -269,41 +196,24 @@ export class RegisterComponent implements OnInit {
       if (isPatient) {
         genderCtrl?.setValidators([Validators.required]);
         bloodTypeCtrl?.setValidators([Validators.required]);
-<<<<<<< HEAD
         emNameCtrl?.setValidators([Validators.required]);
         emPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
-=======
         heightCtrl?.setValidators([Validators.required, Validators.min(0)]);
         weightCtrl?.setValidators([Validators.required, Validators.min(0)]);
->>>>>>> origin/frontVersion1
       } else if (isDoctor || isNutritionist) {
         specialtyCtrl?.setValidators([Validators.required]);
         licenseCtrl?.setValidators([Validators.required]);
         feeCtrl?.setValidators([Validators.required, Validators.min(0)]);
         modeCtrl?.setValidators([Validators.required]);
-<<<<<<< HEAD
-        
-        // Require clinic selection for doctors if NOT online
-        const clinicIdCtrl = this.registerForm.get('clinicId');
         if (isDoctor && modeCtrl?.value !== 'ONLINE') {
           clinicIdCtrl?.setValidators([Validators.required]);
-        } else {
-          clinicIdCtrl?.clearValidators();
         }
-        clinicIdCtrl?.updateValueAndValidity();
-=======
->>>>>>> origin/frontVersion1
       } else if (isClinic) {
         clinicNameCtrl?.setValidators([Validators.required]);
         clinicAddressCtrl?.setValidators([Validators.required]);
         clinicPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
-<<<<<<< HEAD
-        clinicEmergencyCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
-        clinicAmbulanceCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
-=======
-        clinicEmergencyCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{3}$')]);
-        clinicAmbulanceCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{3}$')]);
->>>>>>> origin/frontVersion1
+        clinicEmergencyCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{3,8}$')]);
+        clinicAmbulanceCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{3,8}$')]);
       } else if (isPharmacist) {
         pharmacyNameCtrl?.setValidators([Validators.required]);
         pharmacyAddressCtrl?.setValidators([Validators.required]);
@@ -318,23 +228,13 @@ export class RegisterComponent implements OnInit {
         servicesCtrl?.setValidators([Validators.required, Validators.minLength(1)]);
       }
 
-<<<<<<< HEAD
-      [
-        genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, 
-        clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
-        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl, labNameCtrl, labAddressCtrl,
-        labPhoneCtrl, certDocCtrl, servicesCtrl
-      ].forEach(ctrl => {
-        ctrl?.updateValueAndValidity();
-      });
-=======
-      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, allergiesCtrl, diseasesCtrl, 
-        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
+      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, 
+        chronicDiseasesCtrl, drugAllergiesCtrl, hereditaryDiseasesCtrl,
+        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, clinicIdCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
         pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
         labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
       ].forEach(ctrl => ctrl?.updateValueAndValidity());
->>>>>>> origin/frontVersion1
     });
   }
 
@@ -342,27 +242,9 @@ export class RegisterComponent implements OnInit {
   get isDoctor(): boolean { return this.registerForm.get('role')?.value === 'DOCTOR'; }
   get isClinic(): boolean { return this.registerForm.get('role')?.value === 'CLINIC'; }
   get isPharmacist(): boolean { return this.registerForm.get('role')?.value === 'PHARMACIST'; }
-<<<<<<< HEAD
-  get isLabStaff(): boolean { return this.registerForm.get('role')?.value === 'LABORATORY'; }
+  get isLabStaff(): boolean { return this.registerForm.get('role')?.value === 'LABORATORY_STAFF' || this.registerForm.get('role')?.value === 'LABORATORY'; }
   get isNutritionist(): boolean { return this.registerForm.get('role')?.value === 'NUTRITIONIST'; }
   get isHomeCareProvider(): boolean { return this.registerForm.get('role')?.value === 'HOME_CARE_PROVIDER'; }
-
-  onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) { // 2MB max
-        this.errorMessage = 'La taille de l\'image ne doit pas dépasser 2Mo.';
-        return;
-      }
-      this.errorMessage = '';
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.profileImageBase64 = e.target.result;
-        this.registerForm.patchValue({ profileImage: this.profileImageBase64 });
-=======
-  get isLabStaff(): boolean {return this.registerForm.get('role')?.value === 'LABORATORY_STAFF'; }
-  get isHomeCareProvider(): boolean { return this.registerForm.get('role')?.value === 'HOME_CARE_PROVIDER'; }
-  get isNutritionist(): boolean { return this.registerForm.get('role')?.value === 'NUTRITIONIST'; }
 
   get selectedServices(): FormArray {
     return this.registerForm.get('selectedServices') as FormArray;
@@ -393,7 +275,23 @@ export class RegisterComponent implements OnInit {
         this.registerForm.patchValue({
           certificationDocument: reader.result as string
         });
->>>>>>> origin/frontVersion1
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB max
+        this.errorMessage = 'La taille de l\'image ne doit pas dépasser 2Mo.';
+        return;
+      }
+      this.errorMessage = '';
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.profileImageBase64 = e.target.result;
+        this.registerForm.patchValue({ profileImage: this.profileImageBase64 });
       };
       reader.readAsDataURL(file);
     }
@@ -401,34 +299,6 @@ export class RegisterComponent implements OnInit {
 
   onSubmit() {
     if (this.registerForm.valid) {
-<<<<<<< HEAD
-      const { terms, chronicDiseases, drugAllergies, hereditaryDiseases, ...rest } = this.registerForm.value;
-      const payload: any = { ...rest };
-      
-      if (this.isPatient) {
-        const medicalHistories = [];
-        if (chronicDiseases?.trim()) medicalHistories.push({ type: 'CHRONIC_DISEASE', description: chronicDiseases.trim() });
-        if (drugAllergies?.trim()) medicalHistories.push({ type: 'ALLERGY', description: drugAllergies.trim() });
-        if (hereditaryDiseases?.trim()) medicalHistories.push({ type: 'FAMILY_HISTORY', description: hereditaryDiseases.trim() });
-        
-        if (medicalHistories.length > 0) {
-          payload.medicalHistories = medicalHistories;
-        }
-      }
-
-      if (this.isHomeCareProvider && rest.selectedServices) {
-        payload.homeCareServices = rest.selectedServices;
-        delete payload.selectedServices;
-      }
-
-      if (this.profileImageBase64) {
-          payload.profileImage = this.profileImageBase64;
-      }
-
-      this.authService.register(payload).subscribe({
-        next: () => {
-          console.log('Registration successful');
-=======
       const formValue = this.registerForm.value;
       const role = formValue.role;
 
@@ -441,9 +311,16 @@ export class RegisterComponent implements OnInit {
         birthDate: formValue.birthDate,
       };
 
-      console.log('📝 Initial Payload:', finalPayload);
+      if (this.profileImageBase64) {
+        finalPayload.profileImage = this.profileImageBase64;
+      }
 
       if (role === 'PATIENT') {
+        const medicalHistories = [];
+        if (formValue.chronicDiseases?.trim()) medicalHistories.push({ type: 'CHRONIC_DISEASE', description: formValue.chronicDiseases.trim() });
+        if (formValue.drugAllergies?.trim()) medicalHistories.push({ type: 'ALLERGY', description: formValue.drugAllergies.trim() });
+        if (formValue.hereditaryDiseases?.trim()) medicalHistories.push({ type: 'FAMILY_HISTORY', description: formValue.hereditaryDiseases.trim() });
+
         finalPayload = { ...finalPayload,
           gender: formValue.gender,
           bloodType: formValue.bloodType,
@@ -451,8 +328,7 @@ export class RegisterComponent implements OnInit {
           emergencyContactPhone: formValue.emergencyContactPhone,
           height: formValue.height,
           weight: formValue.weight,
-          allergies: formValue.allergies,
-          diseases: formValue.diseases
+          medicalHistories: medicalHistories.length > 0 ? medicalHistories : undefined
         };
       } else if (role === 'DOCTOR' || role === 'NUTRITIONIST') {
         finalPayload = { ...finalPayload,
@@ -460,6 +336,7 @@ export class RegisterComponent implements OnInit {
           licenseNumber: formValue.licenseNumber,
           consultationFee: formValue.consultationFee,
           consultationMode: formValue.consultationMode,
+          clinicId: formValue.clinicId
         };
       } else if (role === 'CLINIC') {
         finalPayload = { ...finalPayload,
@@ -476,8 +353,9 @@ export class RegisterComponent implements OnInit {
           pharmacyPhone: formValue.pharmacyPhone,
           pharmacyEmail: formValue.pharmacyEmail,
         };
-      } else if (role === 'LABORATORY_STAFF') {
+      } else if (role === 'LABORATORY_STAFF' || role === 'LABORATORY') {
         finalPayload = { ...finalPayload,
+          role: 'LABORATORY_STAFF', // Ensure consistency
           labName: formValue.labName,
           labAddress: formValue.labAddress,
           labPhone: formValue.labPhone,
@@ -492,14 +370,12 @@ export class RegisterComponent implements OnInit {
       console.log('🚀 Final Registration Payload:', finalPayload);
 
       this.authService.register(finalPayload).subscribe({
-        next: (res) => {
-          console.log('✅ Registration SUCCESS:', res);
->>>>>>> origin/frontVersion1
+        next: () => {
+          console.log('✅ Registration SUCCESS');
           this.router.navigate(['/auth/login']);
         },
         error: (err: any) => {
           console.error('❌ Registration ERROR:', err);
-          console.log('❌ Error Body:', err.error);
           this.errorMessage = err.error?.message || err.error || err.message || 'Erreur lors de l\'inscription';
         }
       });

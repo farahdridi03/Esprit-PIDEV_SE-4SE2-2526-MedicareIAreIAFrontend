@@ -616,6 +616,25 @@
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
+
+    &.input-error {
+        border-color: #fca5a5 !important;
+        background-color: #fff9f9 !important;
+        &:focus {
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+        }
+    }
+}
+
+.field-error-msg {
+    color: #ef4444;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    animation: fadeIn 0.2s;
 }
 
 .form-input:focus,

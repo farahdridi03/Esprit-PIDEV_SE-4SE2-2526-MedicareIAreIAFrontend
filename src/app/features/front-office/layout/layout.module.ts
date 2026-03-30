@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
 // Patient Components
-import { SidebarComponent } from '../patient/components/sidebar/sidebar.component';
+import { PatientSidebarComponent } from '../patient/components/sidebar/sidebar.component';
 import { TopbarComponent } from '../patient/components/topbar/topbar.component';
 
 // Nutritionist Components
@@ -14,7 +14,7 @@ import { PasswordModalComponent } from '../patient/components/password-modal/pas
 
 @NgModule({
   declarations: [
-    SidebarComponent,
+    PatientSidebarComponent,
     TopbarComponent,
     NutritionistSidebarComponent,
     NutritionistTopbarComponent,
@@ -26,11 +26,12 @@ import { PasswordModalComponent } from '../patient/components/password-modal/pas
     ReactiveFormsModule
   ],
   exports: [
-    SidebarComponent,
+    PatientSidebarComponent,
     TopbarComponent,
     NutritionistSidebarComponent,
     NutritionistTopbarComponent,
-    PasswordModalComponent
+    PasswordModalComponent,
+    RouterModule
   ]
 })
 export class LayoutModule { }

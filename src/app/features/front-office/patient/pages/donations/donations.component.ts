@@ -52,6 +52,7 @@ export class DonationsComponent implements OnInit {
   currentPatientId: number | null = null;
   currentUserName: string = '';
   editingRequestId: number | null = null;
+  fieldErrors: any = {};
 
   constructor(
     private donationService: DonationService,
@@ -185,6 +186,10 @@ export class DonationsComponent implements OnInit {
     const payload = { ...this.currentDonation } as Donation;
     this.error = '';
     
+    if (!this.validateDonation()) {
+      return;
+    }
+    
     // Attach current user as the creator
     if (!this.editingDonationId && this.currentPatientId) {
       payload.creatorId = this.currentPatientId;
@@ -219,6 +224,45 @@ export class DonationsComponent implements OnInit {
     } else {
       this.error = 'Error saving the donation.';
     }
+  }
+
+  validateDonation(): boolean {
+    this.fieldErrors = {};
+    let isValid = true;
+    
+    if (!this.currentDonation.donorName || this.currentDonation.donorName.trim().length === 0) {
+      this.fieldErrors.donorName = 'Le nom du donateur est requis.';
+      isValid = false;
+    }
+    
+    if (this.currentDonation.type === DonationType.MATERIEL) {
+      if (!this.currentDonation.categorie || this.currentDonation.categorie.trim().length === 0) {
+        this.fieldErrors.categorie = 'La catégorie est requise.';
+        isValid = false;
+      }
+      
+      if (!this.currentDonation.description || this.currentDonation.description.trim().length === 0) {
+        this.fieldErrors.description = 'La description est requise.';
+        isValid = false;
+      } else if (this.currentDonation.description.trim().length < 5) {
+        this.fieldErrors.description = 'La description doit comporter au moins 5 caractères.';
+        isValid = false;
+      }
+
+      if (this.currentDonation.quantite === undefined || this.currentDonation.quantite === null || this.currentDonation.quantite <= 0) {
+        this.fieldErrors.quantite = 'La quantité doit être supérieure à 0.';
+        isValid = false;
+      }
+    }
+    
+    if (this.currentDonation.type === DonationType.MONEY) {
+      if (this.currentDonation.amount === undefined || this.currentDonation.amount === null || this.currentDonation.amount <= 0) {
+        this.fieldErrors.amount = 'Le montant doit être supérieur à 0.';
+        isValid = false;
+      }
+    }
+    
+    return isValid;
   }
 
   deleteDonation(id: number | undefined): void {

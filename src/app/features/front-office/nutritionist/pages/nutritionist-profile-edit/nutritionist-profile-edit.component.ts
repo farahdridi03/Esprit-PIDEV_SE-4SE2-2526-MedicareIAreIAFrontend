@@ -41,14 +41,14 @@ export class NutritionistProfileEditComponent implements OnInit {
 
   loadProfile(): void {
     this.nutritionistService.getMe().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.profileForm.patchValue({
           ...data
         });
         this.photoPreview = data.photo || null;
         this.loading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading profile:', err);
         this.error = 'Failed to load profile. Please try again.';
         this.loading = false;
@@ -92,7 +92,7 @@ export class NutritionistProfileEditComponent implements OnInit {
         // Navigate back to dashboard or stay on profile? Let's stay for now or navigate to dashboard
         this.router.navigate(['/front/nutritionist/dashboard']);
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error updating profile:', err);
         this.saving = false;
         this.error = 'Failed to update profile. Please try again later.';

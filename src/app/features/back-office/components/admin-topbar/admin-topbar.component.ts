@@ -1,20 +1,21 @@
-<<<<<<< HEAD
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { NotificationService, AppNotification } from '../../../../services/notification.service';
-=======
-import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../services/user.service';
 import { AuthService } from '../../../../services/auth.service';
->>>>>>> origin/frontVersion1
 
 @Component({
   selector: 'app-admin-topbar',
   templateUrl: './admin-topbar.component.html',
   styleUrls: ['./admin-topbar.component.scss']
 })
-<<<<<<< HEAD
 export class AdminTopbarComponent implements OnInit, OnDestroy {
+  // User Info
+  firstName: string = 'Admin';
+  initials: string = 'AD';
+  photo: string | null = null;
+
+  // Notifications
   notifications: AppNotification[] = [];
   unreadCount = 0;
   showDropdown = false;
@@ -22,10 +23,24 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private notifService: NotificationService,
-    private elRef: ElementRef
+    private elRef: ElementRef,
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    // 1. User Profile Setup
+    this.loadUserInfo();
+    this.userService.getProfile().subscribe({
+      next: (user) => {
+        if (user) {
+          if (user.fullName) this.setNames(user.fullName);
+          this.photo = user.photo || user.profileImage || null;
+        }
+      }
+    });
+
+    // 2. Notifications Setup
     this.sub = this.notifService.notifications$.subscribe(notifs => {
       this.notifications = notifs;
       this.unreadCount = notifs.filter(n => !n.read).length;
@@ -36,6 +51,29 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
+  // --- User Name Helpers ---
+  private loadUserInfo() {
+    const fullName = this.authService.getUserFullName();
+    if (fullName) {
+      this.setNames(fullName);
+    }
+    this.userService.profile$.subscribe(user => {
+      if (user) {
+        if (user.fullName) this.setNames(user.fullName);
+        this.photo = user.photo || user.profileImage || null;
+      }
+    });
+  }
+
+  private setNames(fullName: string) {
+    if (!fullName) return;
+    const parts = fullName.split(' ');
+    this.firstName = parts[0];
+    this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
+    if (!this.initials) this.initials = this.firstName[0].toUpperCase();
+  }
+
+  // --- Notification Helpers ---
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
   }
@@ -71,37 +109,4 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
       this.showDropdown = false;
     }
   }
-=======
-export class AdminTopbarComponent implements OnInit {
-    firstName: string = 'Admin';
-    initials: string = 'AD';
-
-    constructor(private userService: UserService, private authService: AuthService) { }
-
-    ngOnInit() {
-        this.loadUserInfo();
-        this.userService.getProfile().subscribe({
-            next: (user) => {
-                if (user && user.fullName) {
-                    this.setNames(user.fullName);
-                }
-            }
-        });
-    }
-
-    private loadUserInfo() {
-        const fullName = this.authService.getUserFullName();
-        if (fullName) {
-            this.setNames(fullName);
-        }
-    }
-
-    private setNames(fullName: string) {
-        if (!fullName) return;
-        const parts = fullName.split(' ');
-        this.firstName = parts[0];
-        this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
-        if (!this.initials) this.initials = this.firstName[0].toUpperCase();
-    }
->>>>>>> origin/frontVersion1
 }

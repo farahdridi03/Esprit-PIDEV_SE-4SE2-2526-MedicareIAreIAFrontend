@@ -1,7 +1,9 @@
-$primary-green: #0e7c66;
-$text-color: #374151;
-$hover-bg: #f9fafb;
-$active-bg: #0e7c66;
+$primary-violet: #6366f1;
+$sidebar-bg: #4f46e5; // Indigo background
+$sidebar-bg-gradient: linear-gradient(180deg, #4f46e5 0%, #7c3aed 100%);
+$text-color: rgba(255, 255, 255, 0.7);
+$hover-bg: rgba(255, 255, 255, 0.1);
+$active-bg: rgba(255, 255, 255, 0.15);
 $active-text: #ffffff;
 
 :host {
@@ -11,14 +13,14 @@ $active-text: #ffffff;
 .sidebar {
     width: 260px;
     height: 100vh;
-    background: white;
-    border-right: 1px solid #f3f4f6;
+    background: $sidebar-bg-gradient;
     display: flex;
     flex-direction: column;
     position: fixed;
     left: 0;
     top: 0;
     z-index: 100;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.05);
 }
 
 .brand {
@@ -30,7 +32,7 @@ $active-text: #ffffff;
     .logo-icon {
         width: 35px;
         height: 35px;
-        color: $primary-green;
+        color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -45,15 +47,17 @@ $active-text: #ffffff;
         h3 {
             font-size: 1.25rem;
             font-weight: 800;
-            color: $primary-green;
+            color: #ffffff;
             letter-spacing: -0.02em;
             margin: 0;
         }
 
         span {
             font-size: 0.75rem;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.6);
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
     }
 }
@@ -78,17 +82,19 @@ $active-text: #ffffff;
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.2s ease;
-        font-weight: 500;
+        font-weight: 600;
         margin-bottom: 0.25rem;
+        font-size: 0.9rem;
 
         &:hover {
             background-color: $hover-bg;
-            color: $primary-green;
+            color: #ffffff;
         }
 
         &.active {
             background-color: $active-bg;
             color: $active-text;
+            border: 1px solid rgba(255,255,255,0.1);
 
             .icon {
                 color: $active-text;
@@ -98,7 +104,7 @@ $active-text: #ffffff;
         .icon {
             width: 20px;
             height: 20px;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -109,12 +115,41 @@ $active-text: #ffffff;
                 height: 100%;
             }
         }
+        .badge {
+            margin-left: auto;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border-radius: 99px;
+            
+            &.badge-red {
+                background: #ef4444;
+                color: white;
+            }
+            &.badge-outline {
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                color: white;
+            }
+            &.badge-yellow {
+                background: #f59e0b;
+                color: white;
+            }
+        }
+    }
+
+    .nav-header {
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.4);
+        padding: 0 1rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.1em;
     }
 }
 
 .sidebar-footer {
     padding: 1.5rem 1rem;
-    border-top: 1px solid #f3f4f6;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 
     .logout-btn {
         width: 100%;
@@ -124,14 +159,19 @@ $active-text: #ffffff;
         padding: 0.75rem 1rem;
         background: none;
         border: none;
-        color: #ef4444;
+        color: rgba(255, 255, 255, 0.8);
         font-weight: 600;
         cursor: pointer;
         border-radius: 12px;
         transition: all 0.2s ease;
 
         &:hover {
-            background-color: #fef2f2;
+            background-color: rgba(239, 68, 68, 0.15); // Slight red tint for logout on hover
+            color: #fca5a5; // Light red text
+            
+            .icon {
+                color: #fca5a5;
+            }
         }
 
         .icon {
@@ -140,6 +180,8 @@ $active-text: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.2s ease;
 
             svg {
                 width: 100%;

@@ -33,7 +33,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #0a7c5c;
+  background: #6366f1;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -73,7 +73,7 @@
 .stat-label { font-size: 0.8rem; color: #6b7280; font-weight: 500; }
 .stat-value { font-size: 1.75rem; font-weight: 700; color: #111827; }
 .stat-sub { font-size: 0.75rem; font-weight: 500; }
-.stat-sub.green { color: #0a7c5c; }
+.stat-sub.green { color: #6366f1; }
 .stat-sub.orange { color: #f59e0b; }
 
 .stat-icon {
@@ -83,7 +83,7 @@
   flex-shrink: 0;
 
   &.blue   { background: #eff6ff; color: #3b82f6; }
-  &.green  { background: #ecfdf5; color: #0a7c5c; }
+  &.green  { background: #ecfdf5; color: #6366f1; }
   &.orange { background: #fffbeb; color: #f59e0b; }
 }
 
@@ -126,7 +126,7 @@
   color: #374151;
   outline: none;
   transition: border-color 0.2s;
-  &:focus { border-color: #0a7c5c; box-shadow: 0 0 0 3px rgba(10,124,92,0.1); }
+  &:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(10,124,92,0.1); }
 }
 
 .toolbar-actions {
@@ -203,7 +203,7 @@
 
 .id-badge {
   background: #ecfdf5;
-  color: #0a7c5c;
+  color: #6366f1;
   font-size: 0.78rem;
   font-weight: 600;
   padding: 4px 10px;
@@ -239,7 +239,7 @@
   }
 
   input:checked + .toggle-track {
-    background: #0a7c5c;
+    background: #6366f1;
   }
   input:checked + .toggle-track .toggle-thumb {
     transform: translateX(20px);
@@ -285,7 +285,7 @@
   cursor: pointer;
   transition: all 0.15s;
   &:hover:not(:disabled) { background: #f3f4f6; }
-  &.active { background: #0a7c5c; color: #fff; border-color: #0a7c5c; }
+  &.active { background: #6366f1; color: #fff; border-color: #6366f1; }
   &:disabled { opacity: 0.4; cursor: default; }
 }
 
@@ -297,7 +297,7 @@
 .spinner {
   width: 36px; height: 36px;
   border: 3px solid #e5e7eb;
-  border-top-color: #0a7c5c;
+  border-top-color: #6366f1;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -341,7 +341,7 @@
 .snackbar {
   position: fixed;
   bottom: 24px; right: 24px;
-  background: #0a7c5c;
+  background: #6366f1;
   color: #fff;
   padding: 14px 22px;
   border-radius: 10px;

@@ -1,64 +1,67 @@
-<<<<<<< HEAD
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../../services/auth.service';
 import { AppointmentService } from '../../../../../services/appointment.service';
-import { AppointmentDTO } from '../../../../../models/appointment.model';
-=======
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { PatientService } from '../../../../../services/patient.service';
 import { MedicalRecordService } from '../../../../../services/medical-record.service';
+import { AppointmentDTO } from '../../../../../models/appointment.model';
 import { PatientResponseDTO } from '../../../../../models/patient.model';
->>>>>>> origin/frontVersion1
 
 @Component({
   selector: 'app-doctor-patients',
   templateUrl: './doctor-patients.component.html',
-<<<<<<< HEAD
   styleUrls: ['./doctor-patients.component.scss']
 })
 export class DoctorPatientsComponent implements OnInit {
+  // Appointment Data (Planning)
   todayAppointments: AppointmentDTO[] = [];
-  allPatients: any[] = [];
+  allPatientsFromAppts: any[] = [];
   displayMode: 'today' | 'all' = 'today';
   isLoadingAppointments: boolean = true;
-  firstName: string = '';
+  
+  // Patient List Data (Records)
+  patients: (PatientResponseDTO & { hasMedicalRecord?: boolean })[] = [];
+  loading: boolean = true;
+  error: string | null = null;
+  creatingRecordForId: number | null = null;
+  
+  firstName: string = 'Docteur';
 
   constructor(
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private patientService: PatientService,
+    private medicalRecordService: MedicalRecordService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.firstName = this.authService.getUserFullName() || 'Docteur';
     const doctorId = this.authService.getUserId();
+    
     if (doctorId) {
       this.loadTodayAppointments(doctorId);
     }
+    
+    this.fetchPatients();
   }
 
+  // --- Planning / Appointments ---
   loadTodayAppointments(doctorId: number): void {
     this.isLoadingAppointments = true;
-    
-    // Fetch EVERYTHING to populate both views
     this.appointmentService.getDoctorAppointments(doctorId).subscribe({
       next: (data) => {
         const now = new Date();
         const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
         
-        // 1. Keep today's appointments for the "Planning du jour"
         this.todayAppointments = data.filter(a => a.date === todayStr)
                                     .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
         
-        // 2. Generate a Unique Patients List from all appointments
         const patientMap = new Map<number, any>();
-        
         data.forEach(appt => {
           if (!appt.patientId) return;
-          
           const existing = patientMap.get(appt.patientId);
-          // If not exists OR current appt is newer than the saved one
           if (!existing || (appt.date && appt.date > existing.lastAppointmentDate)) {
             patientMap.set(appt.patientId, {
               id: appt.patientId,
@@ -73,7 +76,7 @@ export class DoctorPatientsComponent implements OnInit {
           }
         });
         
-        this.allPatients = Array.from(patientMap.values()).sort((a,b) => {
+        this.allPatientsFromAppts = Array.from(patientMap.values()).sort((a,b) => {
           const dateA = a.lastAppointmentDate || '';
           const dateB = b.lastAppointmentDate || '';
           return dateB.localeCompare(dateA);
@@ -85,78 +88,76 @@ export class DoctorPatientsComponent implements OnInit {
       error: () => {
         this.isLoadingAppointments = false;
         this.cdr.detectChanges();
-=======
-  styleUrl: './doctor-patients.component.scss'
-})
-export class DoctorPatientsComponent implements OnInit {
-  // Extending the original PatientResponseDTO for UI purposes
-  patients: (PatientResponseDTO & { hasMedicalRecord?: boolean })[] = [];
-  loading: boolean = true;
-  error: string | null = null;
-  creatingRecordForId: number | null = null;
-
-  constructor(
-    private patientService: PatientService,
-    private medicalRecordService: MedicalRecordService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.fetchPatients();
-  }
-
-  fetchPatients(): void {
-    this.loading = true;
-    this.patientService.getMyPatients().subscribe({
-      next: (patientsData) => {
-        this.patients = patientsData;
-        
-        // Fetch Medical Records to map against patients
-        this.medicalRecordService.getAll().subscribe({
-          next: (records) => {
-            this.patients.forEach(p => {
-              // Check if any record matches this patient's ID
-              p.hasMedicalRecord = !!(records as any[]).find(r => r.patientId === p.id || (r.patient && r.patient.id === p.id));
-            });
-            this.loading = false;
-          },
-          error: (err) => {
-            console.error('Error fetching medical records:', err);
-            // Default to hasMedicalRecord false if we can't fetch them, or show an error
-            this.patients.forEach(p => p.hasMedicalRecord = false);
-            this.loading = false;
-          }
-        });
-      },
-      error: (err) => {
-        console.error('Error fetching patients:', err);
-        if (err.error && typeof err.error.text === 'string') {
-          console.error('--- RAW SERVER RESPONSE TEXT ---');
-          console.error(err.error.text);
-          console.error('--------------------------------');
-        } else if (err.message) {
-          console.error('Error message:', err.message);
-        }
-        this.error = 'Failed to load patients details. Check console for exact server response format.';
-        this.loading = false;
->>>>>>> origin/frontVersion1
       }
     });
   }
 
-<<<<<<< HEAD
   setMode(mode: 'today' | 'all'): void {
     this.displayMode = mode;
     this.cdr.detectChanges();
   }
 
+  // --- Patient Record Management ---
+  fetchPatients(): void {
+    this.loading = true;
+    this.patientService.getMyPatients().subscribe({
+      next: (patientsData) => {
+        this.patients = patientsData;
+        this.medicalRecordService.getAll().subscribe({
+          next: (records) => {
+            this.patients.forEach(p => {
+              p.hasMedicalRecord = !!(records as any[]).find(r => r.patientId === p.id || (r.patient && r.patient.id === p.id));
+            });
+            this.loading = false;
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('Error fetching medical records:', err);
+            this.patients.forEach(p => p.hasMedicalRecord = false);
+            this.loading = false;
+            this.cdr.detectChanges();
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error fetching patients:', err);
+        this.error = 'Failed to load patients details.';
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  createMedicalRecord(patientId: number): void {
+    this.creatingRecordForId = patientId;
+    this.medicalRecordService.add({ patientId: patientId }).subscribe({
+      next: () => {
+        this.creatingRecordForId = null;
+        this.router.navigate(['/front/doctor/patient', patientId, 'record']);
+      },
+      error: () => {
+        // Fallback Variant 2
+        this.medicalRecordService.add({ patient: { id: patientId } }).subscribe({
+          next: () => {
+            this.creatingRecordForId = null;
+            this.router.navigate(['/front/doctor/patient', patientId, 'record']);
+          },
+          error: () => {
+            this.creatingRecordForId = null;
+            alert('Impossible de créer le dossier médical.');
+          }
+        });
+      }
+    });
+  }
+
+  // --- Consultation Actions ---
   confirmAppointment(id: number): void {
     this.appointmentService.confirmAppointment(id).subscribe({
       next: () => {
         const doctorId = this.authService.getUserId();
         if (doctorId) this.loadTodayAppointments(doctorId);
-      },
-      error: (err) => console.error('Confirm error:', err)
+      }
     });
   }
 
@@ -170,8 +171,7 @@ export class DoctorPatientsComponent implements OnInit {
         }
         const doctorId = this.authService.getUserId();
         if (doctorId) this.loadTodayAppointments(doctorId);
-      },
-      error: (err) => console.error('Start room error:', err)
+      }
     });
   }
 
@@ -189,57 +189,8 @@ export class DoctorPatientsComponent implements OnInit {
         next: () => {
           const doctorId = this.authService.getUserId();
           if (doctorId) this.loadTodayAppointments(doctorId);
-        },
-        error: (err) => console.error('Complete error:', err)
+        }
       });
     }
   }
 }
-=======
-  createMedicalRecord(patientId: number): void {
-    this.creatingRecordForId = patientId;
-    
-    // First try the DTO-friendly exact match from our frontend model
-    const payload = {
-      patientId: patientId
-    };
-
-    this.medicalRecordService.add(payload).subscribe({
-      next: () => {
-        this.creatingRecordForId = null;
-        this.router.navigate(['/front/doctor/patient', patientId, 'record']);
-      },
-      error: (err) => {
-        console.error('Error creating Medical Record (Variant 1):', err.error || err);
-        
-        // Fallback Variant 2: Entity mapping { patient: { id } }
-        console.warn("Attempting fallback Variant 2 payload...");
-        this.medicalRecordService.add({ patient: { id: patientId } }).subscribe({
-            next: () => {
-                this.creatingRecordForId = null;
-                this.router.navigate(['/front/doctor/patient', patientId, 'record']);
-            },
-            error: (err2) => {
-                console.error('Fallback Variant 2 error:', err2.error || err2);
-                
-                // Fallback Variant 3: Entity mapping { user: { id } }
-                console.warn("Attempting fallback Variant 3 payload...");
-                this.medicalRecordService.add({ user: { id: patientId } }).subscribe({
-                    next: () => {
-                        this.creatingRecordForId = null;
-                        this.router.navigate(['/front/doctor/patient', patientId, 'record']);
-                    },
-                    error: (err3) => {
-                        this.creatingRecordForId = null;
-                        console.error('Fallback Variant 3 error:', err3.error || err3);
-                        alert('Failed to create medical record. Please check the console logs for validation errors.');
-                    }
-                });
-            }
-        });
-      }
-    });
-  }
-}
-
->>>>>>> origin/frontVersion1

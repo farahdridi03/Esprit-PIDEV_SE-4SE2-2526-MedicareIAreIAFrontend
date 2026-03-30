@@ -56,10 +56,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           }, {
             label: 'Donations ($k)',
             data: [8, 12, 18, 22, 31, 38, 43, 48],
-            borderColor: '#0d9488',
+            borderColor: '#7c3aed',
             backgroundColor: 'rgba(13,148,136,0.05)',
             borderWidth: 2,
-            pointBackgroundColor: '#0d9488',
+            pointBackgroundColor: '#7c3aed',
             pointRadius: 3,
             fill: true,
             tension: 0.4
@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           labels: ['Patients', 'Doctors', 'Moderators', 'Admins'],
           datasets: [{
             data: [18442, 4218, 87, 12],
-            backgroundColor: ['#4f46e5', '#0d9488', '#7c3aed', '#f59e0b'],
+            backgroundColor: ['#4f46e5', '#7c3aed', '#7c3aed', '#f59e0b'],
             borderWidth: 0,
             hoverOffset: 6
           }]

@@ -22,11 +22,11 @@ export class NutritionistProfileSettingsComponent implements OnInit {
 
   loadProfile(): void {
     this.nutritionistService.getMe().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.nutritionist = data;
         this.loading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading profile:', err);
         this.error = 'Failed to load profile. Please try again later.';
         this.loading = false;
