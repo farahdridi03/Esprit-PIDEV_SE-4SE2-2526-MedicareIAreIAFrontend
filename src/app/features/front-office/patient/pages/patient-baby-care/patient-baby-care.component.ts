@@ -20,6 +20,8 @@ export class PatientBabyCareComponent implements OnInit {
   diaperRecords: any[] = [];
   isDiaperSubmitting: boolean = false;
   editingDiaperId: number | null = null;
+  editingLogId: number | null = null;
+  confirmModalData: { title: string, message: string, onConfirm: () => void } | null = null;
   newDiaper: any = { type: 'WET', rash: false, stoolColor: 'Yellow', stoolTexture: 'Normal', notes: '' };
   manualSleep: any = { 
     duration: '', 
@@ -84,6 +86,12 @@ export class PatientBabyCareComponent implements OnInit {
   ];
 
   activeAgeTab: string = '4-6';
+  selectedFood: any = null;
+
+  selectAgeTab(tab: string) {
+    this.activeAgeTab = tab;
+    this.selectedFood = null;
+  }
 
   feedingGuides: any = {
     '0-3': {
@@ -100,12 +108,60 @@ export class PatientBabyCareComponent implements OnInit {
       description: 'Breast milk or formula remains primary nutrition. Around 4–6 months, you can begin introducing single-ingredient purées — starting with iron-rich foods. Look for signs of readiness: sitting with support, showing interest in food, losing the tongue-thrust reflex.',
       tags: ['🤱 Breast or Formula First', '1 new food/week'],
       foods: [
-        { emoji: '🥕', name: 'Carrot', benefit: 'Vitamin A' },
-        { emoji: '🥦', name: 'Broccoli', benefit: 'Iron + Folate' },
-        { emoji: '🍠', name: 'Sweet potato', benefit: 'Energy' },
-        { emoji: '🍌', name: 'Banana', benefit: 'Potassium' },
-        { emoji: '🍐', name: 'Pear', benefit: 'Digestion' },
-        { emoji: '🥣', name: 'Oat porridge', benefit: 'Iron + Zinc' }
+        { 
+          emoji: '🥕', name: 'Carrot', benefit: 'Vitamin A',
+          recipe: {
+            tag: 'Vitamine A · Doux pour l\'estomac',
+            intro: 'La carotte est souvent le premier légume proposé. Naturellement sucrée et facile à digérer.',
+            ingredients: ['2 carottes bio', 'Un filet d\'eau'],
+            steps: ['Pèle et coupe en fines rondelles.', 'Cuis à la vapeur 15-20 min jusqu\'à tendreté.', 'Mixe jusqu\'à texture lisse.']
+          }
+        },
+        { 
+          emoji: '🥦', name: 'Broccoli', benefit: 'Iron + Folate',
+          recipe: {
+            tag: 'Fer · Système immunitaire',
+            intro: 'Le brocoli est excellent pour le développement, avec un goût un peu plus prononcé.',
+            ingredients: ['Quelques fleurettes de brocoli'],
+            steps: ['Lave bien et coupe en petites fleurettes.', 'Cuis à la vapeur 10-12 min.', 'Mixe en ajoutant de l\'eau de cuisson si besoin.']
+          }
+        },
+        { 
+          emoji: '🍠', name: 'Sweet potato', benefit: 'Energy',
+          recipe: {
+            tag: 'Énergie douce · Fibres',
+            intro: 'Très appréciée des bébés pour sa texture fondante et son goût sucré.',
+            ingredients: ['1 petite patate douce'],
+            steps: ['Pèle et coupe en cubes.', 'Cuis à la vapeur 15 min.', 'Écrase ou mixe finement.']
+          }
+        },
+        { 
+          emoji: '🍌', name: 'Banana', benefit: 'Potassium',
+          recipe: {
+            tag: 'Énergie rapide · Digestion',
+            intro: 'Le fruit le plus simple pour commencer : pas besoin de cuisson !',
+            ingredients: ['1/2 banane bien mûre'],
+            steps: ['Pèle la banane.', 'Écrase-la très finement à la fourchette.', 'Sers immédiatement (tu peux ajouter un peu de lait maternel).']
+          }
+        },
+        { 
+          emoji: '🍐', name: 'Pear', benefit: 'Digestion',
+          recipe: {
+            tag: 'Fibres · Aide la digestion',
+            intro: 'La poire est douce et légèrement laxative — parfaite si bébé a tendance à être constipé.',
+            ingredients: ['2 poires mûres', 'Un filet d\'eau'],
+            steps: ['Pèle et épépine les poires. Coupe en morceaux.', 'Cuis à la vapeur 5-7 min (ou cru si très mûres).', 'Mixe jusqu\'à texture lisse.']
+          }
+        },
+        { 
+          emoji: '🥣', name: 'Oat porridge', benefit: 'Iron + Zinc',
+          recipe: {
+            tag: 'Céréales douces · Satiété',
+            intro: 'L\'avoine est très digeste et parfaite pour habituer bébé à une texture un peu plus épaisse.',
+            ingredients: ['2 c. à soupe de flocons d\'avoine mixés', 'Lait maternel ou infantile'],
+            steps: ['Mélange l\'avoine et le liquide dans une petite casserole.', 'Fais chauffer doucement 3-5 min en remuant.', 'Laisse tiédir avant de servir.']
+          }
+        }
       ]
     },
     '7-9': {
@@ -481,13 +537,17 @@ export class PatientBabyCareComponent implements OnInit {
     });
   }
 
-  undoMarkAsDone(vaccineName: string) {
-    if (!this.baby) return;
-    if (confirm(`Are you sure you want to reset ${vaccineName}? This will mark it as not done.`)) {
-      this.babyService.resetVaccine(this.baby.id, vaccineName).subscribe(() => {
-        this.loadAllData();
-      });
-    }
+  onResetVaccine(v: any) {
+    this.confirmModalData = {
+      title: 'Reset Vaccination',
+      message: `Are you sure you want to reset the status for ${v.name}? This will mark it as incomplete.`,
+      onConfirm: () => {
+        if (!this.baby) return;
+        this.babyService.resetVaccine(this.baby.id, v.name).subscribe(() => {
+          this.loadAllData();
+        });
+      }
+    };
   }
 
   toggleVaccineMenu(v: any, event: Event) {
@@ -645,10 +705,14 @@ export class PatientBabyCareComponent implements OnInit {
       metadata.rash = this.newEntry.rash;
     }
 
-    this.babyService.addJournalEntry(this.baby.id, this.newEntry.type, this.newEntry.value, this.newEntry.notes, metadata)
-      .subscribe({
+    const obs = this.editingLogId 
+      ? this.babyService.updateJournalEntry(this.editingLogId, this.newEntry.type, this.newEntry.value, this.newEntry.notes, metadata, this.baby.id)
+      : this.babyService.addJournalEntry(this.baby.id, this.newEntry.type, this.newEntry.value, this.newEntry.notes, metadata);
+
+    obs.subscribe({
         next: () => {
           this.showAddEntry = false;
+          this.editingLogId = null;
           this.formError = '';
           this.resetNewEntry();
           this.loadAllData();
@@ -658,6 +722,65 @@ export class PatientBabyCareComponent implements OnInit {
           console.error(err);
         }
       });
+  }
+
+  onEditJournalEntry(log: any) {
+    this.editingLogId = log.id;
+    this.newEntry = { ...log, value: log.detail };
+    this.activeSection = log.type.toLowerCase();
+    if (this.activeSection === 'journal') this.activeSection = 'journal'; // Fallback
+    
+    // Fallbacks for specific fields
+    if (log.type === 'FEEDING') {
+      this.newEntry.subType = log.subType || 'BREAST';
+      this.newEntry.quantity = log.quantity || 120;
+      this.newEntry.duration = log.duration || 15;
+      this.newEntry.side = log.side || 'LEFT';
+    } else if (log.type === 'DIAPER') {
+      this.newEntry.subType = log.subType || 'WET';
+      this.newEntry.stoolColor = log.stoolColor || 'Yellow';
+      this.newEntry.rash = log.rash || false;
+    } else if (log.type === 'TEMPERATURE') {
+      this.newEntry.value = log.detail;
+    }
+    
+    // Auto scroll to form
+    const formClass = log.type === 'FEEDING' ? '.log-action-card' : 
+                     (log.type === 'DIAPER' ? '.diaper-log-card' : 
+                     (log.type === 'TEMPERATURE' ? '.premium-log-action-card' : '.log-action-card'));
+    
+    setTimeout(() => {
+      const el = document.querySelector(formClass);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  }
+
+  onDeleteJournalEntry(log: any) {
+    this.confirmModalData = {
+      title: 'Delete Record',
+      message: `Are you sure you want to delete this ${log.title.toLowerCase()} record? This action cannot be undone.`,
+      onConfirm: () => {
+        this.babyService.deleteJournalEntry(log.id).subscribe(() => {
+          this.loadAllData();
+        });
+      }
+    };
+  }
+
+  closeConfirmModal() {
+    this.confirmModalData = null;
+  }
+
+  executeConfirmAction() {
+    if (this.confirmModalData?.onConfirm) {
+      this.confirmModalData.onConfirm();
+    }
+    this.closeConfirmModal();
+  }
+
+  cancelJournalEdit() {
+    this.editingLogId = null;
+    this.resetNewEntry();
   }
 
   parsedDuration(input: any): number {
@@ -757,11 +880,22 @@ export class PatientBabyCareComponent implements OnInit {
       changedAt: new Date().toISOString()
     };
 
-    if (this.editingDiaperId) {
-      this.babyService.updateDiaper(this.editingDiaperId, record).subscribe({
+    if (this.editingDiaperId || (this.editingLogId && this.newEntry.type === 'DIAPER')) {
+      const id = this.editingDiaperId || this.editingLogId;
+      const obs = this.editingDiaperId 
+        ? this.babyService.updateDiaper(this.editingDiaperId, record) 
+        : this.babyService.updateJournalEntry(this.editingLogId!, 'DIAPER', this.newDiaper.type, this.newDiaper.notes, {
+            subType: this.newDiaper.type,
+            rash: this.newDiaper.rash,
+            stoolColor: this.newDiaper.stoolColor,
+            stoolTexture: this.newDiaper.stoolTexture
+          }, this.baby.id);
+
+      obs.subscribe({
         next: () => {
           this.isDiaperSubmitting = false;
           this.editingDiaperId = null;
+          this.editingLogId = null;
           this.resetDiaperForm();
           this.loadAllData();
         },
@@ -792,11 +926,15 @@ export class PatientBabyCareComponent implements OnInit {
   }
 
   onDeleteDiaper(id: number) {
-    if (confirm('Are you sure you want to delete this record?')) {
-      this.babyService.deleteDiaper(id).subscribe(() => {
-        this.loadAllData();
-      });
-    }
+    this.confirmModalData = {
+      title: 'Delete Diaper Record',
+      message: 'Are you sure you want to delete this record?',
+      onConfirm: () => {
+        this.babyService.deleteDiaper(id).subscribe(() => {
+          this.loadAllData();
+        });
+      }
+    };
   }
 
   resetDiaperForm() {
@@ -811,11 +949,15 @@ export class PatientBabyCareComponent implements OnInit {
   }
 
   onDeleteSleepLog(log: any) {
-    if (confirm('Are you sure you want to delete this sleep record?')) {
-      this.babyService.deleteJournalEntry(log.id).subscribe(() => {
-        this.loadAllData();
-      });
-    }
+    this.confirmModalData = {
+      title: 'Delete Sleep Record',
+      message: 'Are you sure you want to delete this sleep record? This action will remove it from your history and charts.',
+      onConfirm: () => {
+        this.babyService.deleteJournalEntry(log.id).subscribe(() => {
+          this.loadAllData();
+        });
+      }
+    };
   }
 
   formatDate(dateStr: string): string {

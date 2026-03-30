@@ -48,4 +48,8 @@ export class AppointmentService {
   deleteAppointment(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/appointments/${id}`);
   }
+
+  completeAppointment(id: number): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/appointments/${id}/complete`, null);
+  }
 }

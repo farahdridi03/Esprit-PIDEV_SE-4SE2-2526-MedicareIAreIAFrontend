@@ -150,7 +150,7 @@ export class PatientAppointmentsComponent implements OnInit, OnDestroy {
   openMeeting(link: string | undefined): void {
     if (link) {
       const patientName = this.authService.getUserFullName() || 'Patient';
-      const fullLink = `${link}#userInfo.displayName="${patientName}"`;
+      const fullLink = `${link}#config.prejoinPageEnabled=false&userInfo.displayName="${encodeURIComponent(patientName)}"`;
       window.open(fullLink, '_blank');
     }
   }

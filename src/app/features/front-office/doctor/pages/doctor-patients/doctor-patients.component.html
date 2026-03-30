@@ -58,12 +58,12 @@
                                 </div>
                                 <div class="name-meta">
                                     <h4>{{ app.patientName }}</h4>
-                                    <span class="mode-tag" [class]="app.mode.toLowerCase()">{{ app.mode }}</span>
+                                    <span class="mode-tag" [class]="(app.mode || '').toLowerCase()">{{ app.mode || 'N/A' }}</span>
                                 </div>
                             </div>
 
                             <div class="status-col">
-                                <span class="status-pill" [ngClass]="app.status.toLowerCase()">
+                                <span class="status-pill" [ngClass]="(app.status || '').toLowerCase()">
                                     {{ app.status }}
                                 </span>
                             </div>
@@ -71,7 +71,10 @@
                             <div class="actions-col">
                                 <button *ngIf="app.status === 'BOOKED'" class="btn-action confirm" (click)="confirmAppointment(app.id)">Accept</button>
                                 <button *ngIf="app.mode === 'ONLINE' && app.status === 'CONFIRMED'" class="btn-action start" (click)="startConsultation(app)">Start Session</button>
-                                <button *ngIf="app.mode === 'ONLINE' && app.status === 'LIVE'" class="btn-action live" (click)="openMeeting(app.meetingLink)">Join Live</button>
+                                <div *ngIf="app.mode === 'ONLINE' && app.status === 'LIVE'" style="display:flex; gap: 5px;">
+                                    <button class="btn-action live" (click)="openMeeting(app.meetingLink)">Join Live</button>
+                                    <button class="btn-action confirm" style="background:#ef4444;" (click)="completeConsultation(app)">End</button>
+                                </div>
                                 <div class="notes-preview" *ngIf="app.notes" [title]="app.notes">📝</div>
                             </div>
                         </div>
@@ -96,7 +99,7 @@
                             </div>
 
                             <div class="status-col">
-                                <span class="status-pill" [ngClass]="p.lastAppointmentStatus.toLowerCase()">
+                                <span class="status-pill" [ngClass]="(p.lastAppointmentStatus || '').toLowerCase()">
                                     {{ p.lastAppointmentStatus }}
                                 </span>
                             </div>

@@ -158,12 +158,25 @@ export class BabyCareService {
   }
 
   getProfileByPatientId(patientId: number): Observable<BabyProfile> {
-    const profiles = this.getProfiles();
-    const profile = profiles.find(p => p.parentId === patientId);
-    if (profile) {
-      return of(profile).pipe(delay(200));
-    }
-    return throwError(() => new Error('Not found'));
+    return this.http.get<any>(`${this.apiUrl}/profile/${patientId}`).pipe(
+      map(backendProfile => {
+        const profile: BabyProfile = {
+          id: backendProfile.id,
+          name: backendProfile.name,
+          birthDate: backendProfile.birthDate,
+          gender: backendProfile.gender,
+          birthWeight: backendProfile.birthWeight,
+          birthHeight: backendProfile.birthHeight,
+          parentId: backendProfile.patientId || patientId,
+          photoUrl: backendProfile.photoUrl,
+          priorities: backendProfile.preferences?.map((p: any) => p.priorityType) || []
+        };
+        const profiles = this.getProfiles().filter(p => p.parentId !== patientId);
+        profiles.push(profile);
+        this.saveProfiles(profiles);
+        return profile;
+      })
+    );
   }
 
   getDashboard(babyId: number): Observable<BabyDashboard> {
@@ -467,6 +480,23 @@ export class BabyCareService {
 
   deleteJournalEntry(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/journal/${id}`);
+  }
+
+  updateJournalEntry(id: number, type: string, value: string, notes?: string, metadata?: any, babyId?: number): Observable<any> {
+    const metaString = metadata ? JSON.stringify(metadata) : '';
+    const body: any = {
+      id: id,
+      type: type,
+      entryType: type,
+      value: value,
+      notes: notes || '',
+      metadata: metaString
+    };
+    
+    // Using POST to the profile-specific endpoint instead of PUT to the entry-specific endpoint
+    // This is common in simple Spring Boot controllers that use repo.save(entity) for both operations
+    const url = babyId ? `${this.apiUrl}/journal/${babyId}` : `${this.apiUrl}/journal/${id}`;
+    return this.http.post<any>(url, body);
   }
 
   private getIconForType(type: string): string {

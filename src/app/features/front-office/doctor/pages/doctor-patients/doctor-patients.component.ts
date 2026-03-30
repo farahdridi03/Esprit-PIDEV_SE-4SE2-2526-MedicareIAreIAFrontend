@@ -64,7 +64,11 @@ export class DoctorPatientsComponent implements OnInit {
           }
         });
         
-        this.allPatients = Array.from(patientMap.values()).sort((a,b) => b.lastAppointmentDate.localeCompare(a.lastAppointmentDate));
+        this.allPatients = Array.from(patientMap.values()).sort((a,b) => {
+          const dateA = a.lastAppointmentDate || '';
+          const dateB = b.lastAppointmentDate || '';
+          return dateB.localeCompare(dateA);
+        });
         
         this.isLoadingAppointments = false;
         this.cdr.detectChanges();
@@ -94,7 +98,11 @@ export class DoctorPatientsComponent implements OnInit {
   startConsultation(app: AppointmentDTO): void {
     this.appointmentService.startTeleconsultation(app.id).subscribe({
       next: (res) => {
-        if (res.meetingLink) window.open(res.meetingLink, '_blank');
+        if (res.meetingLink) {
+          const authName = this.authService.getUserFullName() || this.firstName;
+          const finalLink = `${res.meetingLink}#config.prejoinPageEnabled=false&userInfo.displayName="${encodeURIComponent('Dr. ' + authName)}"`;
+          window.open(finalLink, '_blank');
+        }
         const doctorId = this.authService.getUserId();
         if (doctorId) this.loadTodayAppointments(doctorId);
       },
@@ -105,8 +113,20 @@ export class DoctorPatientsComponent implements OnInit {
   openMeeting(link: string | undefined): void {
     if (link) {
       const authName = this.authService.getUserFullName() || this.firstName;
-      const fullLink = `${link}#userInfo.displayName="Dr. ${authName}"`;
+      const fullLink = `${link}#config.prejoinPageEnabled=false&userInfo.displayName="${encodeURIComponent('Dr. ' + authName)}"`;
       window.open(fullLink, '_blank');
+    }
+  }
+
+  completeConsultation(app: AppointmentDTO): void {
+    if(confirm('Terminer cette consultation en ligne ?')) {
+      this.appointmentService.completeAppointment(app.id).subscribe({
+        next: () => {
+          const doctorId = this.authService.getUserId();
+          if (doctorId) this.loadTodayAppointments(doctorId);
+        },
+        error: (err) => console.error('Complete error:', err)
+      });
     }
   }
 }

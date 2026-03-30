@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { FrontOfficeComponent } from './front-office.component';
 
@@ -8,7 +9,8 @@ describe('FrontOfficeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FrontOfficeComponent]
+      declarations: [FrontOfficeComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

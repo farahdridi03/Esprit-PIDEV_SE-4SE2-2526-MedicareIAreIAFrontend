@@ -112,7 +112,7 @@
           </div>
 
           <!-- TELECONSULTATION SECTION (CONDITION: ONLINE) -->
-          <div *ngIf="selectedAppointment.mode === 'ONLINE'" class="tele-card-full">
+          <div *ngIf="selectedAppointment.mode === 'ONLINE' && selectedAppointment.status !== 'COMPLETED' && selectedAppointment.status !== 'CANCELLED'" class="tele-card-full">
             
             <!-- STATE A: WAITING ROOM -->
             <div *ngIf="!isTeleconsultationActive(selectedAppointment)" class="waiting-view">
@@ -158,13 +158,7 @@
                 <img src="assets/img/patient_placeholder.png" alt="PiP">
               </div>
 
-              <!-- Video Call Controls -->
-              <div class="video-controls">
-                <button class="ctrl-btn"><span style="transform: scale(1.4)">🎤</span></button>
-                <button class="ctrl-btn active"><span style="transform: scale(1.4)">📹</span></button>
-                <button class="ctrl-btn btn-end" (click)="closeDetails()"><span style="transform: scale(1.6)">📞</span></button>
-                <button class="ctrl-btn"><span style="transform: scale(1.4)">💬</span></button>
-              </div>
+
             </div>
           </div>
 
@@ -187,18 +181,29 @@
           <!-- Timeline Status -->
           <div class="section-card">
              <h4>📈 Appointment Progress</h4>
-             <div class="timeline">
+             <div class="timeline" *ngIf="selectedAppointment.status !== 'CANCELLED'">
                <div class="step active">
                  <span class="s-txt">Booked</span>
                  <span class="s-sub">Successfully booked</span>
                </div>
-               <div class="step" [class.active]="selectedAppointment.status === 'CONFIRMED' || selectedAppointment.status === 'COMPLETED'">
+               <div class="step" [class.active]="selectedAppointment.status === 'CONFIRMED' || selectedAppointment.status === 'LIVE' || selectedAppointment.status === 'RESCHEDULED' || selectedAppointment.status === 'COMPLETED'">
                  <span class="s-txt">Confirmed</span>
                  <span class="s-sub">Waiting for consultation</span>
                </div>
                <div class="step" [class.active]="selectedAppointment.status === 'COMPLETED'">
                  <span class="s-txt">Completed</span>
                  <span class="s-sub">Report available soon</span>
+               </div>
+             </div>
+
+             <div class="timeline" *ngIf="selectedAppointment.status === 'CANCELLED'">
+               <div class="step active">
+                 <span class="s-txt">Booked</span>
+                 <span class="s-sub">Successfully booked</span>
+               </div>
+               <div class="step active">
+                 <span class="s-txt" style="color:#ef4444;">Cancelled</span>
+                 <span class="s-sub">This appointment was cancelled</span>
                </div>
              </div>
           </div>

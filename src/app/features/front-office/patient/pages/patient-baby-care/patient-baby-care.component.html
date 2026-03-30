@@ -302,7 +302,7 @@
                           (click)="markAsDone(v.name)">
                           <i class="fas fa-check"></i> Mark Done
                         </button>
-                        <button *ngIf="v.status === 'done'" class="btn-mark-undo" (click)="undoMarkAsDone(v.name)">
+                        <button *ngIf="v.status === 'done'" class="btn-mark-undo" (click)="onResetVaccine(v)">
                           <i class="fas fa-undo"></i> Undo
                         </button>
                         <span class="lock-label" *ngIf="!v.isClickable && v.status !== 'done'">
@@ -403,15 +403,15 @@
 
                 <div class="log-tabs">
                   <button class="log-tab" [class.active]="newEntry.subType === 'BREAST'"
-                    (click)="newEntry.subType = 'BREAST'">🤱 Breast</button>
+                    (click)="newEntry.subType = 'BREAST'; formError = ''">🤱 Breast</button>
                   <button class="log-tab" [class.active]="newEntry.subType === 'BOTTLE'"
-                    (click)="newEntry.subType = 'BOTTLE'">🍼 Bottle</button>
+                    (click)="newEntry.subType = 'BOTTLE'; formError = ''">🍼 Bottle</button>
                 </div>
 
                 <div class="log-controls">
                   <div class="control-group" *ngIf="newEntry.subType === 'BOTTLE'">
                     <label>Amount (ml)</label>
-                    <input type="number" [(ngModel)]="newEntry.quantity" class="control-input">
+                    <input type="number" [(ngModel)]="newEntry.quantity" (ngModelChange)="formError = ''" class="control-input" [class.input-error]="formError && (newEntry.quantity > 1000 || newEntry.quantity <= 0)">
                   </div>
                   <ng-container *ngIf="newEntry.subType === 'BREAST'">
                     <div class="control-group">
@@ -423,28 +423,37 @@
                     </div>
                     <div class="control-group">
                       <label>Duration (mins)</label>
-                      <input type="number" [(ngModel)]="newEntry.duration" class="control-input" placeholder="e.g. 15">
+                      <input type="number" [(ngModel)]="newEntry.duration" (ngModelChange)="formError = ''" class="control-input" [class.input-error]="formError && (newEntry.duration > 7200 || newEntry.duration <= 0)" placeholder="e.g. 15">
                     </div>
                   </ng-container>
                 </div>
-                <button class="btn-save-round"
-                  (click)="newEntry.type = 'FEEDING'; newEntry.value = newEntry.subType === 'BOTTLE' ? (newEntry.quantity + 'ml') : (newEntry.side + ' side, ' + newEntry.duration + 'm'); submitJournalEntry()">Log
-                  Feeding</button>
+
+                <div class="error-text" *ngIf="formError && activeSection === 'feeding'" style="margin: -10px 0 15px 0; text-align: center;">
+                  <i class="fas fa-exclamation-circle"></i> {{ formError }}
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn-save-round" style="flex: 1;"
+                    (click)="newEntry.type = 'FEEDING'; newEntry.value = newEntry.subType === 'BOTTLE' ? (newEntry.quantity + 'ml') : (newEntry.side + ' side, ' + newEntry.duration + 'm'); submitJournalEntry()">
+                    {{ editingLogId ? 'Update Log' : 'Log Feeding' }}
+                  </button>
+                  <button *ngIf="editingLogId" class="btn-cancel-round" (click)="cancelJournalEdit()" style="background: #64748b; width: 100px;">Cancel</button>
+                </div>
               </div>
 
               <!-- Nutritional Guide (Traditional) -->
               <div class="guide-divider">NUTRITIONAL GUIDE</div>
 
               <div class="age-tabs">
-                <button class="age-tab" [class.active]="activeAgeTab === '0-3'" (click)="activeAgeTab = '0-3'">0–3
+                <button class="age-tab" [class.active]="activeAgeTab === '0-3'" (click)="selectAgeTab('0-3')">0–3
                   mo</button>
-                <button class="age-tab" [class.active]="activeAgeTab === '4-6'" (click)="activeAgeTab = '4-6'">4–6
+                <button class="age-tab" [class.active]="activeAgeTab === '4-6'" (click)="selectAgeTab('4-6')">4–6
                   mo</button>
-                <button class="age-tab" [class.active]="activeAgeTab === '7-9'" (click)="activeAgeTab = '7-9'">7–9
+                <button class="age-tab" [class.active]="activeAgeTab === '7-9'" (click)="selectAgeTab('7-9')">7–9
                   mo</button>
-                <button class="age-tab" [class.active]="activeAgeTab === '10-12'" (click)="activeAgeTab = '10-12'">10–12
+                <button class="age-tab" [class.active]="activeAgeTab === '10-12'" (click)="selectAgeTab('10-12')">10–12
                   mo</button>
-                <button class="age-tab" [class.active]="activeAgeTab === '1-2yr'" (click)="activeAgeTab = '1-2yr'">1–2
+                <button class="age-tab" [class.active]="activeAgeTab === '1-2yr'" (click)="selectAgeTab('1-2yr')">1–2
                   yr</button>
               </div>
 
@@ -459,11 +468,34 @@
               <div class="gentle-foods-section">
                 <div class="section-label">GENTLE FIRST FOODS</div>
                 <div class="foods-grid">
-                  <div class="food-card" *ngFor="let food of feedingGuides[activeAgeTab].foods">
+                  <div class="food-card" *ngFor="let food of feedingGuides[activeAgeTab].foods" 
+                       [class.selected-food]="selectedFood === food"
+                       (click)="selectedFood = selectedFood === food ? null : food"
+                       style="cursor: pointer;">
                     <div class="food-emoji">{{ food.emoji }}</div>
                     <div class="food-name">{{ food.name }}</div>
                     <div class="food-benefit">{{ food.benefit }}</div>
                   </div>
+                </div>
+
+                <div class="recipe-card-details" *ngIf="selectedFood?.recipe">
+                  <h3 class="serif-text recipe-header-title">
+                    <span class="emoji">{{ selectedFood.emoji }}</span> {{ selectedFood.name }}
+                  </h3>
+                  <div class="recipe-tags">
+                    <span class="guide-tag green">{{ selectedFood.recipe.tag }}</span>
+                  </div>
+                  <p class="recipe-intro">{{ selectedFood.recipe.intro }}</p>
+
+                  <h4 class="recipe-section-title">INGRÉDIENTS</h4>
+                  <ul class="recipe-list ingredients-list">
+                    <li *ngFor="let ing of selectedFood.recipe.ingredients">{{ ing }}</li>
+                  </ul>
+
+                  <h4 class="recipe-section-title">PRÉPARATION</h4>
+                  <ol class="recipe-list steps-list">
+                    <li *ngFor="let step of selectedFood.recipe.steps">{{ step }}</li>
+                  </ol>
                 </div>
               </div>
 
@@ -721,9 +753,9 @@
                 <div style="display: flex; gap: 10px;">
                   <button class="btn-save-round" (click)="onSubmitDiaper()" [disabled]="isDiaperSubmitting"
                     style="flex: 1;">
-                    {{ isDiaperSubmitting ? 'Saving...' : (editingDiaperId ? 'Update Diaper' : 'Log Diaper Change') }}
+                    {{ isDiaperSubmitting ? 'Saving...' : (editingDiaperId || editingLogId ? 'Update Diaper' : 'Log Diaper Change') }}
                   </button>
-                  <button *ngIf="editingDiaperId" class="btn-save-round" (click)="resetDiaperForm()"
+                  <button *ngIf="editingDiaperId || editingLogId" class="btn-save-round" (click)="resetDiaperForm(); editingLogId = null;"
                     style="background: #64748b; width: 100px;">Cancel</button>
                 </div>
               </div>
@@ -829,8 +861,9 @@
                     </div>
                     <p class="error-text" *ngIf="formError" style="margin-top: 10px; font-weight: 600;">{{ formError }}</p>
                     <button class="btn-premium-action health-btn" (click)="newEntry.type = 'TEMPERATURE'; submitJournalEntry()" [disabled]="!newEntry.value">
-                      Save Record <i class="fas fa-arrow-right"></i>
+                       {{ editingLogId ? 'Update Record' : 'Save Record' }} <i class="fas fa-arrow-right"></i>
                     </button>
+                    <button *ngIf="editingLogId && newEntry.type === 'TEMPERATURE'" class="btn-cancel-round" (click)="cancelJournalEdit()" style="margin-top: 10px; width: 100%;">Cancel Edit</button>
                   </div>
                 </div>
               </div>
@@ -880,9 +913,20 @@
                       <div class="timeline-icon-bubble">{{ log.icon }}</div>
                     </div>
                     <div class="timeline-log-card">
-                      <div class="log-title">{{ log.title }}</div>
-                      <div class="log-detail">{{ log.detail }}</div>
-                      <span class="log-badge">{{ log.badge }}</span>
+                      <div class="log-info-v2">
+                        <div class="log-title">{{ log.title }}</div>
+                        <div class="log-detail">{{ log.detail }}</div>
+                        <span class="log-badge">{{ log.badge }}</span>
+                        <div *ngIf="log.notes" class="log-notes-v2">"{{ log.notes }}"</div>
+                      </div>
+                      <div class="log-actions-v2">
+                        <button class="log-action-btn edit" (click)="onEditJournalEntry(log)" title="Modifier">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="log-action-btn delete" (click)="onDeleteJournalEntry(log)" title="Supprimer">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </ng-container>
@@ -945,4 +989,26 @@
       </main> <!-- End Content Area -->
     </div> <!-- End Main Body Wrapper -->
   </div> <!-- End App Shell -->
+  <!-- PREMIUM CONFIRMATION MODAL -->
+  <div class="premium-modal-overlay animate-fade-in" *ngIf="confirmModalData" (click)="closeConfirmModal()">
+    <div class="premium-modal-card animate-scale-up" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-icon-blob">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="modal-title-group">
+          <h3 class="serif-title">{{ confirmModalData.title }}</h3>
+          <p class="modal-subtitle">Action required</p>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p>{{ confirmModalData.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" (click)="closeConfirmModal()">Cancel</button>
+        <button class="btn-modal-confirm" (click)="executeConfirmAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
 </div> <!-- End Module Wrapper -->

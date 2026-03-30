@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { BackOfficeRoutingModule } from './back-office-routing.module';
 import { BackOfficeComponent } from './back-office.component';
@@ -23,6 +24,7 @@ import { AppointmentManagementComponent } from './pages/appointment-management/a
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     BackOfficeRoutingModule
   ]
 })

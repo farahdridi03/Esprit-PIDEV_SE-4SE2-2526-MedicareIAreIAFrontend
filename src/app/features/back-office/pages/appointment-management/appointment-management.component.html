@@ -1,97 +1,66 @@
-<div class="appointment-management-container">
-    <div class="page-header">
-        <div class="header-content">
-            <h1>Appointment <em>Management</em></h1>
-            <p>Oversee all clinical appointments and provider scheduling across the platform.</p>
-        </div>
-        <div class="header-actions">
-            <button class="btn-primary" (click)="loadAppointments()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
-                Refresh Data
-            </button>
-        </div>
+<div class="appt-mgmt-page">
+  <div class="page-header">
+    <div>
+      <h1>Appointment Management</h1>
+      <p>View and monitor all platform appointments</p>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="🔍 Search by patient or doctor..."
+      [(ngModel)]="searchQuery"
+      (input)="applyFilters()"
+    />
+    <select class="status-select" [(ngModel)]="filterStatus" (change)="applyFilters()">
+      <option value="">All Statuses</option>
+      <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+    </select>
+    <button class="btn-refresh" (click)="loadAppointments()">↺ Refresh</button>
+  </div>
+
+  <div class="table-card">
+    <div *ngIf="isLoading" class="loader-state">
+      <div class="spinner"></div>
+      <p>Loading appointments...</p>
     </div>
 
-    <div class="panel">
-        <div class="panel-head">
-            <div class="search-group" style="display: flex; gap: 1rem; align-items: center; flex: 1;">
-                <input type="text" class="role-filter" [(ngModel)]="searchQuery" (input)="applyFilters()" placeholder="Search patient or doctor..." style="flex: 1; max-width: 400px; padding: 0.6rem 1rem;">
-                <select class="role-filter" [(ngModel)]="statusFilter" (change)="applyFilters()">
-                    <option value="ALL">All Statuses</option>
-                    <option value="PENDING">Pending Approval</option>
-                    <option value="CONFIRMED">Confirmed</option>
-                    <option value="CANCELLED">Cancelled</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="loader" *ngIf="isLoading">
-            <div class="spinner" style="width: 20px; height: 20px; border: 2px solid #ccc; border-top: 2px solid #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px;"></div>
-            <span>Loading data...</span>
-        </div>
-
-        <div class="table-container" *ngIf="!isLoading">
-            <table class="tbl">
-                <thead>
-                    <tr>
-                        <th style="width: 80px;">REF ID</th>
-                        <th>PATIENT</th>
-                        <th>MEDICAL PROVIDER</th>
-                        <th>SCHEDULED DATE</th>
-                        <th>TIME SLOT</th>
-                        <th>STATUS</th>
-                        <th style="text-align: right;">ACTIONS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let app of filteredAppointments">
-                        <td class="ref-id" style="font-weight: 700; color: #6366f1;">#{{ app.id }}</td>
-                        <td>
-                            <div class="ucell">
-                                <div class="mav ma1">{{ app.patientName?.charAt(0) || 'P' }}</div>
-                                <div class="uinfo">
-                                    <div class="cn">{{ app.patientName || 'Unknown' }}</div>
-                                    <div class="cs">ID: {{ app.patientId }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="ucell">
-                                <div class="mav" style="background: rgba(13, 148, 136, 0.1); color: #0d9488;">{{ app.doctorName.charAt(0) || 'D' }}</div>
-                                <div class="uinfo">
-                                    <div class="cn">{{ app.doctorName || 'Not Assigned' }}</div>
-                                    <div class="cs">ID: {{ app.doctorId || '---' }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ (app.startTime | date:'mediumDate') || 'TBD' }}</td>
-                        <td>{{ (app.startTime | date:'shortTime') || 'TBD' }}</td>
-                        <td>
-                            <span class="chip" 
-                                  [class.ck-emerald]="app.status === 'CONFIRMED'"
-                                  [class.ck-amber]="app.status === 'PENDING'"
-                                  [class.ck-rose]="app.status === 'CANCELLED'">
-                                {{ app.status || 'PENDING' }}
-                            </span>
-                        </td>
-                        <td style="text-align: right;">
-                            <button class="action-btn text-indigo" title="View Details">View</button>
-                            <button *ngIf="app.status === 'PENDING'" class="action-btn text-indigo" (click)="confirmAppointment(app.id)">Confirm</button>
-                            <button *ngIf="app.status !== 'CANCELLED'" class="action-btn text-rose" (click)="cancelAppointment(app.id)">Cancel</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="no-data" *ngIf="filteredAppointments.length === 0">
-                <p>No appointments match your search criteria.</p>
-            </div>
-        </div>
+    <div *ngIf="!isLoading && filteredAppointments.length === 0" class="empty-state">
+      <div style="font-size:3rem; margin-bottom:1rem;">📅</div>
+      <p>No appointments found matching your criteria.</p>
     </div>
+
+    <table *ngIf="!isLoading && filteredAppointments.length > 0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Patient</th>
+          <th>Doctor</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Mode</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let appt of filteredAppointments; let i = index">
+          <td class="id-col">{{ appt.id }}</td>
+          <td>{{ appt.patientName || '—' }}</td>
+          <td>{{ appt.doctorName || '—' }}</td>
+          <td>{{ appt.date }}</td>
+          <td>{{ appt.startTime }} – {{ appt.endTime || '...' }}</td>
+          <td>
+            <span class="mode-tag" [ngClass]="appt.mode === 'ONLINE' ? 'mode-online' : 'mode-inperson'">
+              {{ appt.mode === 'ONLINE' ? '💻 Online' : '🏥 In-Person' }}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(appt.status)">{{ appt.status }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
-
-<style>
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-</style>
