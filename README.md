@@ -8,13 +8,21 @@ Elle permet de centraliser les données médicales, de faciliter l’accès aux 
 🚀 Fonctionnalités
 
 👤 Gestion des utilisateurs : patients, médecins et administrateurs
+
 📁 Dossier médical électronique sécurisé
+
 📅 Prise de rendez-vous en ligne
+
 🧪 Gestion des analyses de laboratoire
+
 💊 Suivi des pharmacies et des médicaments
+
 🏠 Services médicaux à domicile
+
 🔔 Système de notifications intelligentes
+
 💬 Forum de discussion & gestion des événements
+
 🤖 Modules d’intelligence artificielle pour l’aide au diagnostic et recommandations
 
 🛠️ Technologies
