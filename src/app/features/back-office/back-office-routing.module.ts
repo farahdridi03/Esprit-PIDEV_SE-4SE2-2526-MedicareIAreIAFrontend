@@ -9,6 +9,9 @@ import { UserManagementComponent } from './pages/user-management/user-management
 import { PharmacistValidationComponent } from './pages/pharmacist-validation/pharmacist-validation.component';
 import { AdminProvidersComponent } from './pages/admin-providers/admin-providers.component';
 import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.component';
+import { EventsListComponent } from './pages/events-list/events-list.component';
+import { EventFormComponent } from './pages/event-form/event-form.component';
+import { EventRegistrationsComponent } from './pages/event-registrations/event-registrations.component';
 
 const routes: Routes = [
   {
@@ -20,6 +23,10 @@ const routes: Routes = [
       { path: 'validations', component: PharmacistValidationComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'homecare-providers', component: AdminProvidersComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'homecare-requests', component: AdminRequestsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events', component: EventsListComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/new', component: EventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/edit/:id', component: EventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/:id/registrations', component: EventRegistrationsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

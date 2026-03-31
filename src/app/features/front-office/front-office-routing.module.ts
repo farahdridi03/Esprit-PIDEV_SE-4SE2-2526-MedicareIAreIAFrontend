@@ -16,6 +16,14 @@ import { HomecareRequestListComponent } from './patient/pages/homecare-request-l
 import { HomecareBookComponent } from './patient/pages/homecare-book/homecare-book.component';
 import { HomecareReviewComponent } from './patient/pages/homecare-review/homecare-review.component';
 import { AuthGuard } from '../../guards/auth.guard';
+import { PharmaciesListComponent } from './pharmacist/pages/pharmacies-list/pharmacies-list.component';
+import { ProductListComponent } from './pharmacist/pages/product-list/product-list.component';
+import { InventoryListComponent } from './pharmacist/pages/inventory-list/inventory-list.component';
+import { BatchesListComponent } from './pharmacist/pages/batches-list/batches-list.component';
+import { MovementsListComponent } from './pharmacist/pages/movements-list/movements-list.component';
+import { AlertsListComponent } from './pharmacist/pages/alerts-list/alerts-list.component';
+import { EventDetailComponent } from './pages/event-detail/event-detail.component';
+import { PatientEventsComponent } from './pages/patient-events/patient-events.component';
 
 const routes: Routes = [
   {
@@ -23,9 +31,12 @@ const routes: Routes = [
     component: FrontLayoutComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'contact', component: ContactComponent }
+      { path: 'contact', component: ContactComponent },
+      { path: 'events', component: PatientEventsComponent, canActivate: [AuthGuard] },
+      { path: 'events/:id', component: EventDetailComponent, canActivate: [AuthGuard] }
     ]
   },
+
   {
     path: 'patient/dashboard',
     component: DashboardComponent,
@@ -80,6 +91,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
+
+
+
+
+
   {
     path: 'doctor/dashboard',
     component: DoctorDashboardComponent,
@@ -127,7 +143,12 @@ const routes: Routes = [
       import('./clinic/clinic.module')
         .then(m => m.ClinicModule)
   }
+
+
 ];
+
+
+
 
 
 @NgModule({

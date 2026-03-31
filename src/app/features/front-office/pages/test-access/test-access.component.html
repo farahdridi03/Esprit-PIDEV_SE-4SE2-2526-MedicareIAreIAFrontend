@@ -1,0 +1,23 @@
+<div class="test-access-container">
+  <div class="header">
+    <h1>🧪 Mode Test - Accès Direct aux Interfaces</h1>
+    <p>Cliquez sur n'importe quelle interface pour y accéder directement (sans authentification)</p>
+    <div class="header-buttons">
+      <button (click)="goHome()" class="btn-home">🏠 Accueil</button>
+      <button (click)="goToLogin()" class="btn-login">🔐 Login</button>
+    </div>
+  </div>
+
+  <div class="interfaces-grid">
+    <div *ngFor="let iface of interfaces" class="interface-card" (click)="navigate(iface.path)">
+      <div class="icon">{{ iface.icon }}</div>
+      <div class="label">{{ iface.label }}</div>
+      <div class="path">{{ iface.path }}</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>⚠️ Mode TEST - Les restrictions de rôle et l'authentification sont désactivées</p>
+  </div>
+</div>
+

@@ -7,6 +7,12 @@ import { OrdersComponent } from './pages/orders/orders.component';
 import { PharmacistSidebarComponent } from './components/pharmacist-sidebar/pharmacist-sidebar.component';
 import { PharmacistTopbarComponent } from './components/pharmacist-topbar/pharmacist-topbar.component';
 import { PharmacistProfileComponent } from './pages/pharmacist-profile/pharmacist-profile.component';
+import { AlertsListComponent } from './pages/alerts-list/alerts-list.component';
+import { BatchesListComponent } from './pages/batches-list/batches-list.component';
+import { InventoryListComponent } from './pages/inventory-list/inventory-list.component';
+import { MovementsListComponent } from './pages/movements-list/movements-list.component';
+import { PharmaciesListComponent } from './pages/pharmacies-list/pharmacies-list.component';
+import { ProductListComponent } from './pages/product-list/product-list.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +20,13 @@ import { PharmacistProfileComponent } from './pages/pharmacist-profile/pharmacis
     OrdersComponent,
     PharmacistSidebarComponent,
     PharmacistTopbarComponent,
-    PharmacistProfileComponent
+    PharmacistProfileComponent,
+    AlertsListComponent,
+    BatchesListComponent,
+    InventoryListComponent,
+    MovementsListComponent,
+    PharmaciesListComponent,
+    ProductListComponent
   ],
   imports: [
     CommonModule,

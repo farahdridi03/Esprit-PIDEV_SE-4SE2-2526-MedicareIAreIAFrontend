@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { BackOfficeRoutingModule } from './back-office-routing.module';
 import { BackOfficeComponent } from './back-office.component';
@@ -11,6 +12,9 @@ import { UserManagementComponent } from './pages/user-management/user-management
 import { PharmacistValidationComponent } from './pages/pharmacist-validation/pharmacist-validation.component';
 import { AdminProvidersComponent } from './pages/admin-providers/admin-providers.component';
 import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.component';
+import { EventsListComponent } from './pages/events-list/events-list.component';
+import { EventFormComponent } from './pages/event-form/event-form.component';
+import { EventRegistrationsComponent } from './pages/event-registrations/event-registrations.component';
 
 @NgModule({
   declarations: [
@@ -21,11 +25,15 @@ import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.co
     UserManagementComponent,
     PharmacistValidationComponent,
     AdminProvidersComponent,
-    AdminRequestsComponent
+    AdminRequestsComponent,
+    EventFormComponent,
+    EventRegistrationsComponent,
+    EventsListComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     BackOfficeRoutingModule
   ]
 })

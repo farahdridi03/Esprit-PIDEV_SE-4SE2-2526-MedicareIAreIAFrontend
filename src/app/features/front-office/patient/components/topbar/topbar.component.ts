@@ -6,9 +6,13 @@ import { NotificationResponseDTO } from '../../../../../models/notification.mode
 import { DeliveryTrackingService } from '../../../../../services/delivery-tracking.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-topbar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.scss']
 })
@@ -21,12 +25,12 @@ export class TopbarComponent implements OnInit, OnDestroy {
   private notifSub!: Subscription;
 
   constructor(
-    private userService: UserService, 
+    private userService: UserService,
     public authService: AuthService,
     private notificationService: NotificationService,
     private deliveryTrackingService: DeliveryTrackingService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadUserInfo();
@@ -47,7 +51,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
     if (userId) {
       // Chargement initial
       this.notificationService.getNotifications(userId).subscribe();
-      
+
       // Abonnement aux flux réactifs de NotificationService
       this.notifSub = this.notificationService.notifications$.subscribe(notifs => {
         this.notifications = notifs;
@@ -64,8 +68,8 @@ export class TopbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-      if (this.notifSub) this.notifSub.unsubscribe();
-      this.deliveryTrackingService.disconnect();
+    if (this.notifSub) this.notifSub.unsubscribe();
+    this.deliveryTrackingService.disconnect();
   }
 
   private loadUserInfo() {
@@ -109,7 +113,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
   navigateToRelated(notification: NotificationResponseDTO) {
     this.markAsRead(notification);
     this.showNotifications = false;
-    
+
     if (notification.orderId) {
       if (notification.type.includes('ORDER') || notification.type.includes('DELIVERY') || notification.type.includes('PAYMENT')) {
         this.router.navigate(['/front/patient/pharmacy-orders', notification.orderId]);

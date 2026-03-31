@@ -1,0 +1,63 @@
+<div class="page-header">
+    <div>
+        <h1>Event <em>Registrations</em></h1>
+        <p>Participant list for Event ID: {{ eventId }}</p>
+    </div>
+    <button class="action-btn" style="background:#fff; border:1px solid #ddd; padding:8px 16px; border-radius:4px; cursor:pointer;" routerLink="../../">
+        ← Back to Events
+    </button>
+</div>
+
+<div class="panel">
+    <div class="panel-head">
+        <div class="panel-title">Registered Participants</div>
+        <button class="panel-action" (click)="loadRegistrations()">Refresh ⭮</button>
+    </div>
+
+    <div class="loader" *ngIf="loading">Loading participants...</div>
+
+    <table class="tbl" *ngIf="!loading && registrations.length > 0">
+        <thead>
+            <tr>
+                <th>Registration ID</th>
+                <th>Participant ID</th>
+                <th>Date Registered</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let reg of registrations">
+                <td><strong>#{{ reg.id }}</strong></td>
+                <td>
+                    <div class="ucell">
+                        <div class="mav ma1">P</div>
+                        <div>
+                            <div class="cn">User {{ reg.participantId }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ reg.createdAt | date:'medium' }}</td>
+                <td>
+                    <span class="chip" [ngClass]="reg.status === 'VALIDATED' ? 'ck-emerald' : 'ck-amber'">
+                        {{ reg.status }}
+                    </span>
+                </td>
+                <td style="text-align: right;">
+                    <button class="action-btn text-indigo" 
+                        *ngIf="reg.status === 'REGISTERED'" 
+                        (click)="validateRegistration(reg.id)">
+                        Validate ✓
+                    </button>
+                    <span *ngIf="reg.status === 'VALIDATED'" style="font-size: 0.8rem; color: #6b7280; margin-right: 0.5rem;">
+                        Passed
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && registrations.length === 0" class="no-data">
+        No participants have registered for this event yet.
+    </div>
+</div>

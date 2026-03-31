@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Product, ProductRequest } from '../models/product.model';
 import { ProductResponseDTO } from '../models/pharmacy.model';
 
 @Injectable({
@@ -11,17 +12,28 @@ export class ProductService {
 
     constructor(private http: HttpClient) { }
 
-    getAllProducts(): Observable<ProductResponseDTO[]> {
-        return this.http.get<ProductResponseDTO[]>(this.apiUrl);
+    getAllProducts(): Observable<Product[]> {
+        return this.http.get<Product[]>(this.apiUrl);
     }
 
-    searchProducts(name: string): Observable<ProductResponseDTO[]> {
-        return this.http.get<ProductResponseDTO[]>(`${this.apiUrl}/search`, {
-            params: { name }
-        });
+    getProductById(id: number): Observable<Product> {
+        return this.http.get<Product>(`${this.apiUrl}/${id}`);
     }
 
-    getProductById(id: number): Observable<ProductResponseDTO> {
-        return this.http.get<ProductResponseDTO>(`${this.apiUrl}/${id}`);
+    createProduct(product: ProductRequest): Observable<Product> {
+        return this.http.post<Product>(this.apiUrl, product);
+    }
+
+    updateProduct(id: number, product: ProductRequest): Observable<Product> {
+        return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
+    }
+
+    deleteProduct(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    }
+
+    searchProducts(query: string): Observable<ProductResponseDTO[]> {
+        const params = new HttpParams().set('name', query);
+        return this.http.get<ProductResponseDTO[]>(`${this.apiUrl}/search`, { params });
     }
 }

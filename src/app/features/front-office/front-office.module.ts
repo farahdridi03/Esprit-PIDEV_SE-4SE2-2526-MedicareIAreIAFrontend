@@ -32,8 +32,6 @@ import { HomecareReviewComponent } from './patient/pages/homecare-review/homecar
     ContactComponent,
     DashboardComponent,
     PharmacyComponent,
-    SidebarComponent,
-    TopbarComponent,
     DoctorSidebarComponent,
     DoctorTopbarComponent,
     DoctorDashboardComponent,
@@ -51,7 +49,12 @@ import { HomecareReviewComponent } from './patient/pages/homecare-review/homecar
     CommonModule,
     FrontOfficeRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SidebarComponent,
+    TopbarComponent
+  ],
+  exports: [
+
   ]
 })
 export class FrontOfficeModule { }

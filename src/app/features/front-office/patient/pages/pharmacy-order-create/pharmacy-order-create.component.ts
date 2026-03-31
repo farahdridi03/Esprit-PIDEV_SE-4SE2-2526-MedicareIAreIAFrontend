@@ -92,10 +92,10 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
         }
 
         this.isLoading = true;
-        
+
         // Support for multi-search (comma-separated)
         const terms = query.split(',').map(t => t.trim()).filter(t => t.length > 0);
-        
+
         if (terms.length > 1) {
             const searches = terms.map(term => this.productService.searchProducts(term));
             forkJoin(searches).pipe(takeUntil(this.destroy$)).subscribe({
@@ -117,7 +117,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
             this.productService.searchProducts(query)
                 .pipe(takeUntil(this.destroy$))
                 .subscribe({
-                    next: (products) => {
+                    next: (products: ProductResponseDTO[]) => {
                         this.availableProducts = products;
                         this.isLoading = false;
                         this.showProductSearch = true;
@@ -187,13 +187,13 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
         this.selectedCompatiblePharmacy = null;
 
         const productIds = this.selectedProducts.map(sp => sp.product.id);
-        
+
         this.pharmacyService.searchByProducts(productIds)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (stockList: PharmacyStockResponseDTO[]) => {
                     const pharmacyStockMap = new Map<number, PharmacyStockResponseDTO[]>();
-                    
+
                     stockList.forEach(stock => {
                         if (!pharmacyStockMap.has(stock.pharmacyId)) {
                             pharmacyStockMap.set(stock.pharmacyId, []);
@@ -206,7 +206,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
                     for (const [pharmacyId, stockDetails] of pharmacyStockMap.entries()) {
                         let totalPrice = 0;
                         const foundProductIds = stockDetails.map(s => s.productId);
-                        
+
                         stockDetails.forEach(s => {
                             const desiredQty = this.selectedProducts.find(p => p.product.id === s.productId)?.quantity || 0;
                             totalPrice += (s.unitPrice * desiredQty);
@@ -261,7 +261,7 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
         if (file) {
             this.isUploading = true;
             this.error = '';
-            
+
             this.fileUploadService.uploadFile(file)
                 .pipe(takeUntil(this.destroy$))
                 .subscribe({

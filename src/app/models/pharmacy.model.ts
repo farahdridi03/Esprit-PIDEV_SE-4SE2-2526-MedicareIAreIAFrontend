@@ -1,3 +1,13 @@
+export interface Pharmacy {
+  id: number;
+  name: string;
+  address: string;
+  locationLat?: number;
+  locationLng?: number;
+  phoneNumber?: string;
+  email?: string;
+}
+
 export interface PharmacyResponseDTO {
   id: number;
   name: string;
@@ -57,4 +67,13 @@ export interface DeliveryAgent {
   vehicleType?: string;
   status: 'AVAILABLE' | 'BUSY' | 'OFFLINE';
   agency?: DeliveryAgency;
+}
+
+export interface PharmacyRequest {
+  name: string;
+  address: string;
+  locationLat?: number;
+  locationLng?: number;
+  phoneNumber?: string;
+  email?: string;
 }
