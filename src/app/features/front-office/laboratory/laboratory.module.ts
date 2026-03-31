@@ -8,8 +8,6 @@ import { LaboratoryStaffProfileSettingsComponent } from './pages/laboratory-prof
 import { LaboratoryProfileEditComponent } from './pages/laboratory-profile-edit/laboratory-profile-edit.component';
 
 
-import { LaboratoryStaffSidebarComponent } from './components/laboratory-sidebar/laboratory-sidebar.component';
-import { LaboratoryStaffTopbarComponent } from './components/laboratory-topbar/laboratory-topbar.component';
 import { LaboratoryStaffDashboardComponent } from './pages/laboratory-dashboard/laboratory-dashboard.component';
 import { LabTestsComponent } from './lab-tests/lab-tests.component';
 import { LabTestFormComponent } from './lab-tests/lab-test-form.component';
@@ -38,8 +36,6 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [
-        LaboratoryStaffSidebarComponent,
-        LaboratoryStaffTopbarComponent,
         LaboratoryStaffDashboardComponent,
         LaboratoryStaffProfileSettingsComponent,
         LaboratoryProfileEditComponent,

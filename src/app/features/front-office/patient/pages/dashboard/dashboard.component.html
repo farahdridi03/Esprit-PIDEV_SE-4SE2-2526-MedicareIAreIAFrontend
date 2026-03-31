@@ -14,36 +14,37 @@
 
             <div class="dashboard-main-content">
                 <!-- Welcome Banner -->
-                <div class="welcome-banner">
-                    <div class="banner-text">
-                        <h1>Welcome back, {{ firstName || 'User' }}!</h1>
-                        <p>Track your health journey and upcoming visits.</p>
+                <div class="page-hero">
+                    <div class="hero-label">
+                        <span class="icon">✨</span> Patient Portal
+                    </div>
+                    <div class="hero-title">Welcome back, {{ firstName || 'User' }}!</div>
+                    <p class="hero-sub">Track your health journey and upcoming visits at a glance.</p>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-pill">
+                            <div class="stat-lbl">Next Appointment</div>
+                            <div class="stat-val" *ngIf="nextAppointment">
+                                {{ nextAppointment.startTime }}
+                            </div>
+                            <div class="stat-val" *ngIf="!nextAppointment">None</div>
+                        </div>
+
+                        <div class="stat-pill">
+                            <div class="stat-lbl">Total Visits</div>
+                            <div class="stat-val">{{ appointmentCount }}</div>
+                        </div>
+
+                        <div class="stat-pill">
+                            <div class="stat-lbl">Health Status</div>
+                            <div class="stat-val" style="font-size: 1.2rem; margin-top: 5px;">Vitals normal</div>
+                        </div>
                     </div>
 
-                    <div class="banner-stats">
-                        <div class="stat-card">
-                            <div class="label">Next Appointment</div>
-                            <div class="value" *ngIf="nextAppointment">
-                                <span class="time">{{ nextAppointment.startTime }}</span>
-                                <span class="date">{{ nextAppointment.date | date:'MMM d' }}</span>
-                                <div class="sub">{{ nextAppointment.doctorName }}</div>
-                            </div>
-                            <div class="value-empty" *ngIf="!nextAppointment">
-                                <span class="no-data">None scheduled</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="label">Total Appointments</div>
-                            <div class="value large">{{ appointmentCount }}</div>
-                            <div class="sub">Active & Past</div>
-                        </div>
-
-                        <div class="stat-card highlight">
-                            <div class="label">Health Status</div>
-                            <div class="value small">Vitals normal</div>
-                            <div class="pulse-icon">❤️</div>
-                        </div>
+                    <div class="hero-actions">
+                        <button class="add-btn" routerLink="/front/patient/doctors">
+                            <span class="plus">+</span> New Appointment
+                        </button>
                     </div>
                 </div>
 

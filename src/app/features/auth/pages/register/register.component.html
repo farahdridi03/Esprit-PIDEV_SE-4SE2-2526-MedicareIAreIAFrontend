@@ -33,8 +33,9 @@
         </div>
         <div
           *ngIf="registerForm.get('fullName')?.invalid && (registerForm.get('fullName')?.dirty || registerForm.get('fullName')?.touched)">
-          <small class="error-message" *ngIf="registerForm.get('fullName')?.errors?.['required']">Full Name is
-            required.</small>
+          <small class="error-message" *ngIf="registerForm.get('fullName')?.errors?.['required']">Full Name is required.</small>
+          <small class="error-message" *ngIf="registerForm.get('fullName')?.errors?.['minlength']">Name must be at least 3 characters.</small>
+          <small class="error-message" *ngIf="registerForm.get('fullName')?.errors?.['maxlength']">Name cannot exceed 50 characters.</small>
         </div>
       </div>
 
@@ -79,13 +80,12 @@
           *ngIf="registerForm.get('phone')?.invalid && (registerForm.get('phone')?.dirty || registerForm.get('phone')?.touched)">
           <small class="error-message" *ngIf="registerForm.get('phone')?.errors?.['required']">Phone number is
             required.</small>
-          <small class="error-message" *ngIf="registerForm.get('phone')?.errors?.['pattern']">Phone number must be
-            exactly 8 digits.</small>
+          <small class="error-message" *ngIf="registerForm.get('phone')?.errors?.['pattern']">Phone number must be between 8 and 15 digits.</small>
         </div>
       </div>
 
       <!-- Date of Birth -->
-      <div class="form-group">
+      <div class="form-group" *ngIf="!isClinic && !isLabStaff">
         <label for="birthDate">Date of Birth</label>
         <div class="input-wrapper">
           <span class="input-icon">
@@ -115,7 +115,7 @@
                 d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
             </svg>
           </span>
-          <select id="role" formControlName="role" class="role-select">
+          <select id="role" formControlName="role">
             <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
           </select>
         </div>
@@ -130,7 +130,7 @@
             <div class="form-group">
               <label for="gender">Gender</label>
               <div class="input-wrapper">
-                <select id="gender" formControlName="gender" class="role-select"
+                <select id="gender" formControlName="gender" class="no-icon"
                   [ngClass]="{'is-invalid': registerForm.get('gender')?.invalid && (registerForm.get('gender')?.dirty || registerForm.get('gender')?.touched)}">
                   <option *ngFor="let g of genders" [value]="g.value">{{ g.label }}</option>
                 </select>
@@ -141,7 +141,7 @@
             <div class="form-group">
               <label for="bloodType">Blood Type</label>
               <div class="input-wrapper">
-                <select id="bloodType" formControlName="bloodType" class="role-select"
+                <select id="bloodType" formControlName="bloodType" class="no-icon"
                   [ngClass]="{'is-invalid': registerForm.get('bloodType')?.invalid && (registerForm.get('bloodType')?.dirty || registerForm.get('bloodType')?.touched)}">
                   <option *ngFor="let b of bloodTypes" [value]="b.value">{{ b.label }}</option>
                 </select>
@@ -183,8 +183,7 @@
             </div>
             <div
               *ngIf="registerForm.get('emergencyContactPhone')?.invalid && (registerForm.get('emergencyContactPhone')?.dirty || registerForm.get('emergencyContactPhone')?.touched)">
-              <small class="error-message" *ngIf="registerForm.get('emergencyContactPhone')?.errors?.['pattern']">Phone
-                number must be exactly 8 digits.</small>
+              <small class="error-message" *ngIf="registerForm.get('emergencyContactPhone')?.errors?.['pattern']">Phone number must be between 8 and 15 digits.</small>
             </div>
           </div>
 
@@ -241,12 +240,22 @@
       <!-- Profile Image -->
       <div class="form-group margin-top">
         <label for="profileImage">Profile Picture (Optional)</label>
-        <div class="input-wrapper" style="border: none; padding: 0; background: transparent;">
-          <input type="file" id="profileImage" accept="image/*" (change)="onFileSelected($event)"
-                 style="padding: 0; border: none; background: transparent; cursor: pointer;">
+        <div class="file-upload-wrapper">
+          <div class="file-input-container">
+            <input type="file" id="profileImage" accept="image/*" (change)="onFileSelected($event)">
+            <div class="custom-file-button">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>{{ profileImageBase64 ? 'Change Photo' : 'Upload Profile Photo' }}</span>
+            </div>
+          </div>
         </div>
-        <div *ngIf="profileImageBase64" style="margin-top: 10px; display: flex; justify-content: center;">
-            <img [src]="profileImageBase64" alt="Preview" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #0e7c66;">
+        
+        <div *ngIf="profileImageBase64" class="image-preview-container">
+          <div class="preview-wrapper">
+            <img [src]="profileImageBase64" alt="Preview">
+          </div>
         </div>
       </div>
 
@@ -258,11 +267,14 @@
           <div class="form-group">
             <label for="specialty">Specialty</label>
             <div class="input-wrapper">
-              <select id="specialty" formControlName="specialty" class="role-select"
+              <select id="specialty" formControlName="specialty" class="no-icon"
                 [ngClass]="{'is-invalid': registerForm.get('specialty')?.invalid && (registerForm.get('specialty')?.dirty || registerForm.get('specialty')?.touched)}">
                 <option value="" disabled>Select your specialty</option>
                 <option *ngFor="let s of doctorSpecialties" [value]="s.value">{{ s.label }}</option>
               </select>
+            </div>
+            <div *ngIf="registerForm.get('specialty')?.invalid && (registerForm.get('specialty')?.dirty || registerForm.get('specialty')?.touched)">
+              <small class="error-message">Specialty is required.</small>
             </div>
           </div>
 
@@ -273,6 +285,9 @@
                 <input type="text" id="licenseNumber" formControlName="licenseNumber" placeholder="FR123456"
                   [ngClass]="{'is-invalid': registerForm.get('licenseNumber')?.invalid && (registerForm.get('licenseNumber')?.dirty || registerForm.get('licenseNumber')?.touched)}">
               </div>
+              <div *ngIf="registerForm.get('licenseNumber')?.invalid && (registerForm.get('licenseNumber')?.dirty || registerForm.get('licenseNumber')?.touched)">
+                <small class="error-message">License number is required.</small>
+              </div>
             </div>
 
             <div class="form-group margin-top">
@@ -281,6 +296,10 @@
                 <input type="number" id="consultationFee" formControlName="consultationFee" placeholder="80"
                   [ngClass]="{'is-invalid': registerForm.get('consultationFee')?.invalid && (registerForm.get('consultationFee')?.dirty || registerForm.get('consultationFee')?.touched)}">
               </div>
+              <div *ngIf="registerForm.get('consultationFee')?.invalid && (registerForm.get('consultationFee')?.dirty || registerForm.get('consultationFee')?.touched)">
+                <small class="error-message" *ngIf="registerForm.get('consultationFee')?.errors?.['required']">Fee is required.</small>
+                <small class="error-message" *ngIf="registerForm.get('consultationFee')?.errors?.['min']">Fee must be positive.</small>
+              </div>
             </div>
           </div>
 
@@ -288,7 +307,7 @@
           <div class="form-group margin-top">
             <label for="consultationMode">Consultation Mode</label>
             <div class="input-wrapper">
-              <select id="consultationMode" formControlName="consultationMode" class="role-select">
+              <select id="consultationMode" formControlName="consultationMode" class="no-icon">
                 <option *ngFor="let m of consultationModes" [value]="m.value">{{ m.label }}</option>
               </select>
             </div>
@@ -297,7 +316,7 @@
           <div class="form-group margin-top" *ngIf="registerForm.get('consultationMode')?.value !== 'ONLINE'">
             <label for="doctorClinicSelect">Clinique d'exercice</label>
             <div class="input-wrapper">
-              <select id="doctorClinicSelect" formControlName="clinicId" class="role-select"
+              <select id="doctorClinicSelect" formControlName="clinicId" class="no-icon"
                 [ngClass]="{'is-invalid': registerForm.get('clinicId')?.invalid && (registerForm.get('clinicId')?.dirty || registerForm.get('clinicId')?.touched)}">
                 <option value="">-- Sélectionnez votre clinique --</option>
                 <option *ngFor="let c of clinics" [value]="c.id">{{ c.name }} — {{ c.address }}</option>
@@ -321,6 +340,9 @@
               <input type="text" id="clinicName" formControlName="clinicName" placeholder="Clinic Name"
                 [ngClass]="{'is-invalid': registerForm.get('clinicName')?.invalid && (registerForm.get('clinicName')?.dirty || registerForm.get('clinicName')?.touched)}">
             </div>
+            <div *ngIf="registerForm.get('clinicName')?.invalid && (registerForm.get('clinicName')?.dirty || registerForm.get('clinicName')?.touched)">
+              <small class="error-message">Clinic name is required.</small>
+            </div>
           </div>
 
           <div class="form-group margin-top">
@@ -329,6 +351,9 @@
               <input type="text" id="clinicAddress" formControlName="clinicAddress" placeholder="Clinic Address"
                 [ngClass]="{'is-invalid': registerForm.get('clinicAddress')?.invalid && (registerForm.get('clinicAddress')?.dirty || registerForm.get('clinicAddress')?.touched)}">
             </div>
+            <div *ngIf="registerForm.get('clinicAddress')?.invalid && (registerForm.get('clinicAddress')?.dirty || registerForm.get('clinicAddress')?.touched)">
+              <small class="error-message">Address is required.</small>
+            </div>
           </div>
 
           <div class="form-group margin-top">
@@ -336,6 +361,10 @@
             <div class="input-wrapper">
               <input type="tel" id="clinicPhone" formControlName="clinicPhone" placeholder="8 digits"
                 [ngClass]="{'is-invalid': registerForm.get('clinicPhone')?.invalid && (registerForm.get('clinicPhone')?.dirty || registerForm.get('clinicPhone')?.touched)}">
+            </div>
+            <div *ngIf="registerForm.get('clinicPhone')?.invalid && (registerForm.get('clinicPhone')?.dirty || registerForm.get('clinicPhone')?.touched)">
+              <small class="error-message" *ngIf="registerForm.get('clinicPhone')?.errors?.['required']">Phone is required.</small>
+              <small class="error-message" *ngIf="registerForm.get('clinicPhone')?.errors?.['pattern']">Invalid phone format.</small>
             </div>
           </div>
 
@@ -368,6 +397,9 @@
               <input type="text" id="pharmacyName" formControlName="pharmacyName" placeholder="Pharmacy Name"
                 [ngClass]="{'is-invalid': registerForm.get('pharmacyName')?.invalid && (registerForm.get('pharmacyName')?.dirty || registerForm.get('pharmacyName')?.touched)}">
             </div>
+            <div *ngIf="registerForm.get('pharmacyName')?.invalid && (registerForm.get('pharmacyName')?.dirty || registerForm.get('pharmacyName')?.touched)">
+              <small class="error-message">Pharmacy name is required.</small>
+            </div>
           </div>
 
           <div class="form-group margin-top">
@@ -375,6 +407,9 @@
             <div class="input-wrapper">
               <input type="text" id="pharmacyAddress" formControlName="pharmacyAddress" placeholder="Pharmacy Address"
                 [ngClass]="{'is-invalid': registerForm.get('pharmacyAddress')?.invalid && (registerForm.get('pharmacyAddress')?.dirty || registerForm.get('pharmacyAddress')?.touched)}">
+            </div>
+            <div *ngIf="registerForm.get('pharmacyAddress')?.invalid && (registerForm.get('pharmacyAddress')?.dirty || registerForm.get('pharmacyAddress')?.touched)">
+              <small class="error-message">Address is required.</small>
             </div>
           </div>
 
@@ -384,6 +419,10 @@
               <input type="tel" id="pharmacyPhone" formControlName="pharmacyPhone" placeholder="8 digits"
                 [ngClass]="{'is-invalid': registerForm.get('pharmacyPhone')?.invalid && (registerForm.get('pharmacyPhone')?.dirty || registerForm.get('pharmacyPhone')?.touched)}">
             </div>
+            <div *ngIf="registerForm.get('pharmacyPhone')?.invalid && (registerForm.get('pharmacyPhone')?.dirty || registerForm.get('pharmacyPhone')?.touched)">
+              <small class="error-message" *ngIf="registerForm.get('pharmacyPhone')?.errors?.['required']">Phone is required.</small>
+              <small class="error-message" *ngIf="registerForm.get('pharmacyPhone')?.errors?.['pattern']">Invalid format (8-15 digits).</small>
+            </div>
           </div>
 
           <div class="form-group margin-top">
@@ -391,6 +430,10 @@
             <div class="input-wrapper">
               <input type="email" id="pharmacyEmail" formControlName="pharmacyEmail" placeholder="pharmacy@example.com"
                 [ngClass]="{'is-invalid': registerForm.get('pharmacyEmail')?.invalid && (registerForm.get('pharmacyEmail')?.dirty || registerForm.get('pharmacyEmail')?.touched)}">
+            </div>
+            <div *ngIf="registerForm.get('pharmacyEmail')?.invalid && (registerForm.get('pharmacyEmail')?.dirty || registerForm.get('pharmacyEmail')?.touched)">
+              <small class="error-message" *ngIf="registerForm.get('pharmacyEmail')?.errors?.['required']">Email is required.</small>
+              <small class="error-message" *ngIf="registerForm.get('pharmacyEmail')?.errors?.['email']">Invalid email format.</small>
             </div>
           </div>
         </div>
@@ -429,7 +472,7 @@
           <div class="form-group margin-top">
             <label for="n-consultationMode">Consultation Mode</label>
             <div class="input-wrapper">
-              <select id="n-consultationMode" formControlName="consultationMode" class="role-select">
+              <select id="n-consultationMode" formControlName="consultationMode" class="no-icon">
                 <option *ngFor="let m of consultationModes" [value]="m.value">{{ m.label }}</option>
               </select>
             </div>
@@ -447,6 +490,9 @@
             <div class="input-wrapper">
               <input type="text" id="labName" formControlName="labName" placeholder="Laboratory Name"
                 [ngClass]="{'is-invalid': registerForm.get('labName')?.invalid && (registerForm.get('labName')?.dirty || registerForm.get('labName')?.touched)}">
+            </div>
+            <div *ngIf="registerForm.get('labName')?.invalid && (registerForm.get('labName')?.dirty || registerForm.get('labName')?.touched)">
+              <small class="error-message">Lab name is required.</small>
             </div>
           </div>
 
@@ -523,6 +569,28 @@
             required.</small>
           <small class="error-message" *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at
             least 8 characters.</small>
+        </div>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </span>
+          <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="Confirm your password"
+            [ngClass]="{'is-invalid': (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('mismatch')) && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)}">
+        </div>
+        <div
+          *ngIf="(registerForm.get('confirmPassword')?.invalid || registerForm.hasError('mismatch')) && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)">
+          <small class="error-message" *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Confirm
+            Password is required.</small>
+          <small class="error-message" *ngIf="registerForm.hasError('mismatch') && !registerForm.get('confirmPassword')?.errors?.['required']">Passwords must match.</small>
         </div>
       </div>
 

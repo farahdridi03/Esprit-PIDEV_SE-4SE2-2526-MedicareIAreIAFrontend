@@ -60,10 +60,10 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
-    path: 'patient/donations',
+    path: 'donations',
     component: DonationsComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['PATIENT'] }
+    data: { roles: ['PATIENT', 'DOCTOR', 'CLINIC', 'PHARMACIST', 'LABORATORY_STAFF', 'NUTRITIONIST', 'HOME_CARE_PROVIDER'] }
   },
   {
     path: 'patient/appointments',

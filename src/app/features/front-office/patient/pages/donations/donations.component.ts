@@ -12,6 +12,7 @@ import { NotificationService } from '../../../../../services/notification.servic
 })
 export class DonationsComponent implements OnInit {
   donations: Donation[] = [];
+  userRole: string = '';
 
   isModalOpen = false;
   editingDonationId: number | null = null;
@@ -62,6 +63,7 @@ export class DonationsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.userRole = this.authService.getUserRole() || '';
     this.currentUserName = this.authService.getUserFullName() || '';
     this.loadDonations();
     this.resolvePatientId();

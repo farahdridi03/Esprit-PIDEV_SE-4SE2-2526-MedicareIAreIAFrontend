@@ -70,9 +70,9 @@ export class RegisterComponent implements OnInit {
     private router: Router
   ) {
     this.registerForm = this.fb.group({
-      fullName: ['', Validators.required],
+      fullName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{8,15}$')]],
       birthDate: ['', Validators.required],
       role: ['PATIENT', Validators.required],
       gender: ['MALE'],
@@ -108,9 +108,16 @@ export class RegisterComponent implements OnInit {
       certificationDocument: [''],
       selectedServices: this.fb.array([]),
       password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required],
       terms: [false, Validators.requiredTrue],
       profileImage: [null]
-    });
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  passwordMatchValidator(g: FormGroup) {
+    const password = g.get('password')?.value;
+    const confirmPassword = g.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { mismatch: true };
   }
 
   ngOnInit() {
@@ -156,6 +163,7 @@ export class RegisterComponent implements OnInit {
       const chronicDiseasesCtrl = this.registerForm.get('chronicDiseases');
       const drugAllergiesCtrl = this.registerForm.get('drugAllergies');
       const hereditaryDiseasesCtrl = this.registerForm.get('hereditaryDiseases');
+      const birthDateCtrl = this.registerForm.get('birthDate');
 
       const specialtyCtrl = this.registerForm.get('specialty');
       const licenseCtrl = this.registerForm.get('licenseNumber');
@@ -187,17 +195,22 @@ export class RegisterComponent implements OnInit {
         specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, clinicIdCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
         pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
-        labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
+        labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl, birthDateCtrl
       ].forEach(ctrl => {
         ctrl?.clearValidators();
         ctrl?.updateValueAndValidity();
       });
 
+      // Default birthDate required unless Clinic or Lab
+      if (!isClinic && !isLabStaff) {
+        birthDateCtrl?.setValidators([Validators.required]);
+      }
+
       if (isPatient) {
         genderCtrl?.setValidators([Validators.required]);
         bloodTypeCtrl?.setValidators([Validators.required]);
         emNameCtrl?.setValidators([Validators.required]);
-        emPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        emPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8,15}$')]);
         heightCtrl?.setValidators([Validators.required, Validators.min(0)]);
         weightCtrl?.setValidators([Validators.required, Validators.min(0)]);
       } else if (isDoctor || isNutritionist) {
@@ -211,18 +224,18 @@ export class RegisterComponent implements OnInit {
       } else if (isClinic) {
         clinicNameCtrl?.setValidators([Validators.required]);
         clinicAddressCtrl?.setValidators([Validators.required]);
-        clinicPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        clinicPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8,15}$')]);
         clinicEmergencyCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{3,8}$')]);
         clinicAmbulanceCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{3,8}$')]);
       } else if (isPharmacist) {
         pharmacyNameCtrl?.setValidators([Validators.required]);
         pharmacyAddressCtrl?.setValidators([Validators.required]);
-        pharmacyPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        pharmacyPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8,15}$')]);
         pharmacyEmailCtrl?.setValidators([Validators.required, Validators.email]);
       } else if (isLabStaff) {
         labNameCtrl?.setValidators([Validators.required]);
         labAddressCtrl?.setValidators([Validators.required]);
-        labPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        labPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8,15}$')]);
       } else if (isHomeCare) {
         certDocCtrl?.setValidators([Validators.required]);
         servicesCtrl?.setValidators([Validators.required, Validators.minLength(1)]);
@@ -233,7 +246,7 @@ export class RegisterComponent implements OnInit {
         specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, clinicIdCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
         pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
-        labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
+        labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl, birthDateCtrl
       ].forEach(ctrl => ctrl?.updateValueAndValidity());
     });
   }

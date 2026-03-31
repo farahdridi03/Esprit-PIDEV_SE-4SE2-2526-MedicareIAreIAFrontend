@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeCareSidebarComponent } from './components/home-care-sidebar/home-care-sidebar.component';
-import { HomeCareTopbarComponent } from './components/home-care-topbar/home-care-topbar.component';
+import { LayoutModule } from '../layout/layout.module';
 import { HomeCareDashboardComponent } from './pages/home-care-dashboard/home-care-dashboard.component';
 
 const routes: Routes = [
@@ -18,13 +17,12 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [
-        HomeCareSidebarComponent,
-        HomeCareTopbarComponent,
         HomeCareDashboardComponent
     ],
     imports: [
         CommonModule,
-        RouterModule.forChild(routes)
+        RouterModule.forChild(routes),
+        LayoutModule
     ]
 })
 export class HomeCareModule { }

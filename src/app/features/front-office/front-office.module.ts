@@ -31,8 +31,6 @@ import { LabRequestFormComponent } from './patient/pages/lab-requests/lab-reques
 // Doctor components
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
-import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/doctor-sidebar.component';
-import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
 import { ProviderCalendarSharedModule } from './doctor/provider-calendar-shared.module';
 import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 import { DoctorMedicalRecordComponent } from './doctor/pages/doctor-medical-record/doctor-medical-record.component';
@@ -74,8 +72,6 @@ import { ContactComponent } from './pages/contact/contact.component';
     LabRequestFormComponent,
     DoctorDashboardComponent,
     DoctorProfileComponent,
-    DoctorSidebarComponent,
-    DoctorTopbarComponent,
     DoctorPatientsComponent,
     DoctorMedicalRecordComponent,
     DoctorConsultationsComponent,
@@ -112,8 +108,6 @@ import { ContactComponent } from './pages/contact/contact.component';
     PatientProfileComponent,
     DoctorDashboardComponent,
     DoctorProfileComponent,
-    DoctorSidebarComponent,
-    DoctorTopbarComponent,
     DoctorPatientsComponent
   ]
 })

@@ -1,11 +1,29 @@
 <div class="dashboard-wrapper">
-    <!-- Sidebar -->
-    <app-patient-sidebar></app-patient-sidebar>
+    <!-- Role-aware Sidebar -->
+    <ng-container [ngSwitch]="userRole">
+      <app-patient-sidebar *ngSwitchCase="'PATIENT'"></app-patient-sidebar>
+      <app-doctor-sidebar *ngSwitchCase="'DOCTOR'"></app-doctor-sidebar>
+      <app-pharmacist-sidebar *ngSwitchCase="'PHARMACIST'"></app-pharmacist-sidebar>
+      <app-clinic-sidebar *ngSwitchCase="'CLINIC'"></app-clinic-sidebar>
+      <app-laboratorystaff-sidebar *ngSwitchCase="'LABORATORY_STAFF'"></app-laboratorystaff-sidebar>
+      <app-nutritionist-sidebar *ngSwitchCase="'NUTRITIONIST'"></app-nutritionist-sidebar>
+      <app-home-care-sidebar *ngSwitchCase="'HOME_CARE_PROVIDER'"></app-home-care-sidebar>
+      <app-patient-sidebar *ngSwitchDefault></app-patient-sidebar>
+    </ng-container>
 
     <!-- Main Body -->
     <div class="main-body">
-        <!-- Topbar -->
-        <app-patient-topbar></app-patient-topbar>
+        <!-- Role-aware Topbar -->
+        <ng-container [ngSwitch]="userRole">
+          <app-patient-topbar *ngSwitchCase="'PATIENT'"></app-patient-topbar>
+          <app-doctor-topbar *ngSwitchCase="'DOCTOR'"></app-doctor-topbar>
+          <app-pharmacist-topbar *ngSwitchCase="'PHARMACIST'"></app-pharmacist-topbar>
+          <app-clinic-topbar *ngSwitchCase="'CLINIC'"></app-clinic-topbar>
+          <app-laboratorystaff-topbar *ngSwitchCase="'LABORATORY_STAFF'"></app-laboratorystaff-topbar>
+          <app-nutritionist-topbar *ngSwitchCase="'NUTRITIONIST'"></app-nutritionist-topbar>
+          <app-home-care-topbar *ngSwitchCase="'HOME_CARE_PROVIDER'"></app-home-care-topbar>
+          <app-patient-topbar *ngSwitchDefault></app-patient-topbar>
+        </ng-container>
 
         <!-- Page Content Area -->
         <div class="content-area">

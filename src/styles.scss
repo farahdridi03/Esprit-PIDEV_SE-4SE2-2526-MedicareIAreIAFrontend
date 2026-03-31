@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 @import 'assets/scss/admin-theme';
 *,
 *::before,
@@ -163,4 +163,223 @@ app-root {
   font-weight: 500;
   margin-top: 5px;
   display: block;
-}
+}
+
+/* GLOBAL DASHBOARD LAYOUT */
+.dashboard-wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--bg);
+  position: relative;
+}
+
+.main-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bg);
+  min-width: 0; // Prevent flex item from overflowing
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  background-color: var(--bg);
+}
+
+.page {
+  padding: 40px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+
+/* FRONT OFFICE SHARED HERO */
+.page-hero {
+    background: linear-gradient(135deg, var(--teal) 0%, #0a7a70 50%, #064e45 100%) !important;
+    border-radius: 24px;
+    padding: 40px 44px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        left: 30%;
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+    }
+}
+
+.hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    color: #fff;
+}
+
+.hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    margin-top: 0;
+    color: #fff;
+}
+
+.hero-sub {
+    font-size: 15px;
+    opacity: 0.75;
+    margin-bottom: 28px;
+    margin-top: 0;
+    color: #fff;
+    line-height: 1.5;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.stat-pill {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 14px 22px;
+    min-width: 140px;
+    
+    .stat-val {
+        font-family: 'Syne', sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        display: block;
+        color: #fff;
+        line-height: 1;
+    }
+
+    .stat-lbl {
+        font-size: 12px;
+        opacity: 0.7;
+        margin-top: 6px;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+}
+
+.hero-actions {
+    position: absolute;
+    right: 44px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 2;
+}
+
+.add-btn {
+    background: #fff;
+    color: var(--teal);
+    border: none;
+    border-radius: 14px;
+    padding: 14px 26px;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    }
+}
+
+.add-btn.secondary {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    box-shadow: none !important;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.3) !important;
+    }
+}
+
+/* FILTER ROW */
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 50px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 8px;
+}
+
+.filter-pill {
+    padding: 10px 24px;
+    border-radius: 50px;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+
+    &.active {
+        background: var(--teal);
+        color: white;
+    }
+
+    &:hover:not(.active) {
+        background: #f1f5f9;
+        color: var(--teal);
+    }
+}
+
