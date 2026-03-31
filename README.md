@@ -28,6 +28,7 @@ Elle permet de centraliser les données médicales, de faciliter l’accès aux 
 
 Cloner le projet :
 git clone https://github.com/ton-username/medicare-ai.git
+
 Accéder au dossier du projet :
 cd medicare-ai
 Installer les dépendances et lancer les serveurs (frontend & backend)
@@ -42,8 +43,13 @@ Gérer les rendez-vous, dossiers médicaux et interactions en toute simplicité
 👥 Auteurs
 
 Saadaoui Israa
+
 Khammassi Bouthayna
+
 Dridi Farah
+
 Melki Mohamed Aziz
+
 Zerai Wassim
+
 Boukhriss Oussema
