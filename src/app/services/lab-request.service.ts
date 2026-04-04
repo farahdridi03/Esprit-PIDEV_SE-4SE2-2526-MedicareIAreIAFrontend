@@ -176,4 +176,7 @@ export class LabRequestService {
     );
   }
 }
+/* commentaire
+   sur plusieurs
+   lignes */
 
