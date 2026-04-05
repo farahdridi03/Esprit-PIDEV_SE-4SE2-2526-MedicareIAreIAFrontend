@@ -46,22 +46,25 @@ export class LifestyleWellnessComponent implements OnInit {
 
     this.lifestyleService.getGoals().subscribe({
       next: (goals) => {
-        this.recentGoals = goals.slice(0, 3);
+        this.recentGoals = (goals ?? []).slice(0, 3);
       },
+      error: () => this.checkLoading(),
       complete: () => this.checkLoading()
     });
 
     this.lifestyleService.getPlans().subscribe({
       next: (plans) => {
-        this.recentPlans = plans.slice(0, 3);
+        this.recentPlans = (plans ?? []).slice(0, 3);
       },
+      error: () => this.checkLoading(),
       complete: () => this.checkLoading()
     });
 
     this.lifestyleService.getTrackings().subscribe({
       next: (trackings) => {
-        this.recentTrackings = trackings.slice(0, 3);
+        this.recentTrackings = (trackings ?? []).slice(0, 3);
       },
+      error: () => this.checkLoading(),
       complete: () => this.checkLoading()
     });
 

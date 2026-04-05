@@ -88,7 +88,7 @@ export class LifestyleListComponent implements OnInit {
   }
 
   handleSuccess(data: any[]): void {
-    this.data = data;
+    this.data = data ?? [];
     this.isLoading = false;
   }
 

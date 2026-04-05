@@ -18,7 +18,7 @@ export class AvailabilityService {
   getAvailabilitiesByDoctor(providerId: number): Observable<CalendarAvailability[]> {
     console.log(`[DEBUG] AvailabilityService: Fetching availabilities for provider ${providerId}`);
     return this.http.get<CalendarAvailability[]>(`${this.baseUrl}/providers/${providerId}/availabilities`).pipe(
-      tap(data => console.log(`[DEBUG] AvailabilityService: Found ${data.length} availabilities in DB`, data))
+      tap(data => console.log(`[DEBUG] AvailabilityService: Found ${data?.length ?? 0} availabilities in DB`, data))
     );
   }
 

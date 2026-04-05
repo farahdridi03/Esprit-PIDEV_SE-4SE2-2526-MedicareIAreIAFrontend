@@ -50,37 +50,53 @@ export class DoctorCalendarCalendarComponent implements OnInit, OnChanges {
     this.noScheduleConfigured = false;
     this.availabilityService.getAvailabilitiesByDoctor(this.providerId).subscribe({
       next: (slots) => {
-        if (slots.length === 0) {
-          // DB is empty - trigger sync from weekly schedule template then reload
+        const safeSlots = slots ?? [];
+        if (safeSlots.length === 0) {
+          // DB is empty — try to sync from weekly schedule template then reload
           console.log('[DEBUG] No slots in DB. Triggering sync for provider:', this.providerId);
           this.scheduleService.syncCalendar(this.providerId).subscribe({
             next: (result) => {
               if (!result || result === 'sync skipped') {
-                // 204 - no schedule configured
-                this.noScheduleConfigured = true;
-                this.isLoading = false;
+                this.loadFromWeeklySchedule();
                 return;
               }
               this.availabilityService.getAvailabilitiesByDoctor(this.providerId).subscribe({
                 next: (resyncedSlots) => {
-                  this.availabilities = resyncedSlots;
-                  this.noScheduleConfigured = resyncedSlots.length === 0;
-                  this.isLoading = false;
+                  const safeResynced = resyncedSlots ?? [];
+                  this.availabilities = safeResynced;
+                  if (safeResynced.length === 0) this.loadFromWeeklySchedule();
+                  else this.isLoading = false;
                 },
-                error: () => this.isLoading = false
+                error: () => this.loadFromWeeklySchedule()
               });
             },
-            error: () => {
-              this.noScheduleConfigured = true;
-              this.isLoading = false;
-            }
+            error: () => this.loadFromWeeklySchedule()
           });
         } else {
-          this.availabilities = slots;
+          this.availabilities = safeSlots;
           this.isLoading = false;
         }
       },
-      error: () => this.isLoading = false
+      error: () => this.loadFromWeeklySchedule()
+    });
+  }
+
+  loadFromWeeklySchedule(): void {
+    this.scheduleService.getWeeklySchedule(this.providerId).subscribe({
+      next: (schedule) => {
+        if (schedule && schedule.days && schedule.days.some(d => d.active)) {
+          this.weeklySchedule = schedule;
+          this.isPreview = true;
+          this.noScheduleConfigured = false;
+        } else {
+          this.noScheduleConfigured = true;
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.noScheduleConfigured = true;
+        this.isLoading = false;
+      }
     });
   }
 

@@ -27,8 +27,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
-                if (error.status === 401 || error.status === 403) {
-                    // Déconnecter l'utilisateur et forcer redirection vers /login
+                // Only force logout on 401/403 for authenticated requests (not on auth endpoints)
+                if ((error.status === 401 || error.status === 403) && !isAuthUrl && token) {
                     this.authService.logout();
                 }
                 return throwError(() => error);

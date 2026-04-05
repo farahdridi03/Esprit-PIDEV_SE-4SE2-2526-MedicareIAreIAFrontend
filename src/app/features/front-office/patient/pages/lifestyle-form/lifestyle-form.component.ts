@@ -142,7 +142,7 @@ export class LifestyleFormComponent implements OnInit {
     this.isLoading = true;
     if (this.type === 'goals') {
       this.lifestyleService.getGoals().subscribe(goals => {
-        const found = goals.find(g => g.id === this.id);
+        const found = (goals ?? []).find(g => g.id === this.id);
         if (found) {
           this.goal = { ...found };
           if (found.targetDate) {
@@ -153,7 +153,7 @@ export class LifestyleFormComponent implements OnInit {
       });
     } else if (this.type === 'tracking') {
       this.lifestyleService.getTrackings().subscribe(trackings => {
-        const found = trackings.find(t => t.id === this.id);
+        const found = (trackings ?? []).find(t => t.id === this.id);
         if (found) {
           this.tracking = { ...found };
           if (found.date) {
@@ -219,8 +219,9 @@ export class LifestyleFormComponent implements OnInit {
       ? this.lifestyleService.getGoalsByPatientId(+this.route.snapshot.params['id'])
       : this.lifestyleService.getGoals();
 
-    fetchObs.subscribe(goals => {
-      this.goals = goals;
+    fetchObs.subscribe({
+      next: (goals) => { this.goals = goals ?? []; },
+      error: () => { this.goals = []; }
     });
   }
 

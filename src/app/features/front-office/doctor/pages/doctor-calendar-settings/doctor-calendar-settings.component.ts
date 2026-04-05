@@ -1,10 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ScheduleService } from '../../../../../services/schedule.service';
-import { AvailabilityService } from '../../../../../services/availability.service';
 import { AuthService } from '../../../../../services/auth.service';
-import { WeeklySchedule, DaySchedule, TimeSlot, CalendarAvailability } from '../../../../../models/schedule.model';
-import { formatDate } from '@angular/common';
+import { WeeklySchedule } from '../../../../../models/schedule.model';
 
 @Component({
   selector: 'app-doctor-calendar-settings',
@@ -26,7 +24,6 @@ export class DoctorCalendarSettingsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private scheduleService: ScheduleService,
-    private availabilityService: AvailabilityService,
     private authService: AuthService
   ) {}
 
@@ -61,27 +58,16 @@ export class DoctorCalendarSettingsComponent implements OnInit {
   loadSchedule(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    
-    console.log(`[DEBUG] Initializing load for providerId: ${this.providerId}`);
-    
-    // In this view, we now load the SPECIFIC WEEK exceptions instead of the generic template
-    this.scheduleService.getExceptions(this.providerId).subscribe({
-      next: (exceptions) => {
-        console.log('[DEBUG] Exceptions Loaded:', exceptions);
-        this.populateForm(exceptions);
+
+    this.scheduleService.getWeeklySchedule(this.providerId).subscribe({
+      next: (schedule) => {
+        this.populateFromWeeklySchedule(schedule);
         this.isLoading = false;
       },
-      error: (err) => {
-        console.error('[ERROR] Failed to load schedule', err);
-        this.errorMessage = 'Error loading schedule.';
+      error: () => {
+        // No schedule saved yet — show empty form
+        this.populateFromWeeklySchedule(null);
         this.isLoading = false;
-      }
-    });
-
-    // We also fetch specific slots to see if things are already in DB
-    this.availabilityService.getAvailabilitiesByDoctor(this.providerId).subscribe({
-      next: (slots) => {
-        console.log('[DEBUG] Backend Availabilities found:', slots);
       }
     });
   }
@@ -93,23 +79,19 @@ export class DoctorCalendarSettingsComponent implements OnInit {
     return `${y}-${m}-${d}`;
   }
 
-  populateForm(exceptions: any[]): void {
+  populateFromWeeklySchedule(schedule: any): void {
     this.days.clear();
-    const daysOfWeek: ('MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY')[] = 
-      ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+    const daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
-    daysOfWeek.forEach((dow, i) => {
-      const dateOfDOW = this.daysInWeek[i];
-      const dateStr = this.formatDateStr(dateOfDOW);
-      
-      const exceptionForDay = exceptions.find(e => e.startDate === dateStr && e.reason === 'Semaine Spécifique');
-      
+    daysOfWeek.forEach((dow) => {
+      const savedDay = schedule?.days?.find((d: any) => d.dayOfWeek === dow);
+
       const dayFormGroup = this.fb.group({
         dayOfWeek: [dow],
-        active: [exceptionForDay ? exceptionForDay.isAvailable : false],
+        active: [savedDay ? savedDay.active : false],
         timeSlots: this.fb.array(
-          exceptionForDay?.timeSlots?.length > 0
-            ? exceptionForDay.timeSlots.map((slot: any) => this.createTimeSlotFormGroup(slot)) 
+          (savedDay?.timeSlots?.length ?? 0) > 0
+            ? savedDay.timeSlots.map((slot: any) => this.createTimeSlotFormGroup(slot))
             : [this.createTimeSlotFormGroup()]
         )
       });
@@ -204,13 +186,26 @@ export class DoctorCalendarSettingsComponent implements OnInit {
 
     this.scheduleService.saveWeeklySchedule(this.providerId, weeklySchedulePayload as any).subscribe({
       next: () => {
-        this.successMessage = 'Your weekly schedule has been saved! The calendar will update automatically.';
-        this.isSaving = false;
-
-        setTimeout(() => {
-          this.successMessage = '';
-          this.navigateToCalendar.emit();
-        }, 1500);
+        // After saving the template, trigger sync to populate CalendarAvailability records
+        this.scheduleService.syncCalendar(this.providerId).subscribe({
+          next: () => {
+            this.successMessage = 'Your weekly schedule has been saved! The calendar will update automatically.';
+            this.isSaving = false;
+            setTimeout(() => {
+              this.successMessage = '';
+              this.navigateToCalendar.emit();
+            }, 1500);
+          },
+          error: () => {
+            // Sync failed but save succeeded — calendar will auto-sync on load
+            this.successMessage = 'Schedule saved.';
+            this.isSaving = false;
+            setTimeout(() => {
+              this.successMessage = '';
+              this.navigateToCalendar.emit();
+            }, 1500);
+          }
+        });
       },
       error: (err) => {
         console.error('[ERROR] Failed to save schedule', err);
