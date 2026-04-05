@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NotificationService, AppNotification } from '../../../../services/notification.service';
+import { UserService } from '../../../../services/user.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-admin-topbar',
@@ -11,18 +13,48 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
   notifications: AppNotification[] = [];
   unreadCount = 0;
   showDropdown = false;
+  firstName: string = 'Admin';
+  initials: string = 'AD';
   private sub!: Subscription;
 
   constructor(
     private notifService: NotificationService,
+    private userService: UserService,
+    private authService: AuthService,
     private elRef: ElementRef
   ) {}
 
   ngOnInit(): void {
+    // Notifications subscription
     this.sub = this.notifService.notifications$.subscribe(notifs => {
       this.notifications = notifs;
       this.unreadCount = notifs.filter(n => !n.read).length;
     });
+
+    // User info logic
+    this.loadUserInfo();
+    this.userService.getProfile().subscribe({
+      next: (user) => {
+        if (user && user.fullName) {
+          this.setNames(user.fullName);
+        }
+      }
+    });
+  }
+
+  private loadUserInfo() {
+    const fullName = this.authService.getUserFullName();
+    if (fullName) {
+      this.setNames(fullName);
+    }
+  }
+
+  private setNames(fullName: string) {
+    if (!fullName) return;
+    const parts = fullName.split(' ');
+    this.firstName = parts[0];
+    this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
+    if (!this.initials) this.initials = this.firstName[0].toUpperCase();
   }
 
   ngOnDestroy(): void {

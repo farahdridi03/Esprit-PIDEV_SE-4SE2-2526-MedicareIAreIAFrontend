@@ -1,0 +1,141 @@
+<div class="lifestyle-wellness-wrapper">
+    <!-- Sidebar -->
+    <app-sidebar></app-sidebar>
+
+    <!-- Main Body -->
+    <div class="main-body">
+        <!-- Topbar -->
+        <app-topbar></app-topbar>
+
+        <!-- Page Content Area -->
+        <div class="content-area">
+            <div class="lifestyle-main-content">
+                
+                <!-- Welcome Banner -->
+                <div class="welcome-banner">
+                    <div class="banner-text">
+                        <h1>Lifestyle</h1>
+                        <p>Take care of your health with personalized lifestyle goals and plans.</p>
+                        <div class="banner-metrics" *ngIf="patient">
+                            <span class="metric-badge">
+                                <strong>Height:</strong> {{ patient.height ? patient.height + ' cm' : 'N/A' }}
+                            </span>
+                            <span class="metric-badge">
+                                <strong>Weight:</strong> {{ patient.weight ? patient.weight + ' kg' : 'N/A' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="banner-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="lifestyle-grid">
+                    
+                    <!-- Lifestyle Goals Card -->
+                    <section class="lifestyle-card">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <div class="icon-box green">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+                                    </svg>
+                                </div>
+                                <h3>Lifestyle Goals</h3>
+                            </div>
+                            <div class="header-actions">
+                                <a routerLink="/front/patient/lifestyle-wellness/goals" class="view-all">View All →</a>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="item-list" *ngIf="recentGoals.length > 0">
+                                <div class="item-row" *ngFor="let goal of recentGoals">
+                                    <div class="item-info">
+                                        <h4>{{ goal.category }}</h4>
+                                        <p>Target: {{ goal.targetValue }} (Base: {{ goal.baselineValue }})</p>
+                                        <span class="badge" [ngClass]="goal.status.toLowerCase().replace('_', '-')">{{ goal.status }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="empty-state" *ngIf="recentGoals.length === 0 && !isLoading">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                                <p>No active goals found. Start by setting one!</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Lifestyle Plans Card -->
+                    <section class="lifestyle-card">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <div class="icon-box blue">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .407.11.785.3 1.108a2.126 2.126 0 01-.3 1.108c-.066.21-.101.434-.101.664 0 .407.11.785.3 1.108a2.126 2.126 0 01-.3 1.108c-.066.21-.101.434-.101.664 0 .407.11.785.3 1.108a2.126 2.126 0 01-.3 1.108c-.066.21-.101.434-.101.664 0 .407.11.785.3 1.108a2.126 2.126 0 01-.3 1.108c-.066.21-.101.434-.101.664 0 .407.11.785.3 1.108a2.126 2.126 0 01-.3 1.108c-.066.21-.101.434-.101.664 0 1.174.951 2.125 2.125 2.125h.412c1.174 0 2.125-.951 2.125-2.125a2.126 2.126 0 01-.3-1.108c.19-.323.3-.701.3-1.108 0-.23-.035-.454-.101-.664a2.126 2.126 0 01.3-1.108c.19-.323.3-.701.3-1.108 0-.23-.035-.454-.101-.664a2.126 2.126 0 01.3-1.108c.19-.323.3-.701.3-1.108 0-.23-.035-.454-.101-.664a2.126 2.126 0 01.3-1.108c.19-.323.3-.701.3-1.108 0-.23-.035-.454-.101-.664a2.126 2.126 0 01.3-1.108c.19-.323.3-.701.3-1.108 0-.23-.035-.454-.101-.664A2.125 2.125 0 0113.888 2.25h-.412c-1.174 0-2.125.951-2.125 2.125z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 12V21m-3-3h6m-12 3h18M3 21h18" /></svg>
+                                </div>
+                                <h3>Lifestyle Plans</h3>
+                            </div>
+                            <div class="header-actions">
+                                <a routerLink="/front/patient/lifestyle-wellness/plans" class="view-all">View All →</a>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="item-list" *ngIf="recentPlans.length > 0">
+                                <div class="item-row" *ngFor="let plan of recentPlans">
+                                    <div class="item-info">
+                                        <h4>{{ plan.title }}</h4>
+                                        <p>{{ plan.startDate | date }} to {{ plan.endDate | date }}</p>
+                                        <span class="badge" [ngClass]="plan.status.toLowerCase()">{{ plan.status }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="empty-state" *ngIf="recentPlans.length === 0 && !isLoading">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.831 0c.346.033.691.074 1.036.122M8.344 3.832c.347-.048.692-.09 1.039-.122M15 3.75V2.25M9 3.75V2.25m6 0h-6" /></svg>
+                                <p>No current lifestyle plans.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Progress Tracking Card -->
+                    <section class="lifestyle-card trackings">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <div class="icon-box purple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                                    </svg>
+                                </div>
+                                <h3>Progress Tracking</h3>
+                            </div>
+                            <div class="header-actions">
+                                <a routerLink="/front/patient/lifestyle-wellness/tracking" class="view-all">View All →</a>
+                            </div>
+                        </div>
+                        <div class="card-content tracking-layout">
+                            <div class="item-list" *ngIf="recentTrackings.length > 0">
+                                <div class="item-row" *ngFor="let t of recentTrackings">
+                                    <div class="item-info">
+                                        <h4>Goal #{{ t.goalId }}</h4>
+                                        <p>Value: {{ t.value }}</p>
+                                        <span class="badge active">{{ t.date | date }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-box" *ngIf="recentTrackings.length > 0">
+                                <app-progress-chart [data]="recentTrackings" title="My Progress"></app-progress-chart>
+                            </div>
+                            <div class="empty-state" *ngIf="recentTrackings.length === 0 && !isLoading">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" /></svg>
+                                <p>No progress tracked yet. Add your first record!</p>
+                            </div>
+                        </div>
+                    </section>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

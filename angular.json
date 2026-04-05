@@ -41,6 +41,11 @@
             "styles": [
               "src/styles.scss"
             ],
+            "optimization": {
+              "fonts": {
+                "inline": false
+              }
+            },
             "scripts": []
           },
           "configurations": {

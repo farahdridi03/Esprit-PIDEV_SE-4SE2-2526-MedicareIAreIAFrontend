@@ -66,7 +66,6 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
-            // Le rôle peut venir sous forme de chaîne ou de tableau
             let role: string | null = null;
             if (typeof decoded.role === 'string') {
                 role = decoded.role;
@@ -77,14 +76,11 @@ export class AuthService {
             }
 
             if (!role && decoded.authorities && Array.isArray(decoded.authorities) && decoded.authorities.length > 0) {
-                // parfois Spring Security met les authorities
                 const first = decoded.authorities[0];
                 role = typeof first === 'string' ? first : (first.authority || null);
             }
 
             if (!role) return null;
-
-            // Supprimer le préfixe ROLE_ si présent
             return role.replace(/^ROLE_/, '');
         } catch (error) {
             return null;
@@ -97,7 +93,6 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
-            // Typically Spring Security puts the username (email) in 'sub'
             return decoded.sub || decoded.email || null;
         } catch (error) {
             return null;

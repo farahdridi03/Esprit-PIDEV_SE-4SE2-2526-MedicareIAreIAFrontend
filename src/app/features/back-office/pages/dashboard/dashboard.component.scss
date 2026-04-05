@@ -17,10 +17,7 @@
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
-    background: linear-gradient(90deg, var(--indigo), var(--pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #0e7c66;
 }
 
 .page-header p {
@@ -34,7 +31,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.62rem 1.2rem;
-    background: linear-gradient(135deg, var(--indigo), var(--violet));
+    background: #0e7c66;
     border: none;
     border-radius: var(--r-sm);
     color: white;
@@ -43,12 +40,12 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.18s;
-    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 4px 14px rgba(14, 124, 102, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+    box-shadow: 0 8px 20px rgba(14, 124, 102, 0.35);
 }
 
 .btn-primary svg {
@@ -121,20 +118,11 @@
     border-radius: var(--r) 0 0 var(--r);
 }
 
-.sc-indigo::before {
-    background: linear-gradient(180deg, var(--indigo), var(--violet));
-}
-
-.sc-teal::before {
-    background: linear-gradient(180deg, var(--teal), var(--emerald));
-}
-
-.sc-pink::before {
-    background: linear-gradient(180deg, var(--pink), var(--rose));
-}
-
+.sc-indigo::before,
+.sc-teal::before,
+.sc-pink::before,
 .sc-amber::before {
-    background: linear-gradient(180deg, var(--amber), #f97316);
+    background: #0e7c66;
 }
 
 .stat-top {
@@ -158,24 +146,12 @@
     height: 20px;
 }
 
-.si-indigo {
-    background: rgba(79, 70, 229, 0.09);
-    color: var(--indigo);
-}
-
-.si-teal {
-    background: rgba(13, 148, 136, 0.09);
-    color: var(--teal);
-}
-
-.si-pink {
-    background: rgba(236, 72, 153, 0.09);
-    color: var(--pink);
-}
-
+.si-indigo,
+.si-teal,
+.si-pink,
 .si-amber {
-    background: rgba(245, 158, 11, 0.09);
-    color: var(--amber);
+    background: rgba(14, 124, 102, 0.1);
+    color: #0e7c66;
 }
 
 .stat-trend {
@@ -214,14 +190,25 @@
     font-weight: 500;
 }
 
-/* ── Layout rows ── */
-.row-2 {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 1.1rem;
-    margin-bottom: 1.1rem;
+/* Welcome Banner */
+.welcome-banner {
+    background-color: #0e7c66;
+    border-radius: 20px;
+    padding: 2.5rem;
+    color: #ffffff;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    box-shadow: 0 10px 15px -3px rgba(14, 124, 102, 0.2);
+
+    .banner-text {
+        h1 { font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0; letter-spacing: -0.025em; }
+        p { margin: 0; opacity: 0.9; font-size: 1.1rem; }
+    }
 }
 
+/* ── Layout rows ── */
 .row-3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

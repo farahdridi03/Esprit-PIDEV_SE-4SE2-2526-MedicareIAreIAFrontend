@@ -107,9 +107,12 @@ export class DonationsComponent implements OnInit {
     this.donationService.getAllDonations().subscribe({
       next: (data: Donation[]) => {
         console.log('Donations loaded:', data);
-        this.donations = data;
+        this.donations = data || [];
       },
-      error: (err: any) => console.error('Error fetching donations', err)
+      error: (err: any) => {
+        console.error('Error fetching donations', err);
+        this.donations = [];
+      }
     });
   }
 
@@ -118,6 +121,7 @@ export class DonationsComponent implements OnInit {
   }
 
   filteredDonations(): Donation[] {
+    if (!this.donations) return [];
     return this.donations.filter(d => {
       const matchFilter =
         this.currentFilter === 'all' ||
@@ -184,10 +188,16 @@ export class DonationsComponent implements OnInit {
   saveDonation(): void {
     const payload = { ...this.currentDonation } as Donation;
     this.error = '';
-    
+
     // Attach current user as the creator
-    if (!this.editingDonationId && this.currentPatientId) {
+    if (this.currentPatientId) {
       payload.creatorId = this.currentPatientId;
+    }
+
+    // Guard: creatorId is @NotNull on the backend — block if still missing
+    if (!this.editingDonationId && !payload.creatorId) {
+      this.error = 'Impossible d\'identifier votre compte. Veuillez rafraîchir la page et réessayer.';
+      return;
     }
 
     if (this.editingDonationId) {
@@ -211,13 +221,17 @@ export class DonationsComponent implements OnInit {
 
   handleSaveError(err: any): void {
     console.error('Error saving donation', err);
-    if (err.error && err.error.details) {
+    if (err.error?.details) {
       const details = Object.entries(err.error.details)
          .map(([field, msg]) => `${field}: ${msg}`)
          .join(' | ');
-      this.error = `Validation error: ${details}`;
+      this.error = `Erreur de validation: ${details}`;
+    } else if (err.error?.message) {
+      this.error = err.error.message;
+    } else if (typeof err.error === 'string') {
+      this.error = err.error;
     } else {
-      this.error = 'Error saving the donation.';
+      this.error = `Erreur lors de l'enregistrement de la donation (statut ${err.status}).`;
     }
   }
 

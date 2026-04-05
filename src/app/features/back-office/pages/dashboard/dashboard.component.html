@@ -13,6 +13,14 @@
     </button>
 </div>
 
+<!-- Welcome Banner -->
+<div class="welcome-banner">
+    <div class="banner-text">
+        <h1>Welcome back, {{ firstName || 'Admin' }}!</h1>
+        <p>Manage users, system alerts, and global operations.</p>
+    </div>
+</div>
+
 <!-- Stats -->
 <div class="stats-grid">
     <div class="stat-card sc-indigo">
@@ -22,9 +30,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                 </svg></div>
-            <span class="stat-trend t-up">↑ +8.4%</span>
         </div>
-        <div class="stat-value">24,891</div>
+        <div class="stat-value"></div>
         <div class="stat-label">Total Users</div>
     </div>
     <div class="stat-card sc-teal">
@@ -34,9 +41,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                 </svg></div>
-            <span class="stat-trend t-up">↑ +12%</span>
         </div>
-        <div class="stat-value">$48,320</div>
+        <div class="stat-value"></div>
         <div class="stat-label">Total Donations</div>
     </div>
     <div class="stat-card sc-pink">
@@ -46,9 +52,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                 </svg></div>
-            <span class="stat-trend t-warn">→ Stable</span>
         </div>
-        <div class="stat-value">142</div>
+        <div class="stat-value"></div>
         <div class="stat-label">Active Events</div>
     </div>
     <div class="stat-card sc-amber">
@@ -58,154 +63,17 @@
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
                 </svg></div>
-            <span class="stat-trend t-down">↓ 5 pending</span>
         </div>
-        <div class="stat-value">1,204</div>
+        <div class="stat-value"></div>
         <div class="stat-label">Forum Posts</div>
     </div>
 </div>
 
-<!-- Row 1: Chart + Alerts -->
-<div class="row-2">
-    <div class="panel">
-        <div class="panel-head">
-            <div class="panel-title">User Growth</div>
-            <button class="panel-action">View Details →</button>
-        </div>
-        <div class="chart-wrap">
-            <canvas id="growthChart"></canvas>
-        </div>
-    </div>
 
-    <div class="panel">
-        <div class="panel-head">
-            <div class="panel-title">System Alerts</div>
-            <button class="panel-action">Clear all</button>
-        </div>
-        <div class="alert-list">
-            <div class="alert-item">
-                <div class="adot adot-red"></div>
-                <div>
-                    <div class="at">Suspicious login attempt</div>
-                    <div class="as">User #4482 — 3 fails · 2m ago</div>
-                </div>
-            </div>
-            <div class="alert-item">
-                <div class="adot adot-amber"></div>
-                <div>
-                    <div class="at">5 posts pending review</div>
-                    <div class="as">Flagged content · 14m ago</div>
-                </div>
-            </div>
-            <div class="alert-item">
-                <div class="adot adot-amber"></div>
-                <div>
-                    <div class="at">Event capacity reached</div>
-                    <div class="as">Health Summit 2026 · 1h ago</div>
-                </div>
-            </div>
-            <div class="alert-item">
-                <div class="adot adot-green"></div>
-                <div>
-                    <div class="at">Database backup complete</div>
-                    <div class="as">2.3 GB saved · 3h ago</div>
-                </div>
-            </div>
-            <div class="alert-item">
-                <div class="adot adot-green"></div>
-                <div>
-                    <div class="at">AI model retrained</div>
-                    <div class="as">v3.2 accuracy +1.8% · Today</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Row 2 -->
 <div class="row-3">
-    <div class="panel">
-        <div class="panel-head">
-            <div class="panel-title">Recent Users</div>
-            <button class="panel-action">View all →</button>
-        </div>
-        <table class="tbl">
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="ucell">
-                            <div class="mav ma1">KA</div>
-                            <div>
-                                <div class="cn">Karim Arabi</div>
-                                <div class="cs">karim&#64;mail.com</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="chip ck-indigo">Doctor</span></td>
-                    <td><span class="chip ck-emerald">Active</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="ucell">
-                            <div class="mav ma2">LM</div>
-                            <div>
-                                <div class="cn">Leila Mansouri</div>
-                                <div class="cs">leila&#64;mail.com</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="chip ck-violet">Patient</span></td>
-                    <td><span class="chip ck-emerald">Active</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="ucell">
-                            <div class="mav ma3">OB</div>
-                            <div>
-                                <div class="cn">Omar Benali</div>
-                                <div class="cs">omar&#64;mail.com</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="chip ck-teal">Moderator</span></td>
-                    <td><span class="chip ck-amber">Pending</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="ucell">
-                            <div class="mav ma4">SH</div>
-                            <div>
-                                <div class="cn">Sara Haddad</div>
-                                <div class="cs">sara&#64;mail.com</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="chip ck-violet">Patient</span></td>
-                    <td><span class="chip ck-emerald">Active</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="ucell">
-                            <div class="mav ma5">RK</div>
-                            <div>
-                                <div class="cn">Rahim Khalid</div>
-                                <div class="cs">rahim&#64;mail.com</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="chip ck-indigo">Doctor</span></td>
-                    <td><span class="chip ck-rose">Suspended</span></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+
 
     <div class="panel">
         <div class="panel-head">
@@ -243,54 +111,15 @@
             <button class="panel-action">View all →</button>
         </div>
         <div class="don-list">
-            <div class="don-item">
-                <div class="don-ic"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke-width="1.8" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg></div>
-                <div>
-                    <div class="dn">Sara Haddad</div>
-                    <div class="dm">Children's Health · 12m</div>
-                </div>
-                <div class="da">$250</div>
-            </div>
-            <div class="don-item">
-                <div class="don-ic"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke-width="1.8" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg></div>
-                <div>
-                    <div class="dn">Youssef Tazi</div>
-                    <div class="dm">Research Fund · 2h</div>
-                </div>
-                <div class="da">$500</div>
-            </div>
-            <div class="don-item">
-                <div class="don-ic"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke-width="1.8" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg></div>
-                <div>
-                    <div class="dn">Anonymous</div>
-                    <div class="dm">Medical Aid · 45m</div>
-                </div>
-                <div class="da">$100</div>
-            </div>
-            <div class="don-item">
-                <div class="don-ic"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke-width="1.8" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg></div>
-                <div>
-                    <div class="dn">Nadia Berrada</div>
-                    <div class="dm">Mental Health · 4h</div>
-                </div>
-                <div class="da">$75</div>
-            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">System Alerts</div>
+            <button class="panel-action">Clear all</button>
+        </div>
+        <div class="alert-list">
         </div>
     </div>
 </div>

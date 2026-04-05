@@ -133,7 +133,7 @@ $text-light: #6b7280;
             }
 
             &.green {
-                background-color: #22c55e;
+                background-color: #0e7c66;
             }
 
             &.red {
@@ -297,14 +297,14 @@ $text-light: #6b7280;
             flex-shrink: 0;
 
             &.success {
-                color: #22c55e;
+                color: #0e7c66;
             }
 
             // In CSS modules this might be targeted differently, but here:
         }
 
         &.success .icon {
-            color: #22c55e;
+            color: #0e7c66;
         }
 
         &.error .icon {

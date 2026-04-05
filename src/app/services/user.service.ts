@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { UserRequestDTO, UserResponseDTO } from '../models/user.model';
 
 export interface UpdateProfileRequest {
@@ -17,15 +18,14 @@ export interface UpdateProfileRequest {
 export class UserService {
     private readonly baseUrlLegacy = 'http://localhost:8081/springsecurity/user';
     private readonly apiUrl = 'http://localhost:8081/springsecurity/api/users';
+    
+    private profileSubject = new BehaviorSubject<UserResponseDTO | null>(null);
+    profile$ = this.profileSubject.asObservable();
 
     constructor(private http: HttpClient) { }
 
     updateProfile(request: UpdateProfileRequest): Observable<any> {
         return this.http.put(`${this.baseUrlLegacy}/profile`, request);
-    }
-
-    getProfile(): Observable<any> {
-        return this.http.get(`http://localhost:8081/springsecurity/api/profile/me`);
     }
 
     create(dto: UserRequestDTO): Observable<UserResponseDTO> {
@@ -54,5 +54,19 @@ export class UserService {
 
     getByRole(role: string): Observable<UserResponseDTO[]> {
         return this.http.get<UserResponseDTO[]>(`${this.apiUrl}/role/${role}`);
+    }
+
+    getProfile(): Observable<UserResponseDTO> {
+        return this.http.get<UserResponseDTO>(`${this.baseUrlLegacy}/profile`).pipe(
+            tap(user => this.profileSubject.next(user))
+        );
+    }
+
+    refreshProfile(): void {
+        this.getProfile().subscribe();
+    }
+
+    changePassword(request: any): Observable<any> {
+        return this.http.put(`${this.baseUrlLegacy}/change-password`, request);
     }
 }

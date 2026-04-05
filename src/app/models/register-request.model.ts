@@ -41,4 +41,10 @@ export interface RegisterRequest {
     // Home Care Provider fields
     certificationDocument?: string;
     homeCareServices?: string[];
+    
+    // Patient physical metrics
+    height?: number;
+    weight?: number;
+    allergies?: string;
+    diseases?: string;
 }

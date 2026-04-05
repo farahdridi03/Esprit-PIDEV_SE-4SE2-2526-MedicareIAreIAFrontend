@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
-  selector: 'app-patient-sidebar',
+  selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })

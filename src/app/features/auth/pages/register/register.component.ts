@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 import { ClinicService, Clinic } from '../../../../services/clinic.service';
@@ -9,19 +9,17 @@ import { ClinicService, Clinic } from '../../../../services/clinic.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
 
   registerForm: FormGroup;
   errorMessage: string = '';
 
   roles = [
-    { value: 'ADMIN', label: 'Administrator' },
     { value: 'DOCTOR', label: 'Doctor' },
     { value: 'CLINIC', label: 'Clinic' },
     { value: 'PHARMACIST', label: 'Pharmacist' },
-    { value: 'LABORATORYSAFF', label: 'Laboratory' },
+    { value: 'LABORATORYSTAFF', label: 'Laboratory Staff' },
     { value: 'NUTRITIONIST', label: 'Nutritionist' },
-    { value: 'VISITOR', label: 'Visitor' },
     { value: 'PATIENT', label: 'Patient' },
     { value: 'HOME_CARE_PROVIDER', label: 'Home Care Provider' }
   ];
@@ -43,8 +41,8 @@ export class RegisterComponent {
   ];
 
   consultationModes = [
-    { value: 'ONLINE', label: 'Online' },
     { value: 'IN_PERSON', label: 'In Person' },
+    { value: 'ONLINE', label: 'Video Call' },
     { value: 'BOTH', label: 'Both' }
   ];
 
@@ -69,7 +67,6 @@ export class RegisterComponent {
     private authService: AuthService,
     private clinicService: ClinicService,
     private router: Router
-    // ✅ PatientService supprimé — on utilise authService pour tout
   ) {
     this.registerForm = this.fb.group({
       fullName: ['', Validators.required],
@@ -81,9 +78,15 @@ export class RegisterComponent {
       bloodType: ['O_POS'],
       emergencyContactName: [''],
       emergencyContactPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
+      // Patient fields
       chronicDiseases: [''],
       drugAllergies: [''],
       hereditaryDiseases: [''],
+      height: [null],
+      weight: [null],
+      allergies: [''],
+      diseases: [''],
+      // Provider fields
       specialty: [''],
       licenseNumber: [''],
       consultationFee: [0],
@@ -134,20 +137,13 @@ export class RegisterComponent {
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.registerForm.patchValue({
-        certificationDocument: file
-      });
-    }
-  }
-
-  onServiceChange(event: any) {
-    // Stub implementation
-    const selectedServices = this.registerForm.get('selectedServices') as import('@angular/forms').FormArray;
-    if (event.target.checked) {
-      selectedServices.push(this.fb.control(event.target.value));
-    } else {
-      const index = selectedServices.controls.findIndex(x => x.value === event.target.value);
-      selectedServices.removeAt(index);
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.registerForm.patchValue({
+          certificationDocument: reader.result as string
+        });
+      };
+      reader.readAsDataURL(file);
     }
   }
 
@@ -156,6 +152,26 @@ export class RegisterComponent {
       next: (data: Clinic[]) => this.clinics = data,
       error: (err: any) => console.error('Error loading clinics', err)
     });
+  }
+
+  get selectedServices(): FormArray {
+    return this.registerForm.get('selectedServices') as FormArray;
+  }
+
+  onServiceChange(e: any) {
+    const checkArray: FormArray = this.registerForm.get('selectedServices') as FormArray;
+    if (e.target.checked) {
+      checkArray.push(this.fb.control(e.target.value));
+    } else {
+      let i: number = 0;
+      checkArray.controls.forEach((item: any) => {
+        if (item.value == e.target.value) {
+          checkArray.removeAt(i);
+          return;
+        }
+        i++;
+      });
+    }
   }
 
   loadHomeCareServices() {
@@ -176,14 +192,17 @@ export class RegisterComponent {
       const isNutritionist = role === 'NUTRITIONIST';
       const isClinic = role === 'CLINIC';
       const isPharmacist = role === 'PHARMACIST';
-      const isLabStaff = role === 'LABORATORYSAFF';
+      const isLabStaff = role === 'LABORATORYSTAFF';
       const isHomeCare = role === 'HOME_CARE_PROVIDER';
 
       const genderCtrl = this.registerForm.get('gender');
       const bloodTypeCtrl = this.registerForm.get('bloodType');
       const emNameCtrl = this.registerForm.get('emergencyContactName');
       const emPhoneCtrl = this.registerForm.get('emergencyContactPhone');
-      
+      const heightCtrl = this.registerForm.get('height');
+      const weightCtrl = this.registerForm.get('weight');
+      const allergiesCtrl = this.registerForm.get('allergies');
+      const diseasesCtrl = this.registerForm.get('diseases');
       const specialtyCtrl = this.registerForm.get('specialty');
       const licenseCtrl = this.registerForm.get('licenseNumber');
       const feeCtrl = this.registerForm.get('consultationFee');
@@ -203,15 +222,14 @@ export class RegisterComponent {
       const certDocCtrl = this.registerForm.get('certificationDocument');
       const servicesCtrl = this.registerForm.get('selectedServices');
 
-      // Clear all existing validators first to avoid overlapping logic
-      [
-        genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, 
+      // Reset all validators
+      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, allergiesCtrl, diseasesCtrl,
+        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
-        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl, labNameCtrl, labAddressCtrl,
-        labPhoneCtrl, certDocCtrl, servicesCtrl
+        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
+        labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
       ].forEach(ctrl => {
         ctrl?.clearValidators();
-        ctrl?.updateValueAndValidity();
       });
 
       if (isPatient) {
@@ -219,6 +237,8 @@ export class RegisterComponent {
         bloodTypeCtrl?.setValidators([Validators.required]);
         emNameCtrl?.setValidators([Validators.required]);
         emPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        heightCtrl?.setValidators([Validators.required, Validators.min(0)]);
+        weightCtrl?.setValidators([Validators.required, Validators.min(0)]);
       } else if (isDoctor || isNutritionist) {
         specialtyCtrl?.setValidators([Validators.required]);
         licenseCtrl?.setValidators([Validators.required]);
@@ -253,14 +273,13 @@ export class RegisterComponent {
         servicesCtrl?.setValidators([Validators.required, Validators.minLength(1)]);
       }
 
-      [
-        genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, 
+      // Update validity for all
+      [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, allergiesCtrl, diseasesCtrl, 
+        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
-        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl, labNameCtrl, labAddressCtrl,
-        labPhoneCtrl, certDocCtrl, servicesCtrl
-      ].forEach(ctrl => {
-        ctrl?.updateValueAndValidity();
-      });
+        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
+        labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
+      ].forEach(ctrl => ctrl?.updateValueAndValidity());
     });
   }
 
@@ -268,13 +287,13 @@ export class RegisterComponent {
   get isDoctor(): boolean { return this.registerForm.get('role')?.value === 'DOCTOR'; }
   get isClinic(): boolean { return this.registerForm.get('role')?.value === 'CLINIC'; }
   get isPharmacist(): boolean { return this.registerForm.get('role')?.value === 'PHARMACIST'; }
-  get isLabStaff(): boolean { return this.registerForm.get('role')?.value === 'LABORATORYSAFF'; }
+  get isLabStaff(): boolean { return this.registerForm.get('role')?.value === 'LABORATORYSTAFF'; }
   get isNutritionist(): boolean { return this.registerForm.get('role')?.value === 'NUTRITIONIST'; }
   get isHomeCareProvider(): boolean { return this.registerForm.get('role')?.value === 'HOME_CARE_PROVIDER'; }
 
   onSubmit() {
     if (this.registerForm.valid) {
-      const { terms, chronicDiseases, drugAllergies, hereditaryDiseases, ...rest } = this.registerForm.value;
+      const { terms, chronicDiseases, drugAllergies, hereditaryDiseases, selectedServices, ...rest } = this.registerForm.value;
       
       const payload = { ...rest };
       
@@ -289,24 +308,20 @@ export class RegisterComponent {
         }
       }
 
-      if (this.isHomeCareProvider && rest.selectedServices) {
-        (payload as any).homeCareServices = rest.selectedServices;
-        delete (payload as any).selectedServices;
+      if (this.isHomeCareProvider && selectedServices) {
+        (payload as any).homeCareServices = selectedServices;
       }
 
       this.authService.register(payload).subscribe({
         next: () => {
-          console.log('Registration successful');
           this.router.navigate(['/auth/login']);
         },
         error: (err: any) => {
-          console.error('Registration error:', err);
           this.errorMessage = err.error?.message || 'Erreur lors de l\'inscription';
         }
       });
-
     } else {
       this.registerForm.markAllAsTouched();
     }
   }
-}
+}

@@ -4,8 +4,7 @@ $text-light: #6b7280;
 
 .doctor-wrapper {
     display: flex;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
     background-color: #f9fafb;
 }
 
@@ -13,20 +12,58 @@ $text-light: #6b7280;
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
 .content-area {
     flex: 1;
-    overflow-y: auto;
     padding: 2.5rem;
     background-color: #f9fafb;
 }
 
 .page-header {
     margin-bottom: 2rem;
-    h1 { font-size: 1.75rem; font-weight: 700; color: $text-dark; margin: 0; }
-    p { color: $text-light; margin-top: 0.5rem; }
+    h1, h2 { font-size: 1.75rem; font-weight: 700; color: $text-dark; margin: 0; }
+    p { color: $text-light; margin-top: 0.5rem; font-size: 1rem; }
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    
+    .header-tabs {
+        display: flex;
+        background: #f1f5f9;
+        padding: 6px;
+        border-radius: 16px;
+        gap: 4px;
+        
+        button {
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            color: #64748b;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            
+            i { font-size: 14px; }
+            
+            &:hover:not(.active) {
+                color: #0e7c66;
+                background: rgba(14, 124, 102, 0.05);
+            }
+            
+            &.active {
+                background: white;
+                color: #0e7c66;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            }
+        }
+    }
 }
 
 .patients-schedule-card {
@@ -122,93 +159,121 @@ $text-light: #6b7280;
     }
 }
 
+.patients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.patient-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+
+    .patient-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #0e7c66;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .patient-info {
+            h3 {
+                margin: 0 0 0.3rem 0;
+                font-size: 1.2rem;
+                color: #2c3e50;
+            }
+            .blood-type {
+                font-size: 0.85rem;
+                color: #e74c3c;
+                font-weight: 500;
+                background: #fadbd8;
+                padding: 0.2rem 0.6rem;
+                border-radius: 20px;
+            }
+        }
+    }
+
+    .patient-body {
+        margin-bottom: 1.5rem;
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+
+            .label {
+                color: #7f8c8d;
+            }
+            .value {
+                color: #34495e;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .patient-footer {
+        text-align: right;
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #0e7c66;
+            color: #0e7c66;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &:hover {
+                background: #0e7c66;
+                color: white;
+            }
+        }
+    }
+}
+
 @keyframes blink {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
     100% { opacity: 1; }
 }
 
-/* --- TABS & ALL PATIENTS VIEW --- */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 2rem;
-  
-  .header-tabs {
-    display: flex;
-    background: #f1f5f9;
-    padding: 6px;
-    border-radius: 16px;
-    gap: 4px;
-    
-    button {
-      padding: 10px 20px;
-      border-radius: 12px;
-      border: none;
-      font-size: 14px;
-      font-weight: 700;
-      color: #64748b;
-      background: transparent;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      
-      i { font-size: 14px; }
-      
-      &:hover:not(.active) {
-        color: #0e7c66;
-        background: rgba(14, 124, 102, 0.05);
-      }
-      
-      &.active {
-        background: white;
-        color: #0e7c66;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      }
+.loading-state, .error-state, .empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    color: #7f8c8d;
+
+    .btn {
+        margin-top: 1rem;
     }
-  }
 }
 
-.sub-text {
-  font-size: 12px;
-  color: #94a3b8;
-  margin-top: 2px;
-  display: block;
-}
-
-.meta-col {
-  .date-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    font-weight: 800;
-    color: #94a3b8;
-    letter-spacing: 0.5px;
-  }
-  .date-val {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1e293b;
-  }
-}
-
-.btn-action-mini {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: white;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 14px;
-  
-  &:hover {
-    border-color: #0e7c66;
-    color: #0e7c66;
-    background: #f0fdf4;
-    transform: translateY(-2px);
-  }
+.btn-primary {
+    background: #0e7c66;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
 }

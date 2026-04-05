@@ -10,6 +10,7 @@ import { ContactComponent } from './pages/contact/contact.component';
 
 // Patient components
 import { DashboardComponent } from './patient/pages/dashboard/dashboard.component';
+// Patient components
 import { PatientSidebarComponent } from './patient/components/sidebar/sidebar.component';
 import { PatientTopbarComponent } from './patient/components/topbar/topbar.component';
 import { DonationsComponent } from './patient/pages/donations/donations.component';
@@ -19,6 +20,15 @@ import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-lis
 import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
 import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
 import { PatientBabyCareComponent } from './patient/pages/patient-baby-care/patient-baby-care.component';
+import { MedicalRecordComponent } from './patient/pages/medical-record/medical-record.component';
+import { PatientRecordListComponent } from './patient/pages/patient-record-list/patient-record-list.component';
+import { LifestyleWellnessComponent } from './patient/pages/lifestyle-wellness/lifestyle-wellness.component';
+import { LifestyleListComponent } from './patient/pages/lifestyle-list/lifestyle-list.component';
+import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle-form.component';
+import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
+import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
+import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
+import { LayoutModule } from './layout/layout.module';
 
 // Doctor components
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
@@ -29,6 +39,16 @@ import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-p
 import { DoctorCalendarCalendarComponent } from './doctor/pages/doctor-calendar-calendar/doctor-calendar-calendar.component';
 import { DoctorCalendarExceptionsComponent } from './doctor/pages/doctor-calendar-exceptions/doctor-calendar-exceptions.component';
 import { DoctorCalendarSettingsComponent } from './doctor/pages/doctor-calendar-settings/doctor-calendar-settings.component';
+import { DoctorMedicalRecordComponent } from './doctor/pages/doctor-medical-record/doctor-medical-record.component';
+import { DoctorConsultationsComponent } from './doctor/pages/doctor-consultations/doctor-consultations.component';
+import { DoctorTreatmentsComponent } from './doctor/pages/doctor-treatments/doctor-treatments.component';
+import { DoctorPrescriptionsComponent } from './doctor/pages/doctor-prescriptions/doctor-prescriptions.component';
+import { DoctorDiagnosesComponent } from './doctor/pages/doctor-diagnoses/doctor-diagnoses.component';
+import { DoctorConsultationDetailsComponent } from './doctor/pages/doctor-consultation-details/doctor-consultation-details.component';
+import { DoctorPatientConsultationsComponent } from './doctor/pages/doctor-patient-consultations/doctor-patient-consultations.component';
+import { DoctorPatientTreatmentsComponent } from './doctor/pages/doctor-patient-treatments/doctor-patient-treatments.component';
+import { DoctorPatientPrescriptionsComponent } from './doctor/pages/doctor-patient-prescriptions/doctor-patient-prescriptions.component';
+import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-diagnoses/doctor-patient-diagnoses.component';
 
 @NgModule({
   declarations: [
@@ -36,8 +56,6 @@ import { DoctorCalendarSettingsComponent } from './doctor/pages/doctor-calendar-
     HomeComponent,
     ContactComponent,
     DashboardComponent,
-    PatientSidebarComponent,
-    PatientTopbarComponent,
     DonationsComponent,
     EmergencyComponent,
     PatientProfileComponent,
@@ -45,6 +63,13 @@ import { DoctorCalendarSettingsComponent } from './doctor/pages/doctor-calendar-
     PatientDoctorDetailComponent,
     PatientAppointmentsComponent,
     PatientBabyCareComponent,
+    MedicalRecordComponent,
+    PatientRecordListComponent,
+    LifestyleWellnessComponent,
+    LifestyleListComponent,
+    LifestyleFormComponent,
+    PatientProfileSettingsComponent,
+    PatientProfileEditComponent,
     DoctorDashboardComponent,
     DoctorProfileComponent,
     DoctorSidebarComponent,
@@ -52,14 +77,26 @@ import { DoctorCalendarSettingsComponent } from './doctor/pages/doctor-calendar-
     DoctorPatientsComponent,
     DoctorCalendarCalendarComponent,
     DoctorCalendarExceptionsComponent,
-    DoctorCalendarSettingsComponent
+    DoctorCalendarSettingsComponent,
+    DoctorMedicalRecordComponent,
+    DoctorConsultationsComponent,
+    DoctorTreatmentsComponent,
+    DoctorPrescriptionsComponent,
+    DoctorDiagnosesComponent,
+    DoctorConsultationDetailsComponent,
+    DoctorPatientConsultationsComponent,
+    DoctorPatientTreatmentsComponent,
+    DoctorPatientPrescriptionsComponent,
+    DoctorPatientDiagnosesComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     FrontOfficeRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LifestyleSharedModule,
+    LayoutModule
   ]
 })
 export class FrontOfficeModule { }

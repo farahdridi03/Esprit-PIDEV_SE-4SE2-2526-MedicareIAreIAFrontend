@@ -6,6 +6,7 @@ export interface UserResponseDTO {
     enabled: boolean;
     phone?: string;
     birthDate?: string;
+    photo?: string;
 }
 
 export interface UserRequestDTO {
@@ -15,4 +16,5 @@ export interface UserRequestDTO {
     role: string;
     phone?: string;
     birthDate?: string;
+    photo?: string;
 }

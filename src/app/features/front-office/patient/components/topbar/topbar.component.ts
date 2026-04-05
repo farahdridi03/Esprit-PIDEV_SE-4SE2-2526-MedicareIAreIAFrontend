@@ -3,35 +3,32 @@ import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
-  selector: 'app-patient-topbar',
+  selector: 'app-topbar',
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.scss']
 })
 export class PatientTopbarComponent implements OnInit {
   firstName: string = 'User';
   initials: string = 'U';
+  photo: string | null = null;
 
   constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit() {
     this.loadUserInfo();
-    this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          this.setNames(user.fullName);
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching user profile', err);
-      }
-    });
   }
 
   private loadUserInfo() {
-    const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.setNames(fullName);
-    }
+    this.userService.profile$.subscribe(user => {
+      if (user) {
+        if (user.fullName) {
+          this.setNames(user.fullName);
+        }
+        this.photo = (user as any).photo || null;
+      }
+    });
+    // Trigger initial load if not already loaded
+    this.userService.refreshProfile();
   }
 
   private setNames(fullName: string) {

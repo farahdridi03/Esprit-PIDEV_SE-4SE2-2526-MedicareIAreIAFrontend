@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Donation, AidRequest, DonationAssignment } from '../models/donation.model';
 
 @Injectable({
@@ -13,12 +14,23 @@ export class DonationService {
   constructor(private http: HttpClient) { }
 
   getAllDonations(): Observable<Donation[]> {
-    return this.http.get<Donation[]>(this.apiUrl);
+    return this.http.get<Donation[]>(this.apiUrl).pipe(
+      map(data => data ?? [])
+    );
   }
 
-  createDonation(donation: Donation): Observable<Donation> {
-    // La chaîne Base64 est déjà présente dans donation.imageData
-    return this.http.post<Donation>(this.apiUrl, donation);
+  createDonation(donation: Partial<Donation>): Observable<Donation> {
+    const payload = {
+      donorName: donation.donorName,
+      type: donation.type,
+      amount: donation.amount ?? null,
+      categorie: donation.categorie ?? null,
+      description: donation.description ?? null,
+      quantite: donation.quantite ?? null,
+      imageData: donation.imageData ?? null,
+      creatorId: donation.creatorId
+    };
+    return this.http.post<Donation>(this.apiUrl, payload);
   }
 
   updateDonation(id: number, donation: Partial<Donation>): Observable<Donation> {
@@ -30,7 +42,9 @@ export class DonationService {
   }
 
   getAidRequestsByPatient(patientId: number): Observable<AidRequest[]> {
-    return this.http.get<AidRequest[]>(`${this.aidApiUrl}/patient/${patientId}`);
+    return this.http.get<AidRequest[]>(`${this.aidApiUrl}/patient/${patientId}`).pipe(
+      map(data => data ?? [])
+    );
   }
 
   getAllAidRequests(): Observable<AidRequest[]> {

@@ -1,0 +1,122 @@
+<div class="embedded-crud-card box mt-3">
+    <div class="header-flex">
+        <h3>Prescriptions</h3>
+        <button class="btn-premium btn-save" (click)="openAddForm()" *ngIf="!showForm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+            Add Prescription
+        </button>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+        <p>Loading prescriptions...</p>
+    </div>
+
+    <div class="data-table-container" *ngIf="!loading && !showForm">
+        <table class="data-table" *ngIf="prescriptions.length > 0; else noData">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of prescriptions">
+                    <td>{{ p.date | date:'mediumDate' }}</td>
+                    <td>
+                        <ul style="margin: 0; padding-left: 1rem;">
+                            <li *ngFor="let item of p.items">
+                                <strong>{{ item.medicationName }}</strong> - {{ item.dosage }}, {{ item.frequency }} for {{ item.duration }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td class="action-cells">
+                        <button class="action-btn edit" (click)="openEditForm(p)" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>
+                        </button>
+                        <button class="action-btn delete" (click)="deletePrescription(p.id!)" title="Delete">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ng-template #noData>
+            <div class="empty-state">
+                <p>No prescriptions found for this consultation.</p>
+            </div>
+        </ng-template>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container" *ngIf="showForm">
+        <h4>{{ currentPrescription.id ? 'Edit Prescription' : 'Add New Prescription' }}</h4>
+        <form (ngSubmit)="savePrescription()" #prescriptionForm="ngForm">
+            <div class="form-group mb-3">
+                <label>Date Prescribed</label>
+                <input type="date" name="date" [(ngModel)]="currentPrescription.date" #rxDate="ngModel" required class="form-control">
+                <div *ngIf="rxDate.invalid && (rxDate.dirty || rxDate.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                    Date is required.
+                </div>
+            </div>
+            
+            <div class="items-list">
+                <h5 class="mb-2">Medications</h5>
+                <div class="prescription-item mb-3 p-3 border rounded relative" *ngFor="let item of currentPrescription.items; let i = index">
+                    <button type="button" class="btn btn-sm btn-danger position-absolute" style="top: 10px; right: 10px;" 
+                            (click)="removeItem(i)" *ngIf="currentPrescription.items && currentPrescription.items.length > 1">
+                        X
+                    </button>
+                    
+                    <div class="form-group">
+                        <label>Medication Name</label>
+                        <input type="text" [name]="'medName_'+i" [(ngModel)]="item.medicationName" #medName="ngModel" required class="form-control" placeholder="e.g. Amoxicillin">
+                        <div *ngIf="medName.invalid && (medName.dirty || medName.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                            Name is required.
+                        </div>
+                    </div>
+                    
+                    <div class="form-row" style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Dosage</label>
+                            <input type="text" [name]="'dosage_'+i" [(ngModel)]="item.dosage" #medDosage="ngModel" required class="form-control" placeholder="e.g. 500mg">
+                            <div *ngIf="medDosage.invalid && (medDosage.dirty || medDosage.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Dosage required.
+                            </div>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Frequency</label>
+                            <input type="text" [name]="'frequency_'+i" [(ngModel)]="item.frequency" #medFreq="ngModel" required class="form-control" placeholder="e.g. Twice a day">
+                            <div *ngIf="medFreq.invalid && (medFreq.dirty || medFreq.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Frequency required.
+                            </div>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Duration</label>
+                            <input type="text" [name]="'duration_'+i" [(ngModel)]="item.duration" #medDur="ngModel" required class="form-control" placeholder="e.g. 7 days">
+                            <div *ngIf="medDur.invalid && (medDur.dirty || medDur.touched)" style="color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                                Duration required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn-premium btn-add-item" (click)="addItem()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                    Add Medication
+                </button>
+            </div>
+            
+            <div class="form-actions mt-4" style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button type="button" class="btn-premium btn-cancel" (click)="cancelForm()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                    Cancel
+                </button>
+                <button type="submit" class="btn-premium btn-save" [disabled]="!prescriptionForm.valid">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                    Save Prescription
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

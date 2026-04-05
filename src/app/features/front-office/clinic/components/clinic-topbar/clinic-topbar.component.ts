@@ -12,6 +12,7 @@ import { AmbulanceService } from '../../../../../services/ambulance.service';
 export class ClinicTopbarComponent implements OnInit, OnDestroy {
   firstName: string = 'Clinic';
   initials: string = 'C';
+  photo: string | null = null;
 
   notifications: EmergencyAlertResponse[] = [];
   unreadCount: number = 0;
@@ -32,7 +33,10 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
       next: (user) => {
-        if (user && user.fullName) this.setNames(user.fullName);
+        if (user && user.fullName) {
+          this.setNames(user.fullName);
+        }
+        this.photo = (user as any).photo || null;
       },
       error: (err) => console.error('Error fetching clinic profile', err)
     });
@@ -135,8 +139,16 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
   }
 
   private loadUserInfo() {
-    const fullName = this.authService.getUserFullName();
-    if (fullName) this.setNames(fullName);
+    this.userService.profile$.subscribe(user => {
+      if (user) {
+        if (user.fullName) {
+          this.setNames(user.fullName);
+        }
+        this.photo = (user as any).photo || null;
+      }
+    });
+    // Trigger initial load if not already loaded
+    this.userService.refreshProfile();
   }
 
   private setNames(fullName: string) {

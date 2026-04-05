@@ -1,0 +1,452 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+$primary-color: #0e7c66;
+$secondary-color: #0c6a57;
+$bg-color: #f7fafc;
+$card-bg: rgba(255, 255, 255, 0.9);
+$text-dark: #1a202c;
+$text-muted: #718096;
+$border-color: #e2e8f0;
+
+$blue: #0e7c66;
+$purple: #805ad5;
+$orange: #ed8936;
+$red: #e53e3e;
+$green: #38a169;
+
+.doctor-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: $bg-color;
+  font-family: 'Outfit', 'Inter', sans-serif;
+
+  .main-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+
+    .content-area {
+      padding: 30px;
+      width: 100%;
+
+      /* Patient Profile Header */
+      .record-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+        padding: 24px 32px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+
+        .patient-profile {
+          display: flex;
+          align-items: center;
+          gap: 24px;
+
+          .avatar-container {
+            width: 90px;
+            height: 90px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 4px solid #fff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: $primary-color;
+            
+            &:hover {
+              transform: scale(1.05);
+            }
+
+            .avatar {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+
+            .avatar-initials {
+              font-size: 32px;
+              color: white;
+              font-weight: 700;
+            }
+          }
+
+          .info {
+            h2 {
+              margin: 0 0 6px 0;
+              font-size: 28px;
+              color: $text-dark;
+              font-weight: 700;
+              letter-spacing: -0.5px;
+            }
+            .role-badge {
+              display: inline-block;
+              font-size: 13px;
+              color: $primary-color;
+              background: #ebf8ff;
+              padding: 4px 12px;
+              border-radius: 20px;
+              font-weight: 600;
+              margin: 0;
+            }
+          }
+        }
+
+        .back-btn {
+          padding: 12px 24px;
+          background: #fff;
+          border: 1px solid $border-color;
+          border-radius: 12px;
+          color: $text-muted;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          
+          &:hover {
+            background: #f8fafc;
+            color: $text-dark;
+            transform: translateX(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+          }
+        }
+      }
+
+      /* Health Info Pills */
+      .health-info-panel {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 30px;
+
+        .info-item {
+          min-width: 0; // Allow shrinking in grid
+          background: #fff;
+          padding: 16px 20px;
+          border-radius: 16px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.8);
+          display: flex;
+          flex-direction: column;
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+          }
+
+          .label {
+            font-size: 11px;
+            color: $text-muted;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+          }
+
+          .value {
+            font-size: 17px;
+            font-weight: 600;
+            color: $text-dark;
+
+            &.blood-type {
+              color: $red;
+              font-weight: 800;
+            }
+          }
+        }
+      }
+
+      /* Grid Section */
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        margin-top: 20px;
+
+        @media (max-width: 992px) {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-card {
+          background: $card-bg;
+          border-radius: 24px;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+          overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          display: flex;
+          flex-direction: column;
+          border: 1px solid rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(12px);
+          position: relative;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: $border-color;
+          }
+
+          &:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+          }
+
+          &.border-blue { &::before { background: linear-gradient(to bottom, $blue, lighten($blue, 20%)); } }
+          &.border-purple { &::before { background: linear-gradient(to bottom, $purple, lighten($purple, 20%)); } }
+          &.border-orange { &::before { background: linear-gradient(to bottom, $orange, lighten($orange, 20%)); } }
+          &.border-red { &::before { background: linear-gradient(to bottom, $red, lighten($red, 20%)); } }
+
+          .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 28px;
+            background-color: rgba(248, 250, 252, 0.5);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+
+            .card-title {
+              display: flex;
+              align-items: center;
+              gap: 14px;
+
+              .icon {
+                font-size: 24px;
+                background: #fff;
+                width: 44px;
+                height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 14px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+              }
+
+              h3 {
+                margin: 0;
+                font-size: 19px;
+                color: $text-dark;
+                font-weight: 700;
+                letter-spacing: -0.3px;
+              }
+            }
+
+            .btn-view-all {
+              background: #fff;
+              border: 1px solid $border-color;
+              color: #0e7c66;
+              padding: 8px 16px;
+              border-radius: 10px;
+              font-size: 13px;
+              font-weight: 700;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              text-decoration: none;
+
+              &:hover {
+                background: #0e7c66;
+                color: #fff;
+                border-color: #0e7c66;
+                transform: scale(1.05);
+              }
+            }
+          }
+
+          .card-body {
+            padding: 24px 28px;
+            flex: 1;
+
+            .empty-text {
+              color: $text-muted;
+              padding: 40px 0;
+              text-align: center;
+              font-size: 15px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 10px;
+
+              &::before {
+                content: '📁';
+                font-size: 32px;
+                opacity: 0.5;
+              }
+            }
+
+            .item-list {
+              display: flex;
+              flex-direction: column;
+              gap: 16px;
+
+              .list-item {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                padding-bottom: 16px;
+                border-bottom: 1px solid rgba(237, 242, 247, 0.8);
+                animation: slideIn 0.4s ease-out forwards;
+
+                &:last-child {
+                  padding-bottom: 0;
+                  border-bottom: none;
+                }
+
+                .item-main {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  
+                  strong {
+                    font-size: 16px;
+                    color: $text-dark;
+                    font-weight: 600;
+                  }
+
+                  .text-muted {
+                    font-size: 13px;
+                    color: $text-muted;
+                    font-weight: 500;
+                  }
+
+                  .badge {
+                    font-size: 10px;
+                    padding: 4px 10px;
+                    border-radius: 8px;
+                    text-transform: uppercase;
+                    font-weight: 800;
+                    letter-spacing: 0.5px;
+
+                    &.ongoing, &.active { background: #d1fae5; color: #065f46; }
+                    &.completed { background: #dbeafe; color: #1e40af; }
+                    &.cancelled { background: #fee2e2; color: #991b1b; }
+                  }
+                }
+
+                .item-sub {
+                  font-size: 14px;
+                  color: #4a5568;
+                  line-height: 1.4;
+
+                  &.text-truncate {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /* Secondary Sections (Allergies/Diseases) */
+      .medical-arrays {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        margin-bottom: 30px;
+
+        @media (max-width: 992px) {
+          grid-template-columns: 1fr;
+        }
+
+        .record-card {
+          background: #fff;
+          padding: 24px;
+          border-radius: 20px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+          border: 1px solid $border-color;
+          transition: border-color 0.3s;
+
+          &:hover {
+            border-color: lighten($primary-color, 30%);
+          }
+
+          h4 {
+            margin: 0 0 16px 0;
+            color: $text-dark;
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            
+            &::before {
+              content: '';
+              width: 4px;
+              height: 16px;
+              background: $primary-color;
+              border-radius: 2px;
+            }
+          }
+
+          ul {
+            padding-left: 0;
+            margin: 0;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            li {
+              background: #f1f5f9;
+              color: #475569;
+              padding: 6px 14px;
+              border-radius: 10px;
+              font-size: 14px;
+              font-weight: 500;
+              border: 1px solid rgba(0,0,0,0.03);
+            }
+          }
+
+          .muted {
+            color: $text-muted;
+            font-size: 14px;
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  color: $text-muted;
+  
+  &::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-top-color: $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-top: 20px;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
