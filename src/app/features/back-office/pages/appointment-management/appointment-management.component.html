@@ -1,0 +1,66 @@
+<div class="appt-mgmt-page">
+  <div class="page-header">
+    <div>
+      <h1>Appointment Management</h1>
+      <p>View and monitor all platform appointments</p>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="🔍 Search by patient or doctor..."
+      [(ngModel)]="searchQuery"
+      (input)="applyFilters()"
+    />
+    <select class="status-select" [(ngModel)]="filterStatus" (change)="applyFilters()">
+      <option value="">All Statuses</option>
+      <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+    </select>
+    <button class="btn-refresh" (click)="loadAppointments()">↺ Refresh</button>
+  </div>
+
+  <div class="table-card">
+    <div *ngIf="isLoading" class="loader-state">
+      <div class="spinner"></div>
+      <p>Loading appointments...</p>
+    </div>
+
+    <div *ngIf="!isLoading && filteredAppointments.length === 0" class="empty-state">
+      <div style="font-size:3rem; margin-bottom:1rem;">📅</div>
+      <p>No appointments found matching your criteria.</p>
+    </div>
+
+    <table *ngIf="!isLoading && filteredAppointments.length > 0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Patient</th>
+          <th>Doctor</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Mode</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let appt of filteredAppointments; let i = index">
+          <td class="id-col">{{ appt.id }}</td>
+          <td>{{ appt.patientName || '—' }}</td>
+          <td>{{ appt.doctorName || '—' }}</td>
+          <td>{{ appt.date }}</td>
+          <td>{{ appt.startTime }} – {{ appt.endTime || '...' }}</td>
+          <td>
+            <span class="mode-tag" [ngClass]="appt.mode === 'ONLINE' ? 'mode-online' : 'mode-inperson'">
+              {{ appt.mode === 'ONLINE' ? '💻 Online' : '🏥 In-Person' }}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(appt.status)">{{ appt.status }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,112 +1,125 @@
-<div class="wrapper">
-<div class="wrapper">
-    <app-sidebar></app-sidebar>
+<div class="profile-page-wrapper">
+  
+  <!-- LOADING -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading your profile...</p>
+  </div>
 
-    <div class="main-body">
-        <app-topbar></app-topbar>
-
-        <div class="content-area">
-            <div class="page-header">
-                <h1>Profile Settings</h1>
-                <p>Manage your personal and health information</p>
-            </div>
-
-            <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
-            <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-
-            <div class="profile-section">
-                <form (ngSubmit)="onSubmit()" #profileForm="ngForm" class="profile-form">
-                    
-                    <!-- Photo Section -->
-                    <div class="photo-section">
-                        <h3>Profile Picture</h3>
-                        <div class="photo-uploader">
-                            <div class="photo-placeholder">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                </svg>
-                            </div>
-                            <div class="upload-btn-container">
-                                <button type="button" class="upload-btn">Choose an image</button>
-                                <small>Accepted formats: JPG, PNG. 1:1 ratio recommended.</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr class="divider">
-
-                    <!-- Account Section -->
-                    <h3>Account Information</h3>
-                    <div class="form-row">
-                        <div class="form-group flex-1">
-                            <label>Full Name</label>
-                            <input type="text" name="fullName" [(ngModel)]="profileData.fullName" class="form-control" required>
-                        </div>
-                        <div class="form-group flex-1">
-                            <label>Email Address</label>
-                            <input type="email" name="email" [(ngModel)]="profileData.email" class="form-control" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>New password (leave blank to keep current)</label>
-                        <input type="password" name="password" [(ngModel)]="profileData.password" class="form-control">
-                    </div>
-
-                    <hr class="divider">
-
-                    <!-- Medical Section -->
-                    <h3>Contact and Health</h3>
-                    <div class="form-row">
-                        <div class="form-group flex-1">
-                            <label>Phone</label>
-                            <input type="tel" name="phone" [(ngModel)]="profileData.phone" class="form-control">
-                        </div>
-                        <div class="form-group flex-1">
-                            <label>Date of Birth</label>
-                            <input type="date" name="birthDate" [(ngModel)]="profileData.birthDate" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group flex-1">
-                            <label>Gender</label>
-                            <select name="gender" [(ngModel)]="profileData.gender" class="form-control">
-                                <option value="MALE">Male</option>
-                                <option value="FEMALE">Female</option>
-                            </select>
-                        </div>
-                        <div class="form-group flex-1">
-                            <label>Blood Type</label>
-                            <select name="bloodType" [(ngModel)]="profileData.bloodType" class="form-control">
-                                <option value="O_POS">O+</option>
-                                <option value="O_NEG">O-</option>
-                                <option value="A_POS">A+</option>
-                                <option value="A_NEG">A-</option>
-                                <option value="B_POS">B+</option>
-                                <option value="B_NEG">B-</option>
-                                <option value="AB_POS">AB+</option>
-                                <option value="AB_NEG">AB-</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group flex-1">
-                            <label>Emergency Contact (Name)</label>
-                            <input type="text" name="emergencyContactName" [(ngModel)]="profileData.emergencyContactName" class="form-control">
-                        </div>
-                        <div class="form-group flex-1">
-                            <label>Emergency Contact Phone</label>
-                            <input type="tel" name="emergencyContactPhone" [(ngModel)]="profileData.emergencyContactPhone" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="save-btn" [disabled]="!profileForm.valid">Save changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+  <!-- HEADER -->
+  <header class="profile-header">
+    <div class="header-content">
+      <h1 class="serif-title">Votre <span class="italic">Profil</span></h1>
+      <p>Manage your account settings and personal information</p>
     </div>
+    <a routerLink="/front/patient/baby-care" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+  </header>
+
+  <div class="profile-content-grid" *ngIf="!isLoading">
+    
+    <!-- LEFT: AVATAR & QUICK INFO -->
+    <div class="side-card">
+      <div class="avatar-section">
+        <div class="profile-avatar">
+          <img [src]="user.photoUrl || defaultMamaAvatar" alt="Avatar">
+          <label class="edit-badge">
+            <i class="fas fa-camera"></i>
+            <input type="file" hidden>
+          </label>
+        </div>
+        <h3>{{ user.fullName }}</h3>
+        <span class="role-chip">{{ parentRole.badge }}</span>
+      </div>
+
+      <div class="quick-stats">
+        <div class="stat">
+          <label>Member Since</label>
+          <span>Oct 2023</span>
+        </div>
+        <div class="stat">
+          <label>Status</label>
+          <span class="status-active">Verified</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: FORM & SETTINGS -->
+    <div class="main-card">
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        
+        <div class="form-section">
+          <h4 class="section-title">Personal Information</h4>
+          <div class="form-grid">
+            <div class="field-item">
+              <label>Full Name</label>
+              <input type="text" formControlName="fullName" placeholder="Sarah M.">
+            </div>
+            <div class="field-item disabled">
+              <label>Email Address</label>
+              <input type="email" formControlName="email">
+              <small>Contact support to change email</small>
+            </div>
+            <div class="field-item">
+              <label>Phone Number</label>
+              <input type="text" formControlName="phone" placeholder="+216 12 345 678">
+            </div>
+            <div class="field-item">
+              <label>Relationship to Baby</label>
+              <select formControlName="relationship">
+                <option value="Mama">Mama</option>
+                <option value="Papa">Papa</option>
+                <option value="Parent">Parent</option>
+              </select>
+            </div>
+            <div class="field-item full-width">
+              <label>Address</label>
+              <input type="text" formControlName="address" placeholder="E.g. Berges du Lac, Tunis">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4 class="section-title">Account Preferences</h4>
+          <div class="settings-list">
+            <div class="setting-item">
+              <div class="info">
+                <strong>Push Notifications</strong>
+                <p>Allow alerts for baby alerts and reminders</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" formControlName="notifications">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="info">
+                <strong>Personalized Health Tips</strong>
+                <p>Receive weekly guidance tailored to baby's age</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" formControlName="marketing">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-save" [disabled]="profileForm.invalid || isLoading">
+            <span *ngIf="!isLoading">Save Changes</span>
+            <div class="spinner-sm" *ngIf="isLoading"></div>
+          </button>
+        </div>
+
+        <div class="success-toast" *ngIf="showSuccess">
+          <i class="fas fa-check-circle"></i>
+          Profile updated successfully!
+        </div>
+
+      </form>
+    </div>
+
+  </div>
 </div>

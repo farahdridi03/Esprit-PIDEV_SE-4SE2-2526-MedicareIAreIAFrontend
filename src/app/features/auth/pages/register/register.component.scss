@@ -138,6 +138,20 @@ $border-color: #e5e7eb;
       }
     }
 
+    .currency-suffix {
+      position: absolute;
+      right: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: $text-light;
+      pointer-events: none;
+    }
+
+    // Adjust padding when currency suffix is present
+    input[type="number"] {
+      padding-right: 3rem;
+    }
+
     select {
       cursor: pointer;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -260,6 +274,203 @@ $border-color: #e5e7eb;
 
     &:hover {
       text-decoration: underline;
+    }
+  }
+}
+
+// Medical History Section
+.medical-history-container {
+  border-top: 1px dashed $border-color;
+  padding-top: 1rem;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: $text-dark;
+      margin: 0;
+    }
+
+    .add-history-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background-color: rgba($primary-green, 0.1);
+      color: $primary-green;
+      border: 1px solid rgba($primary-green, 0.2);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: $primary-green;
+        color: white;
+      }
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+
+  .medical-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .history-card {
+    background-color: white;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    padding: 12px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    .history-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f3f4f6;
+
+      .entry-number {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .remove-entry-btn {
+        background: none;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          color: #ef4444;
+          background-color: #fee2e2;
+        }
+
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+
+    .history-fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+
+      .no-margin {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .empty-history {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    border: 1px dashed #d1d5db;
+    color: #9ca3af;
+    font-size: 0.85rem;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .profile-image-upload {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #f9fafb;
+    border: 2px dashed $border-color;
+    border-radius: 12px;
+
+    .image-preview {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      max-width: 44px;
+      max-height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid $primary-green;
+
+      img {
+        display: block;
+        width: 44px;
+        height: 44px;
+        max-width: 44px;
+        max-height: 44px;
+        object-fit: cover;
+      }
+    }
+
+    .image-placeholder {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: $input-bg;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 2px solid $border-color;
+
+      svg {
+        width: 22px;
+        height: 22px;
+        color: $text-light;
+      }
+    }
+
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: $primary-green;
+      color: white;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: $primary-hover;
+      }
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
     }
   }
 }

@@ -9,6 +9,14 @@ import { EmergencyComponent } from './patient/pages/emergency/emergency.componen
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
 import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
+import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-list/patient-doctors-list.component';
+import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
+import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
+import { PatientBabyCareComponent } from './patient/pages/patient-baby-care/patient-baby-care.component';
+import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
+import { DoctorCalendarCalendarComponent } from './doctor/pages/doctor-calendar-calendar/doctor-calendar-calendar.component';
+import { DoctorCalendarExceptionsComponent } from './doctor/pages/doctor-calendar-exceptions/doctor-calendar-exceptions.component';
+import { DoctorCalendarSettingsComponent } from './doctor/pages/doctor-calendar-settings/doctor-calendar-settings.component';
 import { AuthGuard } from '../../guards/auth.guard';
 
 const routes: Routes = [
@@ -39,6 +47,30 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
+    path: 'patient/appointments',
+    component: PatientAppointmentsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/doctors',
+    component: PatientDoctorsListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/doctors/:id',
+    component: PatientDoctorDetailComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/baby-care',
+    component: PatientBabyCareComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
     path: 'patient/profile',
     component: PatientProfileComponent,
     canActivate: [AuthGuard],
@@ -53,6 +85,30 @@ const routes: Routes = [
   {
     path: 'doctor/profile',
     component: DoctorProfileComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['DOCTOR'] }
+  },
+  {
+    path: 'doctor/patients',
+    component: DoctorPatientsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['DOCTOR'] }
+  },
+  {
+    path: 'doctor/calendar',
+    component: DoctorCalendarCalendarComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['DOCTOR'] }
+  },
+  {
+    path: 'doctor/calendar/exceptions',
+    component: DoctorCalendarExceptionsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['DOCTOR'] }
+  },
+  {
+    path: 'doctor/calendar/settings',
+    component: DoctorCalendarSettingsComponent,
     canActivate: [AuthGuard],
     data: { roles: ['DOCTOR'] }
   },

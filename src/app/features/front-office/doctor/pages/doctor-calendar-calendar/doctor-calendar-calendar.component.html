@@ -1,0 +1,80 @@
+<div class="doctor-wrapper">
+  <app-doctor-sidebar></app-doctor-sidebar>
+  <div class="main-body">
+    <app-doctor-topbar></app-doctor-topbar>
+    <div class="content-area">
+
+<div class="calendar-viewport">
+  <div class="calendar-header">
+    <div class="view-controls">
+      <h2>Availability Overview</h2>
+      <p>Here is how your patients see your schedule this week.</p>
+    </div>
+    <div class="date-navigator">
+      <button class="nav-btn" (click)="prevWeek()">‹</button>
+      <span class="current-range">Week of {{ daysInWeek[0] | date:'dd MMM' }} to {{ daysInWeek[6] | date:'dd MMM yyyy' }}</span>
+      <button class="nav-btn" (click)="nextWeek()">›</button>
+    </div>
+  </div>
+
+  <!-- No schedule configured banner -->
+  <div *ngIf="noScheduleConfigured && !isLoading" style="text-align:center; padding: 40px 20px; background: #fff8e1; border-radius: 12px; margin: 16px 0; border: 1px dashed #f59e0b;">
+    <div style="font-size: 2rem;">📅</div>
+    <h3 style="color: #92400e; margin: 8px 0 4px;">No Work Schedule Configured</h3>
+    <p style="color: #78350f;">Please go to the <strong>Work Schedule</strong> tab to set up your weekly availability first.</p>
+  </div>
+
+  <div class="calendar-grid">
+    <div *ngFor="let date of daysInWeek" class="day-column" [class.today]="isToday(date)">
+      <div class="day-header">
+        <span class="day-name">{{ date | date:'EEE' }}</span>
+        <span class="day-number">{{ date | date:'dd' }}</span>
+      </div>
+
+      <div class="slots-container">
+        <div *ngIf="isLoading" class="loader-mini"></div>
+
+        <ng-container *ngIf="!isLoading && getDaySchedule(date) as schedule">
+          <div *ngIf="!schedule.active" class="closed-badge">Closed</div>
+
+          <ng-container *ngIf="schedule.active">
+            <div *ngFor="let slot of schedule.timeSlots" class="slot-card" [class]="slot.mode.toLowerCase()" [class.is-booked]="slot.status === 'BOOKED'">
+              <!-- Mode Indicator (Top corner) -->
+              <div class="mode-indicator" [ngSwitch]="slot.mode">
+                <span *ngSwitchCase="'ONLINE'" class="mode-badge online">
+                  <i class="fas fa-video"></i> Online
+                </span>
+                <span *ngSwitchCase="'OFFICE'" class="mode-badge office">
+                  <i class="fas fa-hospital"></i> Office
+                </span>
+                <span *ngSwitchCase="'BOTH'" class="mode-badge both">
+                   🔄 Both
+                </span>
+              </div>
+
+              <div class="slot-time">{{ slot.startTime }}</div>
+              
+              <div class="slot-status-row">
+                <span *ngIf="slot.status === 'AVAILABLE'" class="status-dot available"></span>
+                <span *ngIf="slot.status === 'BOOKED'" class="status-dot booked"></span>
+                <span class="status-text">{{ slot.status === 'BOOKED' ? 'Booked' : 'Free' }}</span>
+              </div>
+            </div>
+
+            <div *ngIf="schedule.timeSlots.length === 0" class="no-slots">
+              No slots
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <div *ngIf="!isLoading && !getDaySchedule(date)" class="no-data">
+          No config
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>

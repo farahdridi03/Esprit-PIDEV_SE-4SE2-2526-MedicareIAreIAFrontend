@@ -1,0 +1,124 @@
+<div class="doctor-wrapper">
+  <app-doctor-sidebar></app-doctor-sidebar>
+  <div class="main-body">
+    <app-doctor-topbar></app-doctor-topbar>
+    <div class="content-area">
+
+<div class="calendar-settings-container">
+  <div class="header-section">
+      <h2>Update Specific Week</h2>
+      <p>Configure your slots for this week only. Only these specific days will be affected.</p>
+    </div>
+    
+    <div class="date-navigator">
+      <button class="nav-btn" type="button" (click)="prevWeek()">‹</button>
+      <span class="current-range">Week of {{ daysInWeek[0] | date:'dd MMM' }} to {{ daysInWeek[6] | date:'dd MMM yyyy' }}</span>
+      <button class="nav-btn" type="button" (click)="nextWeek()">›</button>
+    </div>
+
+    <div class="header-icon">🗓️</div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading your schedule...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    <span class="icon">⚠️</span> {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    <span class="icon">✅</span> {{ successMessage }}
+  </div>
+
+  <form *ngIf="!isLoading" [formGroup]="scheduleForm" (ngSubmit)="saveSchedule()">
+    <div class="days-list" formArrayName="days">
+      <div *ngFor="let day of days.controls; let dIndex = index" [formGroupName]="dIndex" 
+           class="day-card" [class.inactive]="!day.get('active')?.value">
+        
+        <!-- Day Header -->
+        <div class="day-header" (click)="toggleDay(dIndex)">
+          <div class="toggle-switch">
+            <input type="checkbox" formControlName="active" (click)="$event.stopPropagation()">
+            <span class="slider"></span>
+          </div>
+          <div class="day-info">
+            <h3 class="day-name">
+              {{ getDayName(day.get('dayOfWeek')?.value) }}
+              <small *ngIf="getDateForDay(day.get('dayOfWeek')?.value) as d">
+                ({{ d | date:'dd MMM' }})
+              </small>
+            </h3>
+            <span class="status-badge" [class.off]="!day.get('active')?.value">
+              {{ day.get('active')?.value ? 'Available' : 'Unavailable' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Time Slots (Only visible if day is active) -->
+        <div class="time-slots-container" *ngIf="day.get('active')?.value" formArrayName="timeSlots">
+          <div *ngFor="let slot of timeSlots(dIndex).controls; let sIndex = index" 
+               [formGroupName]="sIndex" class="time-slot-row">
+            
+            <div class="input-group">
+              <label>Start</label>
+              <div class="time-input-wrapper">
+                <span class="time-icon">🕒</span>
+                <input type="time" formControlName="startTime" required>
+              </div>
+            </div>
+            
+            <div class="time-separator">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            
+            <div class="input-group">
+              <label>End</label>
+              <div class="time-input-wrapper">
+                <span class="time-icon">🕒</span>
+                <input type="time" formControlName="endTime" required>
+              </div>
+            </div>
+
+            <div class="input-group mode-group">
+              <label>Mode</label>
+              <div class="custom-select-wrapper">
+                <select formControlName="mode">
+                  <option value="OFFICE">In Clinic 🏢</option>
+                  <option value="ONLINE">Online 💻</option>
+                  <option value="BOTH">Both 🔄</option>
+                </select>
+                <span class="select-arrow">▼</span>
+              </div>
+            </div>
+
+            <button type="button" class="btn-remove" (click)="removeTimeSlot(dIndex, sIndex)" 
+                    *ngIf="timeSlots(dIndex).length > 1" title="Delete this slot">
+              <span class="trash-icon">🗑️</span>
+            </button>
+          </div>
+          
+          <div class="add-slot-wrapper">
+            <button type="button" class="btn-add-slot" (click)="addTimeSlot(dIndex)">
+              <span class="plus-icon">+</span> Add time slot
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="actions-footer">
+      <button type="submit" class="btn-save" [class.loading]="isSaving" [disabled]="scheduleForm.invalid || isSaving">
+        <span *ngIf="!isSaving">Save schedule</span>
+        <span *ngIf="isSaving">Saving...</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+    </div>
+  </div>
+</div>

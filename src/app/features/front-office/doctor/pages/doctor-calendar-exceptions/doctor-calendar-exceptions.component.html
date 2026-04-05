@@ -1,0 +1,83 @@
+<div class="doctor-wrapper">
+  <app-doctor-sidebar></app-doctor-sidebar>
+  <div class="main-body">
+    <app-doctor-topbar></app-doctor-topbar>
+    <div class="content-area">
+
+<div class="calendar-exceptions-container">
+  <div class="header-section">
+    <div class="header-content">
+      <h2>Exceptions & Leave</h2>
+      <p>Manage your absences, holidays, or specific blocked periods.</p>
+    </div>
+    <button class="btn-add-exception" (click)="toggleForm()" *ngIf="!showForm">
+      <span>+</span> Add Exception
+    </button>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <!-- Add Form -->
+  <div class="exception-form-card" *ngIf="showForm">
+    <div class="card-header">
+      <h3>New Exception</h3>
+      <button class="btn-close" (click)="toggleForm()">×</button>
+    </div>
+    <form [formGroup]="exceptionForm" (ngSubmit)="addException()">
+      <div class="form-grid">
+        <div class="input-group">
+          <label>Start Date</label>
+          <input type="date" formControlName="startDate">
+        </div>
+        <div class="input-group">
+          <label>End Date</label>
+          <input type="date" formControlName="endDate">
+        </div>
+        <div class="input-group">
+          <label>Type</label>
+          <select formControlName="type">
+            <option value="ABSENCE">Sick Leave</option>
+            <option value="TIME_OFF">Vacation / Leave</option>
+            <option value="HOLIDAY">Public Holiday</option>
+            <option value="PARTIAL_AVAILABILITY">Special Availability</option>
+          </select>
+        </div>
+        <div class="input-group full-width">
+          <label>Reason / Note</label>
+          <input type="text" formControlName="reason" placeholder="E.g.: Travel, Personal meeting...">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="toggleForm()">Cancel</button>
+        <button type="submit" class="btn-submit" [disabled]="exceptionForm.invalid || isSaving">
+          {{ isSaving ? 'Saving...' : 'Save' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Exceptions List -->
+  <div class="exceptions-list">
+    <div *ngIf="isLoading" class="loader">Loading...</div>
+    <div *ngIf="!isLoading && exceptions.length === 0" class="empty-state">
+      <div class="empty-icon">🏖️</div>
+      <p>No exceptions recorded yet.</p>
+    </div>
+
+    <div *ngFor="let ex of exceptions" class="exception-card" [class.holiday]="ex.type === 'HOLIDAY'">
+      <div class="ex-date">
+        <span class="range">{{ ex.startDate | date:'dd MMM' }} - {{ ex.endDate | date:'dd MMM yyyy' }}</span>
+      </div>
+      <div class="ex-info">
+        <span class="badge" [attr.data-type]="ex.type">{{ getExceptionTypeLabel(ex.type) }}</span>
+        <p class="reason">{{ ex.reason }}</p>
+      </div>
+      <button class="btn-delete" (click)="deleteException(ex.id)" title="Delete">🗑️</button>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>

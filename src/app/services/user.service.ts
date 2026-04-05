@@ -8,6 +8,7 @@ export interface UpdateProfileRequest {
     email: string;
     password?: string;
     profileImage?: string;
+    role?: string;
 }
 
 @Injectable({

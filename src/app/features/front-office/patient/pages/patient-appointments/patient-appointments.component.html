@@ -1,0 +1,261 @@
+<div class="patient-layout">
+  <app-patient-sidebar></app-patient-sidebar>
+
+  <div class="main-content">
+    <app-patient-topbar></app-patient-topbar>
+
+    <div class="content-wrapper">
+      <div class="appointments-page">
+
+        <!-- 1. Appointments List (DEFAULT) -->
+        <div *ngIf="!selectedAppointment">
+          <div class="tabs">
+            <button [class.active]="activeTab==='upcoming'" (click)="activeTab='upcoming'">
+              Upcoming ({{ upcomingAppointments.length }})
+            </button>
+            <button [class.active]="activeTab==='past'" (click)="activeTab='past'">
+              Past ({{ pastAppointments.length }})
+            </button>
+            <button [class.active]="activeTab==='cancelled'" (click)="activeTab='cancelled'">
+              Cancelled ({{ cancelledAppointments.length }})
+            </button>
+          </div>
+
+          <div *ngIf="isLoading" class="loading"><p>Searching for your appointments...</p></div>
+          <div *ngIf="!isLoading && appointments.length === 0" class="empty-state"><p>No appointments found.</p></div>
+
+          <div *ngIf="!isLoading">
+            <div *ngFor="let appt of (activeTab==='upcoming'? upcomingAppointments : activeTab==='past'? pastAppointments : cancelledAppointments); let i = index" 
+                 class="appointment-card" 
+                 [class.card-alt]="i % 2 !== 0"
+                 [class.past]="activeTab==='past'"
+                 [class.cancelled]="activeTab==='cancelled'">
+              
+              <div class="card-content">
+                <div class="appt-header">
+                  <div class="doctor-profile">
+                    <div class="avatar-box">
+                      <img *ngIf="appt.doctorProfilePicture" [src]="getDoctorPhoto(appt)" class="doc-pic">
+                      <span *ngIf="!appt.doctorProfilePicture">{{ getFallbackAvatar(appt.doctorName) }}</span>
+                      <div class="status-dot"></div>
+                    </div>
+                    <div class="doctor-info">
+                      <h3>{{ (appt.doctorName.toLowerCase().startsWith('dr') ? '' : 'Dr. ') + formatName(appt.doctorName) }}</h3>
+                      <span class="specialty">{{ formatSpecialty(appt.doctorSpecialty) }}</span>
+                    </div>
+                  </div>
+                  <div class="status-badge" [class.status-past]="activeTab==='past'" [class.status-cancelled]="activeTab==='cancelled'">
+                    {{ formatStatus(appt.status) }}
+                  </div>
+                </div>
+
+                <div class="detail-grid">
+                  <div class="detail-box"><div class="icon">📅</div><div class="text"><label>Date</label><span>{{ appt.date | date:'EEE, MMM d, y' }}</span></div></div>
+                  <div class="detail-box"><div class="icon">🕒</div><div class="text"><label>Time</label><span>{{ appt.startTime }}</span></div></div>
+                  <div class="detail-box"><div class="icon">💻</div><div class="text"><label>Type</label><span>{{ appt.mode }}</span></div></div>
+                </div>
+
+                <div class="appt-actions">
+                  <button class="btn-cancel" *ngIf="activeTab==='upcoming'" (click)="cancelAppointment(appt.id)">Cancel</button>
+                  <button class="btn-delete" *ngIf="activeTab==='cancelled'" (click)="openDeleteModal(appt.id)">Delete</button>
+                  <button class="btn-view" (click)="viewDetails(appt)">View Details ↗</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Details View (CONDITIONAL) -->
+        <div *ngIf="selectedAppointment" class="details-container">
+          
+          <div class="view-header">
+            <button class="btn-back" (click)="closeDetails()">←</button>
+            <h2>Appointment Summary</h2>
+          </div>
+
+          <!-- Hero Doctor Profile Part -->
+          <div class="main-detail-card">
+            <div class="detail-hero">
+              <div class="hero-avatar">
+                <img *ngIf="selectedAppointment.doctorProfilePicture" [src]="getDoctorPhoto(selectedAppointment)">
+                <span *ngIf="!selectedAppointment.doctorProfilePicture" class="emoji">{{ getFallbackAvatar(selectedAppointment.doctorName) }}</span>
+                <div class="online-pill" *ngIf="selectedAppointment.status !== 'CANCELLED'"></div>
+              </div>
+              <h3>{{ (selectedAppointment.doctorName.toLowerCase().startsWith('dr') ? '' : 'Dr. ') + formatName(selectedAppointment.doctorName) }}</h3>
+              <span class="spec">{{ formatSpecialty(selectedAppointment.doctorSpecialty) }}</span>
+            </div>
+
+            <div class="info-grid-2x2">
+              <div class="info-item">
+                <div class="ico-box">📅</div>
+                <div class="txt"><label>Date</label><span>{{ selectedAppointment.date | date:'fullDate' }}</span></div>
+              </div>
+              <div class="info-item">
+                <div class="ico-box">🕒</div>
+                <div class="txt"><label>Time</label><span>{{ selectedAppointment.startTime }} – {{ selectedAppointment.endTime || '...' }}</span></div>
+              </div>
+              <div class="info-item">
+                <div class="ico-box">💻</div>
+                <div class="txt"><label>Mode</label><span>{{ selectedAppointment.mode === 'ONLINE' ? 'Online consultation' : 'Office appointment' }}</span></div>
+              </div>
+              <div class="info-item">
+                <div class="ico-box">⏳</div>
+                <div class="txt"><label>Duration</label><span>Approx. 30 min</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Note/Reason Card -->
+          <div class="section-card" *ngIf="selectedAppointment.notes">
+             <h4>🩺 Consultation Reason</h4>
+             <p>{{ selectedAppointment.notes }}</p>
+          </div>
+
+          <!-- TELECONSULTATION SECTION (CONDITION: ONLINE) -->
+          <div *ngIf="selectedAppointment.mode === 'ONLINE' && selectedAppointment.status !== 'COMPLETED' && selectedAppointment.status !== 'CANCELLED'" class="tele-card-full">
+            
+            <!-- STATE A: WAITING ROOM -->
+            <div *ngIf="!isTeleconsultationActive(selectedAppointment)" class="waiting-view">
+              <div class="loader-ring"></div>
+              
+              <div [ngSwitch]="getTeleconsultationState(selectedAppointment)">
+                <div *ngSwitchCase="'WAITING_CONFIRMATION'">
+                    <h4>Waiting for confirmation</h4>
+                    <p>Your request is being reviewed by Dr. {{ formatName(selectedAppointment.doctorName) }}.</p>
+                </div>
+                <div *ngSwitchCase="'WAITING_TIME'">
+                    <h4>Upcoming consultation</h4>
+                    <p>The consultation room will automatically open at the scheduled time: <strong>{{ selectedAppointment.startTime }}</strong>.</p>
+                </div>
+                <div *ngSwitchCase="'WAITING_DOCTOR'">
+                    <h4>The doctor will join you shortly</h4>
+                    <p>Dr. {{ formatName(selectedAppointment.doctorName) }} is preparing the session. Please stay connected on this page.</p>
+                </div>
+                <div *ngSwitchDefault>
+                    <h4>Preparing the session</h4>
+                    <p>Please wait a moment...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATE B: LIVE VIDEO CALL -->
+            <div *ngIf="isTeleconsultationActive(selectedAppointment)" class="live-video-view">
+              <div class="user-tag">
+                <span class="rec-dot"></span>
+                Dr. {{ formatName(selectedAppointment.doctorName) }} • Live
+              </div>
+
+              <!-- Action to join if link available -->
+              <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:20;" *ngIf="selectedAppointment.meetingLink">
+                 <button class="btn-view" style="padding:20px 40px; font-size:1.1rem;" (click)="openMeeting(selectedAppointment.meetingLink)">Join Meeting 🚀</button>
+              </div>
+
+              <!-- Remote Video (Doctor Placeholder) -->
+              <img [src]="getDoctorPhoto(selectedAppointment)" class="remote-video" style="filter: brightness(0.7);">
+
+              <!-- Patient PIP (Local Video Placeholder) -->
+              <div class="patient-pip">
+                <img src="assets/img/patient_placeholder.png" alt="PiP">
+              </div>
+
+
+            </div>
+          </div>
+
+          <!-- MODERN MAP CARD (CONDITION: IN_PERSON / BOTH but not active online) -->
+          <div *ngIf="selectedAppointment.mode !== 'ONLINE'" class="map-section-card">
+            <div class="map-preview" [style.background-image]="'url(assets/img/map_preview_tunis.png)'">
+              <div class="map-pin"></div>
+            </div>
+            <div class="location-info-bar">
+              <div class="loc-text">
+                <h4>{{ selectedAppointment.clinicName || 'MediCare Central Clinic' }}</h4>
+                <p>{{ selectedAppointment.clinicAddress || 'Liberté Quarter, Tunis' }}</p>
+              </div>
+              <button class="btn-maps-action" (click)="openMaps(selectedAppointment.clinicAddress || 'Tunis')">
+                🗺️ Locate
+              </button>
+            </div>
+          </div>
+
+          <!-- Timeline Status -->
+          <div class="section-card">
+             <h4>📈 Appointment Progress</h4>
+             <div class="timeline" *ngIf="selectedAppointment.status !== 'CANCELLED'">
+               <div class="step active">
+                 <span class="s-txt">Booked</span>
+                 <span class="s-sub">Successfully booked</span>
+               </div>
+               <div class="step" [class.active]="selectedAppointment.status === 'CONFIRMED' || selectedAppointment.status === 'LIVE' || selectedAppointment.status === 'RESCHEDULED' || selectedAppointment.status === 'COMPLETED'">
+                 <span class="s-txt">Confirmed</span>
+                 <span class="s-sub">Waiting for consultation</span>
+               </div>
+               <div class="step" [class.active]="selectedAppointment.status === 'COMPLETED'">
+                 <span class="s-txt">Completed</span>
+                 <span class="s-sub">Report available soon</span>
+               </div>
+             </div>
+
+             <div class="timeline" *ngIf="selectedAppointment.status === 'CANCELLED'">
+               <div class="step active">
+                 <span class="s-txt">Booked</span>
+                 <span class="s-sub">Successfully booked</span>
+               </div>
+               <div class="step active">
+                 <span class="s-txt" style="color:#ef4444;">Cancelled</span>
+                 <span class="s-sub">This appointment was cancelled</span>
+               </div>
+             </div>
+          </div>
+
+          <!-- Danger Action -->
+          <div class="section-card" *ngIf="selectedAppointment.status === 'BOOKED' || selectedAppointment.status === 'CONFIRMED'" style="border-top: 1px solid #fecaca;">
+            <button class="btn-cancel" style="width:100%; padding:15px; border-radius:16px; border:1.5px solid #fecaca; color:#ef4444; background:#fff; font-weight:700; cursor:pointer;" (click)="cancelAppointment(selectedAppointment.id)">
+               Cancel this appointment
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+  <!-- CUSTOM CANCEL CONFIRMATION MODAL -->
+  <div class="modal-overlay-custom" *ngIf="showCancelModal">
+    <div class="modal-card-premium">
+      <div class="modal-header-visual">
+        <div class="icon-circle-danger">
+          <i class="fas fa-calendar-times"></i>
+        </div>
+        <h3>Cancel this appointment?</h3>
+        <p>This action is irreversible. Your slot will be immediately released for other patients.</p>
+      </div>
+      
+      <div class="modal-actions-grid">
+        <button class="btn-cancel-soft" (click)="closeCancelModal()">Keep Appointment</button>
+        <button class="btn-confirm-danger" (click)="confirmCancelAppointment()">
+          <span *ngIf="!isLoading">Confirm Cancellation</span>
+          <span *ngIf="isLoading" class="spinner-mini"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- CUSTOM DELETE CONFIRMATION MODAL -->
+  <div class="modal-overlay-custom" *ngIf="showDeleteModal">
+    <div class="modal-card-premium">
+      <div class="modal-header-visual">
+        <div class="icon-circle-danger" style="background: #fee2e2;">
+          <i class="fas fa-trash-alt" style="color: #ef4444;"></i>
+        </div>
+        <h3>Delete this appointment?</h3>
+        <p>This action is final. The appointment will be permanently removed from your history.</p>
+      </div>
+      
+      <div class="modal-actions-grid">
+        <button class="btn-cancel-soft" (click)="closeDeleteModal()">Keep It</button>
+        <button class="btn-confirm-danger" (click)="confirmDeleteAppointment()">
+          <span *ngIf="!isLoading">Delete Permanently</span>
+          <span *ngIf="isLoading" class="spinner-mini"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

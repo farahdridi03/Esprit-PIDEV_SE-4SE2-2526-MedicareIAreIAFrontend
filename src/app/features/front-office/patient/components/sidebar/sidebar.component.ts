@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
-  selector: 'app-sidebar',
+  selector: 'app-patient-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent {
+export class PatientSidebarComponent {
   constructor(private authService: AuthService) {}
 
   logout() {

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
+import { DoctorService } from '../../../../services/doctor.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private doctorService: DoctorService
   ) {
     console.log('LoginComponent initialized'); // Debug log
     this.loginForm = this.fb.group({
@@ -29,32 +31,23 @@ export class LoginComponent {
   onSubmit() {
     console.log('onSubmit called');
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
-      const payload = { email: email.trim(), password };
+      const { rememberMe, ...loginData } = this.loginForm.value;
+      console.log('Form is valid, calling login with data:', loginData);
       
-      console.log('Form is valid, calling login...', payload);
-      this.authService.login(payload).subscribe({
+      this.authService.login(loginData).subscribe({
         next: (response) => {
           console.log('Login successful response:', response);
           const role = response.role || this.authService.getUserRole();
-          console.log('Determined role:', role);
           this.redirectBasedOnRole(role);
         },
         error: (err) => {
-          console.error('Login error:', err);
-          // Make error output clear for developers/users
-          if (err.status === 400) {
-            this.errorMessage = err.error?.message || 'Mauvaise requête. Vérifiez le format (Email/password).';
-          } else if (err.status === 401 || err.status === 403) {
-            this.errorMessage = err.error?.message || 'Identifiants invalides ou compte non activé.';
-          } else {
-            this.errorMessage = err.error?.message || 'Erreur lors de la connexion. Vérifiez le serveur.';
-          }
+          console.error('Login error full response:', err);
+          this.errorMessage = err.error?.message || err.error || 'Identifiants invalides';
         }
       });
     } else {
       this.loginForm.markAllAsTouched();
-      this.errorMessage = 'Please fill out all fields correctly.';
+      this.errorMessage = 'Veuillez remplir correctement tous les champs.';
       console.warn('Form is invalid:', this.loginForm.errors);
       Object.keys(this.loginForm.controls).forEach(key => {
         const controlErrors = this.loginForm.get(key)?.errors;
@@ -91,7 +84,8 @@ export class LoginComponent {
         targetRoute = '/front/nutritionist/dashboard';
         break;
       case 'LABORATORY':
-        targetRoute = '/front/laboratory';
+      case 'LABORATORYSAFF':
+        targetRoute = '/front/laboratorystaff';
         break;
       case 'PHARMACIST':
         targetRoute = '/front/pharmacist/dashboard';
@@ -124,4 +118,3 @@ export class LoginComponent {
     });
   }
 }
-

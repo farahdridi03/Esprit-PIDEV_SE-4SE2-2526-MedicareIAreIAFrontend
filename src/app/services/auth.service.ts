@@ -104,15 +104,16 @@ export class AuthService {
         }
     }
 
-    getUserId(): number | null {
+    getUserId(): number {
         const token = this.getToken();
-        if (!token) return null;
+        if (!token) return 1;
 
         try {
             const decoded: any = jwtDecode(token);
-            return decoded.userId || decoded.id || null;
+            const id = decoded.id || decoded.userId || decoded.providerId;
+            return id ? Number(id) : 1;
         } catch (error) {
-            return null;
+            return 1;
         }
     }
 
@@ -122,9 +123,41 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
-            return decoded.fullName || decoded.name || null;
+            const name = decoded.fullName || decoded.fullname || decoded.name;
+            if (name) return name;
+
+            const sub = decoded.sub || decoded.email;
+            if (sub && sub.includes('@')) {
+                return sub.split('@')[0];
+            }
+            return sub || null;
         } catch (error) {
             return null;
         }
+    }
+
+    getUserGender(): string {
+        const token = this.getToken();
+        if (!token) return 'UNKNOWN';
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.gender || 'UNKNOWN';
+        } catch (error) {
+            return 'UNKNOWN';
+        }
+    }
+
+    getParentRole(): { label: string; badge: string } {
+        const gender = this.getUserGender();
+        if (gender === 'FEMALE') {
+            return { label: 'Maman', badge: 'MAMA' };
+        } else if (gender === 'MALE') {
+            return { label: 'Papa', badge: 'PAPA' };
+        }
+        return { label: 'Parent', badge: 'PARENT' };
+    }
+
+    getHomeCareServices(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
     }
 }
