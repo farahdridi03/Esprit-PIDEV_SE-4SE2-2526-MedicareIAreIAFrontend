@@ -25,13 +25,11 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Notifications subscription
     this.sub = this.notifService.notifications$.subscribe(notifs => {
       this.notifications = notifs;
       this.unreadCount = notifs.filter(n => !n.read).length;
     });
 
-    // User info logic
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
       next: (user) => {
@@ -58,7 +56,7 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub?.unsubscribe();
+    if (this.sub) this.sub.unsubscribe();
   }
 
   toggleDropdown(): void {

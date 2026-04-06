@@ -1,0 +1,145 @@
+<div class="form-container">
+  
+  <!-- Header -->
+  <div class="modal-header">
+    <div class="header-left">
+      <span class="status-badge" [class.badge-edit]="isEditMode" [class.badge-new]="!isEditMode">
+        {{ isEditMode ? 'EDIT TEST' : 'NEW TEST' }}
+      </span>
+      <h2>{{ isEditMode ? 'Edit Lab Test' : 'New Lab Test' }}</h2>
+    </div>
+    <button class="btn-close" (click)="onCancel()">✕</button>
+  </div>
+
+  <!-- Form Content -->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    
+    <!-- Section 1 - Basic Information -->
+    <div class="form-section">
+      <div class="section-title">Basic Information</div>
+      <div class="form-grid">
+        
+        <div class="form-group" [class.readonly-group]="isFromRequest">
+          <label for="name">TEST NAME <span class="required">*</span></label>
+          <div class="input-wrapper" *ngIf="isFromRequest">
+            <input id="name" type="text" formControlName="name" class="readonly" readonly>
+            <span class="lock-icon">🔒</span>
+          </div>
+          <input *ngIf="!isFromRequest" id="name" type="text" formControlName="name" placeholder="Enter test name">
+          <div class="error-message" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
+            Test name is required (min 2 characters)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="category">CATEGORY <span class="required">*</span></label>
+          <input id="category" type="text" formControlName="category" placeholder="e.g., Blood Work, Radiology">
+          <div class="error-message" *ngIf="form.get('category')?.touched && form.get('category')?.invalid">
+            Category is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="testType">TEST TYPE <span class="required">*</span></label>
+          <select id="testType" formControlName="testType">
+            <option value="">Select Type</option>
+            <option *ngFor="let type of testTypes" [value]="type.value">{{ type.label }}</option>
+          </select>
+          <div class="error-message" *ngIf="form.get('testType')?.touched && form.get('testType')?.invalid">
+            Test type is required
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="form-group" [class.readonly-group]="isFromRequest">
+          <label for="laboratoryId">LABORATORY <span class="required">*</span></label>
+          <div class="input-wrapper" *ngIf="isFromRequest">
+            <input id="laboratoryId" type="text" class="readonly" readonly 
+                   [value]="selectedRequest?.laboratoryName || 'Lab ID: ' + selectedRequest?.laboratoryId">
+            <span class="lock-icon">🔒</span>
+          </div>
+          <input *ngIf="!isFromRequest" id="laboratoryId" type="number" formControlName="laboratoryId" placeholder="Laboratory ID">
+          <div class="error-message" *ngIf="form.get('laboratoryId')?.touched && form.get('laboratoryId')?.invalid">
+            Laboratory is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="price">PRICE (USD) <span class="required">*</span></label>
+          <input id="price" type="number" formControlName="price" placeholder="0.00" step="0.01" min="0.01">
+          <div class="error-message" *ngIf="form.get('price')?.touched && form.get('price')?.invalid">
+            Valid price is required (min $0.01)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="durationMinutes">DURATION (MIN)</label>
+          <input id="durationMinutes" type="number" formControlName="durationMinutes" placeholder="30" min="1">
+          <div class="error-message" *ngIf="form.get('durationMinutes')?.touched && form.get('durationMinutes')?.invalid">
+            Minimum 1 minute required
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2 - Clinical Details -->
+    <div class="form-section">
+      <div class="section-title">Clinical Details</div>
+      <div class="form-group">
+        <label for="description">DESCRIPTION</label>
+        <textarea id="description" formControlName="description" rows="5" placeholder="Test description (optional)" maxlength="500"></textarea>
+        <div class="char-counter">{{ descriptionLength }}/500</div>
+      </div>
+    </div>
+
+    <!-- Section 3 - Settings -->
+    <div class="form-section">
+      <div class="section-title">Settings & Requirements</div>
+      <div class="settings-row">
+        <div class="setting-group">
+          <label>REQUIRES FASTING</label>
+          <div class="pill-toggle">
+            <button type="button" class="pill-btn" [class.active]="!form.get('requiresFasting')?.value"
+                    (click)="form.get('requiresFasting')?.setValue(false)">NO</button>
+            <button type="button" class="pill-btn" [class.active]="form.get('requiresFasting')?.value"
+                    (click)="form.get('requiresFasting')?.setValue(true)">YES</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label>REQUIRES APPOINTMENT</label>
+          <div class="pill-toggle">
+            <button type="button" class="pill-btn" [class.active]="!form.get('requiresAppointment')?.value"
+                    (click)="form.get('requiresAppointment')?.setValue(false)">NO</button>
+            <button type="button" class="pill-btn" [class.active]="form.get('requiresAppointment')?.value"
+                    (click)="form.get('requiresAppointment')?.setValue(true)">YES</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label for="genderSpecific">GENDER SPECIFIC</label>
+          <select id="genderSpecific" formControlName="genderSpecific">
+            <option *ngFor="let option of genderOptions" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Error -->
+    <div class="form-error" *ngIf="submitError">
+      {{ submitError }}
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn--outline" (click)="onCancel()" [disabled]="isSubmitting">Cancel</button>
+      <button type="submit" class="btn btn--teal" [disabled]="isSubmitting || form.invalid">
+        <span *ngIf="!isSubmitting">Save Test</span>
+        <span *ngIf="isSubmitting" class="btn-spinner">
+          <span class="spinner"></span>
+          Saving...
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

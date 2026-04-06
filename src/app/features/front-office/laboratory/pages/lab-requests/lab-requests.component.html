@@ -1,0 +1,92 @@
+<div class="laboratory-wrapper">
+  <!-- Sidebar -->
+  <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
+
+  <!-- Main Content -->
+  <div class="main-body">
+    <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
+
+    <div class="content-area">
+      <!-- Header -->
+      <div class="page-header">
+        <div class="header-text">
+          <div class="header-with-back">
+            <button class="btn-back" (click)="navigateToDashboard()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+              </svg>
+            </button>
+            <h1>Pending Patient Requests</h1>
+          </div>
+          <p>Manage and process incoming laboratory test requests from patients and doctors.</p>
+        </div>
+        <div class="header-stats" *ngIf="!loading">
+          <div class="stat-bubble">
+            <span class="bubble-count">{{ stats.total }}</span>
+            <span class="bubble-label">Total Pending</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Requests Table Section -->
+      <div class="content-card">
+
+        <div class="loading-overlay" *ngIf="loading">
+          <div class="spinner"></div>
+          <p>Fetching latest requests...</p>
+        </div>
+
+        <div class="error-alert" *ngIf="error">
+          <p>{{ error }}</p>
+          <button (click)="loadPendingRequests()">Retry</button>
+        </div>
+
+        <div class="table-responsive" *ngIf="!loading && !error">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Request ID</th>
+                <th>Patient</th>
+                <th>Requested Test</th>
+                <th>Requested At</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let req of pendingRequests">
+                <td><span class="id-badge">#REQ-{{ req.id }}</span></td>
+                <td>
+                  <div class="patient-info">
+                    <div class="patient-avatar">{{ req.patientName.charAt(0) }}</div>
+                    <span class="patient-name">{{ req.patientName }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="test-type">{{ req.testType }}</span>
+                </td>
+                <td class="date-cell">
+                  {{ req.requestedAt | date:'MMM dd, yyyy HH:mm' }}
+                </td>
+                <td>
+                  <span class="status-badge" [class.urgent]="req.clinicalNotes && req.clinicalNotes.toLowerCase().includes('urgent')">
+                    {{ req.status }}
+                  </span>
+                </td>
+                <td>
+                  <div class="actions">
+                    <button class="btn-accept" (click)="acceptRequest(req)">Process</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr *ngIf="pendingRequests.length === 0">
+                <td colspan="6" class="empty-row">No pending requests found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

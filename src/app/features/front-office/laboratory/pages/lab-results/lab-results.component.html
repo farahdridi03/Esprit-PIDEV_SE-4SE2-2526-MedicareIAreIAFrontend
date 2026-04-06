@@ -1,0 +1,169 @@
+<div class="laboratory-wrapper">
+  <!-- Sidebar -->
+  <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
+
+  <!-- Main Content -->
+  <div class="main-body">
+    <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
+
+    <div class="content-area">
+      <div class="lab-results-page">
+        <!-- Header -->
+        <div class="page-header">
+          <div class="header-text">
+            <div class="header-with-back">
+              <button class="btn-back" (click)="navigateToDashboard()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+              </button>
+              <h1>Laboratory Results & Records</h1>
+            </div>
+            <p>Monitor diagnostic outcomes and generate new patient laboratory reports.</p>
+          </div>
+          <div class="header-stats">
+            <div class="stat-bubble">
+              <span class="bubble-count">{{ stats.total }}</span>
+              <span class="bubble-label">Total Reports</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STATS -->
+
+        <div class="stats-section">
+          <div class="stat-card stat-card--teal">
+            <div class="stat-card__icon">📋</div>
+            <div class="stat-card__info">
+              <div class="stat-card__number">{{ stats.total }}</div>
+              <div class="stat-card__label">Total Results</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card--green">
+            <div class="stat-card__icon">✅</div>
+            <div class="stat-card__info">
+              <div class="stat-card__number">{{ stats.completed }}</div>
+              <div class="stat-card__label">Completed</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card--red">
+            <div class="stat-card__icon">⚠️</div>
+            <div class="stat-card__info">
+              <div class="stat-card__number">{{ stats.abnormal }}</div>
+              <div class="stat-card__label">Abnormal</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card--blue">
+            <div class="stat-card__icon">🛡️</div>
+            <div class="stat-card__info">
+              <div class="stat-card__number">{{ stats.verified }}</div>
+              <div class="stat-card__label">Verified</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN LAYOUT -->
+        <div class="main-layout">
+          <!-- LEFT: Tests List -->
+          <div class="card lab-tests-panel">
+            <div class="panel-header">
+              <h3>Available Lab Tests</h3>
+              <p>Select a service to create a result</p>
+            </div>
+            <div class="test-list-scroll">
+              <div *ngFor="let test of labTests" class="service-card" (click)="openCreateFromTest(test)">
+                <div class="service-icon">🔬</div>
+                <div class="service-content">
+                  <span class="service-id">#LB-{{ test.id }}</span>
+                  <span class="service-name">{{ test.name }}</span>
+                </div>
+                <button class="btn-quick-add">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor">
+                    <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- RIGHT: Results Panel -->
+          <div class="results-panel">
+            <div class="filters-bar">
+              <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search patients..." [(ngModel)]="searchTerm" (input)="applyFilters()">
+              </div>
+              <select class="filter-select" [(ngModel)]="selectedStatus" (change)="applyFilters()">
+                <option value="">All Statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+              <button class="btn-primary-action" (click)="openCreate()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor">
+                  <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                </svg>
+                <span>Add Custom Result</span>
+              </button>
+            </div>
+
+
+            <div class="card">
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Patient</th>
+                      <th>Test</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let result of filteredResults">
+                      <td><span class="id-badge">#LR-{{ result.id }}</span></td>
+                      <td>{{ result.patientName }}</td>
+                      <td>{{ result.testType }}</td>
+                      <td><span class="status-badge" [class.completed]="result.status === 'COMPLETED'">{{ result.status }}</span></td>
+                      <td>
+                        <div class="actions">
+                          <button (click)="openView(result)">👁️</button>
+                          <button (click)="openEdit(result)">✏️</button>
+                          <button (click)="onDelete(result)">🗑️</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" *ngIf="showForm" (click)="onCancelled()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <app-lab-result-form [editResult]="editResult" [selectedLabTest]="selectedLabTest" (saved)="onSaved()" (cancelled)="onCancelled()"></app-lab-result-form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showDetail" (click)="showDetail = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="detail-modal" *ngIf="viewResult">
+        <div class="modal-header">
+           <h2>Result Details</h2>
+           <button (click)="showDetail = false">✕</button>
+        </div>
+        <div class="modal-body">
+           <p><strong>Patient:</strong> {{ viewResult.patientName }}</p>
+           <p><strong>Result:</strong> {{ viewResult.resultData }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

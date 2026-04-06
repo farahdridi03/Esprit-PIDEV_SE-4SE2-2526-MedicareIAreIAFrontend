@@ -12,4 +12,16 @@ export class PatientSidebarComponent {
   logout() {
     this.authService.logout();
   }
+
+  canAccessForum(): boolean {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    if (!currentUser || !currentUser.token) return false;
+    
+    // Les patients ne peuvent pas accéder au forum
+    const patientRoles = ['PATIENT'];
+    const rawRole = currentUser.role || '';
+    const userRole = rawRole.toUpperCase().replace(/^ROLE_/, '');
+    
+    return !patientRoles.includes(userRole);
+  }
 }

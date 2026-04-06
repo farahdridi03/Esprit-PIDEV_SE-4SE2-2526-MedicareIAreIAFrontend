@@ -1,8 +1,8 @@
+import { RouterTestingModule } from '@angular/router/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { BackOfficeComponent } from './back-office.component';
-
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('BackOfficeComponent', () => {
   let component: BackOfficeComponent;
@@ -10,8 +10,9 @@ describe('BackOfficeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       declarations: [BackOfficeComponent],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
 

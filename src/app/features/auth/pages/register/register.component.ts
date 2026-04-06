@@ -62,6 +62,7 @@ export class RegisterComponent implements OnInit {
   homeCareServicesList: any[] = [];
   clinics: Clinic[] = [];
   profileImagePreview: string | null = null;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -79,13 +80,13 @@ export class RegisterComponent implements OnInit {
       emergencyContactName: [''],
       emergencyContactPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
       // Patient fields
-      chronicDiseases: [''],
-      drugAllergies: [''],
-      hereditaryDiseases: [''],
       height: [null],
       weight: [null],
       allergies: [''],
       diseases: [''],
+      chronicDiseases: [''],
+      drugAllergies: [''],
+      hereditaryDiseases: [''],
       // Provider fields
       specialty: [''],
       licenseNumber: [''],
@@ -221,10 +222,11 @@ export class RegisterComponent implements OnInit {
       const labPhoneCtrl = this.registerForm.get('labPhone');
       const certDocCtrl = this.registerForm.get('certificationDocument');
       const servicesCtrl = this.registerForm.get('selectedServices');
+      const clinicIdCtrl = this.registerForm.get('clinicId');
 
       // Reset all validators
       [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, allergiesCtrl, diseasesCtrl,
-        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
+        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, clinicIdCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
         pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
         labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
@@ -244,15 +246,9 @@ export class RegisterComponent implements OnInit {
         licenseCtrl?.setValidators([Validators.required]);
         feeCtrl?.setValidators([Validators.required, Validators.min(0)]);
         modeCtrl?.setValidators([Validators.required]);
-        
-        // Require clinic selection for doctors if NOT online
-        const clinicIdCtrl = this.registerForm.get('clinicId');
         if (isDoctor && modeCtrl?.value !== 'ONLINE') {
           clinicIdCtrl?.setValidators([Validators.required]);
-        } else {
-          clinicIdCtrl?.clearValidators();
         }
-        clinicIdCtrl?.updateValueAndValidity();
       } else if (isClinic) {
         clinicNameCtrl?.setValidators([Validators.required]);
         clinicAddressCtrl?.setValidators([Validators.required]);
@@ -275,7 +271,7 @@ export class RegisterComponent implements OnInit {
 
       // Update validity for all
       [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, heightCtrl, weightCtrl, allergiesCtrl, diseasesCtrl, 
-        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
+        specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl, clinicIdCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
         pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
         labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
@@ -295,7 +291,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       const { terms, chronicDiseases, drugAllergies, hereditaryDiseases, selectedServices, ...rest } = this.registerForm.value;
       
-      const payload = { ...rest };
+      let payload = { ...rest };
       
       if (this.isPatient) {
         const medicalHistories = [];
@@ -317,11 +313,11 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/auth/login']);
         },
         error: (err: any) => {
-          this.errorMessage = err.error?.message || 'Erreur lors de l\'inscription';
+          this.errorMessage = err.error?.message || err.error || 'Erreur lors de l\'inscription';
         }
       });
     } else {
       this.registerForm.markAllAsTouched();
     }
   }
-}
+}

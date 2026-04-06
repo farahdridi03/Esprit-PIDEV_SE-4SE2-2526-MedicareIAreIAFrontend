@@ -1,6 +1,8 @@
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FrontOfficeComponent } from './front-office.component';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('FrontOfficeComponent', () => {
   let component: FrontOfficeComponent;
@@ -8,10 +10,11 @@ describe('FrontOfficeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FrontOfficeComponent],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      declarations: [FrontOfficeComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(FrontOfficeComponent);
     component = fixture.componentInstance;

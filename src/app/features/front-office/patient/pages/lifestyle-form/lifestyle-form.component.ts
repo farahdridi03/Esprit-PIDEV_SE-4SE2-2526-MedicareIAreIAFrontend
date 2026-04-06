@@ -6,6 +6,7 @@ import { LifestyleGoal, ProgressTracking } from '../../../../../models/lifestyle
 import { GoalCategory, GoalStatus } from '../../../../../models/lifestyle.model';
 
 import { AuthService } from '../../../../../services/auth.service';
+import { PatientService } from '../../../../../services/patient.service';
 
 @Component({
   selector: 'app-lifestyle-form',
@@ -55,7 +56,8 @@ export class LifestyleFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private lifestyleService: LifestyleService,
-    private authService: AuthService
+    private authService: AuthService,
+    private patientService: PatientService
   ) { }
 
   isTodayOrFuture(dateStr: string): boolean {
@@ -111,28 +113,36 @@ export class LifestyleFormComponent implements OnInit {
         if (this.type === 'plans') this.plan.startDate = todayStr; // Allow today
       }
 
-
       if (this.router.url.includes('/nutritionist/')) {
-
         this.goal.patientId = +patientIdParam;
         this.tracking.patientId = +patientIdParam;
         if (this.type === 'plans') {
           this.plan.nutritionistId = userId;
         }
-      } else {
-        if (userId) {
-          this.goal.patientId = userId;
-          this.tracking.patientId = userId;
+        if (idParam && this.router.url.includes('/edit/')) {
+          this.id = +idParam;
+          this.isEditMode = true;
+          this.loadData();
         }
-      }
-
-      if (idParam && this.router.url.includes('/edit/')) {
-        this.id = +idParam;
-        this.isEditMode = true;
-        this.loadData();
-      }
-      if (this.type === 'tracking' || this.type === 'plans') {
-        this.loadGoals();
+        if (this.type === 'tracking' || this.type === 'plans') {
+          this.loadGoals(+patientIdParam);
+        }
+      } else {
+        this.patientService.getMe().subscribe(profile => {
+          if (profile && profile.id) {
+            this.goal.patientId = profile.id;
+            this.tracking.patientId = profile.id;
+            
+            if (idParam && this.router.url.includes('/edit/')) {
+              this.id = +idParam;
+              this.isEditMode = true;
+              this.loadData();
+            }
+            if (this.type === 'tracking' || this.type === 'plans') {
+              this.loadGoals(profile.id);
+            }
+          }
+        });
       }
     });
   }
@@ -213,15 +223,14 @@ export class LifestyleFormComponent implements OnInit {
     }
   }
 
-  loadGoals(): void {
-    const userId = this.authService.getUserId();
-    const fetchObs = this.router.url.includes('/nutritionist/') && this.route.snapshot.params['id']
-      ? this.lifestyleService.getGoalsByPatientId(+this.route.snapshot.params['id'])
-      : this.lifestyleService.getGoals();
-
-    fetchObs.subscribe({
-      next: (goals) => { this.goals = goals ?? []; },
-      error: () => { this.goals = []; }
+  loadGoals(patientId: number): void {
+    this.lifestyleService.getGoalsByPatientId(patientId).subscribe({
+      next: (goals) => {
+        this.goals = goals ?? [];
+      },
+      error: () => {
+        this.goals = [];
+      }
     });
   }
 

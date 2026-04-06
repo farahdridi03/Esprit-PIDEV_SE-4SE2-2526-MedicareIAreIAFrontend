@@ -1,0 +1,161 @@
+<div class="form-container">
+
+  <!-- HEADER -->
+  <div class="modal-header">
+    <div class="header-left">
+      <span class="status-badge">
+        {{ isEditMode ? 'EDIT RESULT' : 'NEW RESULT' }}
+      </span>
+      <h2>{{ isEditMode ? 'Edit Lab Result' : 'New Lab Result' }}</h2>
+    </div>
+    <button class="btn-close" (click)="cancelled.emit()">✕</button>
+  </div>
+
+  <!-- ERROR ALERT -->
+  <div class="alert-error" *ngIf="errorMessage">
+    <svg xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+    {{ errorMessage }}
+  </div>
+
+  <!-- SECTION 1: LAB TEST INFO -->
+  <div class="form-section">
+    <div class="section-title">Lab Test Info</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>TEST NAME</label>
+        <input type="text" class="readonly" readonly [value]="selectedLabTest?.name || 'Not specified'">
+      </div>
+      <div class="form-group">
+        <label>LABORATORY</label>
+        <input type="text" class="readonly" readonly [value]="selectedLabTest?.laboratoryName || 'Not specified'">
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: LAB REQUEST -->
+  <div class="form-section">
+    <div class="section-title">Lab Request</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>LAB REQUEST <span class="required">*</span></label>
+        <select [(ngModel)]="form.labRequestId" name="labRequestId" 
+                (change)="onRequestChange()" [disabled]="isEditMode"
+                [class.error-input]="!form.labRequestId">
+          <option [value]="null">Select a pending request...</option>
+          <option *ngFor="let req of pendingRequests" [value]="req.id">
+            #LR-{{ req.id }} — {{ req.patientName }} — {{ req.testType }}
+          </option>
+        </select>
+        <div class="error-msg" *ngIf="!form.labRequestId">
+          Lab request ID is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label>PATIENT NAME</label>
+        <input type="text" class="readonly" readonly 
+               [value]="selectedRequest?.patientName || ''" 
+               placeholder="Auto-filled from request">
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: RESULT DATA -->
+  <div class="form-section">
+    <div class="section-title">Result Data</div>
+    <div class="form-group">
+      <label>RESULT DATA <span class="required">*</span></label>
+      <textarea [(ngModel)]="form.resultData" name="resultData" rows="6" maxlength="2000"
+                placeholder="Enter detailed result data, measurements, observations..."
+                [class.error-input]="(!form.resultData || form.resultData.length < 10)"></textarea>
+      <div class="char-limit">{{ form.resultData.length }}/2000</div>
+      
+      <div class="error-msg" *ngIf="!form.resultData">
+        Result data is required
+      </div>
+      <div class="error-msg" *ngIf="form.resultData && form.resultData.length < 10">
+        Result data must be between 10 and 2000 characters
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: TECHNICIAN -->
+  <div class="form-section">
+    <div class="section-title">Technician Info</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>TECHNICIAN NAME <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="form.technicianName" name="technicianName"
+               placeholder="Enter technician full name"
+               [class.error-input]="hasTechnicianNameError()">
+        <div class="error-msg" *ngIf="!form.technicianName">
+          Technician name is required
+        </div>
+        <div class="error-msg" *ngIf="form.technicianName && form.technicianName.length < 3">
+          Minimum 3 characters required
+        </div>
+      </div>
+      <div class="form-group">
+        <label>VERIFIED BY</label>
+        <input type="text" [(ngModel)]="form.verifiedBy" name="verifiedBy"
+               placeholder="Enter verifier name (optional)"
+               [class.error-input]="hasVerifiedByError()">
+        <div class="error-msg" *ngIf="hasVerifiedByError()">
+          Invalid name or length exceeded
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: FINDINGS -->
+  <div class="form-section">
+    <div class="section-title">Clinical Findings</div>
+    <div class="form-group">
+      <label>IS ABNORMAL</label>
+      <div class="pill-toggle">
+        <button type="button" class="pill-btn btn--no" 
+                [class.active]="!form.isAbnormal" (click)="form.isAbnormal = false">NO</button>
+        <button type="button" class="pill-btn btn--yes" 
+                [class.active]="form.isAbnormal" (click)="form.isAbnormal = true">YES</button>
+      </div>
+    </div>
+    
+    <div class="form-group" *ngIf="form.isAbnormal">
+      <label>ABNORMAL FINDINGS <span class="required">*</span></label>
+      <textarea [(ngModel)]="form.abnormalFindings" name="abnormalFindings" rows="4"
+                placeholder="Describe abnormal findings in detail..."
+                class="error-input" *ngIf="!form.abnormalFindings || form.abnormalFindings.trim().length === 0"></textarea>
+      <textarea [(ngModel)]="form.abnormalFindings" name="abnormalFindings" rows="4"
+                placeholder="Describe abnormal findings in detail..."
+                *ngIf="form.abnormalFindings && form.abnormalFindings.trim().length > 0"></textarea>
+      
+      <div class="error-msg" *ngIf="!form.abnormalFindings || form.abnormalFindings.trim().length === 0">
+        Required when marked as abnormal
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: STATUS -->
+  <div class="form-section">
+    <div class="section-title">Status</div>
+    <div class="form-group">
+      <select [(ngModel)]="form.status" name="status">
+        <option value="PENDING">PENDING</option>
+        <option value="COMPLETED">COMPLETED</option>
+        <option value="ABNORMAL">ABNORMAL</option>
+        <option value="VERIFIED">VERIFIED</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="modal-footer">
+    <button class="btn btn--outline" (click)="cancelled.emit()">Cancel</button>
+    <button class="btn btn--primary" (click)="onSubmit()" [disabled]="isSubmitting">
+      <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Save' }} Result</span>
+      <span *ngIf="isSubmitting">Saving...</span>
+    </button>
+  </div>
+
+</div>

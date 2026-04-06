@@ -35,6 +35,8 @@ import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle
 import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
 import { LifestyleDetailComponent } from './patient/pages/lifestyle-detail/lifestyle-detail.component';
+import { PatientLabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
+import { PatientLabRequestFormComponent } from './patient/pages/lab-requests/lab-request-form/lab-request-form.component';
 
 import { AuthGuard } from '../../guards/auth.guard';
 
@@ -46,6 +48,11 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'contact', component: ContactComponent }
     ]
+  },
+  {
+    path: 'forum',
+    loadChildren: () =>
+      import('../../forum/forum.module').then(m => m.ForumModule)
   },
   {
     path: 'patient/dashboard',
@@ -146,6 +153,24 @@ const routes: Routes = [
   {
     path: 'patient/lifestyle-wellness/:type/edit/:id',
     component: LifestyleFormComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lab-requests',
+    component: PatientLabRequestsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lab-requests/new',
+    component: PatientLabRequestFormComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/lab-requests/edit/:id',
+    component: PatientLabRequestFormComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
@@ -253,11 +278,8 @@ const routes: Routes = [
   }
 ];
 
-
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
 export class FrontOfficeRoutingModule { }
-
-

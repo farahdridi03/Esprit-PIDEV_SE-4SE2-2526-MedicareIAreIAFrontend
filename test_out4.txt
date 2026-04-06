@@ -1,0 +1,33 @@
+- Generating browser application bundles (phase: setup)...
+✔ Browser application bundle generation complete.
+[1m[31m
+Error: [96msrc/app/features/front-office/laboratory/pages/lab-management-form/lab-management-form.component.spec.ts[0m:[93m60[0m:[93m51[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Observable<{ id: number; name: string; address: string; phone: string; email: string; openingHours: string; specializations: string; isActive: boolean; }>' is not assignable to parameter of type 'Observable<LaboratoryResponse>'.
+  Property 'createdAt' is missing in type '{ id: number; name: string; address: string; phone: string; email: string; openingHours: string; specializations: string; isActive: boolean; }' but required in type 'LaboratoryResponse'.
+
+[7m60[0m     mockLaboratoryService.getById.and.returnValue(of(mockLab));
+[7m  [0m [91m                                                  ~~~~~~~~~~~[0m
+
+  [96msrc/app/models/laboratory.model.ts[0m:[93m20[0m:[93m3[0m
+    [7m20[0m   createdAt: string;
+    [7m  [0m [96m  ~~~~~~~~~[0m
+    'createdAt' is declared here.
+
+
+Error: [96msrc/app/features/front-office/laboratory/pages/lab-management-list/lab-management-list.component.spec.ts[0m:[93m93[0m:[93m56[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Observable<{ id: number; name: string; isActive: boolean; }>' is not assignable to parameter of type 'Observable<LaboratoryResponse>'.
+  Type '{ id: number; name: string; isActive: boolean; }' is missing the following properties from type 'LaboratoryResponse': address, phone, email, openingHours, and 2 more.
+
+[7m93[0m     mockLaboratoryService.toggleActive.and.returnValue(of(updatedLab));
+[7m  [0m [91m                                                       ~~~~~~~~~~~~~~[0m
+
+
+[39m[22m
+[32m29 03 2026 14:10:31.274:INFO [karma-server]: [39mKarma v6.4.4 server started at http://localhost:9877/
+[32m29 03 2026 14:10:31.275:INFO [launcher]: [39mLaunching browsers Chrome with concurrency unlimited
+[91m29 03 2026 14:10:31.275:ERROR [karma-server]: [39mError: Found 1 load error
+    at Server.<anonymous> (C:\Users\Wassim\Desktop\pi 1\medicarepi\node_modules\karma\lib\server.js:243:26)
+    at Object.onceWrapper (node:events:638:28)
+    at Server.emit (node:events:536:35)
+    at emitListeningNT (node:net:1951:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:81:21)
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.

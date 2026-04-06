@@ -1,18 +1,15 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-
+import { SharedModule } from '../../shared/shared.module';
 import { FrontOfficeRoutingModule } from './front-office-routing.module';
+import { LayoutModule } from './layout/layout.module';
+import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
+
 import { HomeComponent } from './pages/home/home.component';
 import { FrontLayoutComponent } from './layout/front-layout/front-layout.component';
 import { ContactComponent } from './pages/contact/contact.component';
 
 // Patient components
 import { DashboardComponent } from './patient/pages/dashboard/dashboard.component';
-// Patient components
-import { PatientSidebarComponent } from './patient/components/sidebar/sidebar.component';
-import { PatientTopbarComponent } from './patient/components/topbar/topbar.component';
 import { DonationsComponent } from './patient/pages/donations/donations.component';
 import { EmergencyComponent } from './patient/pages/emergency/emergency.component';
 import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
@@ -27,14 +24,12 @@ import { LifestyleListComponent } from './patient/pages/lifestyle-list/lifestyle
 import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle-form.component';
 import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
-import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
-import { LayoutModule } from './layout/layout.module';
+import { PatientLabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
+import { PatientLabRequestFormComponent } from './patient/pages/lab-requests/lab-request-form/lab-request-form.component';
 
 // Doctor components
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
-import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/doctor-sidebar.component';
-import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
 import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 import { DoctorCalendarCalendarComponent } from './doctor/pages/doctor-calendar-calendar/doctor-calendar-calendar.component';
 import { DoctorCalendarExceptionsComponent } from './doctor/pages/doctor-calendar-exceptions/doctor-calendar-exceptions.component';
@@ -52,7 +47,6 @@ import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-d
 
 @NgModule({
   declarations: [
-    FrontLayoutComponent,
     HomeComponent,
     ContactComponent,
     DashboardComponent,
@@ -70,10 +64,10 @@ import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-d
     LifestyleFormComponent,
     PatientProfileSettingsComponent,
     PatientProfileEditComponent,
+    PatientLabRequestFormComponent,
+    PatientLabRequestsComponent,
     DoctorDashboardComponent,
     DoctorProfileComponent,
-    DoctorSidebarComponent,
-    DoctorTopbarComponent,
     DoctorPatientsComponent,
     DoctorCalendarCalendarComponent,
     DoctorCalendarExceptionsComponent,
@@ -90,11 +84,8 @@ import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-d
     DoctorPatientDiagnosesComponent
   ],
   imports: [
-    CommonModule,
-    RouterModule,
+    SharedModule,
     FrontOfficeRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
     LifestyleSharedModule,
     LayoutModule
   ]

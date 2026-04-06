@@ -1,19 +1,23 @@
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SidebarComponent } from './sidebar.component';
-import { Router } from '@angular/router';
-
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../../../services/auth.service';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
+    mockAuthService = jasmine.createSpyObj('AuthService', ['logout']);
+
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterModule.forRoot([])],
-      declarations: [SidebarComponent]
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      declarations: [SidebarComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
 
@@ -25,14 +29,9 @@ describe('SidebarComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should call authService.logout when logout is called', () => {
+    component.logout();
+    expect(mockAuthService.logout).toHaveBeenCalled();
+  });
 });
-
-export class PatientSidebarComponent {
-
-    constructor(private router: Router) { }
-
-    logout() {
-        this.router.navigate(['/front']);
-    }
-
-}

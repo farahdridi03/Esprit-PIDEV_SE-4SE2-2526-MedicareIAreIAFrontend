@@ -1,0 +1,115 @@
+<div class="laboratory-wrapper">
+  <!-- Sidebar -->
+  <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
+
+  <!-- Main Content -->
+  <div class="main-body">
+    <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
+
+    <div class="content-area">
+      <div class="lab-tests-page">
+        <!-- Header -->
+        <div class="page-header">
+          <div class="header-text">
+            <div class="header-with-back">
+              <button class="btn-back" (click)="navigateToDashboard()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+              </button>
+              <h1>Laboratory Test Catalog</h1>
+            </div>
+            <p>View and manage available laboratory services and diagnostic tests.</p>
+          </div>
+        </div>
+
+        <!-- STATS SECTION -->
+        <div class="stats-section">
+          <div class="stat-card stat-card--teal">
+            <div class="stat-card__icon">🧪</div>
+            <div class="stat-card__info">
+              <div class="stat-card__number">{{ stats.total }}</div>
+              <div class="stat-card__label">Total Tests</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card--red">
+            <div class="stat-card__icon">🩸</div>
+            <div class="stat-card__info">
+              <div class="stat-card__number">{{ stats.blood }}</div>
+              <div class="stat-card__label">Blood Tests</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card--blue">
+            <div class="stat-card__icon">🔬</div>
+            <div class="stat-card__info">
+              <div class="stat-card__number">{{ stats.imaging }}</div>
+              <div class="stat-card__label">Imaging</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card--pink">
+            <div class="stat-card__icon">📋</div>
+            <div class="stat-card__info">
+              <div class="stat-card__number">{{ stats.other }}</div>
+              <div class="stat-card__label">Other Services</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILTERS BAR -->
+        <div class="filters-bar">
+          <div class="filters-bar__left">
+            <div class="search-wrapper">
+              <span class="search-icon">🔍</span>
+              <input type="text" class="search-input" placeholder="Search tests..." [(ngModel)]="searchQuery" (input)="onSearchChange()">
+            </div>
+            <select class="filter-select" [(ngModel)]="selectedTestType" (change)="onTestTypeChange()">
+              <option value="">All Types</option>
+              <option value="BLOOD_TEST">Blood Test</option>
+              <option value="URINE_TEST">Urine Test</option>
+            </select>
+          </div>
+          <button class="btn btn--teal" (click)="openCreate()">+ Add Test</button>
+        </div>
+
+        <!-- LAB TESTS TABLE -->
+        <div class="card">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Test Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let test of filteredTests">
+                  <td><span class="id id--teal">#LB-{{ test.id }}</span></td>
+                  <td>{{ test.name }}</td>
+                  <td><span class="badge">{{ test.testType }}</span></td>
+                  <td class="td--bold">${{ test.price }}</td>
+                  <td>
+                    <div class="actions">
+                      <button (click)="openEdit(test)">✏️</button>
+                      <button (click)="onDelete(test)">🗑️</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" *ngIf="showForm" (click)="showForm = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <app-lab-test-form [editTest]="editTest" [selectedRequest]="selectedRequest" (saved)="onSaved()" (cancelled)="showForm = false"></app-lab-test-form>
+    </div>
+  </div>
+</div>
+

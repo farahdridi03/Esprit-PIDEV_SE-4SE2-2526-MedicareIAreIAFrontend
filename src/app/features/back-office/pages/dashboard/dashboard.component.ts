@@ -1,6 +1,4 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
-import { UserService } from '../../../../services/user.service';
-import { AuthService } from '../../../../services/auth.service';
+import { Component, AfterViewInit } from '@angular/core';
 
 declare var Chart: any;
 
@@ -9,30 +7,7 @@ declare var Chart: any;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
-  firstName: string = 'Admin';
-
-  constructor(private userService: UserService, private authService: AuthService) { }
-
-  ngOnInit() {
-    this.loadUserInfo();
-    this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          const parts = user.fullName.split(' ');
-          this.firstName = parts[0];
-        }
-      }
-    });
-  }
-
-  private loadUserInfo() {
-    const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      const parts = fullName.split(' ');
-      this.firstName = parts[0];
-    }
-  }
+export class DashboardComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // Growth Chart
