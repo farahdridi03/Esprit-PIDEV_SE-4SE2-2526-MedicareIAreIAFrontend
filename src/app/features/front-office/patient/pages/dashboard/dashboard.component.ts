@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { UserResponseDTO } from '../../../../../models/user.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,24 +14,22 @@ export class DashboardComponent implements OnInit {
   constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit() {
-    // 1. Try to get name directly from JWT token
-    const fullNameFromToken = this.authService.getUserFullName();
-    if (fullNameFromToken) {
-      this.firstName = fullNameFromToken.trim().split(' ')[0];
-      return;
+    // Initial load from token
+    const fullName = this.authService.getUserFullName();
+    if (fullName) {
+      this.firstName = fullName.split(' ')[0];
     }
 
-    // 2. Fallback: get current user profile
-    const email = this.authService.getUserEmail();
-    if (email) {
-      this.userService.getProfile().subscribe({
-        next: (user) => {
-          if (user && user.fullName) {
-            this.firstName = user.fullName.trim().split(' ')[0];
-          }
-        },
-        error: (err: any) => console.error('Error fetching user profile for dashboard', err)
-      });
-    }
+    // Refresh from profile API
+    this.userService.getProfile().subscribe({
+      next: (user: UserResponseDTO) => {
+        if (user && user.fullName) {
+          this.firstName = user.fullName.split(' ')[0];
+        }
+      },
+      error: (err: any) => {
+        console.error('Error fetching user profile', err);
+      }
+    });
   }
 }

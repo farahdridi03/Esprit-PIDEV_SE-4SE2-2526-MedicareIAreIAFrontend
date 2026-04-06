@@ -66,6 +66,7 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
+            // Le rôle peut venir sous forme de chaîne ou de tableau
             let role: string | null = null;
             if (typeof decoded.role === 'string') {
                 role = decoded.role;
@@ -76,11 +77,14 @@ export class AuthService {
             }
 
             if (!role && decoded.authorities && Array.isArray(decoded.authorities) && decoded.authorities.length > 0) {
+                // parfois Spring Security met les authorities
                 const first = decoded.authorities[0];
                 role = typeof first === 'string' ? first : (first.authority || null);
             }
 
             if (!role) return null;
+
+            // Supprimer le préfixe ROLE_ si présent
             return role.replace(/^ROLE_/, '');
         } catch (error) {
             return null;
@@ -93,22 +97,10 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
+            // Typically Spring Security puts the username (email) in 'sub'
             return decoded.sub || decoded.email || null;
         } catch (error) {
             return null;
-        }
-    }
-
-    getUserId(): number {
-        const token = this.getToken();
-        if (!token) return 1;
-
-        try {
-            const decoded: any = jwtDecode(token);
-            const id = decoded.id || decoded.userId || decoded.providerId;
-            return id ? Number(id) : 1;
-        } catch (error) {
-            return 1;
         }
     }
 
@@ -118,41 +110,10 @@ export class AuthService {
 
         try {
             const decoded: any = jwtDecode(token);
-            const name = decoded.fullName || decoded.fullname || decoded.name;
-            if (name) return name;
-
-            const sub = decoded.sub || decoded.email;
-            if (sub && sub.includes('@')) {
-                return sub.split('@')[0];
-            }
-            return sub || null;
+            // Try common JWT claims for full name
+            return decoded.fullName || decoded.name || decoded.full_name || decoded.sub || null;
         } catch (error) {
             return null;
         }
-    }
-
-    getUserGender(): string {
-        const token = this.getToken();
-        if (!token) return 'UNKNOWN';
-        try {
-            const decoded: any = jwtDecode(token);
-            return decoded.gender || 'UNKNOWN';
-        } catch (error) {
-            return 'UNKNOWN';
-        }
-    }
-
-    getParentRole(): { label: string; badge: string } {
-        const gender = this.getUserGender();
-        if (gender === 'FEMALE') {
-            return { label: 'Maman', badge: 'MAMA' };
-        } else if (gender === 'MALE') {
-            return { label: 'Papa', badge: 'PAPA' };
-        }
-        return { label: 'Parent', badge: 'PARENT' };
-    }
-
-    getHomeCareServices(): Observable<any[]> {
-        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
     }
 }

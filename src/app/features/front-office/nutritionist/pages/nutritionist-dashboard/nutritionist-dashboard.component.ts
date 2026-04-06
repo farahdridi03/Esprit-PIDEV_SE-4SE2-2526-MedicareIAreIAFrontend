@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
-import { PatientService } from '../../../../../services/patient.service';
-import { ConsultationService } from '../../../../../services/consultation.service';
-import { LifestyleService } from '../../../../../services/lifestyle.service';
-import { forkJoin, catchError, of } from 'rxjs';
+import { UserResponseDTO } from '../../../../../models/user.model';
 
 @Component({
     selector: 'app-nutritionist-dashboard',
@@ -14,30 +11,18 @@ import { forkJoin, catchError, of } from 'rxjs';
 export class NutritionistDashboardComponent implements OnInit {
   firstName: string = 'Nutritionist';
   initials: string = 'N';
-  
-  totalPatients: number = 0;
-  totalConsultations: number = 0;
-  totalMealPlans: number = 0;
 
-  constructor(
-    private userService: UserService, 
-    private authService: AuthService,
-    private patientService: PatientService,
-    private consultationService: ConsultationService,
-    private lifestyleService: LifestyleService
-  ) {}
+  constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit() {
     this.loadUserInfo();
-    this.loadStats();
-    
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserResponseDTO) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching nutritionist profile', err);
       }
     });
@@ -50,23 +35,6 @@ export class NutritionistDashboardComponent implements OnInit {
     }
   }
 
-  private loadStats() {
-    forkJoin({
-      patients: this.patientService.getAll().pipe(catchError(() => of([]))),
-      consultations: this.consultationService.getAll().pipe(catchError(() => of([]))),
-      planCount: this.lifestyleService.getPlanCount().pipe(catchError(() => of(0)))
-    }).subscribe({
-      next: (res) => {
-        this.totalPatients = res.patients.length;
-        this.totalConsultations = res.consultations.length;
-        this.totalMealPlans = res.planCount;
-      },
-      error: (err) => {
-        console.error('Error loading dashboard stats', err);
-      }
-    });
-  }
-
   private setNames(fullName: string) {
     if (!fullName) return;
     const parts = fullName.split(' ');
@@ -75,5 +43,3 @@ export class NutritionistDashboardComponent implements OnInit {
     if (!this.initials) this.initials = this.firstName[0].toUpperCase();
   }
 }
-
-
