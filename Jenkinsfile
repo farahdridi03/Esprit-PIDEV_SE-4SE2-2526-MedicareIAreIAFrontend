@@ -2,31 +2,25 @@ pipeline {
     agent any
     
     environment {
-        // Adapt to your Docker Hub username
         DOCKER_HUB_USER = "azizmelki"
         IMAGE_NAME = "medicarepi-frontend"
         IMAGE_TAG = "latest"
-        REGISTRY_CREDENTIALS_ID = "docker-hub-credentials"
+        // On suppose que vous avez créé un ID de credentials "docker-hub-credentials" de type Username/Password
+        DOCKER_HUB_CREDS = credentials('docker-hub-credentials')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Code is retrieved from Git
                 checkout scm
             }
         }
 
         stage('Docker Build & Push') {
             steps {
-                script {
-                    // Let Docker handle the multi-stage build (Angular build + Nginx server)
-                    // The Dockerfile already contains the build steps (npm install, npm build)
-                    docker.withRegistry('', REGISTRY_CREDENTIALS_ID) {
-                        def customImage = docker.build("${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}")
-                        customImage.push()
-                    }
-                }
+                sh "docker build -t ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                sh "echo ${DOCKER_HUB_CREDS_PSW} | docker login -u ${DOCKER_HUB_CREDS_USR} --password-stdin"
+                sh "docker push ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
             }
         }
     }
