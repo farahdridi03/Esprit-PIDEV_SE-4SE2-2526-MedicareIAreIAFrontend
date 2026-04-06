@@ -17,31 +17,15 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies & Build (Angular)') {
-            steps {
-                // If you run this inside Jenkins, need NodeJS plugin or run inside a docker container
-                sh "npm ci --legacy-peer-deps"
-                sh "npm run build -- --configuration=production"
-            }
-        }
-
         stage('Docker Build & Push') {
             steps {
                 script {
+                    // Let Docker handle the multi-stage build (Angular build + Nginx server)
+                    // The Dockerfile already contains the build steps (npm install, npm build)
                     docker.withRegistry('', REGISTRY_CREDENTIALS_ID) {
                         def customImage = docker.build("${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}")
                         customImage.push()
                     }
-                }
-            }
-        }
-
-        stage('Kubernetes Deploy') {
-            steps {
-                script {
-                    // Update image in K8s (Needs kubeconfig configured in Jenkins)
-                    sh "kubectl apply -f k8s/frontend.yaml"
-                    sh "kubectl rollout restart deployment/medicarepi-frontend-deployment"
                 }
             }
         }
