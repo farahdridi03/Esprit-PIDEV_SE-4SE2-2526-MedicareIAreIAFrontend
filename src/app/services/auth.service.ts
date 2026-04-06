@@ -99,6 +99,7 @@ export class AuthService {
         }
     }
 
+
     getUserId(): number {
         const token = this.getToken();
         if (!token) return 1;
@@ -112,12 +113,14 @@ export class AuthService {
         }
     }
 
+
     getUserFullName(): string | null {
         const token = this.getToken();
         if (!token) return null;
 
         try {
             const decoded: any = jwtDecode(token);
+
             const name = decoded.fullName || decoded.fullname || decoded.name;
             if (name) return name;
 
@@ -126,10 +129,15 @@ export class AuthService {
                 return sub.split('@')[0];
             }
             return sub || null;
+
+            // Try common JWT claims for full name
+            return decoded.fullName || decoded.name || decoded.full_name || decoded.sub || null;
+
         } catch (error) {
             return null;
         }
     }
+
 
     getUserGender(): string {
         const token = this.getToken();
@@ -155,4 +163,5 @@ export class AuthService {
     getHomeCareServices(): Observable<any[]> {
         return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
     }
+
 }

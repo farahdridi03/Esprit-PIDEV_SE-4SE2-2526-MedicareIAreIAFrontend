@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { UserResponseDTO } from '../../../../../models/user.model';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -21,12 +22,12 @@ export class DoctorDashboardComponent implements OnInit {
 
     // Refresh from profile API
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserResponseDTO) => {
         if (user && user.fullName) {
           this.firstName = user.fullName.split(' ')[0];
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching doctor profile', err);
       }
     });

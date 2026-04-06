@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { UserResponseDTO } from '../../../../../models/user.model';
 
 @Component({
     selector: 'app-home-care-dashboard',
@@ -16,12 +17,12 @@ export class HomeCareDashboardComponent implements OnInit {
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserResponseDTO) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching home care provider profile', err);
       }
     });

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { UserResponseDTO } from '../../../../../models/user.model';
 
 @Component({
   selector: 'app-topbar',
@@ -16,6 +17,18 @@ export class PatientTopbarComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserInfo();
+
+    this.userService.getProfile().subscribe({
+      next: (user: UserResponseDTO) => {
+        if (user && user.fullName) {
+          this.setNames(user.fullName);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error fetching user profile', err);
+      }
+    });
+
   }
 
   private loadUserInfo() {

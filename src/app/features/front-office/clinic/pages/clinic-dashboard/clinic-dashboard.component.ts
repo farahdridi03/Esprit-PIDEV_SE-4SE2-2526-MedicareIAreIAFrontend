@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+
 import { EmergencyService, EmergencyAlertResponse } from '../../../../../services/emergency.service';
 import { AmbulanceService, AmbulanceResponse } from '../../../../../services/ambulance.service';
+import { UserResponseDTO } from '../../../../../models/user.model';
+
+
 
 @Component({
   selector: 'app-clinic-dashboard',
@@ -28,8 +32,18 @@ export class ClinicDashboardComponent implements OnInit {
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => { if (user?.fullName) this.setNames(user.fullName); },
-      error: (err) => console.error('Error fetching clinic profile', err)
+
+     
+
+      next: (user: UserResponseDTO) => {
+        if (user && user.fullName) {
+          this.setNames(user.fullName);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error fetching clinic profile', err);
+      }
+
     });
 
     // Load recent emergency alerts

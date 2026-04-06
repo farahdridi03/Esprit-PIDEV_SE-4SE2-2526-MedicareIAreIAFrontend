@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { UserResponseDTO } from '../../../../../models/user.model';
 
 @Component({
   selector: 'app-doctor-topbar',
@@ -16,7 +17,20 @@ export class DoctorTopbarComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserInfo();
+
     // The profile endpoint is optional/missing on backend, names are loaded from authService token
+
+    this.userService.getProfile().subscribe({
+      next: (user: UserResponseDTO) => {
+        if (user && user.fullName) {
+          this.setNames(user.fullName);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error fetching doctor profile', err);
+      }
+    });
+
   }
 
   private loadUserInfo() {
