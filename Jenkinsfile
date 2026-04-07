@@ -32,8 +32,8 @@ pipeline {
             steps {
                 script {
                     // Update image in K8s (Needs kubeconfig configured in Jenkins)
-                    sh "kubectl apply -f k8s/frontend.yaml"
-                    sh "kubectl rollout restart deployment/medicarepi-frontend-deployment"
+                    sh "KUBECONFIG=/var/lib/jenkins/.kube/config kubectl apply -f k8s/frontend.yaml"
+                    sh "KUBECONFIG=/var/lib/jenkins/.kube/config kubectl rollout restart deployment/medicarepi-frontend-deployment"
                 }
             }
         }
