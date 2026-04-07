@@ -24,9 +24,7 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-    getProfile(): Observable<UserResponseDTO> {
-        return this.http.get<UserResponseDTO>(`${this.baseUrlLegacy}/profile`);
-    }
+
 
     updateProfile(request: UpdateProfileRequest): Observable<any> {
         return this.http.put(`${this.baseUrlLegacy}/profile`, request);

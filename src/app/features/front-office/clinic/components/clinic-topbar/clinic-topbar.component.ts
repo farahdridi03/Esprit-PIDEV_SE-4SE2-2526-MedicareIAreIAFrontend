@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
-<<<<<<< HEAD
 import { EmergencyService, EmergencyAlertResponse } from '../../../../../services/emergency.service';
 import { AmbulanceService } from '../../../../../services/ambulance.service';
-=======
 import { UserResponseDTO } from '../../../../../models/user.model';
->>>>>>> 1594176 (feat: add docker, jenkins and k8s configuration)
 
 @Component({
   selector: 'app-clinic-topbar',
@@ -139,10 +136,6 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
         this.dispatchMessage = '❌ Could not load ambulances.';
         this.dispatchSuccess = false;
         this.dispatchingAlertId = null;
-
-      error: (err: any) => {
-        console.error('Error fetching clinic profile', err);
-
       }
     });
   }

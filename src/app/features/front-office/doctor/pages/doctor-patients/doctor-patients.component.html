@@ -1,10 +1,6 @@
 <div class="doctor-wrapper">
     <!-- Sidebar -->
-<<<<<<< HEAD
     <app-doctor-sidebar [currentView]="'patients'"></app-doctor-sidebar>
-=======
-    <app-doctor-sidebar></app-doctor-sidebar>
->>>>>>> origin/frontMedicalRecord
 
     <!-- Main Content -->
     <div class="main-body">
@@ -12,7 +8,6 @@
 
         <div class="content-area">
             <div class="page-header">
-<<<<<<< HEAD
                 <div>
                     <h1>Patient Management</h1>
                     <p>Access your patient base and manage your consultations.</p>
@@ -114,10 +109,7 @@
                                 <button class="btn-action-mini" title="Contact patient"><i class="fas fa-envelope"></i></button>
                             </div>
                         </div>
-=======
-                <h2>My Patients</h2>
-                <p>List of patients who have an appointment with you.</p>
-            </div>
+
 
             <div *ngIf="loading" class="loading-state">
                 <p>Loading patients...</p>
@@ -167,7 +159,7 @@
                         <button class="btn btn-primary" *ngIf="patient.hasMedicalRecord === false" (click)="createMedicalRecord(patient.id)" [disabled]="creatingRecordForId === patient.id" style="background: #0e7c66; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 500; cursor: pointer;">
                             {{ creatingRecordForId === patient.id ? 'Creating...' : 'Create Medical Record' }}
                         </button>
->>>>>>> origin/frontMedicalRecord
+
                     </div>
                 </div>
             </div>
