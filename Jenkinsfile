@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         // Adapt to your Docker Hub username
-        DOCKER_HUB_USER = "azizmelki"
+        DOCKER_HUB_USER = "azizmelki1"
         IMAGE_NAME = "medicarepi-frontend"
         IMAGE_TAG = "latest"
         REGISTRY_CREDENTIALS_ID = "docker-hub-credentials"
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: REGISTRY_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh "docker build -t ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
-                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                    sh "echo '${DOCKER_PASS}' | docker login -u ${DOCKER_USER} --password-stdin"
                     sh "docker push ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
