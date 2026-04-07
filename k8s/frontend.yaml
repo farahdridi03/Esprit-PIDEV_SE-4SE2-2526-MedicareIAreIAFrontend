@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: azizmelki/medicarepi-frontend:latest
+        image: azizmelki1/medicarepi-frontend:latest
         ports:
         - containerPort: 80
         env:
