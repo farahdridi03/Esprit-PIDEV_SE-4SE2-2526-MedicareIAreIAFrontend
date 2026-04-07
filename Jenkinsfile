@@ -17,13 +17,6 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies & Build (Angular)') {
-            steps {
-                // If you run this inside Jenkins, need NodeJS plugin or run inside a docker container
-                sh "npm ci --legacy-peer-deps"
-                sh "npm run build -- --configuration=production"
-            }
-        }
 
         stage('Docker Build & Push') {
             steps {
