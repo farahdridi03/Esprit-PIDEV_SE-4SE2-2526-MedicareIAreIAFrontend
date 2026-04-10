@@ -44,6 +44,7 @@ import { DoctorPatientConsultationsComponent } from './doctor/pages/doctor-patie
 import { DoctorPatientTreatmentsComponent } from './doctor/pages/doctor-patient-treatments/doctor-patient-treatments.component';
 import { DoctorPatientPrescriptionsComponent } from './doctor/pages/doctor-patient-prescriptions/doctor-patient-prescriptions.component';
 import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-diagnoses/doctor-patient-diagnoses.component';
+import { DoctorProfileEditComponent } from './doctor/pages/doctor-profile-edit/doctor-profile-edit.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-d
     DoctorPatientConsultationsComponent,
     DoctorPatientTreatmentsComponent,
     DoctorPatientPrescriptionsComponent,
-    DoctorPatientDiagnosesComponent
+    DoctorPatientDiagnosesComponent,
+    DoctorProfileEditComponent
   ],
   imports: [
     SharedModule,

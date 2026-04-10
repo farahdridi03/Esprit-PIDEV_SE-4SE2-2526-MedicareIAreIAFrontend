@@ -1,295 +1,334 @@
-// Variables customized for the design
-$primary-green: #0e7c66;
-$primary-hover: #0a6955;
-$bg-color: #f7f9fc;
-$text-dark: #1f2937;
-$text-light: #6b7280;
-$input-bg: #f3f4f6;
-$border-color: #e5e7eb;
+// ── Brand tokens ──────────────────────────────────────────
+$green-dark:   #0f5c4a;
+$green-mid:    #1a7a5e;
+$green-accent: #4ecda4;
+$bg:           #f7f9f8;
+$text-dark:    #1a2e25;
+$text-muted:   #6b8c7d;
+$input-bg:     #f0faf6;
+$input-border: #b8e6d4;
+$red:          #ef4444;
 
-.login-wrapper {
+// ── Page shell ─────────────────────────────────────────────
+.login-page {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 20px;
-  background-color: $bg-color;
-  font-family: 'Inter', sans-serif;
+  justify-content: center;
+  background: $bg url('../../../../../assets/img/medical-bg.svg') center/cover no-repeat;
+  padding: 24px 16px 48px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-.login-card {
+// ── Outer container ────────────────────────────────────────
+.login-container {
   width: 100%;
-  max-width: 440px;
+  max-width: 420px;
+  position: relative;
+  border-radius: 24px;
+  overflow: visible; // let avatar poke out
+  box-shadow: 0 24px 64px rgba(15, 92, 74, 0.18);
+}
+
+// ── Header block ───────────────────────────────────────────
+.login-header {
+  position: relative;
+  background: linear-gradient(135deg, $green-dark 0%, $green-mid 100%);
+  padding: 40px 40px 64px;
+  border-radius: 24px 24px 0 0;
+  overflow: hidden;
+  text-align: center;
+
+  .deco-circles {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  position: relative;
+
+  &-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+  }
+
+  &-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.02em;
+  }
+}
+
+.brand-tagline {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.875rem;
+  margin: 0;
+  position: relative;
+}
+
+// ── Avatar overlapping circle ──────────────────────────────
+.avatar-wrap {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  margin-top: -44px; // pulls it up into header
+}
+
+.avatar-circle {
+  width: 88px;
+  height: 88px;
+  background: $green-accent;
+  border: 4px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 8px 24px rgba(78, 205, 164, 0.4);
+  letter-spacing: 0.05em;
+  transition: background 0.3s;
+}
+
+// ── White card block ───────────────────────────────────────
+.login-card {
   background: white;
-  padding: 48px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  padding: 16px 40px 40px;
+  border-radius: 0 0 24px 24px;
   text-align: center;
 }
 
-// Brand / Logo
-.brand-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 2rem;
-
-  .logo-icon {
-    width: 40px;
-    height: 40px;
-    color: $primary-green;
-
-    svg {
-      width: 100%;
-      height: 100%;
-    }
-  }
-
-  .brand-name {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #111827; // Dark almost black
-    letter-spacing: -0.025em;
-  }
-}
-
-// Headings
-.welcome-title {
-  font-size: 1.875rem; // 30px
+.card-title {
+  font-size: 1.35rem;
   font-weight: 700;
   color: $text-dark;
-  margin: 0 0 0.5rem 0;
+  margin: 12px 0 4px;
 }
 
-.welcome-subtitle {
-  color: $text-light;
-  font-size: 0.95rem;
-  margin-bottom: 2rem;
+.card-subtitle {
+  color: $text-muted;
+  font-size: 0.875rem;
+  margin: 0 0 24px;
 }
 
+// ── Error alert ────────────────────────────────────────────
 .error-alert {
-  background-color: #fee2e2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fef2f2;
   border: 1px solid #fecaca;
   color: #b91c1c;
-  padding: 0.75rem 1rem;
+  padding: 10px 14px;
   border-radius: 10px;
-  margin-bottom: 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.85rem;
   text-align: left;
+  margin-bottom: 16px;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    stroke: #b91c1c;
+  }
 }
 
-// Form Styling
+// ── Form ───────────────────────────────────────────────────
 .login-form {
-  margin-bottom: 1.5rem;
   text-align: left;
+  margin-bottom: 20px;
 }
 
 .form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: 18px;
 
   label {
     display: block;
-    font-size: 0.875rem;
+    font-size: 0.82rem;
     font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.5rem;
-  }
-
-  .input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-
-    .input-icon {
-      position: absolute;
-      left: 12px;
-      color: #9ca3af;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      svg {
-        width: 100%;
-        height: 100%;
-      }
-    }
-
-    input {
-      width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.75rem; // Left padding for icon
-      font-size: 0.95rem;
-      border: 1px solid transparent; // Clean look
-      background-color: $input-bg;
-      border-radius: 10px; // Slightly more rounded
-      color: $text-dark;
-      transition: all 0.2s ease;
-
-      &::placeholder {
-        color: #9ca3af;
-      }
-
-      &:focus {
-        outline: none;
-        background-color: white;
-        border-color: $primary-green; // Green focus ring base
-        box-shadow: 0 0 0 3px rgba($primary-green, 0.1);
-      }
-
-      &.is-invalid {
-        border-color: #ef4444;
-
-        &:focus {
-          box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-        }
-      }
-    }
-  }
-
-  .error-message {
-    color: #ef4444;
-    font-size: 0.75rem;
-    margin-top: 0.35rem;
-    display: block;
+    color: $text-dark;
+    margin-bottom: 6px;
   }
 }
 
-// Options Row (Checkbox & Forgot Password)
-.options-row {
+.label-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  font-size: 0.875rem;
-}
+  margin-bottom: 6px;
 
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: #374151;
-  font-weight: 500;
-
-  input {
-    margin-right: 0.5rem;
-    width: 16px;
-    height: 16px;
-    accent-color: $primary-green;
-    cursor: pointer;
-  }
+  label { margin: 0; }
 }
 
 .forgot-link {
-  color: $primary-green;
-  text-decoration: none;
+  font-size: 0.8rem;
   font-weight: 600;
-  transition: color 0.15s;
+  color: $green-mid;
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
 
-  &:hover {
-    color: $primary-hover;
-    text-decoration: underline;
+.input-wrap {
+  position: relative;
+
+  .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: $green-accent;
+    display: flex;
+    align-items: center;
+
+    svg { width: 100%; height: 100%; stroke: $green-accent; }
+  }
+
+  input {
+    width: 100%;
+    padding: 11px 14px 11px 40px;
+    background: $input-bg;
+    border: 1.5px solid $input-border;
+    border-radius: 10px;
+    font-size: 0.93rem;
+    color: $text-dark;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+
+    &::placeholder { color: #a0b9ae; }
+
+    &:focus {
+      outline: none;
+      border-color: $green-accent;
+      box-shadow: 0 0 0 3px rgba(78, 205, 164, 0.18);
+      background: white;
+    }
+
+    &.invalid {
+      border-color: $red;
+      &:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
+    }
   }
 }
 
-// Submit Button
+.field-error {
+  display: block;
+  color: $red;
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
+// ── Submit button ──────────────────────────────────────────
 .submit-btn {
   width: 100%;
-  background-color: $primary-green;
+  padding: 13px;
+  background: linear-gradient(135deg, $green-dark 0%, $green-mid 100%);
   color: white;
-  padding: 0.875rem;
   border: none;
-  border-radius: 9999px; // Pill shape or rounded
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
-  border-radius: 12px; // Match prototype (rounded corners, not pill)
+  margin-top: 8px;
+  transition: opacity 0.2s, transform 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
-  &:hover {
-    background-color: $primary-hover;
+  &:hover:not(:disabled) {
+    opacity: 0.92;
+    transform: translateY(-1px);
   }
 
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+    transform: none;
   }
 }
 
-// Divider
-.divider {
-  position: relative;
-  text-align: center;
-  margin: 1.5rem 0;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background-color: $border-color;
-  }
-
-  span {
-    position: relative;
-    background-color: white;
-    padding: 0 1rem;
-    color: $text-light;
-    font-size: 0.875rem;
-  }
-}
-
-// Social Grid
-.social-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.social-btn {
+.spinner-wrap {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 0.75rem;
-  background-color: white;
-  border: 1px solid $border-color;
-  padding: 0.75rem;
-  border-radius: 9999px; // Pill shape as usually seen, or match input radius
-  border-radius: 30px; // Match prototype roughly
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #374151;
-  cursor: pointer;
-  transition: background-color 0.15s;
-
-  &:hover {
-    background-color: #f9fafb;
-    border-color: #d1d5db;
-  }
-
-  .social-icon {
-    width: 20px;
-    height: 20px;
-  }
+  gap: 8px;
 }
 
-// Footer
+.spinner {
+  width: 20px;
+  height: 20px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Footer ─────────────────────────────────────────────────
 .footer-text {
-  font-size: 0.95rem;
-  color: $text-light;
+  font-size: 0.875rem;
+  color: $text-muted;
+  margin: 0;
 
   .signup-link {
-    color: $primary-green;
-    text-decoration: none;
+    color: $green-mid;
     font-weight: 600;
-
-    &:hover {
-      text-decoration: underline;
-    }
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
   }
+}
+
+// ── Responsive ─────────────────────────────────────────────
+@media (max-width: 480px) {
+  .login-page {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .login-container {
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .login-header {
+    padding: 28px 20px 56px;
+    border-radius: 0;
+  }
+
+  .login-card {
+    padding: 12px 20px 32px;
+    border-radius: 0;
+    flex: 1;
+  }
+
+  .card-title    { font-size: 1.15rem; }
+  .card-subtitle { font-size: 0.82rem; }
+  .submit-btn    { font-size: 0.95rem; padding: 12px; }
 }

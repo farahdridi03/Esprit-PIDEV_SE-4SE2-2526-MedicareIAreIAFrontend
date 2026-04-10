@@ -13,12 +13,13 @@ export class RegisterComponent implements OnInit {
 
   registerForm: FormGroup;
   errorMessage: string = '';
+  isLoading: boolean = false;
 
   roles = [
     { value: 'DOCTOR', label: 'Doctor' },
     { value: 'CLINIC', label: 'Clinic' },
     { value: 'PHARMACIST', label: 'Pharmacist' },
-    { value: 'LABORATORYSTAFF', label: 'Laboratory Staff' },
+    { value: 'LABORATORY_STAFF', label: 'Laboratory Staff' },
     { value: 'NUTRITIONIST', label: 'Nutritionist' },
     { value: 'PATIENT', label: 'Patient' },
     { value: 'HOME_CARE_PROVIDER', label: 'Home Care Provider' }
@@ -193,7 +194,7 @@ export class RegisterComponent implements OnInit {
       const isNutritionist = role === 'NUTRITIONIST';
       const isClinic = role === 'CLINIC';
       const isPharmacist = role === 'PHARMACIST';
-      const isLabStaff = role === 'LABORATORYSTAFF';
+      const isLabStaff = role === 'LABORATORY_STAFF';
       const isHomeCare = role === 'HOME_CARE_PROVIDER';
 
       const genderCtrl = this.registerForm.get('gender');
@@ -283,25 +284,24 @@ export class RegisterComponent implements OnInit {
   get isDoctor(): boolean { return this.registerForm.get('role')?.value === 'DOCTOR'; }
   get isClinic(): boolean { return this.registerForm.get('role')?.value === 'CLINIC'; }
   get isPharmacist(): boolean { return this.registerForm.get('role')?.value === 'PHARMACIST'; }
-  get isLabStaff(): boolean { return this.registerForm.get('role')?.value === 'LABORATORYSTAFF'; }
+  get isLabStaff(): boolean { return this.registerForm.get('role')?.value === 'LABORATORY_STAFF'; }
   get isNutritionist(): boolean { return this.registerForm.get('role')?.value === 'NUTRITIONIST'; }
   get isHomeCareProvider(): boolean { return this.registerForm.get('role')?.value === 'HOME_CARE_PROVIDER'; }
 
   onSubmit() {
     if (this.registerForm.valid) {
+      this.isLoading = true;
+      this.errorMessage = '';
       const { terms, chronicDiseases, drugAllergies, hereditaryDiseases, selectedServices, ...rest } = this.registerForm.value;
-      
+
       let payload = { ...rest };
-      
+
       if (this.isPatient) {
         const medicalHistories = [];
         if (chronicDiseases) medicalHistories.push({ type: 'CHRONIC_DISEASE', description: chronicDiseases });
         if (drugAllergies) medicalHistories.push({ type: 'ALLERGY', description: drugAllergies });
         if (hereditaryDiseases) medicalHistories.push({ type: 'FAMILY_HISTORY', description: hereditaryDiseases });
-        
-        if (medicalHistories.length > 0) {
-          (payload as any).medicalHistories = medicalHistories;
-        }
+        if (medicalHistories.length > 0) (payload as any).medicalHistories = medicalHistories;
       }
 
       if (this.isHomeCareProvider && selectedServices) {
@@ -310,10 +310,12 @@ export class RegisterComponent implements OnInit {
 
       this.authService.register(payload).subscribe({
         next: () => {
+          this.isLoading = false;
           this.router.navigate(['/auth/login']);
         },
         error: (err: any) => {
-          this.errorMessage = err.error?.message || err.error || 'Erreur lors de l\'inscription';
+          this.isLoading = false;
+          this.errorMessage = err.error?.message || err.error || 'Registration failed. Please try again.';
         }
       });
     } else {

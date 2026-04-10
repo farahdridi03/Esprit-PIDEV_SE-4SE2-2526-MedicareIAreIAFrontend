@@ -1,42 +1,91 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../../services/auth.service';
+import { DoctorService, DoctorProfile } from '../../../../../services/doctor.service';
+import { UserService } from '../../../../../services/user.service';
+
 @Component({
   selector: 'app-doctor-profile',
   templateUrl: './doctor-profile.component.html',
   styleUrls: ['./doctor-profile.component.css']
 })
 export class DoctorProfileComponent implements OnInit {
-  fullName: string = 'Dr. Sarah Johnson';
-  email: string = 'sarah.johnson@example.com';
-  password?: string = '';
-  errorMessage: string = '';
-  successMessage: string = '';
+  doctor: DoctorProfile | null = null;
+  loading = true;
+  error: string | null = null;
+  showPasswordModal = false;
 
-  constructor(private userService: UserService, private authService: AuthService) { }
+  // password change fields
+  newPassword = '';
+  confirmPassword = '';
+  passwordError = '';
+  passwordSuccess = '';
+  changingPassword = false;
 
-  ngOnInit() {
-    this.email = this.authService.getUserEmail() || '';
+  constructor(
+    private authService: AuthService,
+    private doctorService: DoctorService,
+    private userService: UserService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    const doctorId = this.authService.getUserId();
+    if (doctorId) {
+      this.doctorService.getProfile(doctorId).subscribe({
+        next: (data) => {
+          this.doctor = data;
+          this.loading = false;
+        },
+        error: () => {
+          // fallback: build minimal profile from auth token
+          this.doctor = {
+            id: doctorId,
+            fullName: this.authService.getUserFullName() || 'Doctor',
+            email: this.authService.getUserEmail() || '',
+            licenseNumber: '',
+            isProfileComplete: false
+          };
+          this.loading = false;
+        }
+      });
+    } else {
+      this.loading = false;
+    }
   }
 
-  onSubmit() {
-    this.errorMessage = '';
-    this.successMessage = '';
+  onUpdate(): void {
+    this.router.navigate(['/front/doctor/profile/edit']);
+  }
 
-    const request: any = { fullName: this.fullName, email: this.email };
-    if (this.password) {
-      request.password = this.password;
+  openPasswordModal(): void  { this.showPasswordModal = true; }
+  closePasswordModal(): void { this.showPasswordModal = false; this.passwordError = ''; this.passwordSuccess = ''; this.newPassword = ''; this.confirmPassword = ''; }
+
+  submitPassword(): void {
+    this.passwordError = '';
+    this.passwordSuccess = '';
+    if (!this.newPassword || this.newPassword.length < 8) {
+      this.passwordError = 'Password must be at least 8 characters.';
+      return;
     }
-
-    this.userService.updateProfile(request).subscribe({
-      next: (response: any) => {
-        console.log('Profile updated', response);
-        this.successMessage = 'Profile updated successfully.';
-        // Optionnel : Mettre à jour le token si le backend en renvoie un nouveau
+    if (this.newPassword !== this.confirmPassword) {
+      this.passwordError = 'Passwords do not match.';
+      return;
+    }
+    this.changingPassword = true;
+    this.userService.updateProfile({
+      fullName: this.doctor?.fullName || '',
+      email: this.doctor?.email || '',
+      password: this.newPassword
+    }).subscribe({
+      next: () => {
+        this.passwordSuccess = 'Password updated successfully.';
+        this.changingPassword = false;
+        setTimeout(() => this.closePasswordModal(), 1800);
       },
-      error: (error: any) => {
-        console.error('Error updating profile', error);
-        this.errorMessage = 'Error updating profile.';
+      error: () => {
+        this.passwordError = 'Failed to update password. Please try again.';
+        this.changingPassword = false;
       }
     });
   }

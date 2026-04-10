@@ -8,6 +8,7 @@ import { DonationsComponent } from './patient/pages/donations/donations.componen
 import { EmergencyComponent } from './patient/pages/emergency/emergency.component';
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
+import { DoctorProfileEditComponent } from './doctor/pages/doctor-profile-edit/doctor-profile-edit.component';
 import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
 import { PatientDoctorsListComponent } from './patient/pages/patient-doctors-list/patient-doctors-list.component';
 import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-detail/patient-doctor-detail.component';
@@ -183,6 +184,12 @@ const routes: Routes = [
   {
     path: 'doctor/profile',
     component: DoctorProfileComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['DOCTOR'] }
+  },
+  {
+    path: 'doctor/profile/edit',
+    component: DoctorProfileEditComponent,
     canActivate: [AuthGuard],
     data: { roles: ['DOCTOR'] }
   },

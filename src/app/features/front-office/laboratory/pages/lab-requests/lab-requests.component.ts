@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   templateUrl: './lab-requests.component.html',
   styleUrls: ['./lab-requests.component.scss']
 })
-export class LabRequestsComponent implements OnInit {
+export class LaboratoryStaffLabRequestsComponent implements OnInit {
   pendingRequests: LabRequestResponse[] = [];
   loading = true;
   error = '';

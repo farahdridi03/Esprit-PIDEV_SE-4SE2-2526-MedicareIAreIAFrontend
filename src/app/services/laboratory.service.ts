@@ -4,6 +4,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { LaboratoryRequest, LaboratoryResponse } from '../models/laboratory.model';
 
+export interface LaboratoryRequestResponse {
+  id: number;
+  patientFullName: string;
+  laboratoryName: string;
+  testType: string;
+  requestDate: string;
+  scheduledAt: string;
+  status: string;
+  notes?: string;
+  resultsUrl?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class LaboratoryService {
 private baseUrl = 'http://localhost:8081/springsecurity/api/laboratories';
@@ -78,6 +90,12 @@ private baseUrl = 'http://localhost:8081/springsecurity/api/laboratories';
 
   updateProfile(data: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/profile`, data, { headers: this.headers }).pipe(
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  getPatientRequests(): Observable<LaboratoryRequestResponse[]> {
+    return this.http.get<LaboratoryRequestResponse[]>(`${this.baseUrl}/patient/requests`, { headers: this.headers }).pipe(
       catchError(err => throwError(() => err))
     );
   }

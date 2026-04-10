@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LaboratoryService } from '../../../../services/laboratory.service';
+import { LaboratoryRequest } from '../../../../models/laboratory.model';
 
 @Component({
-  selector: 'app-laboratory-form',
+  selector: 'app-admin-laboratory-form',
   templateUrl: './laboratory-form.component.html',
   styleUrls: ['./laboratory-form.component.scss']
 })
-export class LaboratoryFormComponent implements OnInit {
+export class AdminLaboratoryFormComponent implements OnInit {
   form!: FormGroup;
   isEditMode = false;
   labId: number | null = null;
@@ -75,8 +76,16 @@ export class LaboratoryFormComponent implements OnInit {
       return;
     }
     this.isSaving = true;
-    const { isActive, ...rest } = this.form.value;
-    const payload = { ...rest };
+    const v = this.form.value;
+    const payload: LaboratoryRequest = {
+      name: v.name,
+      address: v.address,
+      phone: v.phone,
+      email: v.email,
+      openingHours: v.openingHours,
+      specializations: v.specializations,
+      isActive: !!v.isActive
+    };
 
     if (this.isEditMode && this.labId !== null) {
       this.labService.update(this.labId, payload).subscribe({

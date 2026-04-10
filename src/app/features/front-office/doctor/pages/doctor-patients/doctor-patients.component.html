@@ -24,8 +24,8 @@
 
             <div class="patients-schedule-card">
                 <div class="card-header">
-                    <h3>{{ displayMode === 'today' ? '📅 Today\'s Schedule' : '👥 Patient Database' }}</h3>
-                    <div class="refresh-info">{{ displayMode === 'today' ? todayAppointments.length + ' Appointments' : allPatients.length + ' Unique patients' }}</div>
+                    <h3>{{ displayMode === 'today' ? '📅 Today\'s Schedule' : '📋 All Appointments' }}</h3>
+                    <div class="refresh-info">{{ displayMode === 'today' ? todayAppointments.length + ' Appointments' : allAppointments.length + ' Appointments' }}</div>
                 </div>
 
                 <div class="schedule-list detailing">
@@ -39,9 +39,9 @@
                         <div class="empty-icon">📅</div>
                         <p>No appointments for today.</p>
                     </div>
-                    <div *ngIf="!isLoadingAppointments && displayMode === 'all' && allPatients.length === 0" class="no-data">
-                        <div class="empty-icon">👥</div>
-                        <p>You don't have any registered patients yet.</p>
+                    <div *ngIf="!isLoadingAppointments && displayMode === 'all' && allAppointments.length === 0" class="no-data">
+                        <div class="empty-icon">📋</div>
+                        <p>No appointments found.</p>
                     </div>
 
                     <!-- MODE: TODAY APPOINTMENTS -->
@@ -80,33 +80,38 @@
                         </div>
                     </div>
 
-                    <!-- MODE: ALL PATIENTS -->
+                    <!-- MODE: ALL APPOINTMENTS (individual rows) -->
                     <div *ngIf="!isLoadingAppointments && displayMode === 'all'">
-                        <div class="appointment-row" *ngFor="let p of allPatients">
-                            <div class="patient-info" style="flex: 1;">
-                                <div class="avatar-circle" style="background: #e0f2fe; color: #0369a1;">
-                                    {{ p.name ? p.name.charAt(0) : 'P' }}
-                                </div>
-                                <div class="name-meta">
-                                    <h4>{{ p.name }}</h4>
-                                    <span class="sub-text">Registered via Medicare • <strong>{{ p.totalAppointments }}</strong> Appointments</span>
-                                </div>
+                        <div class="appointment-row" *ngFor="let app of allAppointments">
+                            <div class="time-block">
+                                <span class="start">{{ app.date | date:'MMM d' }}</span>
+                                <span class="end">{{ app.startTime }}</span>
                             </div>
 
-                            <div class="meta-col" style="flex: 1; text-align: right; padding-right: 20px;">
-                                <div class="date-label">Last visit</div>
-                                <div class="date-val">{{ p.lastAppointmentDate | date:'mediumDate' }}</div>
+                            <div class="patient-info">
+                                <div class="avatar-circle">
+                                    {{ app.patientName ? app.patientName.charAt(0) : 'P' }}
+                                </div>
+                                <div class="name-meta">
+                                    <h4>{{ app.patientName }}</h4>
+                                    <span class="mode-tag" [class]="(app.mode || '').toLowerCase()">{{ app.mode || 'N/A' }}</span>
+                                </div>
                             </div>
 
                             <div class="status-col">
-                                <span class="status-pill" [ngClass]="(p.lastAppointmentStatus || '').toLowerCase()">
-                                    {{ p.lastAppointmentStatus }}
+                                <span class="status-pill" [ngClass]="(app.status || '').toLowerCase()">
+                                    {{ app.status }}
                                 </span>
                             </div>
 
                             <div class="actions-col">
-                                <button class="btn-action-mini" title="View history"><i class="fas fa-history"></i></button>
-                                <button class="btn-action-mini" title="Contact patient"><i class="fas fa-envelope"></i></button>
+                                <button *ngIf="app.status === 'BOOKED'" class="btn-action confirm" (click)="confirmAppointment(app.id)">Accept</button>
+                                <button *ngIf="app.mode === 'ONLINE' && app.status === 'CONFIRMED'" class="btn-action start" (click)="startConsultation(app)">Start Session</button>
+                                <div *ngIf="app.mode === 'ONLINE' && app.status === 'LIVE'" style="display:flex; gap: 5px;">
+                                    <button class="btn-action live" (click)="openMeeting(app.meetingLink)">Join Live</button>
+                                    <button class="btn-action confirm" style="background:#ef4444;" (click)="completeConsultation(app)">End</button>
+                                </div>
+                                <button class="btn-action-mini" title="View history" (click)="router.navigate(['/front/doctor/patient', app.patientId, 'record'])"><i class="fas fa-history"></i></button>
                             </div>
                         </div>
                     </div>

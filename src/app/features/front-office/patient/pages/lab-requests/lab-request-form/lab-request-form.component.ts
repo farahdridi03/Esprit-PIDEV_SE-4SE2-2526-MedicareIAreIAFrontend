@@ -9,7 +9,7 @@ import { AuthService } from '../../../../../../services/auth.service';
   templateUrl: './lab-request-form.component.html',
   styleUrls: ['./lab-request-form.component.scss']
 })
-export class LabRequestFormComponent implements OnInit {
+export class PatientLabRequestFormComponent implements OnInit {
   form!: FormGroup;
   laboratories: Laboratory[] = [];
   isLoading = false;

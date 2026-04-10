@@ -15,7 +15,8 @@ import { PatientResponseDTO } from '../../../../../models/patient.model';
 export class DoctorPatientsComponent implements OnInit {
   // Appointment view properties
   todayAppointments: AppointmentDTO[] = [];
-  allPatients: any[] = []; // List derived from appointments
+  allAppointments: AppointmentDTO[] = []; // All appointments individually
+  allPatients: any[] = []; // Unique patients summary
   displayMode: 'today' | 'all' = 'today';
   isLoadingAppointments: boolean = true;
   firstName: string = '';
@@ -32,7 +33,7 @@ export class DoctorPatientsComponent implements OnInit {
     private appointmentService: AppointmentService,
     private patientService: PatientService,
     private medicalRecordService: MedicalRecordService,
-    private router: Router
+    public router: Router
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +57,13 @@ export class DoctorPatientsComponent implements OnInit {
         
         this.todayAppointments = data.filter(a => a.date === todayStr)
                                     .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
-        
+
+        // All appointments individually, sorted by date desc then time
+        this.allAppointments = [...data].sort((a, b) => {
+          const dateCompare = (b.date || '').localeCompare(a.date || '');
+          return dateCompare !== 0 ? dateCompare : (a.startTime || '').localeCompare(b.startTime || '');
+        });
+
         const patientMap = new Map<number, any>();
         data.forEach(appt => {
           if (!appt.patientId) return;
@@ -74,7 +81,7 @@ export class DoctorPatientsComponent implements OnInit {
              existing.totalAppointments++;
           }
         });
-        
+
         this.allPatients = Array.from(patientMap.values()).sort((a,b) => {
           const dateA = a.lastAppointmentDate || '';
           const dateB = b.lastAppointmentDate || '';

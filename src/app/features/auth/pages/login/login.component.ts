@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DoctorService } from '../../../../services/doctor.service';
 
 @Component({
@@ -9,10 +9,14 @@ import { DoctorService } from '../../../../services/doctor.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
   errorMessage: string = '';
+  isLoading: boolean = false;
+  initials: string = 'U';
+  displayName: string = 'Welcome Back';
+  displayRole: string = 'Sign in to your account';
 
   constructor(
     private fb: FormBuilder,
@@ -22,54 +26,68 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      rememberMe: [false]
+      password: ['', Validators.required]
     });
   }
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      const { rememberMe, ...loginData } = this.loginForm.value;
-      console.log('Form is valid, calling login with data:', loginData);
-      
-      this.authService.login(loginData).subscribe({
-        next: (response: any) => {
-          const role = response.role || this.authService.getUserRole();
-          this.redirectBasedOnRole(role);
-        },
-        error: (err: any) => {
-          console.error('Login error full response:', err);
-          this.errorMessage = err.error?.message || err.error || 'Identifiants invalides';
-        }
-      });
+  ngOnInit(): void {
+    // Update initials dynamically as user types email
+    this.loginForm.get('email')?.valueChanges.subscribe((email: string) => {
+      this.updateInitialsFromEmail(email);
+    });
+  }
+
+  private updateInitialsFromEmail(email: string): void {
+    if (!email) { this.initials = 'U'; return; }
+    const local = email.split('@')[0];
+    const parts = local.split(/[._-]/);
+    if (parts.length >= 2) {
+      this.initials = (parts[0][0] + parts[1][0]).toUpperCase();
     } else {
-      this.loginForm.markAllAsTouched();
-      this.errorMessage = 'Veuillez remplir correctement tous les champs.';
+      this.initials = local.substring(0, 2).toUpperCase();
     }
   }
 
-  private redirectBasedOnRole(role: string | null) {
-    if (!role) {
-      this.router.navigate(['/front']);
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
       return;
     }
 
-    const cleanRole = role.replace(/^ROLE_/, '').toUpperCase();
+    this.isLoading = true;
+    this.errorMessage = '';
 
+    const { email, password } = this.loginForm.value;
+
+    this.authService.login({ email, password }).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        const role = response.role || this.authService.getUserRole();
+        this.redirectBasedOnRole(role);
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || err.error || 'Invalid credentials. Please try again.';
+      }
+    });
+  }
+
+  private redirectBasedOnRole(role: string | null): void {
+    if (!role) { this.router.navigate(['/front']); return; }
+
+    const cleanRole = role.replace(/^ROLE_/, '').toUpperCase();
     const routes: { [key: string]: string } = {
       'ADMIN': '/admin/dashboard',
       'DOCTOR': '/front/doctor/dashboard',
       'PATIENT': '/front/patient/dashboard',
       'NUTRITIONIST': '/front/nutritionist/dashboard',
       'LABORATORY_STAFF': '/front/laboratorystaff/dashboard',
-      'LABORATORYSTAFF': '/front/laboratorystaff/dashboard',
       'PHARMACIST': '/front/pharmacist',
       'CLINIC': '/front/clinic',
       'HOME_CARE_PROVIDER': '/front/home-care',
       'VISITOR': '/front',
     };
 
-    const target = routes[cleanRole] ?? '/front';
-    this.router.navigate([target]);
+    this.router.navigate([routes[cleanRole] ?? '/front']);
   }
 }

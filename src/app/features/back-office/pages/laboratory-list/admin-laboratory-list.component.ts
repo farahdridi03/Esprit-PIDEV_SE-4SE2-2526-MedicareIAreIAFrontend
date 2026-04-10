@@ -6,38 +6,33 @@ import { LaboratoryService } from '../../../../services/laboratory.service';
 import { LaboratoryResponse } from '../../../../models/laboratory.model';
 
 @Component({
-  selector: 'app-laboratory-list',
+  selector: 'app-admin-laboratory-list',
   templateUrl: './laboratory-list.component.html',
   styleUrls: ['./laboratory-list.component.scss']
 })
-export class LaboratoryListComponent implements OnInit, OnDestroy {
+export class AdminLaboratoryListComponent implements OnInit, OnDestroy {
   labs: LaboratoryResponse[] = [];
   filteredLabs: LaboratoryResponse[] = [];
   pagedLabs: LaboratoryResponse[] = [];
   isLoading = false;
   errorMsg = '';
 
-  // Stats
   totalLabs = 0;
   activeLabs = 0;
   pendingLabs = 0;
 
-  // Pagination
   pageSize = 5;
   currentPage = 1;
   totalPages = 1;
   pages: number[] = [];
 
-  // Search
   searchQuery = '';
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
-  // Confirm dialog
   showConfirm = false;
   deleteTargetId: number | null = null;
 
-  // Snackbar
   snackbarMsg = '';
   snackbarType: 'success' | 'error' = 'success';
   snackbarVisible = false;

@@ -15,7 +15,7 @@ import { LabTestsComponent } from './lab-tests/lab-tests.component';
 import { LabTestFormComponent } from './lab-tests/lab-test-form.component';
 import { LabResultsComponent } from './pages/lab-results/lab-results.component';
 import { LabResultFormComponent } from './pages/lab-results/lab-result-form.component';
-import { LabRequestsComponent } from './pages/lab-requests/lab-requests.component';
+import { LaboratoryStaffLabRequestsComponent } from './pages/lab-requests/lab-requests.component';
 import { LabResultService } from '../../../services/lab-result.service';
 
 
@@ -30,7 +30,7 @@ const routes: Routes = [
     { path: 'profile/edit', component: LaboratoryProfileEditComponent },
 
     { path: 'lab-tests', component: LabTestsComponent },
-    { path: 'lab-requests', component: LabRequestsComponent },
+    { path: 'lab-requests', component: LaboratoryStaffLabRequestsComponent },
     { path: 'lab-results', component: LabResultsComponent },
 
 
@@ -47,7 +47,7 @@ const routes: Routes = [
         LabTestFormComponent,
         LabResultsComponent,
         LabResultFormComponent,
-        LabRequestsComponent
+        LaboratoryStaffLabRequestsComponent
     ],
     imports: [
         CommonModule,
