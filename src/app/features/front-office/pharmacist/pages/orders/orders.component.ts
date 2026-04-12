@@ -123,8 +123,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
             this.notifSub = this.notificationService.notifications$.subscribe(notifs => {
                 if (notifs.length > 0) {
                     const latest = notifs[0];
-                    if (latest.type === NotificationType.PAYMENT_CONFIRMED ||
-                        latest.type === NotificationType.ORDER_CREATED) {
+                    if ((latest as any).type === NotificationType.PAYMENT_CONFIRMED ||
+                        (latest as any).type === NotificationType.ORDER_CREATED) {
                         console.log('Real-time update: Reloading orders due to:', latest.type);
                         this.loadOrders();
                     }

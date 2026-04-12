@@ -3,13 +3,14 @@ import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
-  selector: 'app-laboratory-topbar',
+  selector: 'app-laboratorystaff-topbar',
   templateUrl: './laboratory-topbar.component.html',
   styleUrls: ['./laboratory-topbar.component.scss']
 })
 export class LaboratoryTopbarComponent implements OnInit {
   firstName: string = 'Laboratory';
   initials: string = 'L';
+  photo: string | null = null;
 
   constructor(private userService: UserService, private authService: AuthService) {}
 

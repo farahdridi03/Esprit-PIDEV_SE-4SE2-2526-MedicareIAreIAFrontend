@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
@@ -9,7 +9,7 @@ import { LaboratoryProfileEditComponent } from './pages/laboratory-profile-edit/
 
 import { LaboratoryStaffSidebarComponent } from './components/laboratory-sidebar/laboratory-sidebar.component';
 import { LaboratoryTopbarComponent } from './components/laboratory-topbar/laboratory-topbar.component';
-import { LaboratoryStaffDashboardComponent } from './pages/laboratory-dashboard/laboratory-dashboard.component';
+import { LaboratoryDashboardComponent } from './pages/laboratory-dashboard/laboratory-dashboard.component';
 import { LabTestsComponent } from './lab-tests/lab-tests.component';
 import { LabTestFormComponent } from './lab-tests/lab-test-form.component';
 import { LabResultsComponent } from './pages/lab-results/lab-results.component';
@@ -19,24 +19,24 @@ import { LabResultService } from '../../../services/lab-result.service';
 
 const routes: Routes = [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    { path: 'dashboard', component: LaboratoryStaffDashboardComponent },
-    { path: 'events', component: LaboratoryStaffDashboardComponent },
-    { path: 'forum', component: LaboratoryStaffDashboardComponent },
-    { path: 'donations', component: LaboratoryStaffDashboardComponent },
+    { path: 'dashboard', component: LaboratoryDashboardComponent },
+    { path: 'events', component: LaboratoryDashboardComponent },
+    { path: 'forum', component: LaboratoryDashboardComponent },
+    { path: 'donations', component: LaboratoryDashboardComponent },
     { path: 'profile', component: LaboratoryStaffProfileSettingsComponent },
     { path: 'profile/edit', component: LaboratoryProfileEditComponent },
     { path: 'lab-tests', component: LabTestsComponent },
     { path: 'lab-requests', component: LaboratoryStaffLabRequestsComponent },
     { path: 'lab-results', component: LabResultsComponent },
-    { path: 'requests', component: LaboratoryStaffDashboardComponent },
-    { path: 'results', component: LaboratoryStaffDashboardComponent }
+    { path: 'requests', component: LaboratoryDashboardComponent },
+    { path: 'results', component: LaboratoryDashboardComponent }
 ];
 
 @NgModule({
     declarations: [
         LaboratoryStaffSidebarComponent,
         LaboratoryTopbarComponent,
-        LaboratoryStaffDashboardComponent,
+        LaboratoryDashboardComponent,
         LaboratoryStaffProfileSettingsComponent,
         LaboratoryProfileEditComponent,
         LabTestsComponent,
@@ -59,6 +59,7 @@ const routes: Routes = [
         CommonModule,
         FormsModule,
         ReactiveFormsModule
-    ]
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class LaboratoryStaffModule { }

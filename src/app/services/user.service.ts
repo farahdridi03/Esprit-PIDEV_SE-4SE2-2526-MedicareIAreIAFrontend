@@ -42,8 +42,14 @@ export class UserService {
         return this.http.put<any>(`${this.apiUrl}/${id}`, profileData);
     }
 
-    changePassword(id: number | string, passwordData: any): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}/${id}/change-password`, passwordData);
+    changePassword(id: number | string, passwordData: any): Observable<any>;
+    changePassword(request: any): Observable<any>;
+    changePassword(idOrRequest: any, passwordData?: any): Observable<any> {
+        if (passwordData !== undefined) {
+            return this.http.post<any>(`${this.apiUrl}/${idOrRequest}/change-password`, passwordData);
+        }
+        // Legacy single-argument call from password-modal
+        return this.http.put(`${this.baseUrlLegacy}/change-password`, idOrRequest);
     }
 
     create(dto: UserRequestDTO): Observable<UserResponseDTO> {

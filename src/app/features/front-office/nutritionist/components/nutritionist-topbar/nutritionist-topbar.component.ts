@@ -10,6 +10,7 @@ import { AuthService } from '../../../../../services/auth.service';
 export class NutritionistTopbarComponent implements OnInit {
   firstName: string = 'Nutritionist';
   initials: string = 'N';
+  photo: string | null = null;
 
   constructor(private userService: UserService, private authService: AuthService) {}
 

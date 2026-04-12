@@ -83,8 +83,8 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
       if (notifications.length > 0) {
         const latestNotif = notifications[0];
         // When pharmacist validates the order (DELIVERY_CHOICE_REQUIRED notification)
-        if (latestNotif.type === NotificationType.DELIVERY_CHOICE_REQUIRED ||
-          latestNotif.type === NotificationType.PAYMENT_CONFIRMED) {
+        if ((latestNotif as any).type === NotificationType.DELIVERY_CHOICE_REQUIRED ||
+          (latestNotif as any).type === NotificationType.PAYMENT_CONFIRMED) {
           console.log('Order status changed! Reloading order details...', latestNotif.type);
           // Auto-reload the order to show payment button
           setTimeout(() => {

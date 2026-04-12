@@ -57,12 +57,8 @@ import { DoctorPatientTreatmentsComponent } from './doctor/pages/doctor-patient-
 import { DoctorPatientPrescriptionsComponent } from './doctor/pages/doctor-patient-prescriptions/doctor-patient-prescriptions.component';
 import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-diagnoses/doctor-patient-diagnoses.component';
 import { DoctorProfileEditComponent } from './doctor/pages/doctor-profile-edit/doctor-profile-edit.component';
-
-// Standalone components
-import { SidebarComponent } from './patient/components/sidebar/sidebar.component';
-import { TopbarComponent } from './patient/components/topbar/topbar.component';
-import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/doctor-sidebar.component';
-import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
+import { EventDetailComponent } from './pages/event-detail/event-detail.component';
+import { PatientEventsComponent } from './pages/patient-events/patient-events.component';
 
 @NgModule({
   declarations: [
@@ -111,7 +107,8 @@ import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-
     DoctorPatientPrescriptionsComponent,
     DoctorPatientDiagnosesComponent,
     DoctorProfileEditComponent,
-    DoctorTopbarComponent
+    EventDetailComponent,
+    PatientEventsComponent
   ],
   imports: [
     SharedModule,
@@ -119,10 +116,7 @@ import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-
     LifestyleSharedModule,
     LayoutModule,
     FormsModule,
-    ReactiveFormsModule,
-    SidebarComponent,
-    TopbarComponent,
-    DoctorSidebarComponent
+    ReactiveFormsModule
   ]
 })
 export class FrontOfficeModule { }

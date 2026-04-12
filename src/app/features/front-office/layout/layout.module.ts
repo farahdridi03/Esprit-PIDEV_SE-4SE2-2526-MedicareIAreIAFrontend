@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { FrontLayoutComponent } from './front-layout/front-layout.component';
-// Patient Components
-import { PatientSidebarComponent } from '../patient/components/sidebar/sidebar.component';
-import { PatientTopbarComponent } from '../patient/components/topbar/topbar.component';
+// Patient Components (standalone)
+import { SidebarComponent } from '../patient/components/sidebar/sidebar.component';
+import { TopbarComponent } from '../patient/components/topbar/topbar.component';
 import { PasswordModalComponent } from '../patient/components/password-modal/password-modal.component';
 
 // Doctor Components
@@ -20,8 +20,6 @@ import { NutritionistTopbarComponent } from '../nutritionist/components/nutritio
 @NgModule({
   declarations: [
     FrontLayoutComponent,
-    PatientSidebarComponent,
-    PatientTopbarComponent,
     PasswordModalComponent,
     DoctorSidebarComponent,
     DoctorTopbarComponent,
@@ -31,12 +29,16 @@ import { NutritionistTopbarComponent } from '../nutritionist/components/nutritio
   imports: [
     CommonModule,
     RouterModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    // Standalone components
+    SidebarComponent,
+    TopbarComponent
   ],
   exports: [
     FrontLayoutComponent,
-    PatientSidebarComponent,
-    PatientTopbarComponent,
+    SidebarComponent,
+    TopbarComponent,
     PasswordModalComponent,
     DoctorSidebarComponent,
     DoctorTopbarComponent,

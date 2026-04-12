@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
-import { NotificationService } from '../../../../../services/notification.service';
+import { NotificationService, AppNotification } from '../../../../../services/notification.service';
 import { DeliveryTrackingService } from '../../../../../services/delivery-tracking.service';
-import { NotificationResponseDTO } from '../../../../../models/notification.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -17,7 +16,7 @@ export class HomeCareTopbarComponent implements OnInit, OnDestroy {
   photo: string | null = null;
 
   // Notification state
-  notifications: NotificationResponseDTO[] = [];
+  notifications: AppNotification[] = [];
   unreadCount: number = 0;
   showNotifPanel: boolean = false;
 
@@ -85,7 +84,7 @@ export class HomeCareTopbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  markAsRead(notif: NotificationResponseDTO) {
+  markAsRead(notif: AppNotification) {
     if (!notif.isRead) {
       this.notificationService.markAsRead(notif.id).subscribe();
     }

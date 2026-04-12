@@ -44,7 +44,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     // Subscribe to new notifications
     this.notificationSub = this.notificationService.notifications$.subscribe((notifications) => {
       // Check if there's a new HOMECARE request notification
-      const hasNewHomecareRequest = notifications.some(n => n.type === 'NEW_HOMECARE_REQUEST');
+      const hasNewHomecareRequest = notifications.some(n => (n as any).type === 'NEW_HOMECARE_REQUEST');
       if (hasNewHomecareRequest) {
         // Reload requests to show the new request
         this.loadRequests();
