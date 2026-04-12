@@ -1,45 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
-    selector: 'app-laboratorystaff-topbar',
-    templateUrl: './laboratory-topbar.component.html',
-    styleUrls: ['./laboratory-topbar.component.scss']
+  selector: 'app-laboratory-topbar',
+  templateUrl: './laboratory-topbar.component.html',
+  styleUrls: ['./laboratory-topbar.component.scss']
 })
-export class LaboratoryStaffTopbarComponent implements OnInit {
-  firstName: string = 'Staff';
+export class LaboratoryTopbarComponent implements OnInit {
+  firstName: string = 'Laboratory';
   initials: string = 'L';
-  photo: string | null = null;
 
   constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserProfile) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
-        this.photo = (user as any).photo || null;
       },
-      error: (err) => {
-        console.error('Error fetching laboratory staff profile', err);
+      error: (err: any) => {
+        console.error('Error fetching laboratory profile', err);
       }
     });
   }
 
   private loadUserInfo() {
-    this.userService.profile$.subscribe(user => {
-      if (user) {
-        if (user.fullName) {
-          this.setNames(user.fullName);
-        }
-        this.photo = (user as any).photo || null;
-      }
-    });
-    // Trigger initial load if not already loaded
-    this.userService.refreshProfile();
+    const fullName = this.authService.getUserFullName();
+    if (fullName) this.setNames(fullName);
   }
 
   private setNames(fullName: string) {

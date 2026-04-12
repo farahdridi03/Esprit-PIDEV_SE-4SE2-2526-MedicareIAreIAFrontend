@@ -1,0 +1,132 @@
+.courier-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+
+  .header {
+    margin-bottom: 2rem;
+    h1 {
+      color: #2d3748;
+      font-size: 1.8rem;
+      small { color: #a0aec0; font-size: 0.9rem; }
+    }
+  }
+
+  .card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #4a5568; }
+    .form-control {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+  }
+
+  .agent-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f7fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+
+    .profile {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+
+      .avatar {
+        width: 48px;
+        height: 48px;
+        background: #4299e1;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      h2 { margin: 0; font-size: 1.1rem; color: #2d3748; }
+      p { margin: 0; font-size: 0.85rem; color: #718096; }
+    }
+  }
+
+  .delivery-card {
+    background: white;
+    border: 1px solid #edf2f7;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: transform 0.2s;
+
+    &:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+    .del-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      .trk { font-weight: bold; color: #4a5568; }
+      .status-badge {
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        
+        &[data-status="OUT_FOR_DELIVERY"] { background: #ebf8ff; color: #2b6cb0; }
+        &[data-status="DELIVERED"] { background: #f0fff4; color: #2f855a; }
+        &[data-status="REQUESTED"] { background: #fffaf0; color: #9c4221; }
+      }
+    }
+
+    .del-body {
+        margin-bottom: 1.5rem;
+        p { margin: 0.3rem 0; color: #4a5568; font-size: 0.95rem; }
+    }
+  }
+
+  .btn-primary {
+    background: #4299e1;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+  }
+
+  .btn-success {
+    background: #48bb78;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid #cbd5e0;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+}

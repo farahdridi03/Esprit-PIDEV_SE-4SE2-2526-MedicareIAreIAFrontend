@@ -1,7 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
 
 import { BackOfficeComponent } from './back-office.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -13,33 +12,14 @@ import { AppointmentManagementComponent } from './pages/appointment-management/a
 import { AdminLaboratoryListComponent } from './pages/laboratory-list/admin-laboratory-list.component';
 import { AdminLaboratoryFormComponent } from './pages/laboratory-form/admin-laboratory-form.component';
 import { ForumModule } from '../../forum/forum.module';
-import { AuthGuard } from '../../guards/auth.guard';
 import { ForumModerationComponent } from '../../forum/pages/forum-moderation/forum-moderation.component';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: BackOfficeComponent,
-    children: [
-      { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-      { path: 'users', component: UserManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-      { path: 'donations', component: DonationsManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-      { path: 'appointments', component: AppointmentManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-      { path: 'forum', component: ForumModerationComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-      {
-        path: 'laboratories',
-        canActivate: [AuthGuard],
-        data: { roles: ['ADMIN'] },
-        children: [
-          { path: '', component: AdminLaboratoryListComponent },
-          { path: 'new', component: AdminLaboratoryFormComponent },
-          { path: 'edit/:id', component: AdminLaboratoryFormComponent }
-        ]
-      },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-    ]
-  }
-];
+import { PharmacistValidationComponent } from './pages/pharmacist-validation/pharmacist-validation.component';
+import { AdminProvidersComponent } from './pages/admin-providers/admin-providers.component';
+import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.component';
+import { EventsListComponent } from './pages/events-list/events-list.component';
+import { EventFormComponent } from './pages/event-form/event-form.component';
+import { EventRegistrationsComponent } from './pages/event-registrations/event-registrations.component';
+import { BackOfficeRoutingModule } from './back-office-routing.module';
 
 @NgModule({
   declarations: [
@@ -51,13 +31,19 @@ const routes: Routes = [
     AdminSidebarComponent,
     AdminTopbarComponent,
     AdminLaboratoryListComponent,
-    AdminLaboratoryFormComponent
+    AdminLaboratoryFormComponent,
+    PharmacistValidationComponent,
+    AdminProvidersComponent,
+    AdminRequestsComponent,
+    EventFormComponent,
+    EventRegistrationsComponent,
+    EventsListComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forChild(routes),
+    BackOfficeRoutingModule,
     ForumModule
   ],
   exports: [

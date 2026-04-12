@@ -8,7 +8,8 @@
 }
 
 :root {
-  --sidebar-w: 256px;
+  --sidebar-w: 260px;
+  --sidebar-collapsed-w: 80px;
   --topbar-h: 64px;
   --font-h: 'Outfit', sans-serif;
   --font-serif: 'Fraunces', serif;
@@ -46,6 +47,56 @@ body {
 
 app-root {
   width: 100%;
+}
+
+/* Global Sidebar Collapse Logic */
+.sidebar {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden !important;
+
+  &.collapsed {
+    width: var(--sidebar-collapsed-w) !important;
+
+    .brand {
+      justify-content: center !important;
+      padding: 1.5rem 0 !important;
+
+      .brand-text {
+        display: none !important;
+      }
+    }
+
+    .nav-label {
+        display: none !important;
+    }
+
+    .sidebar-menu ul li {
+      justify-content: center !important;
+      padding: 0.75rem 0 !important;
+      text-indent: -9999px !important;
+      white-space: nowrap !important;
+
+      .icon {
+        margin: 0 !important;
+        text-indent: 0 !important;
+      }
+    }
+
+    .sidebar-footer .admin-card, .sidebar-footer .admin-meta {
+        display: none !important;
+    }
+
+    .sidebar-footer .logout-btn {
+      justify-content: center !important;
+      padding: 0.75rem 0 !important;
+      text-indent: -9999px !important;
+
+      .icon {
+        margin: 0 !important;
+        text-indent: 0 !important;
+      }
+    }
+  }
 }
 
 /* Global Action Button Styles */
@@ -162,4 +213,4 @@ app-root {
   font-weight: 500;
   margin-top: 5px;
   display: block;
-}
+}

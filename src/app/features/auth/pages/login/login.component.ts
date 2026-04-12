@@ -31,7 +31,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Update initials dynamically as user types email
     this.loginForm.get('email')?.valueChanges.subscribe((email: string) => {
       this.updateInitialsFromEmail(email);
     });
@@ -82,9 +81,11 @@ export class LoginComponent implements OnInit {
       'PATIENT': '/front/patient/dashboard',
       'NUTRITIONIST': '/front/nutritionist/dashboard',
       'LABORATORY_STAFF': '/front/laboratorystaff/dashboard',
+      'LABORATORY': '/front/laboratorystaff',
       'PHARMACIST': '/front/pharmacist',
       'CLINIC': '/front/clinic',
       'HOME_CARE_PROVIDER': '/front/home-care',
+      'HOME_CARE': '/front/home-care/provider-dashboard',
       'VISITOR': '/front',
     };
 

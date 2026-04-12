@@ -1,0 +1,22 @@
+$primary-blue: #0ea5e9;
+
+.admin-main-content {
+    font-family: 'Inter', sans-serif;
+}
+
+.table {
+    th {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #64748b;
+        letter-spacing: 0.5px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        border-bottom-width: 2px;
+    }
+    td {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        vertical-align: middle;
+    }
+}

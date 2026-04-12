@@ -20,7 +20,7 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
   constructor(
     private notifService: NotificationService,
     private userService: UserService,
-    private authService: AuthService,
+    public authService: AuthService,
     private elRef: ElementRef
   ) {}
 
@@ -86,6 +86,10 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
     const diffH = Math.floor(diffMin / 60);
     if (diffH < 24) return `Il y a ${diffH}h`;
     return `Il y a ${Math.floor(diffH / 24)}j`;
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 
   @HostListener('document:click', ['$event'])

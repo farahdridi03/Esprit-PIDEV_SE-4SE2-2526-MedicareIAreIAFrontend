@@ -1,0 +1,242 @@
+<div class="dashboard-wrapper">
+    <app-pharmacist-sidebar></app-pharmacist-sidebar>
+
+    <div class="main-body">
+        <app-pharmacist-topbar></app-pharmacist-topbar>
+
+        <div class="content-area">
+        <div class="header">
+            <h2>Order Management</h2>
+            <p class="subtitle" *ngIf="pharmacyId">All orders for {{ pharmacyName }}</p>
+        </div>
+
+        <div class="content" *ngIf="isLoading">
+            <div class="spinner"></div>
+            <p>Loading orders...</p>
+        </div>
+
+        <div class="content error-state" *ngIf="error">
+            <p>{{ error }}</p>
+            <button class="btn btn-outline" (click)="loadOrders()">Retry</button>
+        </div>
+
+        <div class="content orders-content" *ngIf="!isLoading && !error">
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="search-box">
+                    <input #searchInput type="text" placeholder="Search by ID or Patient ID..."
+                        (keyup)="onSearchChange(searchInput.value)" class="search-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+
+                <div class="status-filters">
+                    <button class="filter-btn" [class.active]="statusFilter === 'ALL'"
+                        (click)="onStatusFilterChange('ALL')">All</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'PENDING'"
+                        (click)="onStatusFilterChange('PENDING')">Pending</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'VALIDATED'"
+                        (click)="onStatusFilterChange('VALIDATED')">Validated</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'DELIVERY_REQUESTED'"
+                        (click)="onStatusFilterChange('DELIVERY_REQUESTED')">To Deliver</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'DELIVERED'"
+                        (click)="onStatusFilterChange('DELIVERED')">Delivered</button>
+                    <button class="filter-btn" [class.active]="statusFilter === 'REJECTED'"
+                        (click)="onStatusFilterChange('REJECTED')">Rejected</button>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="card orders-card">
+                <div class="empty-state" *ngIf="filteredOrders.length === 0">
+                    <p>No orders found.</p>
+                </div>
+
+                <table class="data-table" *ngIf="filteredOrders.length > 0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Patient</th>
+                            <th>Amount</th>
+                            <th>Delivery</th>
+                            <th>Prescription</th>
+                            <th>Status</th>
+                            <th>Payment</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let order of paginatedOrders">
+                            <td><strong>#{{ order.id }}</strong></td>
+                            <td>{{ order.createdAt | date:'short' }}</td>
+                            <td>Patient ID: {{ order.patientId }}</td>
+                            <td>{{ order.totalPrice | currency:'TND':'symbol' }}</td>
+                            <td>
+                                <span class="badge" [class.badge-primary]="order.deliveryType === 'HOME_DELIVERY'"
+                                    [class.badge-info]="order.deliveryType !== 'HOME_DELIVERY'">
+                                    {{ order.deliveryType || 'PICKUP' }}
+                                </span>
+                            </td>
+                            <td>
+                                <a *ngIf="order.prescriptionImageUrl" [href]="backendUrl + order.prescriptionImageUrl"
+                                    target="_blank" class="btn btn-sm btn-outline" title="View prescription">
+                                    View
+                                </a>
+                                <span *ngIf="!order.prescriptionImageUrl" class="text-muted"
+                                    style="font-size:12px;">None</span>
+                            </td>
+                            <td>
+                                <span class="badge" [class.badge-primary]="order.status === 'VALIDATED'"
+                                    [class.badge-warning]="order.status === 'PENDING' || order.status === 'REVIEWING'"
+                                    [class.badge-success]="order.status === 'DELIVERED' || order.status === 'PAID'"
+                                    [class.badge-danger]="order.status === 'CANCELLED' || order.status === 'REJECTED'"
+                                    [class.badge-info]="order.status === 'DELIVERY_REQUESTED' || order.status === 'OUT_FOR_DELIVERY' || order.status === 'ASSIGNED'">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge" [class.badge-success]="isPaymentCompleted(order.id)"
+                                    [class.badge-warning]="!isPaymentCompleted(order.id) && order.status === 'VALIDATED'"
+                                    [class.badge-secondary]="order.status !== 'VALIDATED' && !isPaymentCompleted(order.id)">
+                                    {{ getPaymentStatus(order.id) }}
+                                </span>
+                            </td>
+                            <td class="action-buttons">
+                                <ng-container *ngIf="order.status === 'PENDING'">
+                                    <button class="btn btn-sm btn-success"
+                                        (click)="updateStatus(order.id, 'VALIDATED')">Validate</button>
+                                    <button class="btn btn-sm btn-danger"
+                                        (click)="openRejectModal(order.id)">Reject</button>
+                                </ng-container>
+
+                                <ng-container *ngIf="order.status === 'VALIDATED' && !isPaymentCompleted(order.id)">
+                                    <button class="btn btn-sm btn-primary" disabled
+                                        title="Awaiting customer payment...">
+                                        Awaiting payment... ⏳
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" (click)="openRejectModal(order.id)"
+                                        title="Cancel order">Cancel</button>
+                                </ng-container>
+
+                                <ng-container *ngIf="order.status === 'VALIDATED' && isPaymentCompleted(order.id)">
+                                    <button class="btn btn-sm btn-success"
+                                        (click)="updateStatus(order.id, 'DELIVERY_REQUESTED')">✅ Request Delivery</button>
+                                </ng-container>
+
+                                <ng-container *ngIf="order.status === 'PAID'">
+                                    <button class="btn btn-sm btn-info" (click)="openDispatchModal(order.id)">🚚 Ship</button>
+                                </ng-container>
+
+                                <ng-container
+                                    *ngIf="order.status === 'DELIVERY_REQUESTED' || order.status === 'ASSIGNING' || order.status === 'ASSIGNED'">
+                                    <button class="btn btn-sm btn-outline"
+                                        (click)="updateStatus(order.id, 'OUT_FOR_DELIVERY')">Courier Dispatched</button>
+                                </ng-container>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="pagination" *ngIf="totalPages > 1">
+                    <button class="btn btn-sm btn-outline" (click)="prevPage()" [disabled]="currentPage === 1">← Previous</button>
+                    <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+                    <button class="btn btn-sm btn-outline" (click)="nextPage()"
+                        [disabled]="currentPage === totalPages">Next →</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Reject Modal -->
+        <div class="modal-overlay" *ngIf="showRejectModal">
+            <div class="modal reject-modal">
+                <div class="modal-header">
+                    <h3>Reject order #{{ selectedOrderId }}</h3>
+                    <button class="close-icon" (click)="closeRejectModal()">&times;</button>
+                </div>
+                
+                <p class="modal-desc">Please indicate the reason for rejecting this order. The patient will be notified instantly.</p>
+                
+                <form [formGroup]="rejectForm" (ngSubmit)="confirmReject()">
+                    <div class="form-group">
+                        <label for="rejectReason">Reason for rejection <span class="required">*</span></label>
+                        <textarea id="rejectReason" formControlName="reason" 
+                            placeholder="Out of stock, invalid prescription, etc..."
+                            [class.is-invalid]="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched"></textarea>
+                        
+                        <div class="error-feedback" *ngIf="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched">
+                            <span *ngIf="rejectForm.get('reason')?.errors?.['required']">Reason is required.</span>
+                            <span *ngIf="rejectForm.get('reason')?.errors?.['minlength']">Reason must be at least 5 characters.</span>
+                            <span *ngIf="rejectForm.get('reason')?.errors?.['maxlength']">Reason cannot exceed 1000 characters.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline" (click)="closeRejectModal()">Cancel</button>
+                        <button type="submit" class="btn btn-danger" [disabled]="rejectForm.invalid">
+                            Confirm rejection
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dispatch Modal (Advanced Simulation) -->
+        <div class="modal-overlay" *ngIf="showDispatchModal">
+            <div class="modal dispatch-modal">
+                <div class="modal-header">
+                    <h3>Dispatch order #{{ currentDispatchOrderId }}</h3>
+                    <button class="close-icon" (click)="closeDispatchModal()">&times;</button>
+                </div>
+                
+                <p class="modal-desc">Select a delivery agency and an available courier to handle this order.</p>
+
+                <form [formGroup]="dispatchForm" (ngSubmit)="confirmDispatch()">
+                    <div class="form-group">
+                        <label for="agencySelect">Delivery agency <span class="required">*</span></label>
+                        <select id="agencySelect" class="form-control" formControlName="agencyId" (change)="onAgencyChange()"
+                            [class.is-invalid]="dispatchForm.get('agencyId')?.invalid && dispatchForm.get('agencyId')?.touched">
+                            <option [ngValue]="null">--- Choose an agency ---</option>
+                            <option *ngFor="let agency of agencies" [ngValue]="agency.id">
+                                {{ agency.name }} ({{ agency.city }})
+                            </option>
+                        </select>
+                        <div class="error-feedback" *ngIf="dispatchForm.get('agencyId')?.invalid && dispatchForm.get('agencyId')?.touched">
+                            Agency is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group" *ngIf="dispatchForm.get('agencyId')?.value">
+                        <label for="agentSelect">Available courier <span class="required">*</span></label>
+                        <select id="agentSelect" class="form-control" formControlName="agentId"
+                            [class.is-invalid]="dispatchForm.get('agentId')?.invalid && dispatchForm.get('agentId')?.touched">
+                            <option [ngValue]="null">--- Choose a courier ---</option>
+                            <option *ngFor="let agent of agents" [ngValue]="agent.id">
+                                {{ agent.name }} - {{ agent.vehicleType }} ({{ agent.phoneNumber }})
+                            </option>
+                        </select>
+                        <div class="error-feedback" *ngIf="dispatchForm.get('agentId')?.invalid && dispatchForm.get('agentId')?.touched">
+                            Courier is required.
+                        </div>
+                    </div>
+
+                    <div *ngIf="dispatchForm.get('agencyId')?.value && agents.length === 0" class="alert alert-danger">
+                        <p>⚠️ No courier currently available for this agency.</p>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline" (click)="closeDispatchModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="dispatchForm.invalid || isAssigning">
+                            {{ isAssigning ? 'Dispatching...' : 'Confirm dispatch' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

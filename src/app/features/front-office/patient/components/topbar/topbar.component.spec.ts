@@ -1,56 +1,77 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { of, throwError } from 'rxjs';
-
 import { TopbarComponent } from './topbar.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { of, BehaviorSubject } from 'rxjs';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { NotificationService } from '../../../../../services/notification.service';
+import { DeliveryTrackingService } from '../../../../../services/delivery-tracking.service';
+import { Router } from '@angular/router';
 
 describe('TopbarComponent', () => {
   let component: TopbarComponent;
   let fixture: ComponentFixture<TopbarComponent>;
-  let mockUserService: jasmine.SpyObj<UserService>;
-  let mockAuthService: jasmine.SpyObj<AuthService>;
+  let userServiceSpy: jasmine.SpyObj<UserService>;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
+  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
+  let deliveryTrackingServiceSpy: jasmine.SpyObj<DeliveryTrackingService>;
+  let routerSpy: jasmine.SpyObj<Router>;
+
+  const notificationsSubject = new BehaviorSubject<any[]>([]);
+  const unreadCountSubject = new BehaviorSubject<number>(0);
 
   beforeEach(async () => {
-    mockUserService = jasmine.createSpyObj('UserService', ['getProfile']);
-    mockAuthService = jasmine.createSpyObj('AuthService', ['getUserFullName']);
+    userServiceSpy = jasmine.createSpyObj('UserService', ['getProfile']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['getUserId', 'getUserEmail', 'getUserFullName']);
+    notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['getNotifications', 'markAsRead', 'markAllAsRead']);
+    deliveryTrackingServiceSpy = jasmine.createSpyObj('DeliveryTrackingService', ['connectToUserNotifications', 'disconnect']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
-    mockUserService.getProfile.and.returnValue(of({ fullName: 'John Doe' } as any));
-    mockAuthService.getUserFullName.and.returnValue('Jane Doe');
+    // Setup default returns
+    userServiceSpy.getProfile.and.returnValue(of({ fullName: 'Patient Test' } as any));
+    authServiceSpy.getUserId.and.returnValue(1);
+    authServiceSpy.getUserEmail.and.returnValue('patient@test.com');
+    authServiceSpy.getUserFullName.and.returnValue('Patient Test');
+    notificationServiceSpy.getNotifications.and.returnValue(of([]));
+    
+    // Notifications streams
+    (notificationServiceSpy as any).notifications$ = notificationsSubject.asObservable();
+    (notificationServiceSpy as any).unreadCount$ = unreadCountSubject.asObservable();
 
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       declarations: [TopbarComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-    .compileComponents();
+      providers: [
+        { provide: UserService, useValue: userServiceSpy },
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy },
+        { provide: DeliveryTrackingService, useValue: deliveryTrackingServiceSpy },
+        { provide: Router, useValue: routerSpy }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TopbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    fixture.destroy();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load initial names from authService', () => {
-    expect(mockAuthService.getUserFullName).toHaveBeenCalled();
+  it('should load user info on init', () => {
+    expect(authServiceSpy.getUserFullName).toHaveBeenCalled();
+    expect(component.firstName).toBe('Patient');
   });
 
-  it('should update names from userService profile', () => {
-    expect(mockUserService.getProfile).toHaveBeenCalled();
-    expect(component.firstName).toBe('John');
-    expect(component.initials).toBe('JD');
-  });
-
-  it('should handle profile fetch error', () => {
-    mockUserService.getProfile.and.returnValue(throwError(() => new Error('API Error')));
-    component.ngOnInit();
-    expect(component.firstName).toBe('Jane');
+  it('should disconnect from delivery tracking on destroy', () => {
+    component.ngOnDestroy();
+    expect(deliveryTrackingServiceSpy.disconnect).toHaveBeenCalled();
   });
 });

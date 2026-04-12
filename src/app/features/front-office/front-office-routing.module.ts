@@ -38,8 +38,24 @@ import { PatientProfileEditComponent } from './patient/pages/patient-profile-edi
 import { LifestyleDetailComponent } from './patient/pages/lifestyle-detail/lifestyle-detail.component';
 import { PatientLabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
 import { PatientLabRequestFormComponent } from './patient/pages/lab-requests/lab-request-form/lab-request-form.component';
-
+import { PharmacyComponent } from './patient/pages/pharmacy/pharmacy.component';
+import { PharmacyOrderCreateComponent } from './patient/pages/pharmacy-order-create/pharmacy-order-create.component';
+import { PharmacyOrderListComponent } from './patient/pages/pharmacy-order-list/pharmacy-order-list.component';
+import { PharmacyOrderDetailComponent } from './patient/pages/pharmacy-order-detail/pharmacy-order-detail.component';
+import { CourierDashboardComponent } from './delivery/pages/courier-dashboard/courier-dashboard.component';
+import { HomecareCatalogComponent } from './patient/pages/homecare-catalog/homecare-catalog.component';
+import { HomecareRequestListComponent } from './patient/pages/homecare-request-list/homecare-request-list.component';
+import { HomecareBookComponent } from './patient/pages/homecare-book/homecare-book.component';
+import { HomecareReviewComponent } from './patient/pages/homecare-review/homecare-review.component';
 import { AuthGuard } from '../../guards/auth.guard';
+import { PharmaciesListComponent } from './pharmacist/pages/pharmacies-list/pharmacies-list.component';
+import { ProductListComponent } from './pharmacist/pages/product-list/product-list.component';
+import { InventoryListComponent } from './pharmacist/pages/inventory-list/inventory-list.component';
+import { BatchesListComponent } from './pharmacist/pages/batches-list/batches-list.component';
+import { MovementsListComponent } from './pharmacist/pages/movements-list/movements-list.component';
+import { AlertsListComponent } from './pharmacist/pages/alerts-list/alerts-list.component';
+import { EventDetailComponent } from './pages/event-detail/event-detail.component';
+import { PatientEventsComponent } from './pages/patient-events/patient-events.component';
 
 const routes: Routes = [
   {
@@ -47,9 +63,12 @@ const routes: Routes = [
     component: FrontLayoutComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'contact', component: ContactComponent }
+      { path: 'contact', component: ContactComponent },
+      { path: 'events', component: PatientEventsComponent, canActivate: [AuthGuard] },
+      { path: 'events/:id', component: EventDetailComponent, canActivate: [AuthGuard] }
     ]
   },
+
   {
     path: 'forum',
     loadChildren: () =>
@@ -176,6 +195,54 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
+    path: 'patient/pharmacy',
+    component: PharmacyComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/pharmacy-orders/new',
+    component: PharmacyOrderCreateComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/pharmacy-orders',
+    component: PharmacyOrderListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/pharmacy-orders/:id',
+    component: PharmacyOrderDetailComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/homecare',
+    component: HomecareCatalogComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/homecare/book/:serviceId',
+    component: HomecareBookComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/homecare/my-requests',
+    component: HomecareRequestListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/homecare/review/:requestId',
+    component: HomecareReviewComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
     path: 'doctor/dashboard',
     component: DoctorDashboardComponent,
     canActivate: [AuthGuard],
@@ -252,6 +319,11 @@ const routes: Routes = [
     component: DoctorConsultationDetailsComponent,
     canActivate: [AuthGuard],
     data: { roles: ['DOCTOR'] }
+  },
+  {
+    path: 'delivery/courier-dashboard',
+    component: CourierDashboardComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'nutritionist',

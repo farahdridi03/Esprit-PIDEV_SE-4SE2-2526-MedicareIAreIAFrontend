@@ -10,29 +10,29 @@
             <!-- Welcome Banner -->
             <div class="welcome-banner">
                 <div class="banner-text">
-                    <h1>Welcome back, {{ firstName || 'Pharmacist' }}!</h1>
+                    <h1>Welcome back, {{ fullName || 'Pharmacist' }}!</h1>
                     <p>Manage your inventory and fulfill prescription orders efficiently.</p>
                 </div>
 
                 <div class="banner-stats">
                     <div class="stat-card">
                         <div class="label">Pending Orders</div>
-                        <div class="value"></div>
+                        <div class="value">{{ stats?.pendingOrders || 0 }}</div>
                     </div>
                     <div class="stat-card">
-                        <div class="label">Low Stock Items</div>
-                        <div class="value"></div>
+                        <div class="label">Validated Orders</div>
+                        <div class="value">{{ stats?.validatedOrders || 0 }}</div>
                     </div>
                     <div class="stat-card">
                         <div class="label">Today's Revenue</div>
-                        <div class="value"></div>
+                        <div class="value">{{ (stats?.totalRevenue || 0) | currency:'TND':'symbol' }}</div>
                     </div>
                 </div>
             </div>
 
             <!-- Main Dashboard Grid -->
             <div class="dashboard-grid">
-                
+
                 <!-- Left Column (2/3) -->
                 <div class="left-column">
                     <!-- Today's Orders -->

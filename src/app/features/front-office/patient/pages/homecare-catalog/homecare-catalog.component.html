@@ -1,0 +1,82 @@
+<div class="dashboard-wrapper">
+    <app-sidebar></app-sidebar>
+
+    <div class="main-body">
+        <app-topbar></app-topbar>
+
+        <div class="content-area">
+            <div class="order-list-main-content">
+                
+                <!-- Welcome/Header Banner -->
+                <div class="welcome-banner">
+                    <div class="banner-text">
+                        <h1>Home Care Services</h1>
+                        <p>Browse and book professional home healthcare services directly to your door.</p>
+                    </div>
+                </div>
+
+                <!-- Page Actions -->
+                <div class="page-actions">
+                    <div class="actions-left">
+                        <button class="action-btn secondary" routerLink="/front/patient/homecare/my-requests">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            My Requests
+                        </button>
+                    </div>
+                </div>
+
+                <!-- States -->
+                <div class="states-wrapper" *ngIf="isLoading || error || services.length === 0">
+                    <div class="info-card center" *ngIf="isLoading">
+                        <div class="spinner"></div>
+                        <p>Loading services...</p>
+                    </div>
+
+                    <div class="info-card center error" *ngIf="error">
+                        <p>{{ error }}</p>
+                        <button class="action-btn outline mt-3" (click)="loadServices()">Retry</button>
+                    </div>
+
+                    <div class="info-card center empty" *ngIf="!isLoading && !error && services.length === 0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="state-icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        <h3>No services available</h3>
+                        <p>Currently, there are no active home care services listed.</p>
+                    </div>
+                </div>
+
+                <!-- Services Grid -->
+                <div class="services-grid" *ngIf="!isLoading && !error && services.length > 0">
+                    <div class="service-card" *ngFor="let service of services">
+                        <div class="service-header">
+                            <div class="icon-wrapper">
+                                <img *ngIf="service.iconUrl" [src]="service.iconUrl" (error)="service.iconUrl = ''" alt="icon" />
+                                <svg *ngIf="!service.iconUrl" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <span class="category-badge">{{ service.category || 'General' }}</span>
+                        </div>
+                        <div class="service-body">
+                            <h3>{{ service.name }}</h3>
+                            <p class="desc">{{ service.description }}</p>
+                            <div class="details">
+                                <span class="price">{{ service.price | currency:'TND':'symbol' }}</span>
+                                <span class="duration" *ngIf="service.durationMinutes">~{{ service.durationMinutes }} mins</span>
+                            </div>
+                        </div>
+                        <div class="service-footer">
+                            <button class="action-btn primary full-width" (click)="bookService(service.id)">
+                                Book Service
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

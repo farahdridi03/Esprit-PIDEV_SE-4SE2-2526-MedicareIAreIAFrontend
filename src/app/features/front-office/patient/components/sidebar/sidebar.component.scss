@@ -13,6 +13,44 @@ $hover-bg: #f9fafb;
     flex-direction: column;
     position: sticky;
     top: 0;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+
+    &.collapsed {
+        width: 80px;
+
+        .brand {
+            justify-content: center;
+            padding: 1.5rem 0;
+            
+            .brand-text {
+                display: none;
+            }
+        }
+
+        .sidebar-menu ul li {
+            justify-content: center;
+            padding: 0.75rem 0;
+            text-indent: -9999px; // Hide text but keep icon centered
+            white-space: nowrap;
+
+            .icon {
+                margin: 0;
+                text-indent: 0;
+            }
+        }
+
+        .sidebar-footer .logout-btn {
+            justify-content: center;
+            padding: 0.75rem 0;
+            text-indent: -9999px;
+
+            .icon {
+                margin: 0;
+                text-indent: 0;
+            }
+        }
+    }
 
     .brand {
         padding: 1.5rem;

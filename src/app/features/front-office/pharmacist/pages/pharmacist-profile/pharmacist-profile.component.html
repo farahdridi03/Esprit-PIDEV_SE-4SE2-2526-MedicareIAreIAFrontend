@@ -1,0 +1,217 @@
+<div class="dashboard-wrapper">
+    <app-pharmacist-sidebar></app-pharmacist-sidebar>
+
+    <div class="main-body">
+        <app-pharmacist-topbar></app-pharmacist-topbar>
+
+        <div class="content-area">
+            <div class="profile-container">
+                <!-- Header Section -->
+                <div class="profile-header">
+                    <h1>Profile Management</h1>
+                    <p class="subtitle">Update your pharmacy and personal information</p>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" *ngIf="isLoading">
+                    <div class="spinner"></div>
+                    <p>Loading profile information...</p>
+                </div>
+
+                <!-- Error State -->
+                <div class="error-alert" *ngIf="errorMessage">
+                    <p>{{ errorMessage }}</p>
+                    <button class="btn btn-outline" (click)="loadProfile()">Retry</button>
+                </div>
+
+                <!-- Success Message -->
+                <div class="success-alert" *ngIf="successMessage">
+                    <p>{{ successMessage }}</p>
+                </div>
+
+                <!-- Profile Form -->
+                <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading && !errorMessage">
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h2>Personal Information</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" formControlName="firstName" class="form-control"
+                                    placeholder="Enter first name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" formControlName="lastName" class="form-control"
+                                    placeholder="Enter last name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" formControlName="email" class="form-control"
+                                    placeholder="Enter email">
+                                <span class="error-text"
+                                    *ngIf="profileForm.get('email')?.hasError('email') && profileForm.get('email')?.touched">
+                                    Valid email format required
+                                </span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" formControlName="phone" class="form-control"
+                                    placeholder="Enter phone number (min 8 chars)">
+                                <span class="error-text"
+                                    *ngIf="profileForm.get('phone')?.hasError('minlength') && profileForm.get('phone')?.touched">
+                                    Phone must be at least 8 characters
+                                </span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" formControlName="password" class="form-control"
+                                    readonly>
+                                <span class="help-text">Password cannot be changed here. Use 'Change Password' section
+                                    below</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="birthDate">Birth Date</label>
+                                <input type="date" id="birthDate" formControlName="birthDate" class="form-control">
+                                <span class="help-text">Leave empty to keep current value</span>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- Pharmacy Information Section -->
+                    <div class="form-section">
+                        <h2>Pharmacy Information</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="pharmacyName">Pharmacy Name</label>
+                                <input type="text" id="pharmacyName" formControlName="pharmacyName" class="form-control"
+                                    placeholder="Enter pharmacy name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pharmacyPhone">Pharmacy Phone Number</label>
+                                <input type="tel" id="pharmacyPhone" formControlName="pharmacyPhone"
+                                    class="form-control" placeholder="Enter pharmacy phone number">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" id="address" formControlName="address" class="form-control"
+                                    placeholder="Enter pharmacy address">
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" (click)="onCancel()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary" (click)="onSubmit()"> Submit</button>
+                    </div>
+
+                    <!-- Password Confirmation Modal -->
+                    <div class="password-confirmation-modal" *ngIf="showPasswordConfirmation">
+                        <div class="modal-overlay"></div>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Confirm Your Password</h3>
+                                <p class="modal-subtext">Enter your current password to update your profile</p>
+                            </div>
+
+                            <form [formGroup]="passwordConfirmationForm" (ngSubmit)="submitProfileWithPassword()">
+                                <div class="form-group" style="padding: 15px;">
+                                    <label for="confirmPassword">Current Password</label>
+                                    <input type="password" id="confirmPassword" formControlName="currentPassword"
+                                        class="form-control" placeholder="Enter your current password">
+                                    <span class="error-text" *ngIf="passwordConfirmationForm.get('currentPassword')?.touched && 
+                                        passwordConfirmationForm.get('currentPassword')?.invalid">
+                                        Password is required
+                                    </span>
+                                </div>
+
+                                <div class="modal-actions">
+                                    <button type="button" class="btn btn-outline"
+                                        (click)="cancelPasswordConfirmation()">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="btn btn-primary"
+                                        [disabled]="!passwordConfirmationForm.valid || isSaving">
+                                        {{ isSaving ? 'Updating...' : 'Confirm & Update' }}
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="error-alert" *ngIf="errorMessage" style="margin-top: 10px;">
+                                <p>{{ errorMessage }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Change Password Section -->
+                <div class="change-password-section" *ngIf="!isLoading && !errorMessage">
+                    <h2>Security</h2>
+                    <button class="btn btn-outline" (click)="togglePasswordForm()">
+                        {{ showPasswordForm ? 'Hide' : 'Change Password' }}
+                    </button>
+
+                    <!-- Password Change Form -->
+                    <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" *ngIf="showPasswordForm"
+                        class="password-form">
+
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password *</label>
+                            <input type="password" id="currentPassword" formControlName="currentPassword"
+                                class="form-control" placeholder="Enter current password">
+                            <span class="error-text" *ngIf="isPasswordFieldInvalid('currentPassword')">
+                                Current password is required
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword">New Password *</label>
+                            <input type="password" id="newPassword" formControlName="newPassword" class="form-control"
+                                placeholder="Enter new password">
+                            <span class="error-text" *ngIf="isPasswordFieldInvalid('newPassword')">
+                                New password must be at least 8 characters
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password *</label>
+                            <input type="password" id="confirmPassword" formControlName="confirmPassword"
+                                class="form-control" placeholder="Confirm new password">
+                            <span class="error-text" *ngIf="passwordForm.get('confirmPassword')?.hasError('required')">
+                                Please confirm your password
+                            </span>
+                            <span class="error-text" *ngIf="passwordForm.get('confirmPassword')?.hasError('mismatch')">
+                                Passwords do not match
+                            </span>
+                        </div>
+
+                        <div class="password-actions">
+                            <button type="button" class="btn btn-outline" (click)="togglePasswordForm()">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary"
+                                [disabled]="!passwordForm.valid || isPasswordChanging">
+                                {{ isPasswordChanging ? 'Updating...' : 'Update Password' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

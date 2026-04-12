@@ -1,0 +1,96 @@
+<div class="dashboard-wrapper">
+    <app-sidebar></app-sidebar>
+
+    <div class="main-body">
+        <app-topbar></app-topbar>
+
+        <div class="content-area">
+            <div class="order-list-main-content">
+                
+                <div class="welcome-banner">
+                    <div class="banner-text">
+                        <h1>My Home Care Requests</h1>
+                        <p>Track the status of your requested home healthcare services.</p>
+                    </div>
+                </div>
+
+                <div class="page-actions">
+                    <div class="actions-left">
+                        <button class="action-btn secondary" routerLink="/front/patient/homecare">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            Back to Services Catalog
+                        </button>
+                    </div>
+                </div>
+
+                <div class="states-wrapper" *ngIf="isLoading || error || requests.length === 0">
+                    <div class="info-card center" *ngIf="isLoading">
+                        <div class="spinner"></div>
+                        <p>Loading your requests...</p>
+                    </div>
+
+                    <div class="info-card center error" *ngIf="error">
+                        <p>{{ error }}</p>
+                        <button class="action-btn outline mt-3" (click)="loadRequests()">Retry</button>
+                    </div>
+
+                    <div class="info-card center empty" *ngIf="!isLoading && !error && requests.length === 0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="state-icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <h3>No Active Requests</h3>
+                        <p>You haven't booked any home care services yet.</p>
+                        <button class="action-btn primary mt-4" routerLink="/front/patient/homecare">Explore Services</button>
+                    </div>
+                </div>
+
+                <div class="orders-container card" *ngIf="!isLoading && !error && requests.length > 0">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date Requested</th>
+                                    <th>Service</th>
+                                    <th>Provider</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let request of requests">
+                                    <td class="id-col">#{{ request.id }}</td>
+                                    <td>{{ request.requestedDateTime | date:'short' }}</td>
+                                    <td class="service-col">{{ request.service.name }}</td>
+                                    <td>{{ request.assignedProvider?.user?.firstName || 'Pending Assignment' }} {{ request.assignedProvider?.user?.lastName || '' }}</td>
+                                    <td class="price-col">{{ request.price | currency:'TND':'symbol' }}</td>
+                                    <td>
+                                        <span class="status-badge" [ngClass]="getStatusBadgeClass(request.status)">
+                                            {{ request.status | titlecase }}
+                                        </span>
+                                    </td>
+                                    <td class="actions-col">
+                                        <button class="action-btn outline btn-sm" *ngIf="request.status === 'PENDING' || request.status === 'ACCEPTED'" (click)="cancelRequest(request.id)">Cancel</button>
+                                        
+                                        <button class="action-btn success btn-sm text-white" style="background-color: #28a745; border-color: #28a745;" *ngIf="request.status === 'IN_PROGRESS'" (click)="completeRequest(request.id)">
+                                            Finish
+                                        </button>
+                                        
+                                        <button class="action-btn primary btn-sm" *ngIf="request.status === 'COMPLETED' && !request.reviewed" (click)="openReview(request.id)">Review</button>
+                                        <span class="text-success small" *ngIf="request.status === 'COMPLETED' && request.reviewed">
+                                            <i class="bi bi-check-circle-fill me-1"></i> Reviewed
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

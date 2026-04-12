@@ -7,9 +7,8 @@ import { LayoutModule } from '../layout/layout.module';
 import { LaboratoryStaffProfileSettingsComponent } from './pages/laboratory-profile-settings/laboratory-profile-settings.component';
 import { LaboratoryProfileEditComponent } from './pages/laboratory-profile-edit/laboratory-profile-edit.component';
 
-
 import { LaboratoryStaffSidebarComponent } from './components/laboratory-sidebar/laboratory-sidebar.component';
-import { LaboratoryStaffTopbarComponent } from './components/laboratory-topbar/laboratory-topbar.component';
+import { LaboratoryTopbarComponent } from './components/laboratory-topbar/laboratory-topbar.component';
 import { LaboratoryStaffDashboardComponent } from './pages/laboratory-dashboard/laboratory-dashboard.component';
 import { LabTestsComponent } from './lab-tests/lab-tests.component';
 import { LabTestFormComponent } from './lab-tests/lab-test-form.component';
@@ -18,28 +17,25 @@ import { LabResultFormComponent } from './pages/lab-results/lab-result-form.comp
 import { LaboratoryStaffLabRequestsComponent } from './pages/lab-requests/lab-requests.component';
 import { LabResultService } from '../../../services/lab-result.service';
 
-
 const routes: Routes = [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     { path: 'dashboard', component: LaboratoryStaffDashboardComponent },
     { path: 'events', component: LaboratoryStaffDashboardComponent },
     { path: 'forum', component: LaboratoryStaffDashboardComponent },
     { path: 'donations', component: LaboratoryStaffDashboardComponent },
-
     { path: 'profile', component: LaboratoryStaffProfileSettingsComponent },
     { path: 'profile/edit', component: LaboratoryProfileEditComponent },
-
     { path: 'lab-tests', component: LabTestsComponent },
     { path: 'lab-requests', component: LaboratoryStaffLabRequestsComponent },
     { path: 'lab-results', component: LabResultsComponent },
-
-
+    { path: 'requests', component: LaboratoryStaffDashboardComponent },
+    { path: 'results', component: LaboratoryStaffDashboardComponent }
 ];
 
 @NgModule({
     declarations: [
         LaboratoryStaffSidebarComponent,
-        LaboratoryStaffTopbarComponent,
+        LaboratoryTopbarComponent,
         LaboratoryStaffDashboardComponent,
         LaboratoryStaffProfileSettingsComponent,
         LaboratoryProfileEditComponent,

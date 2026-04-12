@@ -7,11 +7,15 @@ import { AuthGuard } from '../../guards/auth.guard';
 import { UserManagementComponent } from './pages/user-management/user-management.component';
 import { DonationsManagementComponent } from './pages/donations-management/donations-management.component';
 import { AppointmentManagementComponent } from './pages/appointment-management/appointment-management.component';
-
 import { AdminLaboratoryListComponent } from './pages/laboratory-list/admin-laboratory-list.component';
 import { AdminLaboratoryFormComponent } from './pages/laboratory-form/admin-laboratory-form.component';
-
 import { ForumModerationComponent } from '../../forum/pages/forum-moderation/forum-moderation.component';
+import { PharmacistValidationComponent } from './pages/pharmacist-validation/pharmacist-validation.component';
+import { AdminProvidersComponent } from './pages/admin-providers/admin-providers.component';
+import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.component';
+import { EventsListComponent } from './pages/events-list/events-list.component';
+import { EventFormComponent } from './pages/event-form/event-form.component';
+import { EventRegistrationsComponent } from './pages/event-registrations/event-registrations.component';
 
 const routes: Routes = [
   {
@@ -23,7 +27,6 @@ const routes: Routes = [
       { path: 'donations', component: DonationsManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'appointments', component: AppointmentManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'emergency', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-      { path: 'events', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'forum', component: ForumModerationComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'home-care', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'profile', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
@@ -37,6 +40,13 @@ const routes: Routes = [
           { path: 'edit/:id', component: AdminLaboratoryFormComponent }
         ]
       },
+      { path: 'validations', component: PharmacistValidationComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'homecare-providers', component: AdminProvidersComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'homecare-requests', component: AdminRequestsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events', component: EventsListComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/new', component: EventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/edit/:id', component: EventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/:id/registrations', component: EventRegistrationsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

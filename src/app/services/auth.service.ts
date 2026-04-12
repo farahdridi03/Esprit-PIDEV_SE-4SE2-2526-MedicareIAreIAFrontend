@@ -6,7 +6,6 @@ import { tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
 import { AuthResponse } from '../models/auth-response.model';
 import { LoginRequest } from '../models/login-request.model';
-import { RegisterRequest } from '../models/register-request.model';
 
 @Injectable({
     providedIn: 'root'
@@ -37,26 +36,22 @@ export class AuthService {
         );
     }
 
-    register(payload: RegisterRequest): Observable<string> {
-        return this.http.post(
-            `${this.baseUrl}/register`,
-            payload,
-            { responseType: 'text' }
-        ) as Observable<string>;
+    // The backend expects multipart/form-data
+    register(formData: FormData): Observable<string> {
+        return this.http.post(`${this.baseUrl}/register`, formData, { responseType: 'text' }) as Observable<string>;
     }
 
     logout(): void {
         localStorage.removeItem(this.TOKEN_KEY);
         localStorage.removeItem('currentUser');
         this.authStatusSubject.next(false);
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/front']);
     }
 
     getToken(): string | null {
         return localStorage.getItem(this.TOKEN_KEY);
     }
 
-    // ✅ Unified — now just uses the main User ID
     getPatientId(): number {
         return this.getUserId() || 0;
     }
@@ -111,7 +106,6 @@ export class AuthService {
     getUserId(): number {
         const token = this.getToken();
         if (!token) return 1;
-
         try {
             const decoded: any = jwtDecode(token);
             const id = decoded.id || decoded.userId || decoded.providerId;
@@ -124,6 +118,7 @@ export class AuthService {
     getHomeCareServices(): Observable<any[]> {
         return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
     }
+
     getUserFullName(): string | null {
         const token = this.getToken();
         if (!token) return null;
@@ -131,6 +126,9 @@ export class AuthService {
             const decoded: any = jwtDecode(token);
             const name = decoded.fullName || decoded.fullname || decoded.name;
             if (name) return name;
+            if (decoded.firstName || decoded.lastName) {
+                return `${decoded.firstName || ''} ${decoded.lastName || ''}`.trim();
+            }
             const sub = decoded.sub || decoded.email;
             if (sub && sub.includes('@')) {
                 return sub.split('@')[0];

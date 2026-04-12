@@ -13,13 +13,22 @@ export interface UpdateProfileRequest {
     role?: string;
 }
 
+export interface UserProfile {
+    id?: number;
+    fullName?: string;
+    email?: string;
+    roles?: string[];
+    pharmacyId?: number;
+    [key: string]: any;
+}
+
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
     private readonly baseUrlLegacy = 'http://localhost:8081/springsecurity/user';
     private readonly apiUrl = 'http://localhost:8081/springsecurity/api/users';
-    
+
     private profileSubject = new BehaviorSubject<UserResponseDTO | null>(null);
     profile$ = this.profileSubject.asObservable();
 
@@ -27,6 +36,14 @@ export class UserService {
 
     updateProfile(request: UpdateProfileRequest): Observable<any> {
         return this.http.put(`${this.baseUrlLegacy}/profile`, request);
+    }
+
+    updateUserProfile(id: number | string, profileData: any): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/${id}`, profileData);
+    }
+
+    changePassword(id: number | string, passwordData: any): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${id}/change-password`, passwordData);
     }
 
     create(dto: UserRequestDTO): Observable<UserResponseDTO> {
@@ -62,7 +79,6 @@ export class UserService {
             tap(user => this.profileSubject.next(user)),
             catchError(err => {
                 console.warn('Profile endpoint failed, falling back to JWT data.', err);
-                // Build a minimal profile from the JWT token
                 const fallback = this.buildProfileFromToken();
                 if (fallback) {
                     this.profileSubject.next(fallback);
@@ -96,16 +112,11 @@ export class UserService {
         }
     }
 
-    /**
-     * Directly push a full or partial profile update into the stream.
-     * Use this after saving the patient profile so the topbar photo updates immediately.
-     */
     setProfile(partial: Partial<UserResponseDTO>): void {
         const current = this.profileSubject.getValue();
         if (current) {
             this.profileSubject.next({ ...current, ...partial });
         } else {
-            // Build from token and merge
             const base = this.buildProfileFromToken();
             if (base) {
                 this.profileSubject.next({ ...base, ...partial });
@@ -115,9 +126,5 @@ export class UserService {
 
     refreshProfile(): void {
         this.getProfile().subscribe();
-    }
-
-    changePassword(request: any): Observable<any> {
-        return this.http.put(`${this.baseUrlLegacy}/change-password`, request);
     }
 }

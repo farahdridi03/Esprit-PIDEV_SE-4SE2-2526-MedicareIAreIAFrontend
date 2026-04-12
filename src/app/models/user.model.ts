@@ -7,7 +7,10 @@ export interface UserResponseDTO {
     phone?: string;
     birthDate?: string;
     photo?: string;
+    pharmacyId?: number;
+    pharmacyName?: string;
 }
+
 
 export interface UserRequestDTO {
     fullName: string;

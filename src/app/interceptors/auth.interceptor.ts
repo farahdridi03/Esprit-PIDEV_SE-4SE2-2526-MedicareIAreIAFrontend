@@ -11,7 +11,6 @@ export class AuthInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         const token = this.authService.getToken();
 
-        // Exclure strictement les endpoints de login/register pour éviter d'envoyer le header sur ces routes
         const url = request.url;
         const isLogin = url.endsWith('/auth/login') || url.includes('/auth/login?') || url.endsWith('/login');
         const isRegister = url.endsWith('/auth/register') || url.includes('/auth/register?') || url.endsWith('/register');
@@ -37,5 +36,5 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 }
 
-// Note: Assurez-vous que le backend Spring Boot autorise les CORS depuis http://localhost:4200
-// et que le context path utilisé ici (/springsecurity) correspond bien au backend.
+// Note: Ensure that the Spring Boot backend allows CORS from http://localhost:4200
+// and that the context path used here (/springsecurity) matches the backend.

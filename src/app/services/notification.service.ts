@@ -30,7 +30,7 @@ export class NotificationService {
       read: false,
       type
     };
-    const updated = [notif, ...this.notificationsSubject.value].slice(0, 20); // keep last 20
+    const updated = [notif, ...this.notificationsSubject.value].slice(0, 20);
     this.notificationsSubject.next(updated);
     this.saveToStorage(updated);
   }

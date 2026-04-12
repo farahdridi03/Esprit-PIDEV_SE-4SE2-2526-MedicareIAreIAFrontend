@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { PharmacyOrderService } from '../../../../../services/pharmacy-order.service';
+import { PharmacyStatsDTO } from '../../../../../models/pharmacy-order.model';
 
 @Component({
   selector: 'app-pharmacist-dashboard',
@@ -8,37 +10,42 @@ import { AuthService } from '../../../../../services/auth.service';
   styleUrls: ['./pharmacist-dashboard.component.scss']
 })
 export class PharmacistDashboardComponent implements OnInit {
-  firstName: string = 'Pharmacist';
-  initials: string = 'P';
+  fullName: string = '';
+  pharmacyId: number | null = null;
+  stats: PharmacyStatsDTO | null = null;
 
-  constructor(private userService: UserService, private authService: AuthService) {}
+  constructor(
+    private userService: UserService, 
+    private authService: AuthService,
+    private orderService: PharmacyOrderService
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => {
-        if (user && user.fullName) {
-          this.setNames(user.fullName);
+      next: (user: UserProfile) => {
+        if (user && user.fullName) this.fullName = user.fullName;
+        if (user && user.pharmacyId) {
+          this.pharmacyId = user.pharmacyId;
+          this.loadStats();
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching pharmacist profile', err);
       }
     });
   }
 
-  private loadUserInfo() {
-    const fullName = this.authService.getUserFullName();
-    if (fullName) {
-      this.setNames(fullName);
-    }
+  loadStats(): void {
+    if (!this.pharmacyId) return;
+    this.orderService.getPharmacyStats(this.pharmacyId).subscribe({
+      next: (data) => this.stats = data,
+      error: (err) => console.error('Error loading stats', err)
+    });
   }
 
-  private setNames(fullName: string) {
-    if (!fullName) return;
-    const parts = fullName.split(' ');
-    this.firstName = parts[0];
-    this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
-    if (!this.initials) this.initials = this.firstName[0].toUpperCase();
+  private loadUserInfo() {
+    const fullName = this.authService.getUserFullName();
+    if (fullName) this.fullName = fullName;
   }
 }

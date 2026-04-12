@@ -1,0 +1,111 @@
+<div class="validation-container">
+    <div class="header-section">
+        <h1>Validation des Inscriptions</h1>
+        <p>Gérez et approuvez les nouvelles demandes d'inscription des pharmaciens et prestataires.</p>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button [class.active]="activeTab === 'PHARMACISTS'" (click)="switchTab('PHARMACISTS')">
+            Pharmaciens 
+            <span class="badge" *ngIf="pendingPharmacists.length > 0">{{ pendingPharmacists.length }}</span>
+        </button>
+        <button [class.active]="activeTab === 'PROVIDERS'" (click)="switchTab('PROVIDERS')">
+            Prestataires de Soins
+            <span class="badge" *ngIf="pendingProviders.length > 0">{{ pendingProviders.length }}</span>
+        </button>
+    </div>
+
+    <div class="table-card">
+        <div class="table-header">
+            <h2>{{ activeTab === 'PHARMACISTS' ? 'Demandes Pharmaciens' : 'Demandes Prestataires' }}</h2>
+            <button class="refresh-btn" (click)="loadData()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                    <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.45a.75.75 0 000-1.5H3.75a.75.75 0 00-.75.75v4.5a.75.75 0 001.5 0v-2.45l.31.31a7 7 0 1011.49-3.504.75.75 0 10-1.188.94z" clip-rule="evenodd" />
+                </svg>
+                Rafraîchir
+            </button>
+        </div>
+
+        <div class="loading-state" *ngIf="isLoading">
+            <div class="spinner"></div>
+            Chargement des demandes...
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="!isLoading && ((activeTab === 'PHARMACISTS' && pendingPharmacists.length === 0) || (activeTab === 'PROVIDERS' && pendingProviders.length === 0))">
+            <p>Aucune demande en attente pour le moment.</p>
+        </div>
+
+        <!-- Pharmacists Table -->
+        <table *ngIf="!isLoading && activeTab === 'PHARMACISTS' && pendingPharmacists.length > 0">
+            <thead>
+                <tr>
+                    <th>Nom Complet</th>
+                    <th>Email</th>
+                    <th>Pharmacie</th>
+                    <th>Date d'inscription</th>
+                    <th>Document</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of pendingPharmacists">
+                    <td><strong>{{ p.fullName }}</strong></td>
+                    <td>{{ p.email }}</td>
+                    <td>{{ p.pharmacy?.name || 'N/A' }}</td>
+                    <td>{{ p.createdAt | date:'short' }}</td>
+                    <td>
+                        <button class="btn-view" (click)="viewDocument(p.professionalDocument)">
+                            Voir le document
+                        </button>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-approve" (click)="approvePharmacist(p.id)">Approuver</button>
+                            <button class="btn-reject" (click)="rejectPharmacist(p.id)">Rejeter</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Providers Table -->
+        <table *ngIf="!isLoading && activeTab === 'PROVIDERS' && pendingProviders.length > 0">
+            <thead>
+                <tr>
+                    <th>Nom Complet</th>
+                    <th>Email</th>
+                    <th>Spécialités</th>
+                    <th>Date d'inscription</th>
+                    <th>Certification</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of pendingProviders">
+                    <td><strong>{{ p.user?.fullName }}</strong></td>
+                    <td>{{ p.user?.email }}</td>
+                    <td>
+                        <span *ngFor="let s of p.specialties; let last = last">
+                            {{ s.name }}{{ !last ? ', ' : '' }}
+                        </span>
+                        <span *ngIf="!p.specialties || p.specialties.length === 0">N/A</span>
+                    </td>
+                    <td>{{ p.createdAt | date:'short' }}</td>
+                    <td>
+                        <button class="btn-view" (click)="viewDocument(p.certificationDocument)">
+                            Voir le certificat
+                        </button>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-approve" (click)="approveProvider(p.id)">Approuver</button>
+                            <button class="btn-reject" (click)="rejectProvider(p.id)">Rejeter</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

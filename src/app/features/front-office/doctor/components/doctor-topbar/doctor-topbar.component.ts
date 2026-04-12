@@ -16,10 +16,6 @@ export class DoctorTopbarComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserInfo();
-    // The profile endpoint is optional/missing on backend, names are loaded from authService token
-  }
-
-  private loadUserInfo() {
     this.userService.profile$.subscribe(user => {
       if (user) {
         if (user.fullName) {
@@ -28,8 +24,12 @@ export class DoctorTopbarComponent implements OnInit {
         this.photo = (user as any).photo || null;
       }
     });
-    // Trigger initial load if not already loaded
     this.userService.refreshProfile();
+  }
+
+  private loadUserInfo() {
+    const fullName = this.authService.getUserFullName();
+    if (fullName) this.setNames(fullName);
   }
 
   private setNames(fullName: string) {

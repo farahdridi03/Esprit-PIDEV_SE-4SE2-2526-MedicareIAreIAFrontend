@@ -1,9 +1,7 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { FrontLayoutComponent } from './front-layout.component';
+import { TestingModule } from '../../../../testing/testing.module';
 
 describe('FrontLayoutComponent', () => {
   let component: FrontLayoutComponent;
@@ -11,11 +9,11 @@ describe('FrontLayoutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
       declarations: [FrontLayoutComponent],
+      imports: [TestingModule],
       schemas: [NO_ERRORS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(FrontLayoutComponent);
     component = fixture.componentInstance;

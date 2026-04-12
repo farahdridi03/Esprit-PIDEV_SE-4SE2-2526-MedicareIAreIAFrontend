@@ -19,6 +19,9 @@ export interface RegisterRequest {
     licenseNumber?: string;
     consultationFee?: number;
     consultationMode?: 'ONLINE' | 'IN_PERSON' | 'BOTH';
+    chronicDiseases?: string;
+    drugAllergies?: string;
+    hereditaryDiseases?: string;
 
     // Clinic fields
     clinicName?: string;
@@ -41,7 +44,7 @@ export interface RegisterRequest {
     // Home Care Provider fields
     certificationDocument?: string;
     homeCareServices?: string[];
-    
+
     // Patient physical metrics
     height?: number;
     weight?: number;
