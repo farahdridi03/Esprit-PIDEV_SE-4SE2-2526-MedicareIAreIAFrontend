@@ -106,9 +106,7 @@ import { PatientEventsComponent } from './pages/patient-events/patient-events.co
     DoctorPatientTreatmentsComponent,
     DoctorPatientPrescriptionsComponent,
     DoctorPatientDiagnosesComponent,
-    DoctorProfileEditComponent,
-    EventDetailComponent,
-    PatientEventsComponent
+    DoctorProfileEditComponent
   ],
   imports: [
     SharedModule,
@@ -116,7 +114,9 @@ import { PatientEventsComponent } from './pages/patient-events/patient-events.co
     LifestyleSharedModule,
     LayoutModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    EventDetailComponent,
+    PatientEventsComponent
   ]
 })
 export class FrontOfficeModule { }
