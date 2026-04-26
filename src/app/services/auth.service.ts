@@ -13,11 +13,35 @@ import { RegisterRequest } from '../models/register-request.model';
 })
 export class AuthService {
     private readonly baseUrl = 'http://localhost:8081/springsecurity/auth';
+    private readonly pharmacistUrl = 'http://localhost:8081/springsecurity/api/pharmacist';
     private readonly TOKEN_KEY = 'auth_token';
     private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
     public authStatus$ = this.authStatusSubject.asObservable();
+    
+    private pharmacistProfileSubject = new BehaviorSubject<any>(null);
+    public pharmacistProfile$ = this.pharmacistProfileSubject.asObservable();
 
-    constructor(private http: HttpClient, private router: Router) { }
+    constructor(private http: HttpClient, private router: Router) { 
+        setTimeout(() => {
+            if (this.isAuthenticated() && this.getUserRole() === 'PHARMACIST') {
+                this.loadPharmacistProfile().subscribe({
+                    error: (err) => console.error('Failed to load profile early', err)
+                });
+            }
+        });
+    }
+
+    loadPharmacistProfile(): Observable<any> {
+        return this.http.get<any>(`${this.pharmacistUrl}/me`).pipe(
+            tap(profile => this.pharmacistProfileSubject.next(profile))
+        );
+    }
+
+    setupPharmacy(formData: FormData): Observable<any> {
+        return this.http.post(`${this.pharmacistUrl}/setup-pharmacy`, formData).pipe(
+            tap(() => this.loadPharmacistProfile().subscribe())
+        );
+    }
 
     login(payload: LoginRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.baseUrl}/login`, payload).pipe(
@@ -25,15 +49,23 @@ export class AuthService {
                 if (response && response.token) {
                     localStorage.setItem(this.TOKEN_KEY, response.token);
                     this.authStatusSubject.next(true);
+                    if (this.getUserRole() === 'PHARMACIST') {
+                        this.loadPharmacistProfile().subscribe();
+                    }
                 }
             })
         );
     }
 
     register(payload: RegisterRequest): Observable<string> {
+        const formData = new FormData();
+        formData.append('user', JSON.stringify(payload));
+        
+        // Handle potential file from payload if it exists (e.g. Base64 conversion or File object)
+        // For now, mapping payload inside `user` string as the backend expects `multipart/form-data`
         return this.http.post(
             `${this.baseUrl}/register`,
-            payload,
+            formData,
             { responseType: 'text' }
         ) as Observable<string>;
     }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../../../services/product.service';
+import { AuthService } from '../../../../services/auth.service';
 import { Product, ProductRequest, ProductType, ProductUnit } from '../../../../models/product.model';
 
 @Component({
@@ -30,35 +31,55 @@ export class ProductListComponent implements OnInit {
     unit: ProductUnit.PIECE
   };
 
-  constructor(private productService: ProductService) { }
+    constructor(private productService: ProductService, private authService: AuthService) { }
 
-  ngOnInit(): void {
-    this.refresh();
-  }
+    isApproved = false;
 
-  refresh() {
-    this.loading = true;
-    this.productService.getAllProducts().subscribe({
-      next: (res) => {
-        this.products = res;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to get products', err);
-        this.loading = false;
+    ngOnInit(): void {
+      if (this.authService.getUserRole() === 'PHARMACIST') {
+          this.authService.pharmacistProfile$.subscribe(profile => {
+              if (profile && profile.status === 'APPROVED' && profile.pharmacySetupCompleted) {
+                  this.isApproved = true;
+                  this.refresh();
+              } else {
+                  this.isApproved = false;
+                  this.loading = false;
+              }
+          });
+      } else {
+          this.isApproved = true; // For ADMIN or other
+          this.refresh();
       }
-    });
-  }
+    }
 
-  viewAdd() {
-    this.formModel = {
-        name: '', description: '', imageUrl: '', manufacturer: '', brand: '', category: '', type: ProductType.MEDICATION, barcode: '', unit: ProductUnit.PIECE
-    };
-    this.currentId = null;
-    this.fieldErrors = {};
-    this.globalError = null;
-    this.viewState = 'add';
-  }
+    refresh() {
+      if (!this.isApproved) return;
+      this.loading = true;
+      this.productService.getAllProducts().subscribe({
+        next: (res) => {
+          this.products = res;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Failed to get products', err);
+          this.loading = false;
+        }
+      });
+    }
+
+    viewAdd() {
+      if (!this.isApproved) {
+          alert('Available after admin approval');
+          return;
+      }
+      this.formModel = {
+          name: '', description: '', imageUrl: '', manufacturer: '', brand: '', category: '', type: ProductType.MEDICATION, barcode: '', unit: ProductUnit.PIECE
+      };
+      this.currentId = null;
+      this.fieldErrors = {};
+      this.globalError = null;
+      this.viewState = 'add';
+    }
 
   viewEdit(p: Product) {
     this.formModel = { ...p };

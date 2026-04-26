@@ -24,6 +24,8 @@ const routes: Routes = [
         .then(m => m.BackOfficeModule)
   },
 
+  { path: 'login', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: 'register', redirectTo: 'auth/register', pathMatch: 'full' },
   {
     path: 'auth',
     loadChildren: () =>

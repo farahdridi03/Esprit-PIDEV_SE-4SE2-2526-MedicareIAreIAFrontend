@@ -12,6 +12,9 @@ import { AlertsListComponent } from './pages/alerts-list/alerts-list.component';
 import { SharedLayoutModule } from '../../shared/layout/shared-layout.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { PharmacistSetupModalComponent } from './components/pharmacist-setup-modal/pharmacist-setup-modal.component';
+import { PharmacistBannerComponent } from './components/pharmacist-banner/pharmacist-banner.component';
+
 @NgModule({
   declarations: [
     PharmacistDashboardComponent,
@@ -20,7 +23,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     InventoryListComponent,
     BatchesListComponent,
     MovementsListComponent,
-    AlertsListComponent
+    AlertsListComponent,
+    PharmacistSetupModalComponent,
+    PharmacistBannerComponent
   ],
   imports: [
     CommonModule,

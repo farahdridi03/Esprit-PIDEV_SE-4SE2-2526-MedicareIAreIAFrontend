@@ -14,7 +14,7 @@ import {
   providedIn: 'root'
 })
 export class StockService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/stocks';
+  private apiUrl = 'http://localhost:8081/springsecurity/api/stock';
 
   constructor(private http: HttpClient) {}
 
@@ -48,5 +48,15 @@ export class StockService {
 
   resolveAlert(alertId: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/alerts/${alertId}/resolve`, {});
+  }
+
+  getStockSummary(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/summary`);
+  }
+
+  searchProducts(keyword: string, page: number = 0, size: number = 10): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/search`, {
+      params: { keyword, page: page.toString(), size: size.toString() }
+    });
   }
 }

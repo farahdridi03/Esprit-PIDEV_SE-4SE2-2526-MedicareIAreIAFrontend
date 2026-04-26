@@ -11,13 +11,17 @@ export class AdminSidebarComponent implements OnInit {
     firstName: string = 'Admin';
     initials: string = 'AD';
     userRole: string | null = null;
+    isPharmacist: boolean = false;
+    isAdmin: boolean = false;
 
     constructor(private authService: AuthService, private userService: UserService) { }
 
     ngOnInit() {
         const rawRole = this.authService.getUserRole();
-        this.userRole = rawRole ? rawRole.toUpperCase() : null;
-        console.log('AdminSidebar Initialized. Role detected:', this.userRole);
+    this.userRole = rawRole ? rawRole.toUpperCase() : null;
+    this.isPharmacist = this.userRole === 'PHARMACIST';
+    this.isAdmin = this.userRole === 'ADMIN';
+    console.log('AdminSidebar Initialized. Role detected:', this.userRole);
         this.loadUserInfo();
         this.userService.getProfile().subscribe({
             next: (user) => {

@@ -62,4 +62,14 @@ export class EventService {
   rejectParticipation(participationId: number): Observable<any> {
     return this.http.put(`${this.baseUrl}/participation/${participationId}/reject`, {});
   }
+
+  getEventStats(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/stats`);
+  }
+
+  searchEvents(keyword: string, page: number = 0, size: number = 10): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/search`, {
+      params: { keyword, page: page.toString(), size: size.toString() }
+    });
+  }
 }

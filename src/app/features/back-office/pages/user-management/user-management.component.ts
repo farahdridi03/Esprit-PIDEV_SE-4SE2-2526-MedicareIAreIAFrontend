@@ -10,9 +10,10 @@ import { UserResponseDTO, UserRequestDTO } from '../../../../models/user.model';
 export class UserManagementComponent implements OnInit {
 
   users: UserResponseDTO[] = [];
+  pendingPharmacists: any[] = [];
   loading: boolean = false;
 
-  viewState: 'list' | 'add' | 'edit' = 'list';
+  viewState: 'list' | 'add' | 'edit' | 'pharmacists' = 'list';
   filterRole: string = 'ALL';
 
   // Form fields
@@ -58,6 +59,39 @@ export class UserManagementComponent implements OnInit {
     this.formModel = { fullName: '', email: '', password: '', role: 'PATIENT', phone: '', birthDate: '' };
     this.currentId = null;
     this.viewState = 'add';
+  }
+
+  viewPharmacists() {
+    this.viewState = 'pharmacists';
+    this.loading = true;
+    this.userService.getPendingPharmacists().subscribe({
+      next: (res) => {
+        this.pendingPharmacists = res;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to get pending pharmacists', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  approvePharmacist(id: number) {
+    this.loading = true;
+    this.userService.approvePharmacist(id).subscribe({
+      next: () => this.viewPharmacists(),
+      error: (err) => { console.error('Approve error', err); this.loading = false; }
+    });
+  }
+
+  rejectPharmacist(id: number) {
+    if (confirm('Are you sure you want to reject this pharmacist?')) {
+      this.loading = true;
+      this.userService.rejectPharmacist(id).subscribe({
+        next: () => this.viewPharmacists(),
+        error: (err) => { console.error('Reject error', err); this.loading = false; }
+      });
+    }
   }
 
   viewEdit(u: UserResponseDTO) {

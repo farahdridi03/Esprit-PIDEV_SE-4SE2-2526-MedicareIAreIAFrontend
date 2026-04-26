@@ -1,322 +1,112 @@
-$primary: #1A7A5E;
+:host {
+    display: block;
+}
 
 .topbar {
-    height: 70px;
-    background: #fff;
-    border-bottom: 1px solid #f3f4f6;
+    height: 64px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0 1.75rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 1.5rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-
-    .topbar-left {
-        .page-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #111827;
-            margin: 0;
-        }
-    }
-
-    .topbar-right {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-
-        .notif-wrapper {
-            position: relative;
-            
-            .notif-bell {
-                position: relative;
-                cursor: pointer;
-                padding: 0.5rem;
-                border-radius: 50%;
-                transition: background 0.2s;
-                color: #6b7280;
-
-                &:hover {
-                    background: #f3f4f6;
-                    color: $primary;
-                }
-
-                .bell-icon {
-                    width: 24px;
-                    height: 24px;
-                }
-
-                .badge {
-                    position: absolute;
-                    top: 4px;
-                    right: 4px;
-                    background: #ef4444;
-                    color: white;
-                    font-size: 10px;
-                    font-weight: 700;
-                    min-width: 16px;
-                    height: 16px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border: 2px solid white;
-                }
-            }
-
-            .notif-dropdown {
-                position: absolute;
-                top: calc(100% + 10px);
-                right: -100px;
-                width: 400px;
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-                border: 1px solid #f3f4f6;
-                z-index: 1000;
-                overflow: hidden;
-                animation: slideIn 0.2s ease-out;
-
-                .notif-header {
-                    padding: 1rem;
-                    border-bottom: 1px solid #f3f4f6;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-
-                    h4 {
-                        margin: 0;
-                        font-size: 1rem;
-                        font-weight: 700;
-                    }
-
-                    .header-actions {
-                        display: flex;
-                        gap: 12px;
-
-                        button {
-                            background: none;
-                            border: none;
-                            font-size: 0.8rem;
-                            font-weight: 600;
-                            cursor: pointer;
-                            padding: 4px 8px;
-                            border-radius: 4px;
-                            transition: all 0.2s;
-
-                            &.mark-all-btn {
-                                color: $primary;
-                                &:hover { background: rgba($primary, 0.05); }
-                            }
-
-                            &.clear-all-btn {
-                                color: #6b7280;
-                                &:hover { background: #f3f4f6; color: #ef4444; }
-                            }
-                        }
-                    }
-                }
-
-                .notif-list {
-                    max-height: 500px;
-                    overflow-y: auto;
-
-                    .notif-item {
-                        padding: 1.25rem 1rem;
-                        display: flex;
-                        gap: 1rem;
-                        cursor: pointer;
-                        transition: background 0.2s;
-                        border-bottom: 1px solid #f9fafb;
-                        position: relative; // For absolute delete button
-
-                        &:hover {
-                            background: #f9fafb;
-                            .notif-delete { opacity: 1; }
-                        }
-
-                        &.unread {
-                            background: rgba($primary, 0.02);
-                            
-                            .notif-msg {
-                                font-weight: 600;
-                                color: #111827;
-                            }
-                        }
-
-                        .notif-delete {
-                            position: absolute;
-                            top: 10px;
-                            right: 10px;
-                            width: 24px;
-                            height: 24px;
-                            background: #fff;
-                            border: 1px solid #e5e7eb;
-                            border-radius: 50%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: 10px;
-                            color: #9ca3af;
-                            cursor: pointer;
-                            opacity: 0; // Hide by default
-                            transition: all 0.2s;
-                            z-index: 5;
-
-                            &:hover {
-                                background: #fee2e2;
-                                color: #ef4444;
-                                border-color: #fecaca;
-                                transform: scale(1.1);
-                            }
-                        }
-
-                        .notif-icon {
-                            width: 40px;
-                            height: 40px;
-                            background: #f3f4f6;
-                            border-radius: 50%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: 1.2rem;
-                        }
-
-                        .notif-content {
-                            flex: 1;
-
-                            .notif-msg {
-                                font-size: 0.9rem;
-                                color: #374151;
-                                margin: 0 0 4px 0;
-                            }
-
-                            .notif-time {
-                                color: #9ca3af;
-                                font-size: 0.8rem;
-                            }
-
-                            .notif-actions {
-                                margin-top: 0.75rem;
-                                display: flex;
-                                gap: 0.5rem;
-
-                                button {
-                                    padding: 0.4rem 0.8rem;
-                                    border-radius: 6px;
-                                    font-size: 0.8rem;
-                                    font-weight: 600;
-                                    border: none;
-                                    cursor: pointer;
-                                    transition: transform 0.2s, opacity 0.2s;
-
-                                    &:hover {
-                                        opacity: 0.9;
-                                        transform: translateY(-1px);
-                                    }
-
-                                    &.btn-accept {
-                                        background-color: #16a34a;
-                                        color: white;
-                                    }
-
-                                    &.btn-reject {
-                                        background-color: #ef4444;
-                                        color: white;
-                                    }
-                                }
-                            }
-
-                            .status-badge-container {
-                                margin-top: 0.75rem;
-
-                                .status-badge {
-                                    display: inline-flex;
-                                    align-items: center;
-                                    padding: 0.3rem 0.8rem;
-                                    border-radius: 99px;
-                                    font-size: 0.75rem;
-                                    font-weight: 600;
-
-                                    &.confirmed {
-                                        background-color: #dcfce7;
-                                        color: #16a34a;
-                                    }
-
-                                    &.rejected {
-                                        background-color: #fee2e2;
-                                        color: #ef4444;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    .notif-empty {
-                        padding: 3rem 1rem;
-                        text-align: center;
-                        color: #9ca3af;
-
-                        .empty-icon {
-                            font-size: 2rem;
-                            margin-bottom: 0.5rem;
-                            display: block;
-                        }
-                    }
-                }
-            }
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding-left: 1.5rem;
-            border-left: 1px solid #f3f4f6;
-
-            .avatar {
-                width: 40px;
-                height: 40px;
-                background-color: $primary;
-                color: white;
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-weight: 700;
-                font-size: 1rem;
-            }
-
-            .user-info {
-                display: flex;
-                flex-direction: column;
-
-                .user-name {
-                    font-weight: 700;
-                    font-size: 0.95rem;
-                    color: #111827;
-                    line-height: 1.2;
-                }
-
-                .user-role {
-                    font-size: 0.75rem;
-                    color: $primary;
-                    font-weight: 600;
-                    letter-spacing: 0.5px;
-                }
-            }
-        }
-    }
+    gap: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 1px 0 #e5e7eb;
 }
-
-@keyframes slideIn {
-    from {
-        transform: translateY(-10px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+.toggle-menu {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.18s;
+    flex-shrink: 0;
 }
+.toggle-menu:hover { border-color: #a5b4fc; color: #4f46e5; }
+.toggle-menu svg { width: 16px; height: 16px; }
+.search-bar {
+    flex: 1; max-width: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.search-icon {
+    position: absolute; left: 13px;
+    width: 16px; height: 16px;
+    color: #9ca3af;
+}
+.search-icon svg { width: 100%; height: 100%; }
+.search-bar input {
+    width: 100%;
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    color: #111827;
+    font-size: 0.85rem;
+    padding: 0.52rem 1rem 0.52rem 2.4rem;
+    border-radius: 99px;
+    outline: none;
+    transition: all 0.18s;
+}
+.search-bar input::placeholder { color: #9ca3af; }
+.search-bar input:focus {
+    border-color: #a5b4fc;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.08);
+}
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-left: auto;
+}
+.tb-icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.18s;
+    position: relative;
+}
+.tb-icon-btn:hover { border-color: #a5b4fc; color: #4f46e5; background: white; }
+.tb-icon-btn svg { width: 17px; height: 17px; }
+.notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #f43f5e;
+    border: 2px solid white;
+}
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.3rem 0.75rem 0.3rem 0.38rem;
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s;
+}
+.user-profile:hover { border-color: #a5b4fc; background: white; }
+.avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800; font-size: 0.7rem;
+    color: white;
+    box-shadow: 0 3px 8px rgba(79,70,229,0.3);
+}
+.user-name { font-weight: 600; font-size: 0.82rem; color: #111827; line-height: 1.2; }
+.user-role { font-size: 0.67rem; color: #6b7280; }

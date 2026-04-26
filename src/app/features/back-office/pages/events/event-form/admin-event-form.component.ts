@@ -246,28 +246,43 @@ export class AdminEventFormComponent implements OnInit {
     if (this.eventForm.invalid) return;
     
     this.loading = true;
-    const eventData = { ...this.eventForm.value };
+    const formValue = { ...this.eventForm.value };
     
     // Clear irrelevant fields before sending
-    if (eventData.eventType === 'PHYSICAL') {
-      eventData.platformName = null;
-      eventData.meetingLink = null;
-      eventData.meetingPassword = null;
+    if (formValue.eventType === 'PHYSICAL') {
+      formValue.platformName = null;
+      formValue.meetingLink = null;
+      formValue.meetingPassword = null;
     } else {
-      eventData.venueName = null;
-      eventData.address = null;
-      eventData.city = null;
-      eventData.postalCode = null;
-      eventData.country = null;
-      eventData.capacity = null;
+      formValue.venueName = null;
+      formValue.address = null;
+      formValue.city = null;
+      formValue.postalCode = null;
+      formValue.country = null;
+      formValue.capacity = null;
     }
 
     const u = JSON.parse(localStorage.getItem('user') || '{}');
-    eventData.createdById = u.id || 1;
+    formValue.createdById = u.id || 1;
+    
+    // Remove imageUrl from the object being sent in the 'event' part
+    delete formValue.imageUrl;
+
+    // Use FormData for multipart submission
+    const formData = new FormData();
+    
+    // The backend expects a part named 'event' as a JSON string with application/json type
+    const eventBlob = new Blob([JSON.stringify(formValue)], { type: 'application/json' });
+    formData.append('event', eventBlob);
+
+    // The backend expects a part named 'image' as the file
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
 
     const request = (this.isEditMode && this.eventId)
-      ? this.eventService.updateEvent(this.eventId, eventData)
-      : this.eventService.createEvent(eventData);
+      ? this.eventService.updateEvent(this.eventId, formData)
+      : this.eventService.createEvent(formData);
 
     request.subscribe({
       next: (res) => {

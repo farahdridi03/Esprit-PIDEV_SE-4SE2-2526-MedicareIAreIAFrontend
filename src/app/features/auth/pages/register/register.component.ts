@@ -84,6 +84,7 @@ export class RegisterComponent implements OnInit {
       pharmacyAddress: [''],
       pharmacyPhone: ['', [Validators.pattern('^[0-9]{8}$')]],
       pharmacyEmail: ['', [Validators.email]],
+      diplomaDocument: [''],
       // Laboratory fields
       labName: [''],
       labAddress: [''],
@@ -139,6 +140,7 @@ export class RegisterComponent implements OnInit {
       const pharmacyAddressCtrl = this.registerForm.get('pharmacyAddress');
       const pharmacyPhoneCtrl = this.registerForm.get('pharmacyPhone');
       const pharmacyEmailCtrl = this.registerForm.get('pharmacyEmail');
+      const diplomaDocCtrl = this.registerForm.get('diplomaDocument');
 
       const isLabStaff = role === 'LABORATORY_STAFF';
       const labNameCtrl = this.registerForm.get('labName');
@@ -152,7 +154,7 @@ export class RegisterComponent implements OnInit {
       // Reset validators
       [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
-        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
+        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl, diplomaDocCtrl,
         labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
       ].forEach(ctrl => {
         ctrl?.clearValidators();
@@ -178,6 +180,7 @@ export class RegisterComponent implements OnInit {
         pharmacyAddressCtrl?.setValidators([Validators.required]);
         pharmacyPhoneCtrl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
         pharmacyEmailCtrl?.setValidators([Validators.required, Validators.email]);
+        diplomaDocCtrl?.setValidators([Validators.required]);
       } else if (isLabStaff) {
         labNameCtrl?.setValidators([Validators.required]);
         labAddressCtrl?.setValidators([Validators.required]);
@@ -189,7 +192,7 @@ export class RegisterComponent implements OnInit {
 
       [genderCtrl, bloodTypeCtrl, emNameCtrl, emPhoneCtrl, specialtyCtrl, licenseCtrl, feeCtrl, modeCtrl,
         clinicNameCtrl, clinicAddressCtrl, clinicPhoneCtrl, clinicEmergencyCtrl, clinicAmbulanceCtrl,
-        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl,
+        pharmacyNameCtrl, pharmacyAddressCtrl, pharmacyPhoneCtrl, pharmacyEmailCtrl, diplomaDocCtrl,
         labNameCtrl, labAddressCtrl, labPhoneCtrl, certDocCtrl, servicesCtrl
       ].forEach(ctrl => ctrl?.updateValueAndValidity());
     });
@@ -231,6 +234,19 @@ export class RegisterComponent implements OnInit {
       reader.onload = () => {
         this.registerForm.patchValue({
           certificationDocument: reader.result as string
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  onDiplomaFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.registerForm.patchValue({
+          diplomaDocument: reader.result as string
         });
       };
       reader.readAsDataURL(file);
@@ -305,6 +321,7 @@ onSubmit() {
       pharmacyAddress: formValue.pharmacyAddress,
       pharmacyPhone: formValue.pharmacyPhone,
       pharmacyEmail: formValue.pharmacyEmail,
+      diplomaDocument: formValue.diplomaDocument,
     };
   }
 
@@ -313,7 +330,7 @@ onSubmit() {
   this.authService.register(finalPayload).subscribe({
     next: (res) => {
       console.log('✅ SUCCESS:', res);
-      this.router.navigate(['/auth/login']);
+      this.router.navigate(['/login']);
     },
     error: (err: any) => {
       console.log('❌ ERROR:', err);

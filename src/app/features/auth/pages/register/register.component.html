@@ -368,6 +368,17 @@
                 [ngClass]="{'is-invalid': registerForm.get('pharmacyEmail')?.invalid && (registerForm.get('pharmacyEmail')?.dirty || registerForm.get('pharmacyEmail')?.touched)}">
             </div>
           </div>
+
+          <div class="form-group margin-top">
+            <label for="diplomaDocument">Diploma (PDF, Image)</label>
+            <div class="input-wrapper">
+              <input type="file" id="diplomaDocument" (change)="onDiplomaFileChange($event)" accept=".pdf,image/*">
+            </div>
+            <small *ngIf="registerForm.get('diplomaDocument')?.value" class="success-message">Diploma attached ✓</small>
+            <div *ngIf="registerForm.get('diplomaDocument')?.invalid && registerForm.get('diplomaDocument')?.touched">
+              <small class="error-message">Diploma is required.</small>
+            </div>
+          </div>
         </div>
       </ng-container>
 

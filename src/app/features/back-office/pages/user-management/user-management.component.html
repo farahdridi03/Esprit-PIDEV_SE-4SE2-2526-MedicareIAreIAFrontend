@@ -3,12 +3,17 @@
         <h1>User <em>Management</em></h1>
         <p>Manage all platform users, roles, and access controls</p>
     </div>
-    <button class="btn-primary" *ngIf="viewState === 'list'" (click)="viewAdd()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-        </svg>
-        Add User
-    </button>
+    <div style="display: flex; gap: 1rem;">
+        <button class="btn-pharma-outline" *ngIf="viewState === 'list'" (click)="viewPharmacists()">
+           Pending Pharmacists
+        </button>
+        <button class="btn-primary" *ngIf="viewState === 'list'" (click)="viewAdd()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Add User
+        </button>
+    </div>
 </div>
 
 <!-- List View -->
@@ -132,5 +137,54 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Pending Pharmacists View -->
+<div class="panel" *ngIf="viewState === 'pharmacists'">
+    <div class="panel-head">
+        <div class="panel-title">Pending Pharmacists</div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <button class="panel-action" (click)="viewPharmacists()">Refresh List ⭮</button>
+            <button class="panel-action text-rose" (click)="cancelForm()">Back</button>
+        </div>
+    </div>
+
+    <!-- Loader -->
+    <div *ngIf="loading" class="loader">Loading...</div>
+
+    <table class="tbl" *ngIf="!loading && pendingPharmacists.length > 0">
+        <thead>
+            <tr>
+                <th>Pharmacist</th>
+                <th>Pharmacy Info</th>
+                <th>Diploma</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of pendingPharmacists">
+                <td>
+                    <div class="cn">{{ p.fullName }}</div>
+                    <div class="cs">{{ p.email }}</div>
+                </td>
+                <td>
+                    <div class="cn">{{ p.pharmacyName }}</div>
+                    <div class="cs">{{ p.pharmacyAddress }}</div>
+                </td>
+                <td>
+                    <a *ngIf="p.diplomaDocument" [href]="p.diplomaDocument" target="_blank" class="text-indigo">View Document</a>
+                    <span *ngIf="!p.diplomaDocument" class="text-rose">Missing</span>
+                </td>
+                <td style="text-align: right;">
+                    <button class="action-btn text-emerald" (click)="approvePharmacist(p.id)">Approve ✅</button>
+                    <button class="action-btn text-rose" (click)="rejectPharmacist(p.id)">Reject ❌</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && pendingPharmacists.length === 0" class="no-data">
+        No pending pharmacists found.
     </div>
 </div>

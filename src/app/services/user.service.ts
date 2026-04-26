@@ -50,6 +50,18 @@ export class UserService {
         return this.http.get<UserResponseDTO[]>(`${this.apiUrl}/role/${role}`);
     }
 
+    getPendingPharmacists(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/admin/pharmacists/pending`);
+    }
+
+    approvePharmacist(id: number): Observable<any> {
+        return this.http.patch(`http://localhost:8081/springsecurity/api/admin/pharmacists/${id}/approve`, {});
+    }
+
+    rejectPharmacist(id: number): Observable<any> {
+        return this.http.patch(`http://localhost:8081/springsecurity/api/admin/pharmacists/${id}/reject`, {});
+    }
+
     getProfile(): Observable<UserResponseDTO> {
         return this.http.get<UserResponseDTO>(`${this.baseUrlLegacy}/profile`);
     }

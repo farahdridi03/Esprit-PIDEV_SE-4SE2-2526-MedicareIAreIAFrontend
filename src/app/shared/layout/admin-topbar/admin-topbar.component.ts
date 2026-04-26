@@ -17,6 +17,8 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
     notifications: Notification[] = [];
     unreadCount: number = 0;
     showNotifications: boolean = false;
+    userRole: string | null = null;
+    isPharmacist: boolean = false;
     private pollingInterval: any;
 
     constructor(
@@ -28,6 +30,10 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
+        const rawRole = this.authService.getUserRole();
+        this.userRole = rawRole ? rawRole.toUpperCase() : null;
+        this.isPharmacist = this.userRole === 'PHARMACIST';
+
         this.loadUserInfo();
         this.userService.getProfile().subscribe({
             next: (user) => {

@@ -1,15 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injector, Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    constructor(private authService: AuthService) { }
+    constructor(private injector: Injector) { }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-        const token = this.authService.getToken();
+        const authService = this.injector.get(AuthService);
+        const router = this.injector.get(Router);
+        const token = authService.getToken();
 
         // Exclure strictement les endpoints de login/register pour éviter d'envoyer le header sur ces routes
         const url = request.url;
@@ -30,7 +33,8 @@ export class AuthInterceptor implements HttpInterceptor {
             catchError((error: HttpErrorResponse) => {
                 if (error.status === 401 || error.status === 403) {
                     // Déconnecter l'utilisateur et forcer redirection vers /login
-                    this.authService.logout();
+                    authService.logout();
+                    router.navigate(['/login']);
                 }
                 return throwError(() => error);
             })
