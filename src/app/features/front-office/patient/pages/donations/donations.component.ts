@@ -46,6 +46,7 @@ export class DonationsComponent implements OnInit {
 
   // Aid Request fields
   myAidRequests: AidRequest[] = [];
+  myAssignedDonations: Donation[] = [];
   isRequestModalOpen = false;
   requestDescription = '';
   requestDoc = '';
@@ -71,6 +72,7 @@ export class DonationsComponent implements OnInit {
     if (pId) {
       this.currentPatientId = pId;
       this.loadMyRequests();
+      this.loadMyAssignedDonations();
       return;
     }
 
@@ -86,6 +88,7 @@ export class DonationsComponent implements OnInit {
             this.currentUserName = user.firstName ? `${user.firstName} ${user.lastName}` : user.fullName || 'Anonyme';
           }
           this.loadMyRequests();
+          this.loadMyAssignedDonations();
         }
       },
       error: (err) => console.error('Error fetching user profile:', err)
@@ -96,10 +99,17 @@ export class DonationsComponent implements OnInit {
     if (!this.currentPatientId) return;
 
     this.donationService.getAidRequestsByPatient(this.currentPatientId).subscribe({
-      next: (data) => {
-        this.myAidRequests = data;
-      },
+      next: (data) => { this.myAidRequests = data; },
       error: (err) => console.error('Error fetching aid requests', err)
+    });
+  }
+
+  loadMyAssignedDonations(): void {
+    if (!this.currentPatientId) return;
+
+    this.donationService.getDonationsByPatientAndStatus(this.currentPatientId, 'ASSIGNED').subscribe({
+      next: (data) => { this.myAssignedDonations = data; },
+      error: (err) => console.error('Error fetching assigned donations', err)
     });
   }
 

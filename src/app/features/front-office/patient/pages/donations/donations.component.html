@@ -124,6 +124,68 @@
                     <div class="empty-sub">Try changing the filters or add a new donation.</div>
                 </div>
 
+                <!-- MY RECEIVED DONATIONS SECTION -->
+                <div style="margin-top: 3.5rem; border-top: 1.5px solid var(--border); padding-top: 2.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--text-1); margin-bottom: 0.3rem;">
+                                My Received Donations</h2>
+                            <p style="font-size: 0.85rem; color: var(--text-2);">Donations assigned to you through your approved requests.</p>
+                        </div>
+                        <div class="stat-lbl"
+                            style="background: white; padding: 0.5rem 1rem; border-radius: var(--r-sm); border: 1.5px solid var(--border); font-weight: 700;">
+                            Total: {{ myAssignedDonations.length || 0 }}
+                        </div>
+                    </div>
+
+                    <div class="cards-grid">
+                        <div class="don-card" *ngFor="let d of myAssignedDonations">
+                            <div class="card-accent" style="background: linear-gradient(135deg, var(--indigo), var(--teal));"></div>
+                            <div class="card-body">
+                                <div class="card-top">
+                                    <div class="donor-info">
+                                        <ng-container *ngIf="d.donorProfileImage; else noReceivedImg">
+                                            <img [src]="d.donorProfileImage" class="donor-avatar" style="object-fit: cover; border: none; padding: 0;">
+                                        </ng-container>
+                                        <ng-template #noReceivedImg>
+                                            <div class="donor-avatar" [ngClass]="d.type === DonationType.MONEY ? 'avatar-money' : 'avatar-materiel'">
+                                                {{ getInitials(d.donorName) }}
+                                            </div>
+                                        </ng-template>
+                                        <div>
+                                            <div class="donor-name">{{ d.donorName }}</div>
+                                            <div class="donor-date">{{ d.createdAt ? (d.createdAt | date:'mediumDate') : '' }}</div>
+                                        </div>
+                                    </div>
+                                    <span class="status-badge status-assigned">Received</span>
+                                </div>
+
+                                <div class="type-chip" [ngClass]="d.type === DonationType.MONEY ? 'type-money' : 'type-materiel'">
+                                    {{ d.type === DonationType.MONEY ? '💵 Financial Donation' : '📦 Material Donation' }}
+                                </div>
+
+                                <ng-container *ngIf="d.type === DonationType.MONEY">
+                                    <div class="card-amount"><span>{{ d.amount }}</span> TND</div>
+                                </ng-container>
+                                <ng-container *ngIf="d.type === DonationType.MATERIEL">
+                                    <div class="card-category">{{ d.categorie || '—' }}</div>
+                                    <div class="card-qty">Quantity: <strong>{{ d.quantite || 1 }}</strong></div>
+                                    <div *ngIf="d.description" style="font-size: 0.8rem; color: var(--text-2); margin-top: 0.4rem;">
+                                        {{ d.description }}
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="empty-state" *ngIf="myAssignedDonations.length === 0"
+                        style="margin-top: 1rem; padding: 2rem; background: var(--surface);">
+                        <div class="empty-icon">🎁</div>
+                        <div class="empty-title">No donations received yet</div>
+                        <div class="empty-sub">Once an aid request is approved, your assigned donations will appear here.</div>
+                    </div>
+                </div>
+
                 <!-- MY REQUESTS SECTION -->
                 <div style="margin-top: 3.5rem; border-top: 1.5px solid var(--border); padding-top: 2.5rem;">
                     <div

@@ -33,7 +33,6 @@
     <table class="tbl" *ngIf="!loading && filteredDonations.length > 0">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Donor Details</th>
                 <th>Type & Asset</th>
                 <th>Status</th>
@@ -42,7 +41,6 @@
         </thead>
         <tbody>
             <tr *ngFor="let d of filteredDonations">
-                <td>{{ d.id }}</td>
                 <td>
                     <div class="ucell">
                         <div class="mav ma1">{{ getInitials(d.donorName) }}</div>
@@ -71,6 +69,8 @@
                     </button>
                 </td>
                 <td style="text-align: right;">
+                    <button class="action-btn text-indigo" style="margin-right: 6px;"
+                        (click)="openAssignmentsModal(d)">Assignments</button>
                     <button class="action-btn text-rose" (click)="deleteDonation(d.id)">Delete</button>
                 </td>
             </tr>
@@ -87,7 +87,7 @@
     <div class="panel-head">
         <div class="panel-title">Received Requests</div>
         <div style="display: flex; gap: 1rem; align-items: center;">
-            <select class="role-filter" [(ngModel)]="reqFilterStatus">
+            <select class="role-filter" [(ngModel)]="reqFilterStatus" (ngModelChange)="onReqFilterChange()">
                 <option value="ALL">All Statuses</option>
                 <option [value]="AidRequestStatus.PENDING">Pending</option>
                 <option [value]="AidRequestStatus.APPROVED">Approved</option>
@@ -102,7 +102,6 @@
     <table class="tbl" *ngIf="!loading && filteredRequests.length > 0">
         <thead>
             <tr>
-                <th>Req ID</th>
                 <th>Patient Details</th>
                 <th>Description</th>
                 <th>Status</th>
@@ -111,13 +110,12 @@
         </thead>
         <tbody>
             <tr *ngFor="let req of filteredRequests">
-                <td>{{ req.id }}</td>
                 <td>
                     <div class="ucell">
                         <div class="mav ck-violet">{{ getInitials(req.patientName) }}</div>
                         <div>
                             <div class="cn">{{ req.patientName || 'Unknown Patient' }}</div>
-                            <div class="cs">Request #{{ req.id }}</div>
+                            <div class="cs">{{ req.createdAt || '' }}</div>
                         </div>
                     </div>
                 </td>
@@ -165,7 +163,7 @@
         </div>
 
         <div style="margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-2);">
-            Assigning a resource to <strong>{{ selectedReq?.patientName }}</strong> for request #{{ selectedReq?.id }}.
+            Assigning a resource to <strong>{{ selectedReq?.patientName }}</strong>.
         </div>
 
         <div class="form-group" style="margin-bottom: 1.5rem;">
@@ -174,8 +172,8 @@
                 style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--border); border-radius: var(--r-sm); margin-top: 0.5rem;">
                 <option [ngValue]="null" disabled>-- Choose a Resource --</option>
                 <option *ngFor="let d of availableDonations" [ngValue]="d.id">
-                    #{{ d.id }} - {{ d.type === 'MONEY' ? '$' + d.amount : d.categorie + ' (Qty: ' + d.quantite + ')' }}
-                    from {{ d.donorName }}
+                    {{ d.type === 'MONEY' ? d.amount + ' TND' : d.categorie + ' (Qty: ' + d.quantite + ')' }}
+                    — {{ d.donorName }}
                 </option>
             </select>
         </div>
@@ -189,6 +187,41 @@
                 (click)="confirmAssignment()" [disabled]="loading || !selectedDonationId">
                 Confirm Assignment
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================== MODAL: DONATION ASSIGNMENTS ============================================== -->
+<div class="modal-overlay" *ngIf="showAssignmentsModal">
+    <div class="modal-content"
+        style="max-width: 560px; width: 100%; background: white; border-radius: var(--r); padding: 1.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.2rem; color: var(--text-1);">Donation Assignments</h3>
+            <button (click)="closeAssignmentsModal()"
+                style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-3);">&times;</button>
+        </div>
+
+        <div *ngIf="assignmentsLoading" class="loader">Loading...</div>
+
+        <table class="tbl" *ngIf="!assignmentsLoading && selectedDonationAssignments.length > 0">
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Assigned At</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let a of selectedDonationAssignments">
+                    <td>{{ a.patientName || '—' }}</td>
+                    <td>{{ a.assignedAt || '—' }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div *ngIf="!assignmentsLoading && selectedDonationAssignments.length === 0"
+            style="text-align: center; padding: 1.5rem; color: var(--text-3); font-size: 0.85rem;">
+            No assignments for this donation yet.
         </div>
     </div>
 </div>

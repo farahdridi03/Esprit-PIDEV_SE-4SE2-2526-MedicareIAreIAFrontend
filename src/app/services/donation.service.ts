@@ -60,4 +60,26 @@ export class DonationService {
     // backend endpoint: POST /api/donations/assign
     return this.http.post<DonationAssignment>(`${this.apiUrl}/assign`, assignment);
   }
+
+  // GET /api/aid-requests/status/{status}  ← AidRequestRepository.findByStatus
+  getAidRequestsByStatus(status: string): Observable<AidRequest[]> {
+    return this.http.get<AidRequest[]>(`${this.aidApiUrl}/status/${status}`);
+  }
+
+  // GET /api/donations/{donationId}/assignments  ← DonationAssignmentRepository.findByDonationId
+  getAssignmentsByDonationId(donationId: number): Observable<DonationAssignment[]> {
+    return this.http.get<DonationAssignment[]>(`${this.apiUrl}/${donationId}/assignments`);
+  }
+
+  // GET /api/donations/assignments/aid-request/{aidRequestId}  ← DonationAssignmentRepository.findByAidRequestId
+  getAssignmentsByAidRequestId(aidRequestId: number): Observable<DonationAssignment[]> {
+    return this.http.get<DonationAssignment[]>(`${this.apiUrl}/assignments/aid-request/${aidRequestId}`);
+  }
+
+  // GET /api/donations/patient/{patientId}/assigned  ← DonationAssignmentRepository.findDonationsByPatientIdAndStatus
+  getDonationsByPatientAndStatus(patientId: number, status: string): Observable<Donation[]> {
+    return this.http.get<Donation[]>(`${this.apiUrl}/patient/${patientId}/assigned`, {
+      params: { status }
+    });
+  }
 }

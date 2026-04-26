@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Donation, DonationStatus, DonationType, AidRequest, AidRequestStatus } from '../../../../models/donation.model';
+import { Donation, DonationStatus, DonationType, AidRequest, AidRequestStatus, DonationAssignment } from '../../../../models/donation.model';
 import { DonationService } from '../../../../services/donation.service';
 import { NotificationService } from '../../../../services/notification.service';
 
@@ -30,6 +30,11 @@ export class DonationsManagementComponent implements OnInit {
     previewDocUrl: SafeResourceUrl | null = null;
     rawPreviewDoc: string | null = null;
 
+    // Assignments modal (per donation)
+    showAssignmentsModal = false;
+    selectedDonationAssignments: DonationAssignment[] = [];
+    assignmentsLoading = false;
+
     constructor(
         private donationService: DonationService,
         private notificationService: NotificationService,
@@ -56,15 +61,18 @@ export class DonationsManagementComponent implements OnInit {
     }
 
     refreshRequests(): void {
-        this.donationService.getAllAidRequests().subscribe({
-            next: (data) => {
-                console.log('Aid requests from backend:', data);
-                this.aidRequests = data;
-            },
-            error: (err) => {
-                console.error('❌ Error fetching aid requests:', err);
-            }
+        const obs = this.reqFilterStatus === 'ALL'
+            ? this.donationService.getAllAidRequests()
+            : this.donationService.getAidRequestsByStatus(this.reqFilterStatus);
+
+        obs.subscribe({
+            next: (data) => { this.aidRequests = data; },
+            error: (err) => console.error('Error fetching aid requests:', err)
         });
+    }
+
+    onReqFilterChange(): void {
+        this.refreshRequests();
     }
 
     switchTab(tab: 'DONATIONS' | 'REQUESTS'): void {
@@ -95,8 +103,7 @@ export class DonationsManagementComponent implements OnInit {
     }
 
     get filteredRequests(): AidRequest[] {
-        if (this.reqFilterStatus === 'ALL') return this.aidRequests;
-        return this.aidRequests.filter(req => req.status === this.reqFilterStatus);
+        return this.aidRequests;
     }
 
     updateReqStatus(req: AidRequest, newStatus: AidRequestStatus): void {
@@ -190,5 +197,27 @@ export class DonationsManagementComponent implements OnInit {
     isPdf(base64: any): boolean {
         if (!base64 || typeof base64 !== 'string') return false;
         return base64.includes('application/pdf');
+    }
+
+    openAssignmentsModal(donation: Donation): void {
+        if (!donation.id) return;
+        this.selectedDonationAssignments = [];
+        this.assignmentsLoading = true;
+        this.showAssignmentsModal = true;
+        this.donationService.getAssignmentsByDonationId(donation.id).subscribe({
+            next: (data) => {
+                this.selectedDonationAssignments = data;
+                this.assignmentsLoading = false;
+            },
+            error: (err) => {
+                console.error('Error fetching assignments', err);
+                this.assignmentsLoading = false;
+            }
+        });
+    }
+
+    closeAssignmentsModal(): void {
+        this.showAssignmentsModal = false;
+        this.selectedDonationAssignments = [];
     }
 }
