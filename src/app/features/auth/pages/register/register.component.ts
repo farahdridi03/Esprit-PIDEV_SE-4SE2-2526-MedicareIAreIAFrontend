@@ -63,6 +63,7 @@ export class RegisterComponent implements OnInit {
   homeCareServicesList: any[] = [];
   clinics: Clinic[] = [];
   profileImagePreview: string | null = null;
+  documentFile: File | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -139,13 +140,9 @@ export class RegisterComponent implements OnInit {
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.registerForm.patchValue({
-          certificationDocument: reader.result as string
-        });
-      };
-      reader.readAsDataURL(file);
+      this.documentFile = file;
+      // Set a truthy value so the required validator passes
+      this.registerForm.patchValue({ certificationDocument: file.name });
     }
   }
 
@@ -292,23 +289,30 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
-      const { terms, chronicDiseases, drugAllergies, hereditaryDiseases, selectedServices, ...rest } = this.registerForm.value;
+      const { terms, chronicDiseases, drugAllergies, hereditaryDiseases, selectedServices, certificationDocument, ...rest } = this.registerForm.value;
 
-      let payload = { ...rest };
+      let payload: any = { ...rest };
 
       if (this.isPatient) {
         const medicalHistories = [];
         if (chronicDiseases) medicalHistories.push({ type: 'CHRONIC_DISEASE', description: chronicDiseases });
         if (drugAllergies) medicalHistories.push({ type: 'ALLERGY', description: drugAllergies });
         if (hereditaryDiseases) medicalHistories.push({ type: 'FAMILY_HISTORY', description: hereditaryDiseases });
-        if (medicalHistories.length > 0) (payload as any).medicalHistories = medicalHistories;
+        if (medicalHistories.length > 0) payload.medicalHistories = medicalHistories;
       }
 
       if (this.isHomeCareProvider && selectedServices) {
-        (payload as any).homeCareServices = selectedServices;
+        payload.homeCareServices = selectedServices;
       }
 
-      this.authService.register(payload).subscribe({
+      // Backend expects multipart/form-data: 'user' field = JSON string, optional 'document' file
+      const formData = new FormData();
+      formData.append('user', JSON.stringify(payload));
+      if (this.documentFile) {
+        formData.append('document', this.documentFile);
+      }
+
+      this.authService.register(formData).subscribe({
         next: () => {
           this.isLoading = false;
           this.router.navigate(['/auth/login']);

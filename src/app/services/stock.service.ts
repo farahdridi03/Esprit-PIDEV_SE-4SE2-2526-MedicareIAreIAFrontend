@@ -14,7 +14,7 @@ import {
   providedIn: 'root'
 })
 export class StockService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/stocks';
+  private apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/stocks';
 
   constructor(private http: HttpClient) {}
 
