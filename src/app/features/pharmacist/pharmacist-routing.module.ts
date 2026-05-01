@@ -11,6 +11,8 @@ import { AlertsListComponent } from './pages/alerts-list/alerts-list.component';
 import { PredictionsListComponent } from './pages/predictions-list/predictions-list.component';
 import { ExpirationRisksComponent } from './pages/expiration-risks/expiration-risks.component';
 import { AuthGuard } from '../../guards/auth.guard';
+import { EventsDiscoveryComponent } from '../front-office/pages/events/events-discovery/events-discovery.component';
+import { EventDetailComponent } from '../front-office/patient/pages/event-detail/event-detail.component';
 
 const routes: Routes = [
   {
@@ -28,6 +30,8 @@ const routes: Routes = [
       { path: 'alerts', component: AlertsListComponent },
       { path: 'predictions', component: PredictionsListComponent },
       { path: 'expiration-risks', component: ExpirationRisksComponent },
+      { path: 'events', component: EventsDiscoveryComponent },
+      { path: 'events/:id', component: EventDetailComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

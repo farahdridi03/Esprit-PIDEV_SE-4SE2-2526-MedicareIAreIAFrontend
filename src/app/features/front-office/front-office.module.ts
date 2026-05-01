@@ -13,8 +13,6 @@ import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
 import { FormsModule } from '@angular/forms';
-import { EventsDiscoveryComponent } from './pages/events/events-discovery/events-discovery.component';
-import { EventDetailsComponent } from './pages/events/event-details/event-details.component';
 import { MyRegistrationsComponent } from './pages/events/my-registrations/my-registrations.component';
 import { PatientEventsComponent } from './patient/pages/events/patient-events.component';
 
@@ -25,21 +23,19 @@ import { PatientEventsComponent } from './patient/pages/events/patient-events.co
     HomeComponent,
     ContactComponent,
     DashboardComponent,
-    SidebarComponent,
-    TopbarComponent,
     DoctorSidebarComponent,
     DoctorTopbarComponent,
     DoctorDashboardComponent,
     DoctorProfileComponent,
-    EventsDiscoveryComponent,
-    EventDetailsComponent,
     MyRegistrationsComponent,
     PatientEventsComponent
   ],
   imports: [
     CommonModule,
     FrontOfficeRoutingModule,
-    FormsModule
+    FormsModule,
+    SidebarComponent,
+    TopbarComponent
   ]
 })
 export class FrontOfficeModule { }

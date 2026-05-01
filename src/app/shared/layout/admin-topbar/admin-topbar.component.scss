@@ -12,6 +12,28 @@
     gap: 1rem;
     flex-shrink: 0;
     box-shadow: 0 1px 0 #e5e7eb;
+
+    &.pharmacist-theme {
+        .toggle-menu:hover { border-color: #10b981; color: #1A7A5E; }
+        .search-bar input:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(26, 122, 94, 0.08);
+        }
+        .tb-icon-btn:hover { border-color: #10b981; color: #1A7A5E; }
+        .user-profile:hover { border-color: #10b981; }
+        .avatar {
+            background: linear-gradient(135deg, #10b981, #1A7A5E);
+            box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3);
+        }
+        .notif-header .clear-btn { color: #1A7A5E; }
+        .notif-item:hover { background: #f0fdf4; }
+        .notif-item.unread { background: #f0fdf4; border-left-color: #10b981; }
+        .notif-body .notif-type-tag {
+            color: #1A7A5E;
+            background: #d1fae5;
+        }
+        .notif-footer button { color: #1A7A5E; }
+    }
 }
 .toggle-menu {
     width: 36px; height: 36px;

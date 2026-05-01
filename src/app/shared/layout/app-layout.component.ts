@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-layout',
@@ -6,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app-layout.component.scss']
 })
 export class AppLayoutComponent implements OnInit {
-  constructor() { }
+  isPharmacist: boolean = false;
+  isAdmin: boolean = false;
+
+  constructor(private authService: AuthService) { }
+
   ngOnInit(): void {
-    console.log('BackOffice Layout Initialized');
+    const role = this.authService.getUserRole();
+    this.isPharmacist = role === 'PHARMACIST';
+    this.isAdmin = role === 'ADMIN';
+    console.log('BackOffice Layout Initialized', { role });
   }
 
 }

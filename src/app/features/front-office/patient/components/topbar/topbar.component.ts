@@ -3,12 +3,16 @@ import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { NotificationService } from '../../../../../services/notification.service';
 import { Notification } from '../../../../../models/notification.model';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-topbar',
+  standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.scss']
 })

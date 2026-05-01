@@ -73,31 +73,102 @@
                 </section>
 
                 <!-- SEAT SELECTION -->
-                <section class="details-section logistics" *ngIf="event.eventType === 'PHYSICAL' && seats.length > 0 && participation?.status === 'CONFIRMED'">
+                <section class="details-section logistics" *ngIf="event.eventType === 'PHYSICAL' && participation?.status === 'CONFIRMED'">
                     <h2 class="section-title">🪑 Reserve Your Seat</h2>
-                    <p style="margin-bottom:1rem;color:#6b7280;">Choose a vacant seat. Legend: Green (Free), Purple (Reserved), Red (Blocked).</p>
                     
-                    <div class="seat-container" style="position:relative; width:100%; height:400px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 20px 20px;">
-                        <div *ngFor="let seat of seats" 
-                             [style.position]="'absolute'"
-                             [style.left.px]="seat.posX" 
-                             [style.top.px]="seat.posY"
-                             style="width:36px; height:36px; border-radius:6px 6px 3px 3px; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:bold; cursor:pointer;"
-                             [ngStyle]="{
-                               'background-color': seat.status === 'AVAILABLE' ? (selectedSeat?.id === seat.id ? '#10b981' : '#22c55e') : (seat.status === 'RESERVED' ? '#6366f1' : '#ef4444'),
-                               'opacity': seat.status !== 'AVAILABLE' ? '0.7' : '1',
-                               'cursor': seat.status === 'AVAILABLE' ? 'pointer' : 'not-allowed',
-                               'box-shadow': selectedSeat?.id === seat.id ? '0 0 0 4px rgba(16, 185, 129, 0.4)' : 'none',
-                               'transform': selectedSeat?.id === seat.id ? 'scale(1.1)' : 'none'
-                             }"
-                             (click)="selectSeat(seat)">
-                             {{ seat.seatLabel }}
-                        </div>
+                    <div *ngIf="seats.length === 0" class="no-seats-message" style="padding:20px; background:#f9fafb; border:1px dashed #cbd5e1; text-align:center; border-radius:12px; color:#64748b;">
+                        The seating plan for this event has not been published yet. Please check back later!
+                    </div>
+
+                    <div *ngIf="seats.length > 0">
+                      <p style="margin-bottom:1rem;color:#6b7280;">Choose a vacant seat by clicking on it.</p>
+                    
+                      <div class="patient-seat-map-container" [ngClass]="event.venueType?.toLowerCase()">
+                       <!-- HOTEL -->
+                       <div class="hotel-layout" *ngIf="event.venueType === 'HOTEL'">
+                         <div class="tables-grid">
+                           <div class="hotel-table-wrapper" *ngFor="let table of hotelTables">
+                             <div class="table-ring">
+                               <div class="table-center">T{{ table.tableNumber }}</div>
+                               <div
+                                 class="hotel-seat"
+                                 *ngFor="let seat of table.seats; let i = index"
+                                 [ngClass]="[seat.status.toLowerCase(), selectedSeat?.id === seat.id ? 'selected' : '']"
+                                 [class.clickable]="seat.status === 'AVAILABLE'"
+                                 [style.transform]="'rotate(' + (i * (360 / table.seats.length)) + 'deg) translate(0, -68px) rotate(-' + (i * (360 / table.seats.length)) + 'deg)'"
+                                 (click)="selectSeat(seat)"
+                                 [title]="seat.seatLabel"
+                               >
+                                 <span>{{ seat.seatNumber }}</span>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+
+                       <!-- STADIUM -->
+                       <div class="stadium-layout" *ngIf="event.venueType === 'STADIUM'">
+                         <div class="stadium-wrapper-scale">
+                           <div class="stadium-wrapper">
+                             <div class="field-indicator">
+                               <div class="goal-area-left"></div>
+                               <div class="goal-area-right"></div>
+                               <span style="z-index: 20;">⚽ FIELD</span>
+                             </div>
+                             <div class="sections-wrap">
+                               <div class="stadium-section" *ngFor="let section of stadiumSections">
+                                 <div class="section-header">{{ section.name }}</div>
+                                 <div class="section-body">
+                                   <div class="stadium-row" *ngFor="let row of section.rows">
+                                     <span class="row-label">R{{ row.rowNumber }}</span>
+                                     <div class="row-seats">
+                                       <div
+                                         class="grid-seat"
+                                         *ngFor="let seat of row.seats; trackBy: trackById"
+                                         [ngClass]="[seat.status.toLowerCase(), selectedSeat?.id === seat.id ? 'selected' : '']"
+                                         [class.clickable]="seat.status === 'AVAILABLE'"
+                                         (click)="selectSeat(seat)"
+                                         [title]="seat.seatLabel"
+                                       ></div>
+                                     </div>
+                                   </div>
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+
+                       <!-- CONFERENCE -->
+                       <div class="conference-layout" *ngIf="event.venueType === 'CONFERENCE'">
+                         <div class="stage-bar">🎤 STAGE / PODIUM</div>
+                         <div class="conf-rows">
+                           <div class="conf-row" *ngFor="let row of conferenceRows">
+                             <span class="row-label">Row {{ row.rowNumber }}</span>
+                             <div class="row-seats">
+                               <div
+                                 class="chair-seat"
+                                 *ngFor="let seat of row.seats; trackBy: trackById"
+                                 [ngClass]="[seat.status.toLowerCase(), selectedSeat?.id === seat.id ? 'selected' : '']"
+                                 [class.clickable]="seat.status === 'AVAILABLE'"
+                                 (click)="selectSeat(seat)"
+                                 [title]="seat.seatLabel"
+                               >
+                                 <div class="chair-back"></div>
+                                 <div class="chair-body">{{ seat.seatNumber }}</div>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
                     </div>
                     
-                    <div style="margin-top: 1rem; display:flex; justify-content:flex-end;" *ngIf="selectedSeat">
-                        <button class="primary-btn" (click)="reserveSeat()">Confirm {{ selectedSeat.seatLabel }}</button>
+                    <div style="margin-top: 1.5rem; display:flex; justify-content:flex-end;" *ngIf="selectedSeat">
+                        <button class="primary-btn" (click)="reserveSeat()" style="width: auto; min-width: 200px;">
+                            Confirm Reservation: {{ selectedSeat.seatLabel }}
+                        </button>
                     </div>
+                  </div>
                 </section>
 
                 <section class="details-section logistics" *ngIf="event.eventType === 'ONLINE' && event.platformName">

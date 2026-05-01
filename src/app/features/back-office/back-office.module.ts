@@ -13,6 +13,7 @@ import { EventSeatEditorComponent } from './pages/event-seat-editor/event-seat-e
 import { EventAnalyticsComponent } from './pages/event-analytics/event-analytics.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AdminEventSuggestionsComponent } from './pages/event-suggestions/admin-event-suggestions.component';
+import { SeatCountPipe } from './pages/event-seat-editor/seat-count.pipe';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { AdminEventSuggestionsComponent } from './pages/event-suggestions/admin-
     AdminEventRegistrationsComponent,
     EventSeatEditorComponent,
     EventAnalyticsComponent,
-    AdminEventSuggestionsComponent
+    AdminEventSuggestionsComponent,
+    SeatCountPipe
   ],
   imports: [
     CommonModule,

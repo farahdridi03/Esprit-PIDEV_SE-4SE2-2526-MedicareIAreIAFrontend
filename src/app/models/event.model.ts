@@ -16,6 +16,7 @@ export interface MedicalEvent {
   postalCode?: string;
   country?: string;
   capacity?: number;
+  venueType?: string;
   
   // Online Event Details
   platformName?: string;
@@ -57,6 +58,9 @@ export interface EventSeat {
   posY: number;
   status: SeatStatus;
   reservedByFullName?: string;
+  rowNumber?: number;
+  seatNumber?: number;
+  tableNumber?: number;
 }
 
 export interface SaveSeatRequest {
@@ -74,6 +78,17 @@ export interface SeatZoneSummary {
   availableSeats: number;
   reservedSeats: number;
   blockedSeats: number;
+}
+
+export interface SeatingStats {
+  eventId: number;
+  eventTitle: string;
+  venueType: string;
+  totalSeats: number;
+  availableSeats: number;
+  reservedSeats: number;
+  blockedSeats: number;
+  byZone: SeatZoneSummary[];
 }
 
 export interface EventAnalytics {

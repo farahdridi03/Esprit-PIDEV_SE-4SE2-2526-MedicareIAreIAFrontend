@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MedicalEvent, EventType, EventSeat, SaveSeatRequest, SeatZoneSummary } from '../models/event.model';
+import { MedicalEvent, EventType, EventSeat, SaveSeatRequest, SeatZoneSummary, SeatingStats } from '../models/event.model';
 
 @Injectable({
   providedIn: 'root'
@@ -51,8 +51,8 @@ export class EventService {
     return this.http.delete(`${this.baseUrl}/${id}/cancel-participation`);
   }
 
-  isParticipating(id: number): Observable<{participating: boolean}> {
-    return this.http.get<{participating: boolean}>(`${this.baseUrl}/${id}/is-participating`);
+  isParticipating(id: number): Observable<{participating: boolean, status?: string, participationId?: number}> {
+    return this.http.get<{participating: boolean, status?: string, participationId?: number}>(`${this.baseUrl}/${id}/is-participating`);
   }
 
   acceptParticipation(participationId: number): Observable<any> {
@@ -79,6 +79,22 @@ export class EventService {
 
   getEventSeatSummary(eventId: number): Observable<SeatZoneSummary[]> {
     return this.http.get<SeatZoneSummary[]>(`${this.baseUrl}/seats/${eventId}/summary`);
+  }
+
+  getSeatingStats(eventId: number): Observable<SeatingStats> {
+    return this.http.get<SeatingStats>(`${this.baseUrl}/seats/${eventId}/stats`);
+  }
+
+  searchSeats(eventId: number, keyword: string): Observable<EventSeat[]> {
+    return this.http.get<EventSeat[]>(`${this.baseUrl}/seats/${eventId}/search`, {
+      params: { q: keyword }
+    });
+  }
+
+  generateLayout(eventId: number, venueType: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/seats/${eventId}/generate`, {}, {
+      params: { venueType }
+    });
   }
 
   saveSeatsBatch(eventId: number, requests: SaveSeatRequest[]): Observable<any> {

@@ -1,4 +1,4 @@
-<div class="topbar">
+<div class="topbar" [class.pharmacist-theme]="isPharmacist" [class.admin-theme]="isAdmin">
     <div class="toggle-menu">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -6,7 +6,7 @@
     </div>
     <div class="search-bar">
         <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg></span>
-        <input type="text" placeholder="Search users, events, logs...">
+        <input type="text" [placeholder]="isPharmacist ? 'Search products, orders, events...' : 'Search users, events, logs...'">
     </div>
     <div class="topbar-right">
         <div class="tb-icon-btn" (click)="toggleNotifications()">
@@ -49,7 +49,7 @@
                             </span>
 
                             <!-- Admin Accept/Reject for pending join -->
-                            <div class="notif-actions" *ngIf="n.type === 'EVENT_JOIN' && n.participationStatus === 'PENDING'" (click)="$event.stopPropagation()">
+                            <div class="notif-actions" *ngIf="isAdmin && n.type === 'EVENT_JOIN' && n.participationStatus === 'PENDING'" (click)="$event.stopPropagation()">
                                 <button class="btn-small accept" (click)="acceptParticipation(n.participationId, n, $event)">✓ Accept</button>
                                 <button class="btn-small reject" (click)="rejectParticipation(n.participationId, n, $event)">✕ Reject</button>
                             </div>
@@ -78,10 +78,10 @@
             </svg>
         </div>
         <div class="user-profile">
-            <div class="avatar">{{ initials || 'AD' }}</div>
+            <div class="avatar">{{ initials || (isPharmacist ? 'PH' : 'AD') }}</div>
             <div>
-                <div class="user-name">{{ firstName || 'Admin User' }}</div>
-                <div class="user-role">{{ userRole || 'ADMIN' }}</div>
+                <div class="user-name">{{ firstName || (isPharmacist ? 'Pharmacist' : 'Admin User') }}</div>
+                <div class="user-role">{{ isPharmacist ? 'Pharmacist' : 'Administrator' }}</div>
             </div>
         </div>
     </div>

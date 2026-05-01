@@ -2,8 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-pharmacist-topbar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './pharmacist-topbar.component.html',
   styleUrls: ['./pharmacist-topbar.component.scss']
 })

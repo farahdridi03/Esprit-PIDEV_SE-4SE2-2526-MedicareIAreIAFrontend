@@ -28,7 +28,7 @@ export class FrontLayoutComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.isLoggedIn = !!localStorage.getItem('token');
+    this.isLoggedIn = this.authService.isAuthenticated();
     if (this.isLoggedIn) {
       this.fetchNotifications();
       

@@ -1,3 +1,41 @@
+.patient-portal-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f9fafb;
+}
+
+.portal-mode {
+  width: 100%;
+  background-color: #f9fafb;
+  min-height: 100%;
+  
+  .content-area {
+    overflow-y: visible; /* Let portal handle scrolling if needed */
+  }
+  
+  .page-container {
+    margin: 0;
+    padding: 2rem;
+    max-width: 100%;
+  }
+}
+
+.main-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #f9fafb;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+}
+
 /* Page Container */
 .page-container {
   max-width: 1200px;
@@ -451,4 +489,132 @@
   .title-section h1 {
     font-size: 2.5rem;
   }
+}
+
+// ── Shared Seat Layouts ───────────────────────────────────────
+$border:     #e0f2fe;
+$text:       #0f172a;
+$muted:      #64748b;
+$green:  #10b981;
+$red:    #ef4444;
+$gray:   #94a3b8;
+$amber:  #f59e0b;
+$blue:   #0ea5e9;
+$purple: #8b5cf6;
+$c-available: $green;
+$c-reserved:  $red;
+$c-blocked:   $gray;
+$sec-a: #6366f1;
+$sec-b: #0ea5e9;
+$sec-c: #f59e0b;
+
+.no-seats-fallback {
+  padding: 2.5rem;
+  background: #f9fafb;
+  border: 1px dashed #cbd5e1;
+  text-align: center;
+  border-radius: 16px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.patient-seat-map-container {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #f8fafc;
+  border: 1px solid #e0f2fe;
+  padding: 40px 20px;
+  margin-top: 1.5rem;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+}
+
+%seat-base {
+  cursor: default;
+  transition: transform .15s, box-shadow .15s;
+  user-select: none;
+  &.available { 
+    background: $c-available; 
+    cursor: pointer; 
+    &:hover, &.selected { 
+      transform: scale(1.15); 
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6); 
+    } 
+  }
+  &.reserved  { background: $c-reserved; opacity: .75; }
+  &.blocked   { background: $c-blocked;  opacity: .55; }
+}
+
+.hotel-layout { padding-bottom: 40px; }
+.tables-grid { display: flex; flex-wrap: wrap; gap: 60px; justify-content: center; }
+.hotel-table-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.table-ring { position: relative; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; }
+.table-center { width: 56px; height: 56px; border-radius: 50%; background: rgba(139, 92, 246, 0.1); border: 2px solid $purple; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: $purple; z-index: 2; }
+.hotel-seat { @extend %seat-base; position: absolute; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: #fff; top: 50%; left: 50%; margin-top: -15px; margin-left: -15px; transform-origin: center; }
+
+.stadium-layout { padding-bottom: 40px; display: flex; justify-content: center; align-items: center; min-height: 500px; }
+.stadium-wrapper-scale { transform: scale(0.65); transform-origin: top center; width: 100%; display: flex; justify-content: center; }
+.stadium-wrapper { position: relative; width: 960px; height: 640px; margin-top: 20px; }
+.field-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 380px; height: 240px; background: repeating-linear-gradient(90deg, #16a34a, #16a34a 40px, #15803d 40px, #15803d 80px); border: 6px solid rgba(255,255,255,0.8); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; letter-spacing: .1em; font-size: 1.4rem; box-shadow: inset 0 0 60px rgba(0,0,0,0.4), 0 16px 40px rgba(0,0,0,0.6); z-index: 10; overflow: hidden; }
+.field-indicator::before { content: ""; position: absolute; width: 4px; height: 100%; background: rgba(255,255,255,0.7); left: 50%; transform: translateX(-50%); }
+.field-indicator::after { content: ""; position: absolute; width: 80px; height: 80px; border: 4px solid rgba(255,255,255,0.7); border-radius: 50%; left: 50%; transform: translateX(-50%); }
+.goal-area-left, .goal-area-right { position: absolute; width: 40px; height: 100px; border: 3px solid rgba(255,255,255,0.7); top: 50%; transform: translateY(-50%); }
+.goal-area-left { left: 0; border-left: none; }
+.goal-area-right { right: 0; border-right: none; }
+.sections-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.stadium-section { position: absolute; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: 1px solid $border; border-radius: 24px; box-shadow: 0 12px 30px rgba(14, 165, 233, 0.12); display: flex; flex-direction: column; overflow: hidden; }
+.stadium-section:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); width: 640px; border-bottom: 6px solid $sec-a; .section-header { background: rgba(99,102,241,.15); color: $sec-a; } }
+.stadium-section:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); width: 640px; border-top: 6px solid $sec-b; .section-header { background: rgba(14,165,233,.15); color: $sec-b; } }
+.stadium-section:nth-child(3) { top: 50%; right: 0; transform: translateY(-50%); width: 240px; height: 520px; border-left: 6px solid $sec-c; .section-header { background: rgba(245,158,11,.15); color: $sec-c; } .stadium-row { flex-direction: column; gap: 4px; } .row-seats { flex-direction: column; } }
+.section-header { padding: 10px 16px; font-weight: 800; font-size: 0.9rem; text-align: center; text-transform: uppercase; }
+.section-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; overflow: auto; align-items: center; }
+.stadium-row { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.row-label { font-size: 0.65rem; font-weight: 800; color: $muted; min-width: 28px; text-align: center; }
+.row-seats { display: flex; gap: 3px; justify-content: center; }
+.grid-seat { @extend %seat-base; width: 16px; height: 16px; border-radius: 4px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+
+.conference-layout { padding-bottom: 40px; }
+.stage-bar { text-align: center; background: linear-gradient(90deg, transparent, rgba(245,158,11,.22), transparent); border: 1px solid rgba(245,158,11,.35); border-radius: 12px; padding: 16px; font-weight: 700; color: $amber; letter-spacing: .1em; margin-bottom: 32px; font-size: 1rem; }
+.conf-rows { display: flex; flex-direction: column; gap: 12px; }
+.conf-row { display: flex; align-items: center; justify-content: center; gap: 20px; }
+.conf-row .row-label { font-size: 0.8rem; font-weight: 700; color: $muted; min-width: 60px; text-align: right; }
+.conf-row .row-seats { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.chair-seat { @extend %seat-base; display: flex; flex-direction: column; align-items: center; gap: 1px; width: 38px; }
+.chair-seat .chair-back { width: 32px; height: 10px; border-radius: 4px 4px 0 0; background: inherit; filter: brightness(1.2); }
+.chair-seat .chair-body { width: 34px; height: 26px; border-radius: 4px; background: inherit; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: #fff; }
+
+.selection-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-confirm-seat {
+  background: #1A7A5E;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(26, 122, 94, 0.3);
+  transition: all 0.3s ease;
+  &:hover {
+    background: #14634d;
+    transform: scale(1.02);
+    box-shadow: 0 15px 30px rgba(26, 122, 94, 0.4);
+  }
+}
+
+.section-desc {
+  color: #6b7280;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
 }

@@ -21,6 +21,7 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
     showNotifications: boolean = false;
     userRole: string | null = null;
     isPharmacist: boolean = false;
+    isAdmin: boolean = false;
     private wsSubscription: Subscription | null = null;
 
     constructor(
@@ -36,6 +37,7 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
         const rawRole = this.authService.getUserRole();
         this.userRole = rawRole ? rawRole.toUpperCase() : null;
         this.isPharmacist = this.userRole === 'PHARMACIST';
+        this.isAdmin = this.userRole === 'ADMIN';
 
         this.loadUserInfo();
         this.userService.getProfile().subscribe({

@@ -1,4 +1,5 @@
-<div class="sidebar">
+<div class="sidebar" [class.pharmacist-theme]="isPharmacist" [class.admin-theme]="isAdmin">
+    <!-- Brand Section -->
     <div class="brand">
         <div class="logo-icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -7,13 +8,15 @@
         </div>
         <div class="brand-text">
             <h3>MEDICAREAI</h3>
-            <span>Admin Portal</span>
+            <span *ngIf="isAdmin">Admin Portal</span>
+            <span *ngIf="isPharmacist">Pharmacist Portal</span>
         </div>
     </div>
 
     <div class="sidebar-divider"></div>
 
-    <nav class="sidebar-menu">
+    <!-- ADMIN SIDEBAR MENU -->
+    <nav class="sidebar-menu" *ngIf="isAdmin">
         <div class="nav-label">Overview</div>
         <ul>
             <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" routerLink="/admin/dashboard">
@@ -74,14 +77,32 @@
         </ul>
     </nav>
 
+    <!-- PHARMACIST SIDEBAR MENU -->
     <nav class="sidebar-menu" *ngIf="isPharmacist">
-        <div class="nav-label">Pharmacist Portal</div>
+        <div class="nav-label">Overview</div>
         <ul>
             <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" routerLink="/pharmacist/stock/dashboard">
                 <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg></span>
                 Dashboard
             </li>
         </ul>
+
+        <div class="nav-label">Medical Services</div>
+        <ul>
+            <li routerLinkActive="active" routerLink="/pharmacist/stock/events">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg></span>
+                Events
+            </li>
+            <li routerLinkActive="active" routerLink="/pharmacist/stock/donations">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg></span>
+                Donations & Aid
+            </li>
+            <li routerLinkActive="active" routerLink="/pharmacist/stock/forum">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" /></svg></span>
+                Forum & Posts
+            </li>
+        </ul>
+
         <div class="nav-label">Store Operations</div>
         <ul>
             <li routerLinkActive="active" routerLink="/pharmacist/stock/pharmacies">
@@ -103,22 +124,28 @@
             <li routerLinkActive="active" routerLink="/pharmacist/stock/predictions">
                 <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg></span>
                 Smart Replenishment
-                <span class="nav-badge badge-white">New</span>
             </li>
             <li routerLinkActive="active" routerLink="/pharmacist/stock/expiration-risks">
                 <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
                 Expiry Radar
-                <span class="nav-badge badge-amber">Risk</span>
+            </li>
+        </ul>
+
+        <div class="nav-label">Settings</div>
+        <ul>
+            <li routerLinkActive="active" routerLink="/front/pharmacist/profile">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg></span>
+                Profile Settings
             </li>
         </ul>
     </nav>
 
     <div class="sidebar-footer">
         <div class="admin-card">
-            <div class="admin-avatar">{{ firstName ? firstName.substring(0,2).toUpperCase() : 'AD' }}</div>
+            <div class="admin-avatar">{{ firstName ? firstName.substring(0,2).toUpperCase() : (isAdmin ? 'AD' : 'PH') }}</div>
             <div class="admin-meta">
-                <div class="name">{{ firstName || 'Admin User' }}</div>
-                <div class="role">System Administrator</div>
+                <div class="name">{{ firstName || (isAdmin ? 'Admin User' : 'Pharmacist') }}</div>
+                <div class="role">{{ isAdmin ? 'System Administrator' : 'Pharmacist' }}</div>
             </div>
         </div>
         <button class="logout-btn" (click)="logout()">

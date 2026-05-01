@@ -24,9 +24,9 @@
             </div>
             <h3 class="suggestion-title">{{ s.title }}</h3>
             <p class="suggestion-desc">{{ s.description }}</p>
-            <div class="suggestion-author" *ngIf="s.suggestedBy">
-                <span class="author-avatar">{{ s.suggestedBy.fullName?.charAt(0) }}</span>
-                <span>{{ s.suggestedBy.fullName }} <em>({{ s.suggestedBy.email }})</em></span>
+            <div class="suggestion-author" *ngIf="s.suggestedBy as author">
+                <span class="author-avatar">{{ author.fullName.charAt(0) }}</span>
+                <span>{{ author.fullName }} <em>({{ author.email }})</em></span>
             </div>
             <div class="card-actions">
                 <button class="btn-create" (click)="createEventFromSuggestion(s)">

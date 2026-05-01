@@ -6,6 +6,11 @@ import { AuthService } from '../../../../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import * as L from 'leaflet';
 
+interface HotelTable  { tableNumber: number; seats: any[]; }
+interface StadiumRow  { rowNumber: number;   seats: any[]; }
+interface StadiumSection { name: string; rows: StadiumRow[]; }
+interface ConferenceRow  { rowNumber: number; seats: any[]; }
+
 @Component({
   selector: 'app-event-details',
   templateUrl: './event-details.component.html',
@@ -25,6 +30,10 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   // Seat map state
   seats: any[] = [];
   selectedSeat: any = null;
+
+  hotelTables: HotelTable[] = [];
+  stadiumSections: StadiumSection[] = [];
+  conferenceRows: ConferenceRow[] = [];
 
   // Feedback state
   feedbackSubmitted = false;
@@ -129,8 +138,62 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   loadSeats() {
     this.eventService.getEventSeats(this.eventId).subscribe(res => {
       this.seats = res;
+      this.groupSeats();
     });
   }
+
+  groupSeats() {
+    if (!this.event) return;
+    switch (this.event.venueType) {
+      case 'HOTEL':      this.groupHotel();      break;
+      case 'STADIUM':    this.groupStadium();    break;
+      case 'CONFERENCE': this.groupConference(); break;
+    }
+  }
+
+  private groupHotel() {
+    const map = new Map<number, any[]>();
+    this.seats.forEach(s => {
+      const t = s.tableNumber ?? 0;
+      if (!map.has(t)) map.set(t, []);
+      map.get(t)!.push(s);
+    });
+    this.hotelTables = Array.from(map.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([tableNumber, seats]) => ({ tableNumber, seats }));
+  }
+
+  private groupStadium() {
+    const sectionMap = new Map<string, Map<number, any[]>>();
+    this.seats.forEach(s => {
+      const zone = s.zoneName ?? 'Zone';
+      const row  = s.rowNumber ?? 0;
+      if (!sectionMap.has(zone)) sectionMap.set(zone, new Map());
+      const rowMap = sectionMap.get(zone)!;
+      if (!rowMap.has(row)) rowMap.set(row, []);
+      rowMap.get(row)!.push(s);
+    });
+    this.stadiumSections = Array.from(sectionMap.entries()).map(([name, rowMap]) => ({
+      name,
+      rows: Array.from(rowMap.entries())
+        .sort(([a], [b]) => a - b)
+        .map(([rowNumber, seats]) => ({ rowNumber, seats }))
+    }));
+  }
+
+  private groupConference() {
+    const map = new Map<number, any[]>();
+    this.seats.forEach(s => {
+      const r = s.rowNumber ?? 0;
+      if (!map.has(r)) map.set(r, []);
+      map.get(r)!.push(s);
+    });
+    this.conferenceRows = Array.from(map.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([rowNumber, seats]) => ({ rowNumber, seats }));
+  }
+
+  trackById(_: number, item: any) { return item.id; }
 
   checkParticipationStatus() {
     if (localStorage.getItem('token')) {

@@ -4,9 +4,14 @@ import { EventService } from '../../../../../services/event.service';
 import { MedicalEvent, EventType } from '../../../../../models/event.model';
 import { AuthService } from '../../../../../services/auth.service';
 import { EventSuggestionService } from '../../../../../services/event-suggestion.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-events-discovery',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './events-discovery.component.html',
   styleUrls: ['./events-discovery.component.scss']
 })
@@ -81,7 +86,15 @@ export class EventsDiscoveryComponent implements OnInit {
         this.router.navigate(['/auth/login']);
         return;
     }
-    this.router.navigate(['/front/events', id]);
+    
+    const role = this.authService.getUserRole();
+    if (role === 'PHARMACIST') {
+        this.router.navigate(['/pharmacist/stock/events', id]);
+    } else if (role === 'PATIENT') {
+        this.router.navigate(['/front/events', id]); // Or /front/patient/events if they have a specific page
+    } else {
+        this.router.navigate(['/front/events', id]);
+    }
   }
 
   suggestEvent() {

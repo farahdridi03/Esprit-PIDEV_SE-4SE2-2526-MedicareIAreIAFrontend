@@ -176,6 +176,7 @@ export class AdminEventFormComponent implements OnInit {
       description: ['', Validators.required],
       date: ['', Validators.required],
       eventType: ['PHYSICAL', Validators.required],
+      venueType: [''],
       venueName: [''], address: [''], city: [''], postalCode: [''], country: ['Tunisia'], capacity: [''],
       ticketPrice: [0],
       platformName: [''], meetingLink: [''], meetingPassword: [''],
@@ -198,7 +199,7 @@ export class AdminEventFormComponent implements OnInit {
   }
 
   updateValidators(type: string) {
-    const physical = ['venueName', 'address', 'city', 'country'];
+    const physical = ['venueName', 'address', 'city', 'country', 'venueType'];
     const online = ['platformName', 'meetingLink'];
     if (type === 'PHYSICAL') {
       physical.forEach(c => this.eventForm.get(c)?.setValidators(Validators.required));
@@ -262,6 +263,7 @@ export class AdminEventFormComponent implements OnInit {
       formValue.city = null;
       formValue.postalCode = null;
       formValue.country = null;
+      formValue.venueType = null;
       formValue.capacity = null;
     }
 

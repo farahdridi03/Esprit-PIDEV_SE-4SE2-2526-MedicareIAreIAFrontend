@@ -7,13 +7,13 @@ import { PharmacistTopbarComponent } from './components/pharmacist-topbar/pharma
 
 @NgModule({
   declarations: [
-    PharmacistDashboardComponent,
-    PharmacistSidebarComponent,
-    PharmacistTopbarComponent
+    PharmacistDashboardComponent
   ],
   imports: [
     CommonModule,
-    PharmacistRoutingModule
+    PharmacistRoutingModule,
+    PharmacistSidebarComponent,
+    PharmacistTopbarComponent
   ]
 })
 export class PharmacistModule { }

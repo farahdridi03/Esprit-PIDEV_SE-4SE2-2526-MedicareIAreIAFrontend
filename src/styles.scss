@@ -38,6 +38,19 @@ input, button, select, textarea {
   --r-lg: 22px;
 }
 
+.pharmacist-theme {
+  --indigo: #1A7A5E;
+  --indigo-dark: #14614A;
+  --indigo-light: #10b981;
+  --violet: #1A7A5E;
+  --pink: #10b981;
+  --bg: #f9fafb;
+}
+
+.admin-theme {
+  /* Default violet theme */
+}
+
 body {
   font-family: var(--font-h);
   background: var(--bg);
