@@ -103,7 +103,7 @@ export class PharmacistSetupModalComponent implements OnInit {
 
   ngOnInit() {
     if (this.authService.getUserRole() === 'PHARMACIST') {
-      this.authService.pharmacistProfile$.subscribe(profile => {
+      this.authService.pharmacistProfile$.subscribe((profile: any) => {
         if (profile && !profile.pharmacySetupCompleted) {
           this.showModal = true;
         } else {

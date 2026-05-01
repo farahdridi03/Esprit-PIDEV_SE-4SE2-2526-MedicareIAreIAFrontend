@@ -49,4 +49,12 @@ export class StockService {
   resolveAlert(alertId: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/alerts/${alertId}/resolve`, {});
   }
+
+  getExpirationRiskDashboard(pharmacyId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/pharmacy/${pharmacyId}/expiration-risks`);
+  }
+
+  predictReplenishment(pharmacyId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/pharmacy/${pharmacyId}/replenishment-predictions`);
+  }
 }

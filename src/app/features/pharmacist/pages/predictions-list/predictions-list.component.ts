@@ -50,11 +50,11 @@ export class PredictionsListComponent implements OnInit {
     this.errorMessage = null;
 
     this.stockService.predictReplenishment(this.activePharmacyId).subscribe({
-      next: (data) => {
+      next: (data: ReplenishmentPrediction[]) => {
         this.predictions = data;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Failed to load predictions:', err);
         this.errorMessage = 'Could not calculate prediction data. Please try again later.';
         this.isLoading = false;

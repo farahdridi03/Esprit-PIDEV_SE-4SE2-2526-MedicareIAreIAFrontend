@@ -39,7 +39,7 @@ export class PharmacistBannerComponent implements OnInit {
 
   ngOnInit() {
     if (this.authService.getUserRole() === 'PHARMACIST') {
-      this.authService.pharmacistProfile$.subscribe(profile => {
+      this.authService.pharmacistProfile$.subscribe((profile: any) => {
         if (profile && profile.pharmacySetupCompleted) {
           if (profile.status === 'PENDING') {
             this.showPendingBanner = true;

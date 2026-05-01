@@ -15,6 +15,8 @@ export class AuthService {
     private readonly TOKEN_KEY = 'auth_token';
     private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
     public authStatus$ = this.authStatusSubject.asObservable();
+    private pharmacistProfileSubject = new BehaviorSubject<any>(null);
+    public pharmacistProfile$ = this.pharmacistProfileSubject.asObservable();
 
     constructor(private http: HttpClient, private router: Router) { }
 
@@ -39,6 +41,10 @@ export class AuthService {
     // The backend expects multipart/form-data
     register(formData: FormData): Observable<string> {
         return this.http.post(`${this.baseUrl}/register`, formData, { responseType: 'text' }) as Observable<string>;
+    }
+
+    setupPharmacy(formData: any): Observable<any> {
+        return this.http.post(`${this.baseUrl}/setup-pharmacy`, formData);
     }
 
     logout(): void {

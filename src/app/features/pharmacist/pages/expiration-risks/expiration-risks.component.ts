@@ -50,11 +50,11 @@ export class ExpirationRisksComponent implements OnInit {
     this.errorMessage = null;
 
     this.stockService.getExpirationRiskDashboard(this.activePharmacyId).subscribe({
-      next: (data) => {
+      next: (data: ExpirationRisk[]) => {
         this.risks = data;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Failed to load expiration risks:', err);
         this.errorMessage = 'Could not load expiration dashboard. Please try again later.';
         this.isLoading = false;
