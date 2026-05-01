@@ -3,6 +3,7 @@ import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { EmergencyService, EmergencyAlertResponse } from '../../../../../services/emergency.service';
 import { AmbulanceService } from '../../../../../services/ambulance.service';
+import { UserResponseDTO } from '../../../../../models/user.model';
 
 @Component({
   selector: 'app-clinic-topbar',
@@ -32,12 +33,13 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserResponseDTO) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
         this.photo = (user as any).photo || null;
       },
+
       error: (err) => console.error('Error fetching clinic profile', err)
     });
 

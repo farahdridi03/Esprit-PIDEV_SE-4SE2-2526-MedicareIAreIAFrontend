@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
+
 import { PatientService } from '../../../../../services/patient.service';
 import { ConsultationService } from '../../../../../services/consultation.service';
 import { LifestyleService } from '../../../../../services/lifestyle.service';
 import { forkJoin, catchError, of } from 'rxjs';
+
+import { UserResponseDTO } from '../../../../../models/user.model';
+
 
 @Component({
     selector: 'app-nutritionist-dashboard',
@@ -32,12 +36,12 @@ export class NutritionistDashboardComponent implements OnInit {
     this.loadStats();
     
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserResponseDTO) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching nutritionist profile', err);
       }
     });

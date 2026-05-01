@@ -34,6 +34,8 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
+
+
     updateProfile(request: UpdateProfileRequest): Observable<any> {
         return this.http.put(`${this.baseUrlLegacy}/profile`, request);
     }
