@@ -17,6 +17,7 @@ export class RegisterComponent {
   registerForm: FormGroup;
   errorMessage: string = '';
   selectedFile: File | null = null;
+  gpsDetected = false;
   eighteenYearsAgoDate: string = '';
 
   roles = [
@@ -76,6 +77,8 @@ export class RegisterComponent {
       pharmacyName: [''],
       pharmacyAddress: [''],
       pharmacyPhone: [''],
+      locationLat: [null],
+      locationLng: [null],
       // Provider / Pharmacist document
       certificationDocument: [''],
       // Provider specialty
@@ -150,6 +153,23 @@ export class RegisterComponent {
 
   get isProvider(): boolean {
     return this.registerForm.get('role')?.value === 'HOME_CARE_PROVIDER';
+  }
+
+  detectGPS(): void {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.registerForm.patchValue({
+          locationLat: parseFloat(position.coords.latitude.toFixed(6)),
+          locationLng: parseFloat(position.coords.longitude.toFixed(6))
+        });
+        this.gpsDetected = true;
+      },
+      () => alert('Unable to retrieve your location. Please enter coordinates manually.')
+    );
   }
 
   onFileSelected(event: any): void {

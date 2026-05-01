@@ -15,6 +15,7 @@ import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.co
 import { EventsListComponent } from './pages/events-list/events-list.component';
 import { EventFormComponent } from './pages/event-form/event-form.component';
 import { EventRegistrationsComponent } from './pages/event-registrations/event-registrations.component';
+import { AdminPharmacyMonitorComponent } from './pages/admin-pharmacy-monitor/admin-pharmacy-monitor.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { EventRegistrationsComponent } from './pages/event-registrations/event-r
     AdminRequestsComponent,
     EventFormComponent,
     EventRegistrationsComponent,
-    EventsListComponent
+    EventsListComponent,
+    AdminPharmacyMonitorComponent
   ],
   imports: [
     CommonModule,

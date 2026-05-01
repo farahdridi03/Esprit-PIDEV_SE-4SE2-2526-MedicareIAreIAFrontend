@@ -280,6 +280,29 @@
             </div>
           </div>
 
+          <!-- Pharmacy GPS Coordinates -->
+          <div class="form-group margin-top">
+            <label>Pharmacy GPS Coordinates <span style="color:#0e7c66;font-size:0.85rem">(recommended for accurate delivery time)</span></label>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <div class="input-wrapper" style="flex:1;min-width:120px">
+                <input type="number" step="any" formControlName="locationLat"
+                  placeholder="Latitude (ex: 36.799)" style="padding-left:12px">
+              </div>
+              <div class="input-wrapper" style="flex:1;min-width:120px">
+                <input type="number" step="any" formControlName="locationLng"
+                  placeholder="Longitude (ex: 10.128)" style="padding-left:12px">
+              </div>
+              <button type="button" class="gps-btn" (click)="detectGPS()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:16px;height:16px;margin-right:4px">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Detect my position
+              </button>
+            </div>
+            <small *ngIf="gpsDetected" style="color:#0e7c66">✅ GPS position detected successfully</small>
+          </div>
+
           <!-- Pharmacy Phone -->
           <div class="form-group margin-top">
             <label for="pharmacyPhone">Téléphone de la Pharmacie</label>

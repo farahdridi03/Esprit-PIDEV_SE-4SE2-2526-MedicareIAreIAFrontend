@@ -12,6 +12,7 @@ import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.co
 import { EventsListComponent } from './pages/events-list/events-list.component';
 import { EventFormComponent } from './pages/event-form/event-form.component';
 import { EventRegistrationsComponent } from './pages/event-registrations/event-registrations.component';
+import { AdminPharmacyMonitorComponent } from './pages/admin-pharmacy-monitor/admin-pharmacy-monitor.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
       { path: 'validations', component: PharmacistValidationComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'homecare-providers', component: AdminProvidersComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'homecare-requests', component: AdminRequestsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'pharmacy-monitor', component: AdminPharmacyMonitorComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'events', component: EventsListComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'events/new', component: EventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'events/edit/:id', component: EventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },

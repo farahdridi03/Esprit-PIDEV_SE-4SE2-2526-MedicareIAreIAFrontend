@@ -9,9 +9,6 @@ import { AppComponent } from './app.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastComponent } from './components/toast/toast.component';
-import { AlertsListComponent } from './features/front-office/pharmacist/pages/alerts-list/alerts-list.component';
-import { EventDetailComponent } from './features/front-office/pages/event-detail/event-detail.component';
-import { PatientEventsComponent } from './features/front-office/pages/patient-events/patient-events.component';
 
 @NgModule({
   declarations: [

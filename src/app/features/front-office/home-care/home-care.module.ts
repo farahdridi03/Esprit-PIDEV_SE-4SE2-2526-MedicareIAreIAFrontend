@@ -10,6 +10,7 @@ import { HomeCareDashboardComponent } from './pages/home-care-dashboard/home-car
 import { ProviderDashboardComponent } from './pages/provider-dashboard/provider-dashboard.component';
 import { ProviderAvailabilityComponent } from './pages/provider-availability/provider-availability.component';
 import { ProviderRequestDetailComponent } from './pages/provider-request-detail/provider-request-detail.component';
+import { SymptomCheckerComponent } from './pages/symptom-checker/symptom-checker.component';
 
 const routes: Routes = [
     {
@@ -36,6 +37,10 @@ const routes: Routes = [
     {
         path: 'requests/:id',
         component: ProviderRequestDetailComponent
+    },
+    {
+        path: 'symptom-checker',
+        component: SymptomCheckerComponent
     }
 ];
 
@@ -46,7 +51,8 @@ const routes: Routes = [
         HomeCareDashboardComponent,
         ProviderDashboardComponent,
         ProviderAvailabilityComponent,
-        ProviderRequestDetailComponent
+        ProviderRequestDetailComponent,
+        SymptomCheckerComponent
     ],
     imports: [
         CommonModule,

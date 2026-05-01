@@ -168,6 +168,15 @@
                                     <span class="label">Deadline:</span>
                                     <span class="value">{{ order.scheduledDeliveryDate ? (order.scheduledDeliveryDate | date:'mediumDate') : 'As soon as possible' }}</span>
                                 </div>
+                                <div class="data-row ai-prediction" *ngIf="order.deliveryType === 'HOME_DELIVERY' && order.estimatedDeliveryMin">
+                                    <span class="label">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px;display:inline;margin-right:4px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                        </svg>
+                                        AI Estimate:
+                                    </span>
+                                    <span class="value ai-value">~{{ order.estimatedDeliveryMin }} min</span>
+                                </div>
                             </div>
                         </div>
 
@@ -218,46 +227,17 @@
                         </div>
                     </div>
 
-                    <!-- WebSocket Live Tracking -->
-                    <div class="tracking-section card" *ngIf="delivery">
+                    <!-- AI Delivery Route Map -->
+                    <div class="tracking-section card" *ngIf="showMap && order?.deliveryType === 'HOME_DELIVERY'">
                         <div class="card-header">
                             <div class="live-indicator">
                                 <span class="dot"></span>
-                                LIVE TRACKING
+                                AI ROUTE SIMULATION
                             </div>
-                            <h3>Delivery Location</h3>
+                            <h3>Delivery Simulation — ~{{ order?.estimatedDeliveryMin }} min</h3>
                         </div>
-                        <div class="card-body">
-                            <div class="tracking-meta">
-                                <div class="meta-item">\n                                    <span class="label">Courier</span>
-                                    <span class="value">{{ delivery.agencyName }}</span>
-                                </div>
-                                <div class="meta-item">
-                                    <span class="label">Status</span>
-                                    <span class="value highlight">{{ delivery.status }}</span>
-                                </div>
-                                <div class="meta-item" *ngIf="delivery.estimatedArrival">
-                                    <span class="label">Expected arrival</span>
-                                    <span class="value time">{{ delivery.estimatedArrival | date:'shortTime' }}</span>
-                                </div>
-                            </div>
-
-                            <div class="live-map">
-                                <div class="delivery-marker" [style.left.%]="delivery.currentLng ? (50 + (delivery.currentLng % 1) * 10) : 45" [style.top.%]="delivery.currentLat ? (50 + (delivery.currentLat % 1) * 10) : 45">
-                                    <div class="marker-pin">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                                        </svg>
-                                    </div>
-                                    <div class="marker-label">Courier position</div>
-                                </div>
-                                <div class="map-status">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" [class.pulse]="delivery.currentLat">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                                    </svg>
-                                    <span>{{ delivery.currentLat ? 'Position updated in real time' : 'Waiting for GPS signal...' }}</span>
-                                </div>
-                            </div>
+                        <div class="card-body" style="padding:0">
+                            <div id="delivery-map" style="height:350px; width:100%; border-radius:0 0 12px 12px;"></div>
                         </div>
                     </div>
 

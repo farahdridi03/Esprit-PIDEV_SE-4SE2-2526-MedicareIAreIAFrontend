@@ -11,6 +11,13 @@ export class ProductListComponent implements OnInit {
   products: Product[] = [];
   loading = false;
   viewState: 'list' | 'add' | 'edit' = 'list';
+
+  currentPage = 1; pageSize = 8;
+  get totalPages() { return Math.ceil(this.products.length / this.pageSize); }
+  get pagedProducts() { const s = (this.currentPage - 1) * this.pageSize; return this.products.slice(s, s + this.pageSize); }
+  get pages() { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
+  get pageEnd() { return Math.min(this.currentPage * this.pageSize, this.products.length); }
+  goToPage(p: number) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; }
   fieldErrors: { [key: string]: string } = {};
   globalError: string | null = null;
 
@@ -41,6 +48,7 @@ export class ProductListComponent implements OnInit {
     this.productService.getAllProducts().subscribe({
       next: (res: Product[]) => {
         this.products = res;
+        this.currentPage = 1;
         this.loading = false;
       },
       error: (err) => {

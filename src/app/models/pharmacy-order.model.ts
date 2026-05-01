@@ -30,6 +30,7 @@ export interface PharmacyOrderResponseDTO {
   createdAt: string;
   updatedAt: string;
   prescriptionImageUrl?: string;
+  estimatedDeliveryMin?: number;
   items: OrderItemDTO[];
   trackingHistory: OrderTrackingDTO[];
 }
@@ -113,4 +114,48 @@ export interface TopProductDTO {
   productName: string;
   totalQuantitySold: number;
   totalRevenue: number;
+}
+
+export interface ProductSalesStatsDTO {
+  productId: number;
+  productName: string;
+  productCategory: string;
+  totalQuantitySold: number;
+  totalRevenue: number;
+}
+
+export type UrgencyLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+
+export interface OrderAgingDTO {
+  orderId: number;
+  pharmacyName: string;
+  patientName: string;
+  status: string;
+  createdAt: string;
+  hoursWaiting: number;
+  urgencyLevel: UrgencyLevel;
+}
+
+export interface EscalationResultDTO {
+  escalated: number;
+  message: string;
+  triggeredAt: string;
+}
+
+export interface AssignmentResultDTO {
+  requestId: number;
+  assignedProviderId: number;
+  providerName: string;
+  providerRating: number;
+  currentWorkload: number;
+  assignedAt: string;
+}
+
+export interface ProviderScoreDTO {
+  providerId: number;
+  providerName: string;
+  rating: number;
+  workload: number;
+  score: number;
+  available: boolean;
 }

@@ -7,14 +7,18 @@ import {
   ProviderProfileDTO,
   ServiceRequest,
   CreateServiceRequestDTO,
+  FastBookRequestDTO,
+  FastBookResultDTO,
   SubmitReviewDTO,
   ServiceReview,
   ProviderAvailability,
   AvailabilityDTO,
   AvailableSlot,
   CalendarEvent,
-  CompleteRequestDTO
+  CompleteRequestDTO,
+  ServiceRecommendationDTO
 } from '../models/homecare.model';
+import { AssignmentResultDTO, ProviderScoreDTO } from '../models/pharmacy-order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -198,5 +202,26 @@ export class HomecareService {
 
   updateService(id: number, service: HomeCareService): Observable<HomeCareService> {
     return this.http.put<HomeCareService>(`${this.apiUrl}/admin/services/${id}`, service);
+  }
+
+  // HomeCareAssignmentService — auto-assigne le meilleur prestataire disponible
+  autoAssignRequest(requestId: number): Observable<AssignmentResultDTO> {
+    return this.http.post<AssignmentResultDTO>(`${this.apiUrl}/admin/requests/${requestId}/auto-assign`, {});
+  }
+
+  // Classement des prestataires selon score (dispo + charge + note)
+  rankProviders(serviceId: number, requestedDateTime: string): Observable<ProviderScoreDTO[]> {
+    const params = new HttpParams().set('dateTime', requestedDateTime);
+    return this.http.get<ProviderScoreDTO[]>(`${this.apiUrl}/admin/services/${serviceId}/rank-providers`, { params });
+  }
+
+  // Fast Booking — réservation automatique avec le meilleur provider disponible
+  fastBook(dto: FastBookRequestDTO): Observable<FastBookResultDTO> {
+    return this.http.post<FastBookResultDTO>(`${this.apiUrl}/requests/fast-book`, dto);
+  }
+
+  // AI Symptom Checker — recommandation de service basée sur les symptômes
+  recommendService(symptoms: string): Observable<ServiceRecommendationDTO> {
+    return this.http.post<ServiceRecommendationDTO>(`${this.apiUrl}/recommend-service`, { symptoms });
   }
 }

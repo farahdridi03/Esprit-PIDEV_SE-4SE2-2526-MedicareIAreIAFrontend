@@ -11,9 +11,15 @@ export class UserManagementComponent implements OnInit {
 
   users: UserResponseDTO[] = [];
   loading: boolean = false;
-
   viewState: 'list' | 'add' | 'edit' = 'list';
   filterRole: string = 'ALL';
+
+  currentPage = 1; pageSize = 8;
+  get totalPages() { return Math.ceil(this.users.length / this.pageSize); }
+  get pagedUsers() { const s = (this.currentPage - 1) * this.pageSize; return this.users.slice(s, s + this.pageSize); }
+  get pages() { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
+  get pageEnd() { return Math.min(this.currentPage * this.pageSize, this.users.length); }
+  goToPage(p: number) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; }
 
   // Form fields
   currentId: number | null = null;
@@ -45,6 +51,7 @@ export class UserManagementComponent implements OnInit {
     fetchObs.subscribe({
       next: (res) => {
         this.users = res;
+        this.currentPage = 1;
         this.loading = false;
       },
       error: (err) => {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StockService } from '../../../../../services/stock.service';
 import { StockMovement, StockMovementRequest } from '../../../../../models/stock.model';
 
@@ -9,80 +9,86 @@ import { StockMovement, StockMovementRequest } from '../../../../../models/stock
   styleUrls: ['./movements-list.component.scss']
 })
 export class MovementsListComponent implements OnInit {
-  stockId!: number;
+  pharmacyStockId!: number;
   movements: StockMovement[] = [];
   loading = false;
-  viewState: 'list' | 'add' = 'list';
-  fieldErrors: { [key: string]: string } = {};
-  globalError: string | null = null;
+  error: string | null = null;
+  showForm = false;
+
+  currentPage = 1; pageSize = 8;
+  get totalPages() { return Math.ceil(this.movements.length / this.pageSize); }
+  get pagedMovements() { const s = (this.currentPage - 1) * this.pageSize; return this.movements.slice(s, s + this.pageSize); }
+  get pages() { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
+  get pageEnd() { return Math.min(this.currentPage * this.pageSize, this.movements.length); }
+  goToPage(p: number) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; }
+
+  movementTypes = ['IN', 'OUT', 'ADJUSTMENT', 'RETURN', 'TRANSFER'];
 
   formModel: StockMovementRequest = {
     pharmacyStockId: 0,
     movementType: 'IN',
-    quantity: 1,
+    quantity: 0,
     reference: ''
   };
 
-  movementTypes = ['IN', 'OUT', 'ADJUSTMENT', 'RETURN', 'TRANSFER'];
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private stockService: StockService
+  ) {}
 
-  constructor(private route: ActivatedRoute, private stockService: StockService) { }
+  ngOnInit(): void {
+    this.pharmacyStockId = Number(this.route.snapshot.paramMap.get('pharmacyStockId'));
+    this.formModel.pharmacyStockId = this.pharmacyStockId;
+    this.loadMovements();
+  }
 
-  ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.stockId = Number(params.get('pharmacyStockId'));
-      if (this.stockId) {
-        this.formModel.pharmacyStockId = this.stockId;
-        this.loadMovements();
+  loadMovements(): void {
+    this.loading = true;
+    this.error = null;
+    this.stockService.getMovementsByStockId(this.pharmacyStockId).subscribe({
+      next: (res) => {
+        this.movements = res;
+        this.currentPage = 1;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load movements', err);
+        this.error = 'Failed to load movements.';
+        this.loading = false;
       }
     });
   }
 
-  loadMovements() {
-    this.loading = true;
-    this.stockService.getMovementsByStockId(this.stockId).subscribe({
-      next: (res: StockMovement[]) => { this.movements = res; this.loading = false; },
-      error: (err: any) => { console.error(err); this.loading = false; }
-    });
-  }
-
-  viewAdd() {
+  openForm(): void {
     this.formModel = {
-      pharmacyStockId: this.stockId,
+      pharmacyStockId: this.pharmacyStockId,
       movementType: 'IN',
-      quantity: 1,
+      quantity: 0,
       reference: ''
     };
-    this.fieldErrors = {};
-    this.globalError = null;
-    this.viewState = 'add';
+    this.showForm = true;
   }
 
-  cancelForm() {
-    this.viewState = 'list';
+  cancelForm(): void {
+    this.showForm = false;
   }
 
-  saveMovement() {
+  saveMovement(): void {
     this.loading = true;
-    this.fieldErrors = {};
-    this.globalError = null;
-
     this.stockService.addMovement(this.formModel).subscribe({
       next: () => {
-        this.viewState = 'list';
+        this.showForm = false;
         this.loadMovements();
       },
-      error: err => {
-        console.error(err);
+      error: (err) => {
+        console.error('Failed to add movement', err);
         this.loading = false;
-
-        if (err.error?.fields) {
-          this.fieldErrors = err.error.fields;
-        } else if (err.error?.message) {
-          this.globalError = err.error.message;
-        } else {
-          this.globalError = 'An unexpected error occurred while saving the movement.';
-        }
       }
     });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/pharmacist/inventory']);
   }
 }

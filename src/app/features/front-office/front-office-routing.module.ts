@@ -18,10 +18,6 @@ import { HomecareReviewComponent } from './patient/pages/homecare-review/homecar
 import { AuthGuard } from '../../guards/auth.guard';
 import { PharmaciesListComponent } from './pharmacist/pages/pharmacies-list/pharmacies-list.component';
 import { ProductListComponent } from './pharmacist/pages/product-list/product-list.component';
-import { InventoryListComponent } from './pharmacist/pages/inventory-list/inventory-list.component';
-import { BatchesListComponent } from './pharmacist/pages/batches-list/batches-list.component';
-import { MovementsListComponent } from './pharmacist/pages/movements-list/movements-list.component';
-import { AlertsListComponent } from './pharmacist/pages/alerts-list/alerts-list.component';
 import { EventDetailComponent } from './pages/event-detail/event-detail.component';
 import { PatientEventsComponent } from './pages/patient-events/patient-events.component';
 

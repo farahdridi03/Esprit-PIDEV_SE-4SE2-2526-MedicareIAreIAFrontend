@@ -13,6 +13,13 @@ export class EventsListComponent implements OnInit {
   filteredEvents: MedicalEvent[] = [];
   loading = false;
 
+  currentPage = 1; pageSize = 8;
+  get totalPages() { return Math.ceil(this.filteredEvents.length / this.pageSize); }
+  get pagedEvents() { const s = (this.currentPage - 1) * this.pageSize; return this.filteredEvents.slice(s, s + this.pageSize); }
+  get pages() { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
+  get pageEnd() { return Math.min(this.currentPage * this.pageSize, this.filteredEvents.length); }
+  goToPage(p: number) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; }
+
   searchTerm = '';
   typeFilter: 'ALL' | EventType = 'ALL';
 
@@ -38,6 +45,7 @@ export class EventsListComponent implements OnInit {
   }
 
   applyFilters() {
+    this.currentPage = 1;
     this.filteredEvents = this.events.filter(e => {
       const matchSearch = e.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         e.description.toLowerCase().includes(this.searchTerm.toLowerCase());

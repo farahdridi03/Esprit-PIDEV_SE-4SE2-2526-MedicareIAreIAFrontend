@@ -6,6 +6,8 @@ import { ServiceRequest, CompleteRequestDTO } from '../../../../../models/homeca
 import { ToastService } from '../../../../../services/toast.service';
 import { Subscription } from 'rxjs';
 
+declare var Chart: any;
+
 @Component({
   selector: 'app-provider-dashboard',
   templateUrl: './provider-dashboard.component.html',
@@ -25,6 +27,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     completed: 0
   };
 
+  private statusChart: any = null;
   private notificationSub?: Subscription;
 
   constructor(
@@ -76,6 +79,38 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
       active: this.requests.filter(r => r.status === 'IN_PROGRESS').length,
       completed: this.requests.filter(r => r.status === 'COMPLETED').length
     };
+    setTimeout(() => this.drawStatusChart(), 100);
+  }
+
+  private drawStatusChart(): void {
+    const canvas = document.getElementById('providerStatusChart') as HTMLCanvasElement;
+    if (!canvas) return;
+    if (this.statusChart) this.statusChart.destroy();
+
+    this.statusChart = new Chart(canvas.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Pending / Accepted', 'In Progress', 'Completed'],
+        datasets: [{
+          data: [this.stats.pending, this.stats.active, this.stats.completed],
+          backgroundColor: ['#f59e0b', '#4f46e5', '#10b981'],
+          borderWidth: 0,
+          hoverOffset: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: {
+            display: true,
+            position: 'right',
+            labels: { font: { size: 11 }, boxWidth: 10, padding: 8, color: '#6b6b8a' }
+          }
+        }
+      }
+    });
   }
 
   acceptRequest(id: number): void {

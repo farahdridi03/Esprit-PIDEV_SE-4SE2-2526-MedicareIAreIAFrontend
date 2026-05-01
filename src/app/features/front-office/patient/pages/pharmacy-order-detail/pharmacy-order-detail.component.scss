@@ -134,6 +134,17 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     .value { font-size: 1rem; color: $text-dark; font-weight: 600; }
 }
 
+.ai-prediction {
+    background: linear-gradient(135deg, rgba(14, 124, 102, 0.06), rgba(14, 124, 102, 0.12));
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(14, 124, 102, 0.2);
+    margin-top: 0.25rem;
+
+    .label { color: $primary-green; font-weight: 600; }
+    .ai-value { color: $primary-green; font-size: 1.1rem; font-weight: 700; }
+}
+
 // Badge
 .status-badge {
     padding: 0.35rem 0.85rem;

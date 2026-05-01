@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { StockService } from '../../../../../services/stock.service';
 import { PharmacyService } from '../../../../../services/pharmacy.service';
 import { PharmacyStock } from '../../../../../models/stock.model';
 import { Pharmacy } from '../../../../../models/pharmacy.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inventory-list',
@@ -15,51 +15,65 @@ export class InventoryListComponent implements OnInit {
   selectedPharmacyId: number | null = null;
   stocks: PharmacyStock[] = [];
   loading = false;
+  error: string | null = null;
+
+  currentPage = 1; pageSize = 8;
+  get totalPages() { return Math.ceil(this.stocks.length / this.pageSize); }
+  get pagedStocks() { const s = (this.currentPage - 1) * this.pageSize; return this.stocks.slice(s, s + this.pageSize); }
+  get pages() { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
+  get pageEnd() { return Math.min(this.currentPage * this.pageSize, this.stocks.length); }
+  goToPage(p: number) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; }
 
   constructor(
     private stockService: StockService,
     private pharmacyService: PharmacyService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.loadPharmacies();
-  }
-
-  loadPharmacies() {
-    this.pharmacyService.getAllPharmacies().subscribe((res: Pharmacy[]) => {
-      this.pharmacies = res;
-      if (res.length > 0) {
-        this.selectedPharmacyId = res[0].id;
-        this.loadInventory();
-      }
+    this.pharmacyService.getAllPharmacies().subscribe({
+      next: (res) => {
+        this.pharmacies = res;
+        if (res.length > 0) {
+          this.selectedPharmacyId = res[0].id;
+          this.loadStock();
+        }
+      },
+      error: (err) => console.error('Failed to load pharmacies', err)
     });
   }
 
-  onPharmacyChange() {
-    this.loadInventory();
-  }
-
-  loadInventory() {
+  loadStock(): void {
     if (!this.selectedPharmacyId) return;
     this.loading = true;
+    this.error = null;
     this.stockService.getStockByPharmacyId(this.selectedPharmacyId).subscribe({
-      next: (res: PharmacyStock[]) => {
+      next: (res) => {
         this.stocks = res;
+        this.currentPage = 1;
         this.loading = false;
       },
-      error: (err: any) => {
-        console.error('Failed to get inventory', err);
+      error: (err) => {
+        console.error('Failed to load stock', err);
+        this.error = 'Failed to load inventory.';
         this.loading = false;
       }
     });
   }
 
-  viewBatches(stockId: number) {
-    this.router.navigate(['/pharmacist/stock/batches', stockId]);
+  onPharmacyChange(): void {
+    this.loadStock();
   }
 
-  viewMovements(stockId: number) {
-    this.router.navigate(['/pharmacist/stock/movements', stockId]);
+  viewBatches(stockId: number): void {
+    this.router.navigate(['/pharmacist/batches', stockId]);
+  }
+
+  viewMovements(stockId: number): void {
+    this.router.navigate(['/pharmacist/movements', stockId]);
+  }
+
+  isLowStock(stock: PharmacyStock): boolean {
+    return stock.totalQuantity <= stock.minQuantityThreshold;
   }
 }

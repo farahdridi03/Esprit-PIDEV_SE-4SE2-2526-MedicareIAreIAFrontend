@@ -225,6 +225,20 @@ $border-color: #e5e7eb;
 }
 
 // Submit Button
+.gps-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: $primary-green;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  &:hover { background: $primary-hover; }
+}
+
 .submit-btn {
   width: 100%;
   background-color: $primary-green;

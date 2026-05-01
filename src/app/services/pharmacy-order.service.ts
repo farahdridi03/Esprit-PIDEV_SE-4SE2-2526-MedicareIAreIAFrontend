@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { 
-  PharmacyOrderRequestDTO, 
+import {
+  PharmacyOrderRequestDTO,
   PharmacyOrderResponseDTO,
   UpdateOrderStatusDTO,
   CancelOrderDTO,
   RejectOrderDTO,
-  PharmacyStatsDTO
+  PharmacyStatsDTO,
+  ProductSalesStatsDTO,
+  OrderAgingDTO,
+  EscalationResultDTO
 } from '../models/pharmacy-order.model';
 
 @Injectable({
@@ -59,5 +62,30 @@ export class PharmacyOrderService {
 
   downloadInvoice(id: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/${id}/invoice`, { responseType: 'blob' });
+  }
+
+  getRoute(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/route`);
+  }
+
+  // Task 2 — JPQL stats ventes par produit pour une pharmacie
+  getProductSalesStats(pharmacyId: number): Observable<ProductSalesStatsDTO[]> {
+    return this.http.get<ProductSalesStatsDTO[]>(`${this.apiUrl}/pharmacy/${pharmacyId}/product-sales`);
+  }
+
+  // Task 3 — Keyword search : commandes par nom de pharmacie + statut
+  searchByPharmacyNameAndStatus(pharmacyName: string, status: string): Observable<PharmacyOrderResponseDTO[]> {
+    const params = new HttpParams().set('pharmacyName', pharmacyName).set('status', status);
+    return this.http.get<PharmacyOrderResponseDTO[]>(`${this.apiUrl}/search`, { params });
+  }
+
+  // Advanced — JPQL Aging Report
+  getOrdersAging(): Observable<OrderAgingDTO[]> {
+    return this.http.get<OrderAgingDTO[]>(`${this.apiUrl}/admin/orders-aging`);
+  }
+
+  // Advanced — Manual escalation trigger
+  triggerEscalation(): Observable<EscalationResultDTO> {
+    return this.http.post<EscalationResultDTO>(`${this.apiUrl}/admin/trigger-escalation`, {});
   }
 }

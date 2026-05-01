@@ -50,7 +50,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let p of pendingPharmacists">
+                <tr *ngFor="let p of pagedPharmacists">
                     <td><strong>{{ p.fullName }}</strong></td>
                     <td>{{ p.email }}</td>
                     <td>{{ p.pharmacy?.name || 'N/A' }}</td>
@@ -70,6 +70,15 @@
             </tbody>
         </table>
 
+        <div class="pagination-bar" *ngIf="pharmTotalPages > 1">
+            <span class="page-info">{{ (pharmPage-1)*pageSize+1 }}–{{ pharmPageEnd }} of {{ pendingPharmacists.length }}</span>
+            <div class="page-controls">
+              <button class="page-btn" (click)="goToPharmPage(pharmPage-1)" [disabled]="pharmPage===1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+              <button *ngFor="let p of pharmPages" class="page-btn" [class.active]="p===pharmPage" (click)="goToPharmPage(p)">{{p}}</button>
+              <button class="page-btn" (click)="goToPharmPage(pharmPage+1)" [disabled]="pharmPage===pharmTotalPages"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+            </div>
+        </div>
+
         <!-- Providers Table -->
         <table *ngIf="!isLoading && activeTab === 'PROVIDERS' && pendingProviders.length > 0">
             <thead>
@@ -83,7 +92,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let p of pendingProviders">
+                <tr *ngFor="let p of pagedProviders">
                     <td><strong>{{ p.user?.fullName }}</strong></td>
                     <td>{{ p.user?.email }}</td>
                     <td>
@@ -107,5 +116,13 @@
                 </tr>
             </tbody>
         </table>
+        <div class="pagination-bar" *ngIf="provTotalPages > 1">
+            <span class="page-info">{{ (provPage-1)*pageSize+1 }}–{{ provPageEnd }} of {{ pendingProviders.length }}</span>
+            <div class="page-controls">
+              <button class="page-btn" (click)="goToProvPage(provPage-1)" [disabled]="provPage===1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+              <button *ngFor="let p of provPages" class="page-btn" [class.active]="p===provPage" (click)="goToProvPage(p)">{{p}}</button>
+              <button class="page-btn" (click)="goToProvPage(provPage+1)" [disabled]="provPage===provTotalPages"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+            </div>
+        </div>
     </div>
 </div>

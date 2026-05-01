@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
+import * as L from 'leaflet';
 import { PharmacyOrderService } from '../../../../../services/pharmacy-order.service';
 import { DeliveryTrackingService } from '../../../../../services/delivery-tracking.service';
 import { NotificationService } from '../../../../../services/notification.service';
@@ -44,6 +45,13 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
   private routeSub!: Subscription;
   private wsSub!: Subscription;
   private notifSub!: Subscription;
+
+  // Leaflet map
+  private map: L.Map | null = null;
+  private deliveryMarker: L.Marker | null = null;
+  private animationInterval: any = null;
+  routeCoordinates: number[][] = [];
+  showMap = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -99,6 +107,8 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
     if (this.routeSub) this.routeSub.unsubscribe();
     if (this.wsSub) this.wsSub.unsubscribe();
     if (this.notifSub) this.notifSub.unsubscribe();
+    if (this.animationInterval) clearInterval(this.animationInterval);
+    if (this.map) { this.map.remove(); this.map = null; }
     this.deliveryService.disconnect();
   }
 
@@ -132,6 +142,12 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
         // Fetch payment info
         this.loadPaymentInfo();
 
+        // Load delivery route map only when delivery is dispatched
+        const deliveryActive = ['DELIVERY_REQUESTED', 'ASSIGNING', 'ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY'].includes(data.status);
+        if (data.deliveryType === 'HOME_DELIVERY' && deliveryActive) {
+          this.loadRoute();
+        }
+
         this.isLoading = false;
       },
       error: (err: any) => {
@@ -147,7 +163,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
       next: (data: DeliveryResponseDTO) => {
         this.delivery = data;
       },
-      error: (err: any) => console.log('Delivery details not found yet')
+      error: (_err: any) => console.log('Delivery details not found yet')
     });
   }
 
@@ -172,7 +188,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
         this.order = res;
         this.closeCancelModal();
       },
-      error: (err: any) => {
+      error: (_err: any) => {
         alert('Error: unable to cancel this order.');
         this.closeCancelModal();
       }
@@ -198,7 +214,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
   loadPaymentInfo(): void {
     this.paymentService.getPaymentByOrderId(this.orderId).subscribe({
       next: (data) => this.existingPayment = data,
-      error: (err) => console.log('No payment found for this order yet')
+      error: (_err) => console.log('No payment found for this order yet')
     });
   }
 
@@ -319,7 +335,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
           });
         }
       },
-      error: (err) => {
+      error: (_err) => {
         alert('Error creating payment intent.');
         this.isProcessingPayment = false;
       }
@@ -338,7 +354,7 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
         this.closePaymentModal();
         this.loadOrderDetails(); // Refresh order status
       },
-      error: (err) => {
+      error: (_err) => {
         alert('Error initiating payment.');
         this.isProcessingPayment = false;
       }
@@ -347,8 +363,6 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
 
   private initiateMockPayment(): void {
     this.isProcessingPayment = true;
-
-    // Simulate network delay for a more realistic feel
     setTimeout(() => {
       this.paymentService.initiatePayment({
         orderId: this.orderId,
@@ -359,18 +373,79 @@ export class PharmacyOrderDetailComponent implements OnInit, OnDestroy {
           this.existingPayment = res;
           this.paymentSuccess = true;
           this.isProcessingPayment = false;
-
-          // Show success for a moment before closing
           setTimeout(() => {
             this.closePaymentModal();
             this.loadOrderDetails();
           }, 1500);
         },
-        error: (err) => {
+        error: () => {
           alert('Error processing test payment.');
           this.isProcessingPayment = false;
         }
       });
     }, 2000);
+  }
+
+  // ── Leaflet map ──────────────────────────────────────────────
+  loadRoute(): void {
+    this.orderService.getRoute(this.orderId).subscribe({
+      next: (route: any) => {
+        if (!route || !route.coordinates?.length) return;
+        this.routeCoordinates = route.coordinates;
+        this.showMap = true;
+        setTimeout(() => this.initMap(route), 100);
+      },
+      error: () => console.log('Route not available')
+    });
+  }
+
+  private initMap(route: any): void {
+    if (this.map) { this.map.remove(); this.map = null; }
+
+    const center: L.LatLngTuple = [route.fromLat, route.fromLon];
+    this.map = L.map('delivery-map').setView(center, 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    const coords: L.LatLngTuple[] = route.coordinates.map((c: number[]) => [c[0], c[1]] as L.LatLngTuple);
+
+    // Tracé de la route
+    L.polyline(coords, { color: '#0e7c66', weight: 4, opacity: 0.8 }).addTo(this.map);
+
+    // Marqueur pharmacie
+    const pharmIcon = L.divIcon({ html: '🏥', className: '', iconSize: [30, 30] });
+    L.marker([route.fromLat, route.fromLon], { icon: pharmIcon })
+      .bindPopup('<b>Pharmacie</b>').addTo(this.map!);
+
+    // Marqueur destination
+    const destIcon = L.divIcon({ html: '📍', className: '', iconSize: [30, 30] });
+    L.marker([route.toLat, route.toLon], { icon: destIcon })
+      .bindPopup('<b>Votre adresse</b>').addTo(this.map!);
+
+    // Marqueur livreur animé
+    const truckIcon = L.divIcon({ html: '🚚', className: '', iconSize: [32, 32] });
+    this.deliveryMarker = L.marker(coords[0], { icon: truckIcon })
+      .bindPopup('Livreur en route').addTo(this.map!);
+
+    this.map.fitBounds(L.latLngBounds(coords));
+    this.animateDelivery(coords);
+  }
+
+  private animateDelivery(coords: L.LatLngTuple[]): void {
+    if (this.animationInterval) clearInterval(this.animationInterval);
+    let i = 0;
+    const estimatedMin = this.order?.estimatedDeliveryMin ?? 30;
+    const intervalMs = Math.max(200, (estimatedMin * 60 * 1000) / coords.length);
+
+    this.animationInterval = setInterval(() => {
+      if (!this.deliveryMarker || i >= coords.length) {
+        clearInterval(this.animationInterval);
+        return;
+      }
+      this.deliveryMarker.setLatLng(coords[i]);
+      i++;
+    }, intervalMs);
   }
 }

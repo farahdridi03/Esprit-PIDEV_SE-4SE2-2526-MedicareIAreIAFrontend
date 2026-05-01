@@ -37,7 +37,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let ev of filteredEvents">
+            <tr *ngFor="let ev of pagedEvents">
                 <td>
                     <div class="ucell">
                         <div class="mav ma1" *ngIf="!ev.imageUrl">{{ ev.title.substring(0,2).toUpperCase() }}</div>
@@ -70,6 +70,14 @@
         </tbody>
     </table>
 
+    <div class="pagination-bar" *ngIf="totalPages > 1">
+        <span class="page-info">{{ (currentPage-1)*pageSize+1 }}–{{ pageEnd }} of {{ filteredEvents.length }}</span>
+        <div class="page-controls">
+          <button class="page-btn" (click)="goToPage(currentPage-1)" [disabled]="currentPage===1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+          <button *ngFor="let p of pages" class="page-btn" [class.active]="p===currentPage" (click)="goToPage(p)">{{p}}</button>
+          <button class="page-btn" (click)="goToPage(currentPage+1)" [disabled]="currentPage===totalPages"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+    </div>
     <div *ngIf="!loading && filteredEvents.length === 0" class="no-data">
         No events found matching your criteria.
     </div>
