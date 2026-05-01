@@ -1,0 +1,55 @@
+<div class="page-header">
+    <div>
+        <h1>Stock <em>Alerts</em></h1>
+        <p>Low stock warnings and expiring batch alerts</p>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-head">
+        <div class="panel-title">Open Alerts</div>
+        <button 
+            (click)="loadAlerts()"
+            style="display:flex; align-items:center; gap:0.5rem; padding:0.62rem 1.2rem; background:linear-gradient(135deg,#1A7A5E,#14614A); border:none; border-radius:10px; color:#fff; font-family:inherit; font-size:0.84rem; font-weight:600; cursor:pointer; box-shadow:0 4px 14px rgba(26,122,94,0.3); transition:all 0.18s;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(26,122,94,0.35)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(26,122,94,0.3)';">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:15px;height:15px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            Refresh
+        </button>
+    </div>
+    
+    <div class="loader" *ngIf="loading">Loading alerts...</div>
+
+    <table class="tbl" *ngIf="!loading && alerts.length > 0">
+        <thead>
+            <tr>
+                <th>Alert ID</th>
+                <th>Type</th>
+                <th>Message</th>
+                <th>Created At</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let a of alerts">
+                <td>{{ a.id }}</td>
+                <td>
+                    <span class="chip" [ngClass]="a.alertType === 'EXPIRING_BATCH' ? 'ck-amber' : 'ck-rose'">
+                        {{ a.alertType }}
+                    </span>
+                </td>
+                <td><div class="cn">{{ a.message }}</div></td>
+                <td>{{ a.createdAt | date:'medium' }}</td>
+                <td style="text-align: right;">
+                    <button class="action-btn" style="color: #0e7c66;" (click)="resolveAlert(a.id)">Resolve ✓</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div *ngIf="!loading && alerts.length === 0" class="no-data" style="color:#0e7c66; font-weight:bold;">
+        🎉 All good! No open alerts.
+    </div>
+</div>

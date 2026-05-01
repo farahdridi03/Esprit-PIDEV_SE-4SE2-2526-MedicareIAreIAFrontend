@@ -1,0 +1,29 @@
+@import '../../../../shared/layout/shared-dashboard.scss';
+
+.btn-pharma-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.62rem 1.2rem;
+    background: linear-gradient(135deg, #1A7A5E, #14614A);
+    border: none;
+    border-radius: var(--r-sm);
+    color: white;
+    font-family: var(--font-h);
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    box-shadow: 0 4px 14px rgba(26, 122, 94, 0.3);
+
+    &:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #155f4a, #0f4a38);
+        box-shadow: 0 8px 20px rgba(26, 122, 94, 0.35);
+    }
+
+    svg {
+        width: 15px;
+        height: 15px;
+    }
+}

@@ -1,0 +1,104 @@
+<div class="page-header">
+    <div>
+        <h1>Stock <em>Movements</em></h1>
+        <p>Details for Stock ID: {{ stockId }}</p>
+    </div>
+    <div style="display: flex; gap: 1rem;">
+      <button class="action-btn" style="background:#fff; border:1px solid #ddd; padding:8px 16px; border-radius:4px; cursor:pointer;" routerLink="../../inventory">
+          ← Back
+      </button>
+      <button class="btn-pharma-primary" *ngIf="viewState === 'list'" (click)="viewAdd()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Add Movement
+      </button>
+    </div>
+</div>
+
+<div class="panel" *ngIf="viewState === 'list'">
+    <div class="panel-head">
+        <div class="panel-title">Movements History</div>
+        <button class="panel-action" (click)="loadMovements()">Refresh ⭮</button>
+    </div>
+    
+    <div class="loader" *ngIf="loading">Loading...</div>
+
+    <table class="tbl" *ngIf="!loading && movements.length > 0">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Reference / Notes</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let m of movements">
+                <td>
+                    <span class="chip" 
+                        [ngClass]="{'ck-emerald': m.movementType==='IN' || m.movementType==='RETURN', 'ck-rose': m.movementType==='OUT', 'ck-amber': m.movementType==='ADJUSTMENT' || m.movementType==='TRANSFER'}">
+                        {{ m.movementType }}
+                    </span>
+                </td>
+                <td><strong>{{ m.quantity }}</strong></td>
+                <td>{{ m.reference || '-' }}</td>
+                <td>{{ m.createdAt | date:'medium' }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div *ngIf="!loading && movements.length === 0" class="no-data">No movements recorded.</div>
+</div>
+
+<div class="panel" *ngIf="viewState === 'add'">
+    <div class="panel-head">
+        <div class="panel-title">Record Stock Movement</div>
+        <button class="panel-action text-rose" (click)="cancelForm()">Cancel ✕</button>
+    </div>
+
+    <div class="form-container">
+        <div *ngIf="globalError" class="form-error-summary">
+            {{ globalError }}
+        </div>
+
+        <form (ngSubmit)="saveMovement()" #movForm="ngForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Movement Type *</label>
+                    <select [(ngModel)]="formModel.movementType" name="movementType" required #typeCtrl="ngModel"
+                            [ngClass]="{'is-invalid': (typeCtrl.invalid && typeCtrl.touched) || fieldErrors['movementType']}">
+                        <option *ngFor="let t of movementTypes" [value]="t">{{ t }}</option>
+                    </select>
+                    <span class="error-message" *ngIf="typeCtrl.errors?.['required'] && typeCtrl.touched">Movement type is required.</span>
+                    <span class="error-message" *ngIf="fieldErrors['movementType']">{{ fieldErrors['movementType'] }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantity *</label>
+                    <input type="number" [(ngModel)]="formModel.quantity" name="quantity" required min="1" #qtyCtrl="ngModel"
+                           [ngClass]="{'is-invalid': (qtyCtrl.invalid && qtyCtrl.touched) || fieldErrors['quantity']}">
+                    <span class="error-message" *ngIf="qtyCtrl.errors?.['required'] && qtyCtrl.touched">Quantity is required.</span>
+                    <span class="error-message" *ngIf="qtyCtrl.errors?.['min'] && qtyCtrl.touched">Quantity must be at least 1.</span>
+                    <span class="error-message" *ngIf="fieldErrors['quantity']">{{ fieldErrors['quantity'] }}</span>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Reference *</label>
+                    <input type="text" [(ngModel)]="formModel.reference" name="reference" placeholder="Invoice #, Prescription ID, or Reason..." required #refCtrl="ngModel"
+                           [ngClass]="{'is-invalid': (refCtrl.invalid && refCtrl.touched) || fieldErrors['reference']}">
+                    <span class="error-message" *ngIf="refCtrl.errors?.['required'] && refCtrl.touched">Reference is required.</span>
+                    <span class="error-message" *ngIf="fieldErrors['reference']">{{ fieldErrors['reference'] }}</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" (click)="cancelForm()">Cancel</button>
+                <button type="submit" class="btn-pharma-primary" [disabled]="movForm.invalid || loading">
+                    <span *ngIf="loading">Saving...</span>
+                    <span *ngIf="!loading">Save Movement</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

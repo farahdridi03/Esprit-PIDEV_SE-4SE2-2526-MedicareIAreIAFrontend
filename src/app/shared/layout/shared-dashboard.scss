@@ -1,0 +1,491 @@
+// ===================================
+// PHARMACIST SHARED DASHBOARD STYLES
+// ===================================
+
+$pharma: #1A7A5E;
+$pharma-dark: #14614A;
+$rose: #f43f5e;
+$indigo: #4f46e5;
+$teal: #0d9488;
+$text-dark: #111827;
+$text-light: #6b7280;
+$bg: #f9fafb;
+$border: #e5e7eb;
+$white: #ffffff;
+
+// Page header
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: $text-dark;
+    line-height: 1.2;
+
+    em {
+      color: $pharma;
+      font-style: normal;
+    }
+  }
+
+  p {
+    color: $text-light;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
+}
+
+// Panel card
+.panel {
+  background: $white;
+  border: 1px solid $border;
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid $border;
+}
+
+.panel-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $text-dark;
+}
+
+.panel-action {
+  background: none;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $text-light;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--r-sm);
+  transition: background 0.15s;
+
+  &:hover {
+    background: $bg;
+    color: $text-dark;
+  }
+
+  &.text-rose {
+    color: $rose;
+
+    &:hover {
+      background: #fff1f2;
+    }
+  }
+}
+
+// Table
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.87rem;
+
+  thead tr {
+    background: $bg;
+    border-bottom: 1px solid $border;
+  }
+
+  th {
+    padding: 0.75rem 1.25rem;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: $text-light;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.12s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: $bg;
+    }
+  }
+
+  td {
+    padding: 0.85rem 1.25rem;
+    color: $text-dark;
+    vertical-align: middle;
+  }
+}
+
+// Primary button
+.btn-pharma-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.62rem 1.2rem;
+  background: linear-gradient(135deg, $pharma, $pharma-dark);
+  border: none;
+  border-radius: var(--r-sm);
+  color: white;
+  font-family: var(--font-h);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  box-shadow: 0 4px 14px rgba(26, 122, 94, 0.3);
+  text-decoration: none;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #155f4a, #0f4a38);
+    box-shadow: 0 8px 20px rgba(26, 122, 94, 0.35);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+// Outline button
+.btn-pharma-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.62rem 1.2rem;
+  background: transparent;
+  border: 1.5px solid $pharma;
+  border-radius: var(--r-sm);
+  color: $pharma;
+  font-family: var(--font-h);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+
+  &:hover {
+    background: rgba(26, 122, 94, 0.06);
+  }
+}
+
+// Secondary button
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.62rem 1.2rem;
+  background: $bg;
+  border: 1px solid $border;
+  border-radius: var(--r-sm);
+  color: $text-dark;
+  font-family: var(--font-h);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: darken($bg, 3%);
+  }
+
+  &.text-rose {
+    color: $rose;
+    border-color: lighten($rose, 20%);
+
+    &:hover {
+      background: #fff1f2;
+    }
+  }
+}
+
+// Small inline action buttons
+.action-btn {
+  background: none;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  transition: background 0.15s;
+  margin-left: 0.25rem;
+
+  &.text-pharma {
+    color: $pharma;
+
+    &:hover {
+      background: rgba(26, 122, 94, 0.1);
+    }
+  }
+
+  &.text-rose {
+    color: $rose;
+
+    &:hover {
+      background: #fff1f2;
+    }
+  }
+}
+
+.text-pharma { color: $pharma; }
+.text-rose { color: $rose; }
+
+// Loader state
+.loader {
+  padding: 2rem 1.25rem;
+  color: $text-light;
+  font-size: 0.9rem;
+}
+
+// Empty state
+.no-data {
+  padding: 3rem 1.25rem;
+  text-align: center;
+  color: $text-light;
+  font-size: 0.9rem;
+}
+
+// Form styles
+.form-container {
+  padding: 1.25rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $text-dark;
+  }
+
+  input,
+  select,
+  textarea {
+    padding: 0.55rem 0.75rem;
+    border: 1.5px solid $border;
+    border-radius: var(--r-sm);
+    font-size: 0.87rem;
+    font-family: var(--font-h);
+    color: $text-dark;
+    background: $white;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &:focus {
+      border-color: $pharma;
+    }
+
+    &.is-invalid {
+      border-color: $rose;
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.form-error-summary {
+  padding: 0.75rem 1rem;
+  background: #fff1f2;
+  border: 1px solid #fda4af;
+  border-radius: var(--r-sm);
+  color: $rose;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: $rose;
+  font-size: 0.78rem;
+}
+
+// Table cell helpers
+.ucell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cn {
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: $text-dark;
+}
+
+.cs {
+  font-size: 0.78rem;
+  color: $text-light;
+}
+
+// Mini avatar
+.mav {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  color: white;
+
+  &.ma1 {
+    background: linear-gradient(135deg, $pharma, $pharma-dark);
+  }
+
+  &.ma2 {
+    background: linear-gradient(135deg, $indigo, #3730a3);
+  }
+
+  &.ma3 {
+    background: linear-gradient(135deg, $teal, #0f766e);
+  }
+}
+
+// Chips / tags
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  &.ck-indigo {
+    background: #eef2ff;
+    color: $indigo;
+  }
+
+  &.ck-teal {
+    background: #f0fdfa;
+    color: $teal;
+  }
+
+  &.ck-rose {
+    background: #fff1f2;
+    color: $rose;
+  }
+
+  &.ck-pharma {
+    background: rgba(26, 122, 94, 0.1);
+    color: $pharma;
+  }
+}
+
+// Stats grid (dashboard)
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.stat-card {
+  background: $white;
+  border: 1px solid $border;
+  border-radius: var(--r);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+
+  &.ck-teal { background: #f0fdfa; }
+  &.ck-indigo { background: #eef2ff; }
+  &.ck-rose { background: #fff1f2; }
+}
+
+.stat-details {
+  h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: $text-dark;
+    line-height: 1;
+  }
+
+  p {
+    font-size: 0.82rem;
+    color: $text-light;
+    margin-top: 0.2rem;
+  }
+}
+
+// Quick actions grid
+.actions-grid {
+  padding: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+// Role/status filter bar
+.role-filter {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid $border;
+  flex-wrap: wrap;
+
+  button {
+    padding: 0.35rem 0.85rem;
+    border: 1.5px solid $border;
+    border-radius: 999px;
+    background: $white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $text-light;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &.active,
+    &:hover {
+      border-color: $pharma;
+      color: $pharma;
+      background: rgba(26, 122, 94, 0.06);
+    }
+  }
+}
