@@ -18,7 +18,7 @@ export interface LaboratoryRequestResponse {
 
 @Injectable({ providedIn: 'root' })
 export class LaboratoryService {
-private baseUrl = 'http://localhost:8081/springsecurity/api/laboratories';
+private baseUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/laboratories';
 
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',

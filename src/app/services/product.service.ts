@@ -8,7 +8,7 @@ import { ProductResponseDTO } from '../models/pharmacy.model';
     providedIn: 'root'
 })
 export class ProductService {
-    private readonly apiUrl = 'http://localhost:8081/springsecurity/api/products';
+    private readonly apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/products';
 
     constructor(private http: HttpClient) { }
 

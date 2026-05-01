@@ -28,7 +28,7 @@ import { PaymentStatus } from '../../../../../models/payment.model';
 export class OrdersComponent implements OnInit, OnDestroy {
     pharmacyId: number | null = null;
     pharmacyName: string = '';
-    backendUrl = 'http://localhost:8081/springsecurity';
+    backendUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity';
 
     orders: PharmacyOrderResponseDTO[] = [];
     filteredOrders: PharmacyOrderResponseDTO[] = [];

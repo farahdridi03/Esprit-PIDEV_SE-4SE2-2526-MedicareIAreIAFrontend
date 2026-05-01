@@ -34,7 +34,7 @@ export interface LabTestRequest {
 export class LabTestService {
 
   private baseUrl = 
-    'http://localhost:8081/springsecurity/api/lab-tests';
+    'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/lab-tests';
 
   constructor(private http: HttpClient) {}
 

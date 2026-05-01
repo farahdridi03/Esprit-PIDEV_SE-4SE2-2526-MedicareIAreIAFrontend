@@ -30,7 +30,7 @@ export interface LabResultRequest {
 
 @Injectable({ providedIn: 'root' })
 export class LabResultService {
-  private baseUrl = 'http://localhost:8081/springsecurity/api/lab-results';
+  private baseUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/lab-results';
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {

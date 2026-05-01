@@ -20,7 +20,7 @@ describe('DeliveryTrackingService', () => {
   let service: DeliveryTrackingService;
   let httpMock: HttpTestingController;
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
-  const apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/deliveries';
+  const apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/deliveries';
 
   beforeEach(() => {
     const spy = jasmine.createSpyObj('NotificationService', ['addNotification']);

@@ -12,7 +12,7 @@ import { NotificationResponseDTO } from '../models/notification.model';
   providedIn: 'root'
 })
 export class DeliveryTrackingService {
-  private readonly apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/deliveries';
+  private readonly apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/deliveries';
   private stompClient: Client | null = null;
   private deliveryUpdateSubject = new Subject<DeliveryResponseDTO>();
   private isConnectedSubject = new BehaviorSubject<boolean>(false);
@@ -30,7 +30,7 @@ export class DeliveryTrackingService {
       this.disconnect();
     }
 
-    const socket = new SockJS('http://localhost:8081/springsecurity/ws');
+    const socket = new SockJS('https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/ws');
     this.stompClient = new Client({
       webSocketFactory: () => socket as any,
       debug: (str: string) => {
@@ -68,7 +68,7 @@ export class DeliveryTrackingService {
       this.disconnect();
     }
 
-    const socket = new SockJS('http://localhost:8081/springsecurity/ws');
+    const socket = new SockJS('https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/ws');
     this.stompClient = new Client({
       webSocketFactory: () => socket as any,
       reconnectDelay: 5000,

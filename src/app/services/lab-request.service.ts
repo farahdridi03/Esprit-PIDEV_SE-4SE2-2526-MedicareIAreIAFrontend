@@ -159,7 +159,7 @@ export class LabRequestService {
       'Authorization': `Bearer ${token}` 
     });
     return this.http.get<LabRequestResponse[]>(
-      'http://localhost:8081/springsecurity/api/lab-requests/status/PENDING',
+      'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/lab-requests/status/PENDING',
       { headers }
     );
   }

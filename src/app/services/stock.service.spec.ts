@@ -6,7 +6,7 @@ import { PharmacyStock, ReceiveBatchRequest, StockMovementRequest, StockMovement
 describe('StockService', () => {
   let service: StockService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'http://localhost:8081/springsecurity/api/stocks';
+  const apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/stocks';
 
   beforeEach(() => {
     TestBed.configureTestingModule({

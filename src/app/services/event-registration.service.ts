@@ -7,7 +7,7 @@ import { EventRegistration, EventRegistrationRequest } from '../models/event.mod
   providedIn: 'root'
 })
 export class EventRegistrationService {
-  private baseUrl = 'http://localhost:8081/springsecurity/api/event-registrations';
+  private baseUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/event-registrations';
 
   constructor(private http: HttpClient) { }
 

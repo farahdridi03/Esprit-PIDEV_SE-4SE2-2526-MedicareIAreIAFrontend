@@ -14,7 +14,7 @@ export interface Clinic {
   providedIn: 'root'
 })
 export class ClinicService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/clinics';
+  private apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/clinics';
 
   constructor(private http: HttpClient) {}
 
