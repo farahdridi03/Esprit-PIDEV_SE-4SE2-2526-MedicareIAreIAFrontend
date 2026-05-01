@@ -6,12 +6,13 @@ import { tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
 import { AuthResponse } from '../models/auth-response.model';
 import { LoginRequest } from '../models/login-request.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private readonly baseUrl = 'http://localhost:8081/springsecurity/auth';
+    private readonly baseUrl = `${environment.apiUrl}/auth`;
     private readonly TOKEN_KEY = 'auth_token';
     private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
     public authStatus$ = this.authStatusSubject.asObservable();
@@ -38,7 +39,6 @@ export class AuthService {
         );
     }
 
-    // The backend expects multipart/form-data
     register(formData: FormData): Observable<string> {
         return this.http.post(`${this.baseUrl}/register`, formData, { responseType: 'text' }) as Observable<string>;
     }
@@ -122,7 +122,7 @@ export class AuthService {
     }
 
     getHomeCareServices(): Observable<any[]> {
-        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
+        return this.http.get<any[]>(`${environment.apiUrl}/api/home-care-services`);
     }
 
     getUserFullName(): string | null {
@@ -207,5 +207,7 @@ export class AuthService {
             const decoded: any = jwtDecode(token);
             return decoded.role ?? null;
         } catch { return null; }
+    }
+}
     }
 }
