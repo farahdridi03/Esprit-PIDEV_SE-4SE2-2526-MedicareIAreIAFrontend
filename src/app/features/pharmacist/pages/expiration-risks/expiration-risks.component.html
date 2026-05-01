@@ -1,0 +1,89 @@
+<div class="page-header">
+  <div class="header-content">
+    <h1>Expiration <em>Risks</em></h1>
+    <p>Advanced tracking system for medication expiry dates & compliance handling.</p>
+  </div>
+  <button class="btn-refresh" (click)="loadRisks()" [disabled]="isLoading">
+    <span>↻</span> Refresh Radar
+  </button>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-title">Expiry Radar</div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <select class="role-filter" [(ngModel)]="activePharmacyId" (change)="onPharmacyChange()">
+          <option *ngFor="let p of pharmacies" [value]="p.id">{{ p.name }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="panel-body p-0">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="p-6 text-center text-gray-500">
+      <div class="spinner"></div>
+      <p class="mt-4">Scanning all batches for expiry dates...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="errorMessage" class="p-6 text-center text-red-500">
+      <p>{{ errorMessage }}</p>
+      <button class="btn-pharma-outline mt-4" (click)="loadRisks()">Try Again</button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !errorMessage && risks.length === 0" class="p-6 text-center text-gray-500 empty-state">
+      <div class="empty-icon text-4xl mb-4">🛡️</div>
+      <h3>Zero Risk Detected</h3>
+      <p>No active batches were found in this pharmacy.</p>
+    </div>
+
+    <!-- Data Table -->
+    <table class="pharma-table" *ngIf="!isLoading && !errorMessage && risks.length > 0">
+      <thead>
+        <tr>
+          <th>Batch Number</th>
+          <th>Product / Entity</th>
+          <th>Expiration Date</th>
+          <th>Risk Zone</th>
+          <th>AI Suggestion / Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let risk of risks" [ngClass]="{'row-expired': risk.riskLevel === 'EXPIRED'}">
+          <td>
+            <strong>#{{ risk.batchNumber }}</strong>
+            <div class="text-xs text-gray-500">Batch ID: {{ risk.batchId }}</div>
+          </td>
+          
+          <td>
+            <div class="cn">{{ risk.productName }}</div>
+            <div class="metric-block mt-1">
+              <span class="value text-sm">{{ risk.quantity }}</span> <span class="label">Units remaining</span>
+            </div>
+          </td>
+
+          <td>
+            <strong [ngClass]="{'text-red-600': risk.riskLevel === 'EXPIRED'}">
+              {{ risk.expirationDate | date:'mediumDate' }}
+            </strong>
+          </td>
+
+          <td>
+            <span class="badge" [ngClass]="getBadgeClass(risk.riskLevel)">
+              {{ risk.riskLevel }}
+            </span>
+          </td>
+
+          <td>
+            <div class="action-box">
+              <div class="text-sm font-bold" [ngClass]="{'text-red-500': risk.riskLevel === 'EXPIRED', 'text-teal-600': risk.riskLevel === 'GREEN'}">
+                {{ risk.recommendedAction }}
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

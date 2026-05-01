@@ -14,6 +14,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PharmacistSetupModalComponent } from './components/pharmacist-setup-modal/pharmacist-setup-modal.component';
 import { PharmacistBannerComponent } from './components/pharmacist-banner/pharmacist-banner.component';
+import { PredictionsListComponent } from './pages/predictions-list/predictions-list.component';
+import { ExpirationRisksComponent } from './pages/expiration-risks/expiration-risks.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { PharmacistBannerComponent } from './components/pharmacist-banner/pharma
     MovementsListComponent,
     AlertsListComponent,
     PharmacistSetupModalComponent,
-    PharmacistBannerComponent
+    PharmacistBannerComponent,
+    PredictionsListComponent,
+    ExpirationRisksComponent
   ],
   imports: [
     CommonModule,

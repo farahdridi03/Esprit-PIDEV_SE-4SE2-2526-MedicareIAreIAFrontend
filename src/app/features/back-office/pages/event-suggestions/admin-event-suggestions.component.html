@@ -1,0 +1,41 @@
+<div class="page-header">
+    <div>
+        <h1>💡 Event <em>Suggestions</em></h1>
+        <p>Review ideas submitted by users and create events based on them</p>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="loader-wrap" *ngIf="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <div *ngIf="!loading && suggestions.length === 0" class="empty-state">
+        <div class="empty-icon">📭</div>
+        <h3>No suggestions yet</h3>
+        <p>Users can suggest event ideas from the public events page.</p>
+    </div>
+
+    <div class="suggestions-grid" *ngIf="!loading && suggestions.length > 0">
+        <div class="suggestion-card" *ngFor="let s of suggestions" [class.status-pending]="s.status === 'PENDING'">
+            <div class="card-top">
+                <span class="status-badge" [class]="'badge-' + s.status.toLowerCase()">{{ s.status }}</span>
+                <span class="date">{{ s.createdAt | date:'MMM d, y' }}</span>
+            </div>
+            <h3 class="suggestion-title">{{ s.title }}</h3>
+            <p class="suggestion-desc">{{ s.description }}</p>
+            <div class="suggestion-author" *ngIf="s.suggestedBy">
+                <span class="author-avatar">{{ s.suggestedBy.fullName?.charAt(0) }}</span>
+                <span>{{ s.suggestedBy.fullName }} <em>({{ s.suggestedBy.email }})</em></span>
+            </div>
+            <div class="card-actions">
+                <button class="btn-create" (click)="createEventFromSuggestion(s)">
+                    ✅ Create This Event
+                </button>
+                <button class="btn-dismiss" (click)="dismiss(s.id)">
+                    ✕ Dismiss
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

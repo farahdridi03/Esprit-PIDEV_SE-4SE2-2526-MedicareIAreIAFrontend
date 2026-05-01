@@ -19,8 +19,8 @@
     <table class="tbl" *ngIf="!loading && registrations.length > 0">
         <thead>
             <tr>
-                <th>Registration ID</th>
-                <th>Participant ID</th>
+                <th>ID</th>
+                <th>Participant</th>
                 <th>Date Registered</th>
                 <th>Status</th>
                 <th style="text-align: right;">Action</th>
@@ -31,33 +31,38 @@
                 <td><strong>#{{ reg.id }}</strong></td>
                 <td>
                     <div class="ucell">
-                        <div class="mav ma1">P</div>
+                        <div class="mav ma1">{{ reg.userFullName?.charAt(0) || 'P' }}</div>
                         <div>
-                            <div class="cn">User {{ reg.participantId }}</div>
+                            <div class="cn">{{ reg.userFullName }}</div>
+                            <div class="ce">{{ reg.userEmail }}</div>
                         </div>
                     </div>
                 </td>
-                <td>{{ reg.createdAt | date:'medium' }}</td>
+                <td>{{ reg.registeredAt | date:'medium' }}</td>
                 <td>
-                    <span class="chip" [ngClass]="reg.status === 'VALIDATED' ? 'ck-emerald' : 'ck-amber'">
+                    <span class="chip" [ngClass]="{
+                        'ck-emerald': reg.status === 'CONFIRMED',
+                        'ck-amber': reg.status === 'PENDING',
+                        'ck-rose': reg.status === 'REJECTED'
+                    }">
                         {{ reg.status }}
                     </span>
                 </td>
                 <td style="text-align: right;">
                     <button class="action-btn text-indigo" 
-                        *ngIf="reg.status === 'REGISTERED'" 
+                        *ngIf="reg.status === 'PENDING'" 
                         (click)="validateRegistration(reg.id)">
-                        Validate ✓
+                        Accept ✓
                     </button>
-                    <span *ngIf="reg.status === 'VALIDATED'" style="font-size: 0.8rem; color: #6b7280; margin-right: 0.5rem;">
-                        Passed
+                    <span *ngIf="reg.status !== 'PENDING'" style="font-size: 0.8rem; color: #6b7280; margin-right: 0.5rem;">
+                        {{ reg.status === 'CONFIRMED' ? 'Accepted' : 'Rejected' }}
                     </span>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <div *ngIf="!loading && registrations.length === 0" class="no-data">
+    <div *ngIf="!loading && registrations.length === 0" class="no-data" style="text-align: center; padding: 3rem; color: #6b7280;">
         No participants have registered for this event yet.
     </div>
 </div>

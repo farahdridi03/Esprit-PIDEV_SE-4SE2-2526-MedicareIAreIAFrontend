@@ -1,0 +1,100 @@
+<div class="page-header">
+  <div class="header-content">
+    <h1>Smart <em>Replenishment</em></h1>
+    <p>AI-driven predictive analysis to optimize your stock and avoid shortages.</p>
+  </div>
+  <button class="btn-refresh" (click)="loadPredictions()" [disabled]="isLoading">
+    <span>↻</span> Refresh Algorithm
+  </button>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-title">Prediction Results for Active Pharmacy</div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <select class="role-filter" [(ngModel)]="activePharmacyId" (change)="onPharmacyChange()">
+          <option *ngFor="let p of pharmacies" [value]="p.id">{{ p.name }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="panel-body p-0">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="p-6 text-center text-gray-500">
+      <div class="spinner"></div>
+      <p class="mt-4">Analyzing sales trends & forecasting stock...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="errorMessage" class="p-6 text-center text-red-500">
+      <p>{{ errorMessage }}</p>
+      <button class="btn-pharma-outline mt-4" (click)="loadPredictions()">Try Again</button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !errorMessage && predictions.length === 0" class="p-6 text-center text-gray-500 empty-state">
+      <div class="empty-icon text-4xl mb-4">🔮</div>
+      <h3>Your stock is perfectly optimized</h3>
+      <p>Our algorithms didn't detect any urgent replenishment needs based on the last 30 days of data.</p>
+    </div>
+
+    <!-- Data Table -->
+    <table class="pharma-table" *ngIf="!isLoading && !errorMessage && predictions.length > 0">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Historical Data (30d)</th>
+          <th>Current Status</th>
+          <th>Trend Insight</th>
+          <th>Est. Depletion</th>
+          <th>AI Recommendation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pred of predictions">
+          <td>
+            <strong>{{ pred.productName }}</strong>
+            <div class="text-xs text-gray-500">ID: {{ pred.productId }}</div>
+            <span *ngIf="pred.activeAlerts > 0" class="badge-danger mt-1">{{ pred.activeAlerts }} Alert(s)</span>
+          </td>
+          
+          <td>
+            <div class="metric-block">
+              <span class="value">{{ pred.consumptionLast30Days }}</span>
+              <span class="label">Units Sold</span>
+            </div>
+          </td>
+
+          <td>
+            <div class="metric-block" [ngClass]="{'text-red-600': pred.currentStock === 0, 'text-orange-500': pred.currentStock > 0 && pred.currentStock <= 5}">
+              <span class="value">{{ pred.currentStock }}</span>
+              <span class="label">In Stock</span>
+            </div>
+          </td>
+
+          <td>
+            <span *ngIf="pred.isSeasonal" class="trend trend-up">
+              📈 High seasonal demand
+            </span>
+            <span *ngIf="!pred.isSeasonal" class="trend trend-stable">
+              ➖ Stable demand
+            </span>
+          </td>
+
+          <td>
+            <strong *ngIf="pred.estimatedDepletionDate">{{ pred.estimatedDepletionDate | date:'mediumDate' }}</strong>
+            <strong *ngIf="!pred.estimatedDepletionDate && pred.currentStock === 0" class="text-red-500">Out of Stock</strong>
+            <span *ngIf="!pred.estimatedDepletionDate && pred.currentStock > 0" class="text-green-500">Long-term</span>
+          </td>
+
+          <td>
+            <div class="recommendation-box">
+              <div class="text-sm">Suggest order of:</div>
+              <div class="text-xl font-bold text-teal-600">{{ pred.suggestedOrderQuantity }} units</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

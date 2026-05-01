@@ -8,6 +8,8 @@ import { InventoryListComponent } from './pages/inventory-list/inventory-list.co
 import { BatchesListComponent } from './pages/batches-list/batches-list.component';
 import { MovementsListComponent } from './pages/movements-list/movements-list.component';
 import { AlertsListComponent } from './pages/alerts-list/alerts-list.component';
+import { PredictionsListComponent } from './pages/predictions-list/predictions-list.component';
+import { ExpirationRisksComponent } from './pages/expiration-risks/expiration-risks.component';
 import { AuthGuard } from '../../guards/auth.guard';
 
 const routes: Routes = [
@@ -24,6 +26,8 @@ const routes: Routes = [
       { path: 'batches/:pharmacyStockId', component: BatchesListComponent },
       { path: 'movements/:pharmacyStockId', component: MovementsListComponent },
       { path: 'alerts', component: AlertsListComponent },
+      { path: 'predictions', component: PredictionsListComponent },
+      { path: 'expiration-risks', component: ExpirationRisksComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

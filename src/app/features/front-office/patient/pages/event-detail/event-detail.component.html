@@ -60,13 +60,8 @@
                 <span class="value">{{ event.capacity }} people maximum</span>
               </div>
             </div>
-            <!-- Mock Map Placeholder -->
-            <div class="map-placeholder">
-              <div class="map-overlay">
-                <span class="map-icon">🗺️</span>
-                <p>Location Map Enabled</p>
-              </div>
-            </div>
+            <!-- Real Map Container -->
+            <div id="event-map" class="event-map-container"></div>
           </section>
 
           <section class="logistics-section glass-card" *ngIf="event.eventType === 'ONLINE'">

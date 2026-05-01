@@ -62,6 +62,8 @@
                     </div>
                 </td>
                 <td style="text-align: right;">
+                    <button class="action-btn" *ngIf="ev.eventType === 'PHYSICAL'" style="color: #d97706;" (click)="editSeatMap(ev.id)">Seat Map</button>
+<button class="action-btn" style="color: #4f46e5;" (click)="viewAnalytics(ev.id)">Analytics</button>
                     <button class="action-btn" (click)="viewRegistrations(ev.id)">Registrations</button>
                     <button class="action-btn text-indigo" (click)="editEvent(ev.id)">Edit</button>
                     <button class="action-btn text-rose" (click)="deleteEvent(ev.id)">Delete</button>

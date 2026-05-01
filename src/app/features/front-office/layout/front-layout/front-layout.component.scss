@@ -1,157 +1,198 @@
-// Variables (scoped to this layout)
-:host {
-    --primary: #2bb3a8;
-    --primary-dark: #2bb3a8;
-    --text-dark: #111827;
-    --text-muted: #4b5563;
-    --bg: #ffffff;
-    --border: #e5e7eb;
-    --radius-pill: 9999px;
-    --shadow: 0 4px 14px rgba(16, 185, 129, 0.18);
-    --shadow-hover: 0 6px 20px rgba(16, 185, 129, 0.25);
-
-    display: block;
-    background: #f8fafc;
-    color: var(--text-dark);
-}
-
-* {
-    box-sizing: border-box;
-}
-
-.page {
-    padding-top: 88px;
-}
-
-// -------------------
-// NAVBAR
-// -------------------
 .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 5%;
+    height: 80px;
+    padding: 0 5%;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    backdrop-filter: blur(8px);
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
 }
 
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    color: var(--primary);
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #2563eb;
     text-decoration: none;
-    font-weight: 700;
-    font-size: 1.55rem;
-    letter-spacing: -0.5px;
+}
 
-    .logo-heart {
-        width: 38px;
-        height: 38px;
-    }
+.logo-heart {
+    width: 32px;
+    height: 32px;
 }
 
 .nav-links {
     display: flex;
-    align-items: center;
-    gap: 2.4rem;
+    gap: 2rem;
 
     a {
-        color: var(--text-muted);
         text-decoration: none;
+        color: #4b5563;
         font-weight: 500;
-        font-size: 0.97rem;
-        transition: color 0.18s ease;
-        position: relative;
+        transition: color 0.2s;
+        font-size: 0.95rem;
 
-        &:hover,
-        &.active {
-            color: var(--text-dark);
+        &:hover, &.active {
+            color: #2563eb;
+        }
+    }
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.notif-wrapper {
+    position: relative;
+}
+
+.notif-bell {
+    position: relative;
+    cursor: pointer;
+    color: #4b5563;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+
+    &:hover { color: #2563eb; }
+
+    svg { width: 24px; height: 24px; }
+
+    .badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 2px 5px;
+        border-radius: 99px;
+        border: 2px solid white;
+        line-height: 1;
+    }
+}
+
+.notif-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 300px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    z-index: 100;
+    overflow: hidden;
+
+    .notif-header {
+        padding: 0.75rem 1rem;
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+
+        button {
+            color: #2563eb;
+            font-size: 0.75rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            &:hover { text-decoration: underline; }
+        }
+    }
+
+    .notif-list {
+        max-height: 350px;
+        overflow-y: auto;
+
+        .empty-notif {
+            padding: 2rem;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.875rem;
         }
 
-        &::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -6px;
-            left: 0;
-            background: var(--primary);
-            transition: width 0.25s ease;
-        }
+        .notif-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background 0.2s;
 
-        &:hover::after,
-        &.active::after {
-            width: 100%;
+            &:hover { background: #f9fafb; }
+            &.unread { background: #eff6ff; }
+
+            p { font-size: 0.875rem; color: #374151; margin: 0; line-height: 1.4; }
+            .time { font-size: 0.75rem; color: #9ca3af; display: block; margin-top: 0.5rem; }
+
+            .notif-actions {
+                margin-top: 0.75rem;
+                .download-btn {
+                    width: 100%;
+                    padding: 0.5rem;
+                    background: #2563eb;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    &:hover { background: #1d4ed8; }
+                }
+            }
         }
     }
 }
 
 .cta-button {
-    background: var(--primary);
+    background: #2563eb;
     color: white;
     border: none;
-    padding: 0.78rem 1.6rem;
-    border-radius: var(--radius-pill);
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
     font-weight: 600;
-    font-size: 0.96rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow);
+    transition: all 0.2s;
 
     &:hover {
-        background: var(--primary-dark);
-        transform: translateY(-1.5px);
-        box-shadow: var(--shadow-hover);
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
+}
+
+.logout-btn {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #374151;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover { background: #f9fafb; border-color: #d1d5db; }
 }
 
 .mobile-menu-toggle {
     display: none;
-    font-size: 1.8rem;
-    color: var(--text-dark);
+    font-size: 1.5rem;
     cursor: pointer;
 }
 
-// -------------------
-// Responsive
-// -------------------
-@media (max-width: 992px) {
-    .navbar {
-        padding: 1rem 6%;
-    }
-
-    .nav-links {
-        display: none;
-    }
-
-    .mobile-menu-toggle {
-        display: block;
-    }
-
-    .cta-button {
-        padding: 0.7rem 1.4rem;
-        font-size: 0.92rem;
-    }
-}
-
-@media (max-width: 640px) {
-    .navbar {
-        padding: 0.9rem 5%;
-    }
-
-    .logo-container {
-        font-size: 1.4rem;
-
-        .logo-heart {
-            width: 32px;
-            height: 32px;
-        }
-    }
+@media (max-width: 1024px) {
+    .nav-links { display: none; }
+    .mobile-menu-toggle { display: block; }
 }

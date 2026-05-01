@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MedicalEvent } from '../../../../../models/event.model';
 import { EventService } from '../../../../../services/event.service';
 import { CommonModule, Location } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-event-detail',
@@ -12,17 +14,20 @@ import { RouterModule } from '@angular/router';
   templateUrl: './event-detail.component.html',
   styleUrls: ['./event-detail.component.scss']
 })
-export class EventDetailComponent implements OnInit {
+export class EventDetailComponent implements OnInit, OnDestroy {
   event?: MedicalEvent;
   isParticipating: boolean = false;
   loading: boolean = true;
   submitting: boolean = false;
 
+  private map: L.Map | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private eventService: EventService
+    private eventService: EventService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -33,8 +38,13 @@ export class EventDetailComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove();
+    }
+  }
+
   goBack(): void {
-    // Navigate specifically to patient events portal (prefixed with /front/)
     this.router.navigate(['/front/patient/events']);
   }
 
@@ -43,10 +53,57 @@ export class EventDetailComponent implements OnInit {
       next: (data) => {
         this.event = data;
         this.loading = false;
+        if (this.event?.eventType === 'PHYSICAL') {
+          setTimeout(() => this.initMap(), 500);
+        }
       },
       error: (err) => {
         console.error('Error loading event detail', err);
         this.loading = false;
+      }
+    });
+  }
+
+  private initMap(): void {
+    if (!this.event || this.event.eventType !== 'PHYSICAL' || this.map) return;
+
+    const address = `${this.event.address}, ${this.event.city}, ${this.event.country}`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+
+    this.http.get<any[]>(url).subscribe({
+      next: (results) => {
+        let lat = 36.8065;
+        let lon = 10.1815;
+
+        if (results && results.length > 0) {
+          lat = parseFloat(results[0].lat);
+          lon = parseFloat(results[0].lon);
+        }
+
+        const mapContainer = document.getElementById('event-map');
+        if (!mapContainer) return;
+
+        this.map = L.map('event-map').setView([lat, lon], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(this.map);
+
+        const icon = L.icon({
+          iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+          shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41]
+        });
+
+        L.marker([lat, lon], { icon }).addTo(this.map)
+          .bindPopup(`<b>${this.event?.venueName}</b><br>${this.event?.address}`)
+          .openPopup();
+      },
+      error: (err) => {
+        console.error('Geocoding failed', err);
+        this.map = L.map('event-map').setView([36.8065, 10.1815], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
       }
     });
   }

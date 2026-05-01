@@ -63,6 +63,14 @@ export class AdminEventsListComponent implements OnInit {
     this.router.navigate(['/admin/events/edit', id]);
   }
 
+  editSeatMap(id: number) {
+    this.router.navigate(['/admin/events', id, 'seats']);
+  }
+
+  viewAnalytics(id: number) {
+    this.router.navigate(['/admin/events', id, 'analytics']);
+  }
+
   createEvent() {
     this.router.navigate(['/admin/events/create']);
   }

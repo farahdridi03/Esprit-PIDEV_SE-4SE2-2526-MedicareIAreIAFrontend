@@ -4,14 +4,12 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { of, throwError, Subject } from 'rxjs';
 import { EventDetailsComponent } from './event-details.component';
 import { EventService } from '../../../../../services/event.service';
-import { EventRegistrationService } from '../../../../../services/event-registration.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 describe('EventDetailsComponent', () => {
   let component: EventDetailsComponent;
   let fixture: ComponentFixture<EventDetailsComponent>;
   let eventServiceSpy: jasmine.SpyObj<EventService>;
-  let registrationServiceSpy: jasmine.SpyObj<EventRegistrationService>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let routerSpy: jasmine.SpyObj<Router>;
 
@@ -25,8 +23,7 @@ describe('EventDetailsComponent', () => {
   };
 
   beforeEach(async () => {
-    eventServiceSpy = jasmine.createSpyObj('EventService', ['getEventById']);
-    registrationServiceSpy = jasmine.createSpyObj('EventRegistrationService', ['getRegistrationsByParticipant', 'registerToEvent']);
+    eventServiceSpy = jasmine.createSpyObj('EventService', ['getEventById', 'isParticipating', 'participateInEvent', 'getEventSeats']);
     authServiceSpy = jasmine.createSpyObj('AuthService', ['getUserRole']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -34,7 +31,6 @@ describe('EventDetailsComponent', () => {
       declarations: [ EventDetailsComponent ],
       providers: [
         { provide: EventService, useValue: eventServiceSpy },
-        { provide: EventRegistrationService, useValue: registrationServiceSpy },
         { provide: AuthService, useValue: authServiceSpy },
         { provide: Router, useValue: routerSpy },
         {
@@ -53,7 +49,8 @@ describe('EventDetailsComponent', () => {
     
     // Default mock returns
     eventServiceSpy.getEventById.and.returnValue(of(mockEvent as any));
-    registrationServiceSpy.getRegistrationsByParticipant.and.returnValue(of([]));
+    eventServiceSpy.isParticipating.and.returnValue(of({ participating: false }));
+    eventServiceSpy.getEventSeats.and.returnValue(of([]));
     
     localStorage.clear();
   });
@@ -68,24 +65,25 @@ describe('EventDetailsComponent', () => {
     expect(component.event).toEqual(mockEvent as any);
   }));
 
-  describe('registration check', () => {
-    it('should check registration status if user is logged in', fakeAsync(() => {
+  describe('participation check', () => {
+    it('should check participation status if user is logged in', fakeAsync(() => {
+      localStorage.setItem('token', 'mock-token');
       localStorage.setItem('user', JSON.stringify({ id: 99 }));
-      const mockReg = { id: 10, eventId: 1, participantId: 99, status: 'REGISTERED' };
-      registrationServiceSpy.getRegistrationsByParticipant.and.returnValue(of([mockReg as any]));
+      const mockParticipation = { participating: true, status: 'CONFIRMED', participationId: 10 };
+      eventServiceSpy.isParticipating.and.returnValue(of(mockParticipation));
 
       fixture.detectChanges();
       tick();
 
-      expect(registrationServiceSpy.getRegistrationsByParticipant).toHaveBeenCalledWith(99);
-      expect(component.userRegistration).toEqual(mockReg as any);
+      expect(eventServiceSpy.isParticipating).toHaveBeenCalledWith(1);
+      expect(component.participation).toEqual(mockParticipation);
     }));
 
-    it('should not check registration if user is not in localStorage', fakeAsync(() => {
+    it('should not check participation if user is not logged in', fakeAsync(() => {
       fixture.detectChanges();
       tick();
 
-      expect(registrationServiceSpy.getRegistrationsByParticipant).not.toHaveBeenCalled();
+      expect(eventServiceSpy.isParticipating).not.toHaveBeenCalled();
     }));
   });
 
@@ -104,66 +102,27 @@ describe('EventDetailsComponent', () => {
       tick(4000); // Clear toast timer
     }));
 
-    it('should register successfully when logged in and not registered', fakeAsync(() => {
+    it('should send join request successfully when logged in', fakeAsync(() => {
+      localStorage.setItem('token', 'mock-token');
       localStorage.setItem('user', JSON.stringify({ id: 99 }));
       fixture.detectChanges();
       tick();
       
       component.userId = 99;
-      const mockReg = { id: 10, eventId: 1, participantId: 99, status: 'REGISTERED' };
-      const regSubject = new Subject<any>();
-      registrationServiceSpy.registerToEvent.and.returnValue(regSubject);
+      eventServiceSpy.participateInEvent.and.returnValue(of({}));
+      eventServiceSpy.isParticipating.and.returnValue(of({ participating: true, status: 'PENDING' }));
 
       component.register();
       expect(component.registering).toBeTrue();
       
-      regSubject.next(mockReg);
-      regSubject.complete();
       tick();
 
-      expect(registrationServiceSpy.registerToEvent).toHaveBeenCalledWith({
-          eventId: 1,
-          participantId: 99
-      });
-      expect(component.userRegistration).toEqual(mockReg as any);
+      expect(eventServiceSpy.participateInEvent).toHaveBeenCalledWith(1);
+      expect(component.toastMessage).toContain('Join request sent');
       expect(component.toastType).toBe('success');
       expect(component.registering).toBeFalsy();
       
       tick(4000); // Clear toast timer
-    }));
-
-    it('should handle already registered error', fakeAsync(() => {
-      localStorage.setItem('user', JSON.stringify({ id: 99 }));
-      fixture.detectChanges();
-      tick();
-      
-      component.userId = 99;
-      const alreadyRegisteredError = { error: { message: 'User already registered for this event' } };
-      registrationServiceSpy.registerToEvent.and.returnValue(throwError(() => alreadyRegisteredError));
-
-      component.register();
-      tick();
-      
-      expect(component.toastMessage).toContain('already registered');
-      expect(component.toastType).toBe('error');
-      tick(4000); // Clear toast timer
-    }));
-
-    it('should handle "event is full" error simulated via generic error message', fakeAsync(() => {
-        localStorage.setItem('user', JSON.stringify({ id: 99 }));
-        fixture.detectChanges();
-        tick();
-        
-        component.userId = 99;
-        const fullError = { error: { message: 'Registration failed: event is full' } };
-        registrationServiceSpy.registerToEvent.and.returnValue(throwError(() => fullError));
-
-        component.register();
-        tick();
-        
-        expect(component.toastMessage).toContain('Registration failed');
-        expect(component.toastType).toBe('error');
-        tick(4000); // Clear toast timer
     }));
   });
 });

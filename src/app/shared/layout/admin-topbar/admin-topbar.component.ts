@@ -3,8 +3,10 @@ import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
 import { EventService } from '../../../services/event.service';
+import { WebsocketService } from '../../../services/websocket.service';
 import { Notification } from '../../../models/notification.model';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-admin-topbar',
@@ -19,13 +21,14 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
     showNotifications: boolean = false;
     userRole: string | null = null;
     isPharmacist: boolean = false;
-    private pollingInterval: any;
+    private wsSubscription: Subscription | null = null;
 
     constructor(
         private userService: UserService, 
         private authService: AuthService,
         private notifService: NotificationService,
         private eventService: EventService,
+        private wsService: WebsocketService,
         private router: Router
     ) { }
 
@@ -46,16 +49,23 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
         // Load notifications immediately
         this.fetchNotifications();
 
-        // Poll every 30 seconds
-        this.pollingInterval = setInterval(() => {
-            this.fetchNotifications();
-        }, 30000);
+        // Connect to WebSocket
+        const email = this.authService.getUserEmail();
+        if (email) {
+            this.wsService.connect(email);
+            this.wsSubscription = this.wsService.getNotifications().subscribe(notif => {
+                this.notifications = [notif, ...this.notifications];
+                this.unreadCount++;
+                // Optional: Show a toast or sound
+            });
+        }
     }
 
     ngOnDestroy() {
-        if (this.pollingInterval) {
-            clearInterval(this.pollingInterval);
+        if (this.wsSubscription) {
+            this.wsSubscription.unsubscribe();
         }
+        this.wsService.disconnect();
     }
 
     fetchNotifications() {
@@ -124,11 +134,52 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
         });
     }
 
+    downloadTicket(participationId: number | undefined, event: MouseEvent) {
+        event.stopPropagation();
+        if (!participationId) return;
+
+        this.eventService.downloadTicket(participationId).subscribe({
+            next: (blob: Blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ticket-${participationId}.pdf`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: (err) => console.error('Error downloading ticket', err)
+        });
+    }
+
+    openNotification(notif: Notification) {
+        this.notifService.markAsRead(notif.id).subscribe();
+        notif.isRead = true;
+        this.unreadCount = this.notifications.filter(n => !n.isRead).length;
+        this.showNotifications = false;
+
+        switch (notif.type) {
+            case 'EVENT_JOIN':
+                if (notif.targetId) {
+                    this.router.navigate(['/admin/events', notif.targetId, 'registrations']);
+                }
+                break;
+            case 'EVENT_SUGGESTION':
+                this.router.navigate(['/admin/event-suggestions']);
+                break;
+            default:
+                if (notif.targetId) {
+                    this.router.navigate(['/admin/events', notif.targetId]);
+                }
+                break;
+        }
+    }
+
     goToEvent(eventId: number, notifId: number) {
         this.notifService.markAsRead(notifId).subscribe();
         this.router.navigate(['/admin/events', eventId]);
         this.showNotifications = false;
     }
+
 
     private loadUserInfo() {
         const fullName = this.authService.getUserFullName();

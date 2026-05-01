@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventService } from '../../../../../services/event.service';
-import { EventRegistrationService } from '../../../../../services/event-registration.service';
-import { MedicalEvent, EventRegistration } from '../../../../../models/event.model';
+import { MedicalEvent } from '../../../../../models/event.model';
 import { AuthService } from '../../../../../services/auth.service';
+import { HttpClient } from '@angular/common/http';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-event-details',
   templateUrl: './event-details.component.html',
   styleUrls: ['./event-details.component.scss']
 })
-export class EventDetailsComponent implements OnInit {
+export class EventDetailsComponent implements OnInit, OnDestroy {
   eventId!: number;
   event: MedicalEvent | null = null;
   loading = false;
@@ -19,14 +20,31 @@ export class EventDetailsComponent implements OnInit {
   toastType: 'success' | 'error' = 'success';
 
   userId!: number;
-  userRegistration: EventRegistration | null = null;
+  participation: any = null;
+  
+  // Seat map state
+  seats: any[] = [];
+  selectedSeat: any = null;
+
+  // Feedback state
+  feedbackSubmitted = false;
+  selectedRating = 0;
+  feedbackComment = '';
+
+  // Map state
+  private map: L.Map | null = null;
+
+  get isPastEvent(): boolean {
+    if (!this.event) return false;
+    return new Date(this.event.date) < new Date();
+  }
   
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
-    private regService: EventRegistrationService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -35,9 +53,15 @@ export class EventDetailsComponent implements OnInit {
       if (id) {
         this.eventId = +id;
         this.loadEvent();
-        this.checkRegistrationStatus();
+        this.checkParticipationStatus();
       }
     });
+  }
+
+  ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
   }
 
   loadEvent() {
@@ -46,6 +70,10 @@ export class EventDetailsComponent implements OnInit {
       next: (res) => {
         this.event = res;
         this.loading = false;
+        if (this.event && this.event.eventType === 'PHYSICAL') {
+          this.loadSeats();
+          setTimeout(() => this.initMap(), 500); // Wait for DOM
+        }
       },
       error: (err) => {
         console.error(err);
@@ -54,55 +82,143 @@ export class EventDetailsComponent implements OnInit {
     });
   }
 
-  checkRegistrationStatus() {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      const u = JSON.parse(userStr);
-      this.userId = u.id;
+  private initMap() {
+    if (!this.event || this.event.eventType !== 'PHYSICAL' || this.map) return;
 
-      if (this.userId) {
-        this.regService.getRegistrationsByParticipant(this.userId).subscribe({
-          next: (regs) => {
-            const myReg = regs.find(r => r.eventId === this.eventId);
-            if (myReg) {
-              this.userRegistration = myReg;
-            }
-          }
+    const address = `${this.event.address}, ${this.event.city}, ${this.event.country}`;
+    
+    // Geocoding using Nominatim (free OSM service)
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    
+    this.http.get<any[]>(url).subscribe({
+      next: (results) => {
+        let lat = 36.8065; // Default Tunis
+        let lon = 10.1815;
+
+        if (results && results.length > 0) {
+          lat = parseFloat(results[0].lat);
+          lon = parseFloat(results[0].lon);
+        }
+
+        this.map = L.map('event-map').setView([lat, lon], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(this.map);
+
+        const icon = L.icon({
+          iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+          shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41]
         });
+
+        L.marker([lat, lon], { icon }).addTo(this.map)
+          .bindPopup(`<b>${this.event?.venueName}</b><br>${this.event?.address}`)
+          .openPopup();
+      },
+      error: (err) => {
+        console.error('Geocoding failed', err);
+        // Fallback to default view if geocoding fails
+        this.map = L.map('event-map').setView([36.8065, 10.1815], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
       }
-    } else {
-       // Not logged in properly, can't register
+    });
+  }
+
+  loadSeats() {
+    this.eventService.getEventSeats(this.eventId).subscribe(res => {
+      this.seats = res;
+    });
+  }
+
+  checkParticipationStatus() {
+    if (localStorage.getItem('token')) {
+      this.eventService.isParticipating(this.eventId).subscribe({
+        next: (res) => {
+          if (res.participating) {
+            this.participation = res;
+          }
+        }
+      });
+      
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        this.userId = JSON.parse(userStr).id;
+      }
     }
   }
 
   register() {
-    if (!this.userId) {
+    if (!localStorage.getItem('token')) {
       this.showToast('Please log in to register.', 'error');
       setTimeout(() => this.router.navigate(['/auth/login']), 2000);
       return;
     }
 
-    if (this.userRegistration) return;
+    if (this.participation) return;
 
     this.registering = true;
-    this.regService.registerToEvent({
-      eventId: this.eventId,
-      participantId: this.userId
-    }).subscribe({
-      next: (reg) => {
-        this.userRegistration = reg;
+    this.eventService.participateInEvent(this.eventId).subscribe({
+      next: () => {
         this.registering = false;
-        this.showToast('Successfully registered for the event!', 'success');
+        this.showToast('Join request sent to admin!', 'success');
+        this.checkParticipationStatus();
       },
       error: (err) => {
         console.error(err);
-        if (err.error?.message?.includes('already')) {
-           this.showToast('You are already registered for this event.', 'error');
-        } else {
-           this.showToast('Registration failed. Please try again.', 'error');
-        }
+        this.showToast('Request failed. Please try again.', 'error');
         this.registering = false;
       }
+    });
+  }
+
+  downloadTicket() {
+    if (!this.participation?.participationId) return;
+    this.eventService.downloadTicket(this.participation.participationId).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ticket-${this.eventId}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => this.showToast('Error downloading ticket.', 'error')
+    });
+  }
+
+  selectSeat(seat: any) {
+    if (seat.status !== 'AVAILABLE') return;
+    this.selectedSeat = seat;
+  }
+
+  reserveSeat() {
+    if (!this.selectedSeat || !this.userId) return;
+    this.eventService.reserveSeat(this.selectedSeat.id).subscribe({
+      next: () => {
+        this.showToast('Seat reserved successfully!', 'success');
+        this.selectedSeat.status = 'RESERVED';
+        this.selectedSeat = null;
+        this.loadSeats();
+      },
+      error: () => {
+        this.showToast('Failed to reserve seat.', 'error');
+      }
+    });
+  }
+
+  submitFeedback() {
+    if (!this.selectedRating) return;
+    this.eventService.submitFeedback(this.eventId, {
+      rating: this.selectedRating,
+      comment: this.feedbackComment
+    }).subscribe({
+      next: () => {
+        this.feedbackSubmitted = true;
+        this.showToast('Thank you for your feedback!', 'success');
+      },
+      error: () => this.showToast('Failed to submit feedback.', 'error')
     });
   }
 

@@ -9,7 +9,10 @@ import { SharedLayoutModule } from '../../shared/layout/shared-layout.module';
 import { AdminEventsListComponent } from './pages/events/events-list/admin-events-list.component';
 import { AdminEventFormComponent } from './pages/events/event-form/admin-event-form.component';
 import { AdminEventRegistrationsComponent } from './pages/events/event-registrations/admin-event-registrations.component';
+import { EventSeatEditorComponent } from './pages/event-seat-editor/event-seat-editor.component';
+import { EventAnalyticsComponent } from './pages/event-analytics/event-analytics.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AdminEventSuggestionsComponent } from './pages/event-suggestions/admin-event-suggestions.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     UserManagementComponent,
     AdminEventsListComponent,
     AdminEventFormComponent,
-    AdminEventRegistrationsComponent
+    AdminEventRegistrationsComponent,
+    EventSeatEditorComponent,
+    EventAnalyticsComponent,
+    AdminEventSuggestionsComponent
   ],
   imports: [
     CommonModule,

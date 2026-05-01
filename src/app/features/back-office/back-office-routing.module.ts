@@ -9,6 +9,9 @@ import { UserManagementComponent } from './pages/user-management/user-management
 import { AdminEventsListComponent } from './pages/events/events-list/admin-events-list.component';
 import { AdminEventFormComponent } from './pages/events/event-form/admin-event-form.component';
 import { AdminEventRegistrationsComponent } from './pages/events/event-registrations/admin-event-registrations.component';
+import { EventSeatEditorComponent } from './pages/event-seat-editor/event-seat-editor.component';
+import { EventAnalyticsComponent } from './pages/event-analytics/event-analytics.component';
+import { AdminEventSuggestionsComponent } from './pages/event-suggestions/admin-event-suggestions.component';
 
 const routes: Routes = [
   {
@@ -22,6 +25,9 @@ const routes: Routes = [
       { path: 'events/create', component: AdminEventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'events/edit/:id', component: AdminEventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'events/:id/registrations', component: AdminEventRegistrationsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/:id/seats', component: EventSeatEditorComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/:id/analytics', component: EventAnalyticsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'event-suggestions', component: AdminEventSuggestionsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'forum', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'donations', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'home-care', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },

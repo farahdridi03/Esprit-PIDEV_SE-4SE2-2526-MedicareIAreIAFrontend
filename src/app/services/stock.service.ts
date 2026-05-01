@@ -7,7 +7,9 @@ import {
   ReceiveBatchRequest,
   StockAlert,
   StockMovement,
-  StockMovementRequest
+  StockMovementRequest,
+  ReplenishmentPrediction,
+  ExpirationRisk
 } from '../models/stock.model';
 
 @Injectable({
@@ -58,5 +60,13 @@ export class StockService {
     return this.http.get<any>(`${this.apiUrl}/search`, {
       params: { keyword, page: page.toString(), size: size.toString() }
     });
+  }
+
+  predictReplenishment(pharmacyId: number): Observable<ReplenishmentPrediction[]> {
+    return this.http.get<ReplenishmentPrediction[]>(`${this.apiUrl}/pharmacy/${pharmacyId}/replenishment-predictions`);
+  }
+
+  getExpirationRiskDashboard(pharmacyId: number): Observable<ExpirationRisk[]> {
+    return this.http.get<ExpirationRisk[]>(`${this.apiUrl}/pharmacy/${pharmacyId}/expiration-risks`);
   }
 }

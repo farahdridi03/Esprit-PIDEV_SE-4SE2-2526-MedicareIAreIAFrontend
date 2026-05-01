@@ -1,0 +1,63 @@
+<div class="page-header">
+  <div class="header-content">
+    <h1>Seat Map <em>Editor</em></h1>
+    <p>Drag and drop seats to design your venue layout.</p>
+  </div>
+  <button class="btn-primary" (click)="saveMap()">Save Layout</button>
+</div>
+
+<div class="stats-grid" *ngIf="summaries.length > 0">
+  <div class="stat-card" *ngFor="let sum of summaries">
+    <h3>{{ sum.zoneName }}</h3>
+    <p>Total: {{ sum.totalSeats }} | Available: {{ sum.availableSeats }} | Reserved: {{ sum.reservedSeats }}</p>
+  </div>
+</div>
+
+<div class="editor-container">
+  <div class="sidebar-tools">
+    <h3>Add Seat</h3>
+    <div class="form-group">
+      <label>Zone Name</label>
+      <input type="text" [(ngModel)]="newZoneName" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Seat Label (e.g. A12)</label>
+      <input type="text" [(ngModel)]="newSeatLabel" class="form-control" />
+    </div>
+    <button class="btn-secondary mt-2" style="width: 100%" (click)="addSeat()">+ Add to Map</button>
+
+    <div class="legend mt-4">
+      <h4>Legend</h4>
+      <div class="legend-item"><span class="box bg-green"></span> Available</div>
+      <div class="legend-item"><span class="box bg-indigo"></span> Reserved</div>
+      <div class="legend-item"><span class="box bg-red"></span> Blocked</div>
+    </div>
+  </div>
+
+  <div class="map-area">
+    <div class="stage-indicator">STAGE / FRONT</div>
+    
+    <div class="seat-container" id="seat-map-container">
+      <div *ngFor="let seat of seats" 
+           class="seat" 
+           [style.left.px]="seat.posX" 
+           [style.top.px]="seat.posY"
+           [ngClass]="{
+             'available': seat.status === 'AVAILABLE',
+             'reserved': seat.status === 'RESERVED',
+             'blocked': seat.status === 'BLOCKED'
+           }"
+           (mousedown)="onMouseDown($event, seat)">
+           
+           <span class="seat-label">{{ seat.seatLabel }}</span>
+           
+           <!-- Delete button shown only when editing/hovering -->
+           <div class="delete-btn" (click)="deleteSeat(seat)">×</div>
+           
+           <div class="tooltip" *ngIf="seat.reservedByFullName">
+             Reserved by: {{ seat.reservedByFullName }}
+           </div>
+      </div>
+    </div>
+  </div>
+</div>

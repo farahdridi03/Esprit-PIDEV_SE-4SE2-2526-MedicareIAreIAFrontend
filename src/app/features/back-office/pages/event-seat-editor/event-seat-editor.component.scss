@@ -1,0 +1,183 @@
+.editor-container {
+  display: flex;
+  gap: 2rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  min-height: 600px;
+}
+
+.sidebar-tools {
+  width: 250px;
+  border-right: 1px solid #e5e7eb;
+  padding-right: 1.5rem;
+  
+  h3 {
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+}
+
+.map-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-indicator {
+  background: #f3f4f6;
+  text-align: center;
+  padding: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  color: #9ca3af;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #e5e7eb;
+  border-bottom: none;
+}
+
+.seat-container {
+  flex: 1;
+  position: relative;
+  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.seat {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px 8px 4px 4px; /* look like a chair */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.1s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  &:active {
+    cursor: grabbing;
+    transform: scale(1.05);
+  }
+
+  &.available {
+    background-color: #22c55e;
+    color: white;
+  }
+
+  &.reserved {
+    background-color: #6366f1;
+    color: white;
+  }
+
+  &.blocked {
+    background-color: #ef4444;
+    color: white;
+    cursor: not-allowed;
+  }
+
+  .seat-label {
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .delete-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  &:hover .delete-btn {
+    opacity: 1;
+  }
+
+  .tooltip {
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  &:hover .tooltip {
+    opacity: 1;
+  }
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #4b5563;
+
+  .box {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  .bg-green { background-color: #22c55e; }
+  .bg-indigo { background-color: #6366f1; }
+  .bg-red { background-color: #ef4444; }
+}
+
+/* Base styles imported generically */
+.form-group {
+  margin-bottom: 1rem;
+  label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+  .form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+  }
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+.btn-secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+}

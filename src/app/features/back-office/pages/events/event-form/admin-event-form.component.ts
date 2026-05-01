@@ -19,6 +19,7 @@ export class AdminEventFormComponent implements OnInit {
   isEditMode = false;
   loading = false;
   globalError: string | null = null;
+  minDate: string = '';
   // UI
   imagePreview: string | null = null;
   selectedFile: File | null = null;
@@ -157,6 +158,7 @@ export class AdminEventFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.minDate = this.getMinDate();
     this.initForm();
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
@@ -175,6 +177,7 @@ export class AdminEventFormComponent implements OnInit {
       date: ['', Validators.required],
       eventType: ['PHYSICAL', Validators.required],
       venueName: [''], address: [''], city: [''], postalCode: [''], country: ['Tunisia'], capacity: [''],
+      ticketPrice: [0],
       platformName: [''], meetingLink: [''], meetingPassword: [''],
       imageUrl: ['']
     });
@@ -310,5 +313,11 @@ export class AdminEventFormComponent implements OnInit {
     } else {
       this.globalError = err.error?.message || 'Failed to save event.';
     }
+  }
+
+  private getMinDate(): string {
+    const now = new Date();
+    const tzOffset = now.getTimezoneOffset() * 60000;
+    return new Date(now.getTime() - tzOffset).toISOString().slice(0, 16);
   }
 }

@@ -57,7 +57,11 @@ export class MyRegistrationsComponent implements OnInit {
             }));
             
             // Sort by most recent registration
-            this.registrations.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            this.registrations.sort((a, b) => {
+              const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+              const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+              return timeB - timeA;
+            });
             
             this.loading = false;
           },

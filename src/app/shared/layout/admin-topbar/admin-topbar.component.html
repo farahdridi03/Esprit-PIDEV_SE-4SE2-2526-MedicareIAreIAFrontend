@@ -9,11 +9,68 @@
         <input type="text" placeholder="Search users, events, logs...">
     </div>
     <div class="topbar-right">
-        <div class="tb-icon-btn">
-            <div class="notif-dot"></div>
+        <div class="tb-icon-btn" (click)="toggleNotifications()">
+            <div class="notif-dot" *ngIf="unreadCount > 0"></div>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
             </svg>
+
+            <!-- Notification Dropdown -->
+            <div class="notif-dropdown" *ngIf="showNotifications" (click)="$event.stopPropagation()">
+                <div class="notif-header">
+                    <h3>Notifications</h3>
+                    <button class="clear-btn" (click)="clearAll()">Clear All</button>
+                </div>
+                <div class="notif-list">
+                    <div *ngIf="notifications.length === 0" class="empty-notif">No new notifications</div>
+                    <div *ngFor="let n of notifications"
+                         class="notif-item"
+                         [class.unread]="!n.isRead"
+                         [class.type-join]="n.type === 'EVENT_JOIN'"
+                         [class.type-suggestion]="n.type === 'EVENT_SUGGESTION'"
+                         (click)="openNotification(n)">
+
+                        <!-- Icon per type -->
+                        <div class="notif-icon">
+                            <span *ngIf="n.type === 'EVENT_JOIN'">🙋</span>
+                            <span *ngIf="n.type === 'EVENT_SUGGESTION'">💡</span>
+                            <span *ngIf="n.type !== 'EVENT_JOIN' && n.type !== 'EVENT_SUGGESTION'">🔔</span>
+                        </div>
+
+                        <div class="notif-body">
+                            <p class="notif-msg">{{ n.message }}</p>
+
+                            <!-- Status badge for EVENT_JOIN -->
+                            <span class="notif-status" *ngIf="n.type === 'EVENT_JOIN' && n.participationStatus"
+                                  [class.status-pending]="n.participationStatus === 'PENDING'"
+                                  [class.status-confirmed]="n.participationStatus === 'CONFIRMED'"
+                                  [class.status-rejected]="n.participationStatus === 'REJECTED'">
+                                {{ n.participationStatus }}
+                            </span>
+
+                            <!-- Admin Accept/Reject for pending join -->
+                            <div class="notif-actions" *ngIf="n.type === 'EVENT_JOIN' && n.participationStatus === 'PENDING'" (click)="$event.stopPropagation()">
+                                <button class="btn-small accept" (click)="acceptParticipation(n.participationId, n, $event)">✓ Accept</button>
+                                <button class="btn-small reject" (click)="rejectParticipation(n.participationId, n, $event)">✕ Reject</button>
+                            </div>
+
+                            <!-- Download ticket for accepted -->
+                            <div class="notif-actions" *ngIf="n.type === 'PARTICIPATION_ACCEPTED'" (click)="$event.stopPropagation()">
+                                <button class="btn-small download" (click)="downloadTicket(n.participationId, $event)">⬇ Download Ticket</button>
+                            </div>
+
+                            <div class="notif-meta">
+                                <span class="notif-type-tag">{{ n.type | titlecase }}</span>
+                                <span class="notif-time">{{ n.createdAt | date:'short' }}</span>
+                            </div>
+                        </div>
+                        <button class="notif-del" (click)="deleteNotification(n.id, $event)">×</button>
+                    </div>
+                </div>
+                <div class="notif-footer" *ngIf="unreadCount > 0">
+                    <button (click)="markAllRead()">Mark all as read</button>
+                </div>
+            </div>
         </div>
         <div class="tb-icon-btn">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">

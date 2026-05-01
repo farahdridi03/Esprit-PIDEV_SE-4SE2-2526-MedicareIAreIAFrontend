@@ -101,3 +101,32 @@
         </div>
     </div>
 </div>
+
+<!-- SUGGESTION MODAL -->
+<div class="modal-overlay" *ngIf="showSuggestModal">
+    <div class="modal-content glass-card">
+        <div class="modal-header">
+            <h2>💡 Suggest an <span class="gradient-text">Event Idea</span></h2>
+            <button class="close-btn" (click)="closeSuggestModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-intro">Have a great idea for a medical conference or workshop? Share it with our team!</p>
+            
+            <div class="form-group">
+                <label>Event Title</label>
+                <input type="text" [(ngModel)]="suggestionTitle" placeholder="e.g. Workshop on Modern Cardiology">
+            </div>
+
+            <div class="form-group">
+                <label>Description / Details</label>
+                <textarea [(ngModel)]="suggestionDesc" rows="4" placeholder="Briefly describe what this event should cover..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" (click)="closeSuggestModal()">Cancel</button>
+            <button class="btn-submit" [disabled]="!suggestionTitle || !suggestionDesc || submittingSuggestion" (click)="submitSuggestion()">
+                {{ submittingSuggestion ? 'Sending...' : 'Send Suggestion' }}
+            </button>
+        </div>
+    </div>
+</div>

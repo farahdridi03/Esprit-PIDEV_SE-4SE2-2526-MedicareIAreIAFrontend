@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { EventService } from '../../../../../services/event.service';
 import { MedicalEvent, EventType } from '../../../../../models/event.model';
 import { AuthService } from '../../../../../services/auth.service';
+import { EventSuggestionService } from '../../../../../services/event-suggestion.service';
 
 @Component({
   selector: 'app-events-discovery',
@@ -19,11 +20,16 @@ export class EventsDiscoveryComponent implements OnInit {
   searchTerm = '';
 
   isAuthenticated = false;
+  showSuggestModal = false;
+  suggestionTitle = '';
+  suggestionDesc = '';
+  submittingSuggestion = false;
 
   constructor(
     private eventService: EventService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private suggestionService: EventSuggestionService
   ) {}
 
   ngOnInit() {
@@ -79,7 +85,39 @@ export class EventsDiscoveryComponent implements OnInit {
   }
 
   suggestEvent() {
-    alert('Thank you for your interest! The "Suggest Event Idea" feature will be available in a future update.');
+    if (!this.isAuthenticated) {
+      alert('Please log in to suggest an event.');
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+    this.showSuggestModal = true;
+  }
+
+  closeSuggestModal() {
+    this.showSuggestModal = false;
+    this.suggestionTitle = '';
+    this.suggestionDesc = '';
+  }
+
+  submitSuggestion() {
+    if (!this.suggestionTitle || !this.suggestionDesc) return;
+
+    this.submittingSuggestion = true;
+    this.suggestionService.suggestEvent({
+      title: this.suggestionTitle,
+      description: this.suggestionDesc
+    }).subscribe({
+      next: () => {
+        alert('Thank you! Your suggestion has been sent to the admin.');
+        this.closeSuggestModal();
+        this.submittingSuggestion = false;
+      },
+      error: (err) => {
+        console.error('Error submitting suggestion', err);
+        alert('Failed to send suggestion. Please try again.');
+        this.submittingSuggestion = false;
+      }
+    });
   }
 
   getImageUrl(imagePath: string | undefined): string {

@@ -67,7 +67,7 @@
 
                 <div class="form-group">
                     <label>Date & Time *</label>
-                    <input type="datetime-local" formControlName="date"
+                    <input type="datetime-local" formControlName="date" [min]="minDate"
                         [ngClass]="{'is-invalid': eventForm.get('date')?.invalid && (eventForm.get('date')?.dirty || eventForm.get('date')?.touched)}">
                     <span class="error-message"
                         *ngIf="eventForm.get('date')?.errors?.['required'] && eventForm.get('date')?.touched">Date is
@@ -88,6 +88,11 @@
                         type is required.</span>
                     <span class="error-message" *ngIf="eventForm.get('eventType')?.errors?.['serverError']">{{
                         eventForm.get('eventType')?.errors?.['serverError'] }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Ticket Price (USD)</label>
+                    <input type="number" formControlName="ticketPrice" placeholder="0.00 (Leave empty if free)">
                 </div>
             </div>
 

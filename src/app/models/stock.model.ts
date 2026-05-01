@@ -53,3 +53,25 @@ export interface StockAlert {
   resolved: boolean;
   resolvedAt?: string;
 }
+
+export interface ReplenishmentPrediction {
+  pharmacyStockId: number;
+  productId: number;
+  productName: string;
+  currentStock: number;
+  consumptionLast30Days: number;
+  activeAlerts: number;
+  isSeasonal: boolean;
+  suggestedOrderQuantity: number;
+  estimatedDepletionDate: string;
+}
+
+export interface ExpirationRisk {
+  batchId: number;
+  productName: string;
+  batchNumber: string;
+  quantity: number;
+  expirationDate: string;
+  riskLevel: 'EXPIRED' | 'RED' | 'ORANGE' | 'GREEN';
+  recommendedAction: string;
+}
