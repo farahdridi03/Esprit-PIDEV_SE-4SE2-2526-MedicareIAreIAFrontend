@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Donation, AidRequest, DonationAssignment } from '../models/donation.model';
+import { EligibilityResult } from '../models/eligibility.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DonationService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/donations';
+  private apiUrl    = 'http://localhost:8081/springsecurity/api/donations';
   private aidApiUrl = 'http://localhost:8081/springsecurity/api/aid-requests';
+  private aiApiUrl  = 'http://localhost:8081/springsecurity/api/ai';
 
   constructor(private http: HttpClient) { }
 
@@ -81,5 +83,21 @@ export class DonationService {
     return this.http.get<Donation[]>(`${this.apiUrl}/patient/${patientId}/assigned`, {
       params: { status }
     });
+  }
+
+  // ── AI Eligibility ──────────────────────────────────────────────────────────
+
+  /** POST /api/ai/eligibility/{aidRequestId} */
+  checkEligibility(aidRequestId: number): Observable<EligibilityResult> {
+    return this.http.post<EligibilityResult>(
+      `${this.aiApiUrl}/eligibility/${aidRequestId}`, {}
+    );
+  }
+
+  /** POST /api/ai/eligibility/batch */
+  checkEligibilityBatch(ids: number[]): Observable<EligibilityResult[]> {
+    return this.http.post<EligibilityResult[]>(
+      `${this.aiApiUrl}/eligibility/batch`, ids
+    );
   }
 }

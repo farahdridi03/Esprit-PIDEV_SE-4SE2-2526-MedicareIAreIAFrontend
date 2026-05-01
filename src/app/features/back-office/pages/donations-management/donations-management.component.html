@@ -51,13 +51,16 @@
                     </div>
                 </td>
                 <td>
-                    <span class="chip" [ngClass]="d.type === DonationType.MONEY ? 'ck-emerald' : 'ck-indigo'">
+                    <span class="chip" [ngClass]="d.type === DonationType.MONEY ? 'ck-emerald' : d.type === DonationType.MEDICAMENT ? 'ck-amber' : 'ck-indigo'">
                         {{ d.type }}
                     </span>
                     <div class="cs" style="margin-top: 4px;" *ngIf="d.type === 'MONEY'">
                         Amount: ${{ d.amount }}
                     </div>
                     <div class="cs" style="margin-top: 4px;" *ngIf="d.type === 'MATERIEL'">
+                        {{ d.categorie }} (Qty: {{ d.quantite }})
+                    </div>
+                    <div class="cs" style="margin-top: 4px;" *ngIf="d.type === 'MEDICAMENT'">
                         {{ d.categorie }} (Qty: {{ d.quantite }})
                     </div>
                 </td>
@@ -132,7 +135,27 @@
                     </span>
                 </td>
                 <td style="text-align: right;">
-                    <button *ngIf="req.supportingDocument" class="action-btn text-teal" 
+                    <!-- AI Eligibility badge (shown after check) -->
+                    <span *ngIf="getEligibilityResult(req.id) as res"
+                        class="chip"
+                        [ngClass]="res.eligible ? 'ck-emerald' : 'ck-rose'"
+                        style="cursor: pointer; margin-right: 8px;"
+                        (click)="openEligibilityModal(res)"
+                        title="Voir le détail IA">
+                        {{ res.eligible ? '✅ Éligible' : '❌ Non éligible' }}
+                        ({{ (res.probability * 100).toFixed(0) }}%)
+                    </span>
+
+                    <!-- AI Check button -->
+                    <button class="action-btn"
+                        style="font-weight: bold; margin-right: 8px; background: #7c3aed; color: white; border: none; border-radius: 6px; padding: 4px 10px; cursor: pointer;"
+                        [disabled]="isCheckingEligibility(req.id)"
+                        (click)="checkEligibility(req)">
+                        <span *ngIf="!isCheckingEligibility(req.id)">🤖 Vérifier Éligibilité</span>
+                        <span *ngIf="isCheckingEligibility(req.id)">Analyse…</span>
+                    </button>
+
+                    <button *ngIf="req.supportingDocument" class="action-btn text-teal"
                         style="font-weight: bold; margin-right: 8px;" (click)="openDocModal(req.supportingDocument)">View Document 📄</button>
                     <button *ngIf="req.status === AidRequestStatus.PENDING" class="action-btn text-indigo"
                         style="font-weight: bold;" (click)="openAssignModal(req)">Assign Donation</button>
@@ -249,10 +272,113 @@
         <div style="flex: 1; background: #525659; display: flex; align-items: center; justify-content: center;">
             <!-- IFRAME FOR PDF OR OTHER DOCS -->
             <iframe *ngIf="previewDocUrl" [src]="previewDocUrl" width="100%" height="100%" frameborder="0"></iframe>
-            
+
             <div *ngIf="!previewDocUrl" style="color: white; text-align: center;">
                 <p>No document to display</p>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================== MODAL: AI ELIGIBILITY RESULT ============================================== -->
+<div class="modal-overlay" *ngIf="showEligibilityModal && selectedEligibility" (click)="closeEligibilityModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()"
+        style="max-width: 520px; width: 100%; background: white; border-radius: 14px; padding: 1.75rem; box-shadow: 0 16px 48px rgba(0,0,0,0.18);">
+
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.7rem;">
+                <span style="font-size: 1.6rem;">🤖</span>
+                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text-1);">
+                    Résultat d'Éligibilité IA
+                </h3>
+            </div>
+            <button (click)="closeEligibilityModal()"
+                style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-3);">&times;</button>
+        </div>
+
+        <!-- Patient -->
+        <div style="font-size: 0.82rem; color: var(--text-2); margin-bottom: 1rem;">
+            Bénéficiaire : <strong>{{ selectedEligibility.patientName || '—' }}</strong>
+        </div>
+
+        <!-- Decision banner -->
+        <div style="border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.8rem;"
+            [ngStyle]="{'background': selectedEligibility.eligible ? '#f0fdf4' : '#fff1f2', 'border': selectedEligibility.eligible ? '1.5px solid #bbf7d0' : '1.5px solid #fecdd3'}">
+            <span style="font-size: 2rem;">{{ selectedEligibility.eligible ? '✅' : '❌' }}</span>
+            <div>
+                <div style="font-size: 1.05rem; font-weight: 800;"
+                    [ngStyle]="{'color': selectedEligibility.eligible ? '#15803d' : '#be123c'}">
+                    {{ selectedEligibility.eligible ? 'ÉLIGIBLE' : 'NON ÉLIGIBLE' }}
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-2); margin-top: 2px;">
+                    Probabilité : <strong>{{ (selectedEligibility.probability * 100).toFixed(1) }}%</strong>
+                    &nbsp;·&nbsp; Confiance :
+                    <span [ngStyle]="{'color': selectedEligibility.confidence === 'HIGH' ? '#15803d' : selectedEligibility.confidence === 'MEDIUM' ? '#d97706' : '#be123c'}">
+                        {{ selectedEligibility.confidence }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div style="margin-bottom: 1.25rem;">
+            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 4px;">Score d'éligibilité</div>
+            <div style="background: #f1f5f9; border-radius: 99px; height: 10px; overflow: hidden;">
+                <div style="height: 100%; border-radius: 99px; transition: width 0.4s;"
+                    [ngStyle]="{
+                        'width': (selectedEligibility.probability * 100) + '%',
+                        'background': selectedEligibility.eligible ? '#22c55e' : '#f43f5e'
+                    }"></div>
+            </div>
+        </div>
+
+        <!-- Details grid -->
+        <div *ngIf="selectedEligibility.details"
+            style="background: #f8fafc; border-radius: 10px; padding: 0.9rem 1rem; margin-bottom: 1rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">
+                Facteurs analysés
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; font-size: 0.8rem; color: var(--text-2);">
+                <div>Revenus estimés :
+                    <strong>{{ selectedEligibility.details.revenus_mensuels_tnd || 'N/A' }} TND</strong>
+                </div>
+                <div>Personnes à charge :
+                    <strong>{{ selectedEligibility.details.personnes_a_charge }}</strong>
+                </div>
+                <div>Score maladie chronique :
+                    <strong>{{ selectedEligibility.details.chronic_score }}/3</strong>
+                </div>
+                <div>Score diagnostic :
+                    <strong>{{ selectedEligibility.details.diagnosis_score }}/3</strong>
+                </div>
+                <div>Très pauvre :
+                    <strong [ngStyle]="{'color': selectedEligibility.details.est_tres_pauvre ? '#be123c' : '#15803d'}">
+                        {{ selectedEligibility.details.est_tres_pauvre ? 'Oui' : 'Non' }}
+                    </strong>
+                </div>
+                <div>Charge médicale haute :
+                    <strong [ngStyle]="{'color': selectedEligibility.details.charge_medicale_haute ? '#be123c' : '#15803d'}">
+                        {{ selectedEligibility.details.charge_medicale_haute ? 'Oui' : 'Non' }}
+                    </strong>
+                </div>
+                <div style="grid-column: span 2;">Besoin global :
+                    <strong>{{ selectedEligibility.details.besoin_global }}/10</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer actions -->
+        <div style="display: flex; justify-content: flex-end; gap: 0.7rem;">
+            <button class="btn-tab"
+                style="padding: 0.45rem 1rem; border: 1px solid var(--border); background: var(--surface); cursor: pointer; border-radius: 8px; font-size: 0.85rem;"
+                (click)="closeEligibilityModal()">Fermer</button>
+            <button *ngIf="selectedEligibility.eligible"
+                class="action-btn text-indigo"
+                style="font-weight: 700; padding: 0.45rem 1rem; background: var(--indigo); color: white; border-radius: 8px; border: none; cursor: pointer; font-size: 0.85rem;"
+                (click)="closeEligibilityModal()">
+                ✔ Procéder à l'assignation
+            </button>
         </div>
     </div>
 </div>

@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
-import { NotificationService, AppNotification } from '../../../../../services/notification.service';
+import { WebSocketNotificationService, WsNotification } from '../../../../../services/websocket-notification.service';
 
 @Component({
   selector: 'app-topbar',
@@ -14,43 +15,55 @@ export class TopbarComponent implements OnInit, OnDestroy {
   profileImage: string | null = null;
   currentUserId: number | null = null;
 
-  notifications: AppNotification[] = [];
+  notifications: WsNotification[] = [];
   unreadCount = 0;
   showDropdown = false;
-  private pollInterval: any;
+
+  private sub!: Subscription;
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private notifService: NotificationService,
+    private wsNotif: WebSocketNotificationService,
     private elRef: ElementRef
   ) {}
 
-  ngOnInit() {
-    this.startPolling();
-
-    // 1. Try to get name directly from JWT token
+  ngOnInit(): void {
+    // Nom & photo depuis le token / profil
     const fullNameFromToken = this.authService.getUserFullName();
-    if (fullNameFromToken) {
-      this.setNames(fullNameFromToken);
-    }
+    if (fullNameFromToken) this.setNames(fullNameFromToken);
 
-    // 2. Fetch current user profile to get profile picture
     const email = this.authService.getUserEmail();
     if (email) {
       this.userService.getProfile().subscribe({
         next: (user) => {
-          if (user) {
-            if (user.fullName) this.setNames(user.fullName);
-            this.profileImage = user.profileImage || null;
-          }
+          if (user?.fullName) this.setNames(user.fullName);
+          this.profileImage = user?.profileImage || null;
         },
-        error: (err: any) => console.error('Error fetching user profile for topbar', err)
+        error: (err: any) => console.error('Error fetching user profile', err)
+      });
+    }
+
+    // WebSocket — abonnement patient
+    const id = this.authService.getUserId();
+    if (id) {
+      this.currentUserId = id;
+      this.wsNotif.connect();
+      this.wsNotif.subscribeAsPatient(id);
+
+      this.sub = this.wsNotif.patientNotifications$.subscribe(notifs => {
+        this.notifications = notifs;
+        this.unreadCount = notifs.filter(n => !n.read).length;
       });
     }
   }
 
-  private setNames(fullName: string) {
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+    this.wsNotif.unsubscribePatient();
+  }
+
+  private setNames(fullName: string): void {
     if (!fullName) return;
     const parts = fullName.trim().split(' ');
     this.firstName = parts[0];
@@ -58,42 +71,16 @@ export class TopbarComponent implements OnInit, OnDestroy {
     if (!this.initials) this.initials = this.firstName[0].toUpperCase();
   }
 
-  // ==== NOTIFICATIONS ====
-  private startPolling(): void {
-    const id = this.authService.getUserId();
-    if (id) {
-      this.currentUserId = id;
-      this.refreshNotifs();
-      this.pollInterval = setInterval(() => this.refreshNotifs(), 3000);
-    }
-  }
-
-  private refreshNotifs(): void {
-    if (!this.currentUserId) return;
-    this.notifications = this.notifService.getPatientNotifications(this.currentUserId);
-    this.unreadCount = this.notifications.filter(n => !n.read).length;
-  }
-
-  ngOnDestroy(): void {
-    if (this.pollInterval) clearInterval(this.pollInterval);
-  }
-
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
   }
 
   markAllRead(): void {
-    if (this.currentUserId) {
-      this.notifService.markPatientNotificationsRead(this.currentUserId);
-      this.refreshNotifs();
-    }
+    this.wsNotif.markPatientRead();
   }
 
   clearAll(): void {
-    if (this.currentUserId) {
-      this.notifService.clearPatientNotifications(this.currentUserId);
-      this.refreshNotifs();
-    }
+    this.wsNotif.clearPatient();
   }
 
   timeAgo(date: Date | string): string {

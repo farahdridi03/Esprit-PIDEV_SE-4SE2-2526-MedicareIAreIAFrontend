@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { NotificationService, AppNotification } from '../../../../services/notification.service';
+import { WebSocketNotificationService, WsNotification } from '../../../../services/websocket-notification.service';
 
 @Component({
   selector: 'app-admin-topbar',
@@ -8,18 +8,22 @@ import { NotificationService, AppNotification } from '../../../../services/notif
   styleUrls: ['./admin-topbar.component.scss']
 })
 export class AdminTopbarComponent implements OnInit, OnDestroy {
-  notifications: AppNotification[] = [];
+  notifications: WsNotification[] = [];
   unreadCount = 0;
   showDropdown = false;
   private sub!: Subscription;
 
   constructor(
-    private notifService: NotificationService,
+    private wsNotif: WebSocketNotificationService,
     private elRef: ElementRef
   ) {}
 
   ngOnInit(): void {
-    this.sub = this.notifService.notifications$.subscribe(notifs => {
+    // Connexion WebSocket + abonnement topic admin
+    this.wsNotif.connect();
+    this.wsNotif.subscribeAsAdmin();
+
+    this.sub = this.wsNotif.adminNotifications$.subscribe(notifs => {
       this.notifications = notifs;
       this.unreadCount = notifs.filter(n => !n.read).length;
     });
@@ -27,6 +31,7 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
+    this.wsNotif.unsubscribeAdmin();
   }
 
   toggleDropdown(): void {
@@ -34,14 +39,14 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
   }
 
   markAllRead(): void {
-    this.notifService.markAllRead();
+    this.wsNotif.markAdminRead();
   }
 
   clearAll(): void {
-    this.notifService.clearAll();
+    this.wsNotif.clearAdmin();
   }
 
-  getIcon(type: AppNotification['type']): string {
+  getIcon(type: WsNotification['type']): string {
     if (type === 'aid_request') return '🤝';
     if (type === 'warning') return '⚠️';
     return 'ℹ️';

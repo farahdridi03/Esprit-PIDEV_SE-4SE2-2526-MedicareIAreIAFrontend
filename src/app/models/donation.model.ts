@@ -1,6 +1,7 @@
 export enum DonationType {
     MATERIEL = 'MATERIEL',
-    MONEY = 'MONEY'
+    MONEY = 'MONEY',
+    MEDICAMENT = 'MEDICAMENT'
 }
 
 export enum DonationStatus {
@@ -38,6 +39,17 @@ export interface AidRequest {
     supportingDocument?: string;
     status?: AidRequestStatus;
     createdAt?: string;
+    // Données AI éligibilité
+    chronicDiseases?: string;
+    hereditaryDiseases?: number;
+    drugAllergies?: number;
+    diagnosisType?: string;
+    nbDiagnoses?: number;
+    nbPrescriptions?: number;
+    revenusMenuelsTnd?: number;
+    personnesACharge?: number;
+    situationProfessionnelle?: string;
+    scorePrecarite?: number;
 }
 
 export interface DonationAssignment {

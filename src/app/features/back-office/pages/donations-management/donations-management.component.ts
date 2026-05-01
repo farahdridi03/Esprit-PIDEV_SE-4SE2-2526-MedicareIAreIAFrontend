@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Donation, DonationStatus, DonationType, AidRequest, AidRequestStatus, DonationAssignment } from '../../../../models/donation.model';
+import { EligibilityResult } from '../../../../models/eligibility.model';
 import { DonationService } from '../../../../services/donation.service';
-import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
     selector: 'app-donations-management',
@@ -35,9 +35,14 @@ export class DonationsManagementComponent implements OnInit {
     selectedDonationAssignments: DonationAssignment[] = [];
     assignmentsLoading = false;
 
+    // AI Eligibility
+    eligibilityResults: Map<number, EligibilityResult> = new Map();
+    eligibilityLoading: Set<number> = new Set();
+    showEligibilityModal = false;
+    selectedEligibility: EligibilityResult | null = null;
+
     constructor(
         private donationService: DonationService,
-        private notificationService: NotificationService,
         private sanitizer: DomSanitizer
     ) { }
 
@@ -135,16 +140,7 @@ export class DonationsManagementComponent implements OnInit {
             aidRequestId: this.selectedReq.id
         }).subscribe({
             next: () => {
-                // 🔔 Notify Patient
-                if (this.selectedReq && this.selectedReq.patientId) {
-                    this.notificationService.addPatientNotification(
-                        this.selectedReq.patientId,
-                        'Request Approved 🎉',
-                        `Good news! A donation has been assigned to your aid request (Req #${this.selectedReq.id}).`,
-                        'info'
-                    );
-                }
-                
+                // La notification WebSocket est envoyée directement par le backend
                 this.closeAssignModal();
                 this.refresh();
             },
@@ -219,5 +215,42 @@ export class DonationsManagementComponent implements OnInit {
     closeAssignmentsModal(): void {
         this.showAssignmentsModal = false;
         this.selectedDonationAssignments = [];
+    }
+
+    // ── AI Eligibility ─────────────────────────────────────────────────────
+
+    checkEligibility(req: AidRequest): void {
+        if (!req.id) return;
+        this.eligibilityLoading.add(req.id);
+        this.donationService.checkEligibility(req.id).subscribe({
+            next: (result) => {
+                this.eligibilityResults.set(req.id!, result);
+                this.eligibilityLoading.delete(req.id!);
+                this.selectedEligibility = result;
+                this.showEligibilityModal = true;
+            },
+            error: (err) => {
+                console.error('Eligibility check failed:', err);
+                this.eligibilityLoading.delete(req.id!);
+            }
+        });
+    }
+
+    getEligibilityResult(reqId: number | undefined): EligibilityResult | undefined {
+        return reqId ? this.eligibilityResults.get(reqId) : undefined;
+    }
+
+    isCheckingEligibility(reqId: number | undefined): boolean {
+        return reqId ? this.eligibilityLoading.has(reqId) : false;
+    }
+
+    openEligibilityModal(result: EligibilityResult): void {
+        this.selectedEligibility = result;
+        this.showEligibilityModal = true;
+    }
+
+    closeEligibilityModal(): void {
+        this.showEligibilityModal = false;
+        this.selectedEligibility = null;
     }
 }

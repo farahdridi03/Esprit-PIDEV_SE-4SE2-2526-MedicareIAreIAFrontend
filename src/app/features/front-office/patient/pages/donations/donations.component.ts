@@ -54,6 +54,19 @@ export class DonationsComponent implements OnInit {
   currentUserName: string = '';
   editingRequestId: number | null = null;
 
+  // Données AI pour le formulaire AidRequest
+  aidRequestAI = {
+    chronicDiseases: 'NONE',
+    diagnosisType: 'NONE',
+    nbDiagnoses: 0,
+    nbPrescriptions: 0,
+    revenusMenuelsTnd: null as number | null,
+    personnesACharge: 0,
+    situationProfessionnelle: 'UNEMPLOYED',
+    hereditaryDiseases: 0,
+    drugAllergies: 0
+  };
+
   constructor(
     private donationService: DonationService,
     private authService: AuthService,
@@ -133,6 +146,7 @@ export class DonationsComponent implements OnInit {
         this.currentFilter === 'all' ||
         (this.currentFilter === 'money' && d.type === DonationType.MONEY) ||
         (this.currentFilter === 'materiel' && d.type === DonationType.MATERIEL) ||
+        (this.currentFilter === 'medicament' && d.type === DonationType.MEDICAMENT) ||
         (this.currentFilter === 'available' && d.status === DonationStatus.AVAILABLE) ||
         (this.currentFilter === 'assigned' && d.status === DonationStatus.ASSIGNED);
       return matchFilter;
@@ -313,6 +327,7 @@ export class DonationsComponent implements OnInit {
     this.requestDescription = '';
     this.requestDoc = '';
     this.reqError = '';
+    this.resetAidRequestAI();
   }
 
   closeRequestModal(): void {
@@ -321,6 +336,21 @@ export class DonationsComponent implements OnInit {
     this.requestDescription = '';
     this.requestDoc = '';
     this.reqError = '';
+    this.resetAidRequestAI();
+  }
+
+  private resetAidRequestAI(): void {
+    this.aidRequestAI = {
+      chronicDiseases: 'NONE',
+      diagnosisType: 'NONE',
+      nbDiagnoses: 0,
+      nbPrescriptions: 0,
+      revenusMenuelsTnd: null,
+      personnesACharge: 0,
+      situationProfessionnelle: 'UNEMPLOYED',
+      hereditaryDiseases: 0,
+      drugAllergies: 0
+    };
   }
 
   openEditRequestModal(req: AidRequest): void {
@@ -393,7 +423,17 @@ export class DonationsComponent implements OnInit {
     const reqDto = {
       patientId: this.currentPatientId,
       description: this.requestDescription,
-      supportingDocument: this.requestDoc
+      supportingDocument: this.requestDoc,
+      // Données AI éligibilité
+      chronicDiseases:          this.aidRequestAI.chronicDiseases,
+      diagnosisType:            this.aidRequestAI.diagnosisType,
+      nbDiagnoses:              this.aidRequestAI.nbDiagnoses || 0,
+      nbPrescriptions:          this.aidRequestAI.nbPrescriptions || 0,
+      revenusMenuelsTnd:        this.aidRequestAI.revenusMenuelsTnd ?? undefined,
+      personnesACharge:         this.aidRequestAI.personnesACharge || 0,
+      situationProfessionnelle: this.aidRequestAI.situationProfessionnelle,
+      hereditaryDiseases:       this.aidRequestAI.hereditaryDiseases,
+      drugAllergies:            this.aidRequestAI.drugAllergies
     };
 
     if (this.editingRequestId) {
