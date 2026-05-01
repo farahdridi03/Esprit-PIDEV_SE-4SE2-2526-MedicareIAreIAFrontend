@@ -209,5 +209,3 @@ export class AuthService {
         } catch { return null; }
     }
 }
-    }
-}
