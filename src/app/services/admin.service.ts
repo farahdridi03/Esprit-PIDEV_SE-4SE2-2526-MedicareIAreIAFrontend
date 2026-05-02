@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AdminService {
-  private readonly baseUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/admin';
+  private readonly baseUrl = 'http://localhost:8081/springsecurity/api/admin';
 
   constructor(private http: HttpClient) { }
 

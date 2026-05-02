@@ -8,8 +8,8 @@ import { Donation, AidRequest, DonationAssignment } from '../models/donation.mod
   providedIn: 'root'
 })
 export class DonationService {
-  private apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/donations';
-  private aidApiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/aid-requests';
+  private apiUrl = 'http://localhost:8081/springsecurity/api/donations';
+  private aidApiUrl = 'http://localhost:8081/springsecurity/api/aid-requests';
 
   constructor(private http: HttpClient) { }
 

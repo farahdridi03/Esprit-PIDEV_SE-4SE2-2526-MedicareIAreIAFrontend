@@ -8,7 +8,7 @@ import { CalendarAvailability } from '../models/schedule.model';
   providedIn: 'root'
 })
 export class AvailabilityService {
-  private baseUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/v1';
+  private baseUrl = 'http://localhost:8081/springsecurity/api/v1';
 
   constructor(private http: HttpClient) {}
 

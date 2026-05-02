@@ -8,7 +8,7 @@ import { WeeklySchedule, ScheduleException } from '../models/schedule.model';
   providedIn: 'root'
 })
 export class ScheduleService {
-  private apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/v1/providers';
+  private apiUrl = 'http://localhost:8081/springsecurity/api/v1/providers';
 
   constructor(private http: HttpClient) {}
 

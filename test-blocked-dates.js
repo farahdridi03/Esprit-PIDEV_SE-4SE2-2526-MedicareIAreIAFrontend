@@ -1,6 +1,6 @@
 // Simple Node.js HTTP test for blocked dates endpoint
 const http = require('http');
-const url = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/homecare/providers/6/blocked-dates?from=2026-03-28&to=2026-06-26';
+const url = 'http://localhost:8081/springsecurity/api/homecare/providers/6/blocked-dates?from=2026-03-28&to=2026-06-26';
 
 const req = http.get(url, (res) => {
     console.log(`Status Code: ${res.statusCode}`);

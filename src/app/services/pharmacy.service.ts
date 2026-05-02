@@ -8,7 +8,7 @@ import { Pharmacy, PharmacyRequest } from '../models/pharmacy.model';
   providedIn: 'root'
 })
 export class PharmacyService {
-  private readonly apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/pharmacies';
+  private readonly apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/pharmacies';
 
   constructor(private http: HttpClient) { }
 

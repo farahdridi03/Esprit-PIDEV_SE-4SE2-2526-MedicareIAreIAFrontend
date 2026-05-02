@@ -7,7 +7,7 @@ import { MedicalEvent, EventType } from '../models/event.model';
   providedIn: 'root'
 })
 export class EventService {
-  private baseUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/events';
+  private baseUrl = 'http://localhost:8081/springsecurity/api/events';
 
   constructor(private http: HttpClient) { }
 

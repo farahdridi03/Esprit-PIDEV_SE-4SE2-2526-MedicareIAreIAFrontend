@@ -8,7 +8,7 @@ import { LoginRequest } from '../models/login-request.model';
 describe('AuthService', () => {
     let service: AuthService;
     let httpMock: HttpTestingController;
-    const baseUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/auth';
+    const baseUrl = 'http://localhost:8081/springsecurity/auth';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

@@ -7,7 +7,7 @@ import { Treatment } from '../models/medical-records.model';
   providedIn: 'root'
 })
 export class TreatmentService {
-  private readonly apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/treatment';
+  private readonly apiUrl = 'http://localhost:8081/springsecurity/treatment';
 
   constructor(private http: HttpClient) { }
 

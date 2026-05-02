@@ -5,7 +5,7 @@ import { HomecareService } from '../services/homecare.service';
 describe('HomecareService', () => {
     let service: HomecareService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/homecare';
+    const apiUrl = 'http://localhost:8081/springsecurity/api/homecare';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

@@ -7,7 +7,7 @@ import { Prescription } from '../models/medical-records.model';
   providedIn: 'root'
 })
 export class PrescriptionService {
-  private readonly apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/prescription';
+  private readonly apiUrl = 'http://localhost:8081/springsecurity/prescription';
 
   constructor(private http: HttpClient) { }
 

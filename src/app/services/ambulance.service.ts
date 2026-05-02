@@ -21,7 +21,7 @@ export interface AmbulanceRequest {
 
 @Injectable({ providedIn: 'root' })
 export class AmbulanceService {
-  private base = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/ambulances';
+  private base = 'http://localhost:8081/springsecurity/api/ambulances';
 
   constructor(private http: HttpClient) {}
 

@@ -6,7 +6,7 @@ import { PatientRequestDTO, PatientResponseDTO } from '../models/patient.model';
 describe('PatientService', () => {
     let service: PatientService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/patients';
+    const apiUrl = 'http://localhost:8081/springsecurity/api/patients';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

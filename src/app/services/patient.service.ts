@@ -7,7 +7,7 @@ import { PatientRequestDTO, PatientResponseDTO } from '../models/patient.model';
     providedIn: 'root'
 })
 export class PatientService {
-    private readonly apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/patients';
+    private readonly apiUrl = 'http://localhost:8081/springsecurity/api/patients';
 
     constructor(private http: HttpClient) { }
 

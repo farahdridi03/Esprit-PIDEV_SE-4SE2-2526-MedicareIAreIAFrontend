@@ -37,7 +37,7 @@ describe('LabResultFormComponent', () => {
     fixture.detectChanges();
 
     // Handle initial HTTP requests from ngOnInit
-    const req = httpMock.expectOne('https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/lab-requests/status/PENDING');
+    const req = httpMock.expectOne('http://localhost:8081/springsecurity/api/lab-requests/status/PENDING');
     req.flush([{ id: 1, testType: 'Blood Test' }]);
   });
 
@@ -56,7 +56,7 @@ describe('LabResultFormComponent', () => {
     component.ngOnInit();
     
     // Catch pending request from the second ngOnInit call
-    const req = httpMock.expectOne('https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/lab-requests/status/PENDING');
+    const req = httpMock.expectOne('http://localhost:8081/springsecurity/api/lab-requests/status/PENDING');
     req.flush([]);
 
     expect(component.form.resultData).toBe('Test');

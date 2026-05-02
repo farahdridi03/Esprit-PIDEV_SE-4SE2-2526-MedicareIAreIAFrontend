@@ -5,7 +5,7 @@ import { AdminService } from './admin.service';
 describe('AdminService', () => {
   let service: AdminService;
   let httpMock: HttpTestingController;
-  const baseUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/admin';
+  const baseUrl = 'http://localhost:8081/springsecurity/api/admin';
 
   beforeEach(() => {
     TestBed.configureTestingModule({

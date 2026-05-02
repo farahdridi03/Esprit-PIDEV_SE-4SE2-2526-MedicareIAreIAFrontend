@@ -125,7 +125,7 @@ export class PharmacistValidationComponent implements OnInit {
       if (url.startsWith('http')) {
         window.open(url, '_blank');
       } else {
-        this.selectedDocument = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/uploads/' + url;
+        this.selectedDocument = 'http://localhost:8081/springsecurity/uploads/' + url;
         window.open(this.selectedDocument, '_blank');
       }
     } else {

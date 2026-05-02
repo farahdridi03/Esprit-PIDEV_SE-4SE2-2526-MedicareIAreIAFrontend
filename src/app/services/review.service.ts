@@ -7,7 +7,7 @@ import { Review } from '../models/review.model';
   providedIn: 'root'
 })
 export class ReviewService {
-  private apiUrl = 'https://app-backend-medicareai-bvgteze4eugsdpgu.swedencentral-01.azurewebsites.net/springsecurity/api/v1/doctors';
+  private apiUrl = 'http://localhost:8081/springsecurity/api/v1/doctors';
 
   constructor(private http: HttpClient) {}
 
