@@ -1,0 +1,508 @@
+<div class="laboratory-wrapper">
+  <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
+
+  <div class="main-body">
+    <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
+
+    <div class="content-area">
+
+      <!-- Header -->
+      <div class="page-header">
+        <div class="header-text">
+          <div class="header-with-back">
+            <button class="btn-back" (click)="navigateBack()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+              </svg>
+            </button>
+            <div>
+              <h1>MRI Analysis — Alzheimer AI</h1>
+              <p>Upload an MRI image to get an AI-assisted diagnosis.</p>
+            </div>
+          </div>
+        </div>
+        <div class="ai-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+          </svg>
+          VGG16 · 83.96% &nbsp;|&nbsp; Random Forest · 94.93%
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading-block" *ngIf="loadingRequest">
+        <div class="spinner"></div>
+        <p>Loading request...</p>
+      </div>
+
+      <!-- ═══════════════════ STEP 1 : IRM ═══════════════════ -->
+      <div class="analysis-layout" *ngIf="!loadingRequest">
+
+        <!-- LEFT: info + upload -->
+        <div class="left-panel">
+
+          <!-- Patient info -->
+          <div class="info-card" *ngIf="labRequest">
+            <div class="info-card-header">
+              <span class="info-icon">👤</span>
+              <h3>Patient Information</h3>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Patient</span>
+              <span class="info-value">{{ labRequest.patientName }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Exam Type</span>
+              <span class="info-value test-badge">{{ labRequest.testType }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Request #</span>
+              <span class="info-value req-id">#REQ-{{ labRequest.id }}</span>
+            </div>
+            <div class="info-row" *ngIf="labRequest.clinicalNotes">
+              <span class="info-label">Notes</span>
+              <span class="info-value notes">{{ labRequest.clinicalNotes }}</span>
+            </div>
+          </div>
+
+          <!-- Upload form -->
+          <div class="upload-card">
+            <div class="upload-card-header">
+              <span class="info-icon">🧠</span>
+              <h3>Upload MRI Image</h3>
+            </div>
+
+            <div class="drop-zone"
+                 [class.drag-over]="isDragOver"
+                 [class.has-file]="selectedFile"
+                 (dragover)="onDragOver($event)"
+                 (dragleave)="onDragLeave()"
+                 (drop)="onDrop($event)"
+                 (click)="fileInput.click()">
+
+              <input #fileInput type="file" accept="image/jpeg,image/png" hidden (change)="onFileSelected($event)">
+
+              <ng-container *ngIf="!selectedFile">
+                <div class="drop-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                  </svg>
+                </div>
+                <p class="drop-text">Drag an MRI image here</p>
+                <p class="drop-sub">or <span class="drop-link">browse your files</span></p>
+                <p class="drop-formats">PNG, JPG — Brain MRI scans only (grayscale)</p>
+              </ng-container>
+
+              <ng-container *ngIf="selectedFile">
+                <img [src]="previewUrl" class="image-preview" alt="IRM Preview">
+                <p class="file-name">{{ selectedFile.name }}</p>
+                <button class="btn-remove" (click)="$event.stopPropagation(); removeFile()">Remove</button>
+              </ng-container>
+            </div>
+
+            <div class="field-group">
+              <label>Technician Name</label>
+              <input type="text" [(ngModel)]="technicianName" placeholder="Your full name" class="field-input" />
+            </div>
+
+            <div class="field-group">
+              <label>Doctor Email <span class="label-optional">(report sent after analysis)</span></label>
+              <div class="field-email-wrap">
+                <span class="field-email-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                  </svg>
+                </span>
+                <input type="email" [(ngModel)]="doctorEmail" placeholder="dr.dupont@hospital.com"
+                       class="field-input field-input-email" [class.has-value]="doctorEmail" />
+              </div>
+              <p class="field-hint" *ngIf="doctorEmail">The report will be sent to {{ doctorEmail }}</p>
+            </div>
+
+            <div class="error-alert" *ngIf="error">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+              {{ error }}
+            </div>
+
+            <button class="btn-analyze" [class.loading]="analyzing" [disabled]="!canSubmit()" (click)="analyze()">
+              <span *ngIf="!analyzing">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                </svg>
+                Run AI Analysis
+              </span>
+              <span *ngIf="analyzing"><div class="btn-spinner"></div> Analyzing...</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: IRM result -->
+        <div class="right-panel">
+
+          <div class="result-placeholder" *ngIf="!result && !analyzing">
+            <div class="placeholder-icon">🧬</div>
+            <h3>AI Result</h3>
+            <p>The MRI diagnosis will appear here<br>after image analysis.</p>
+          </div>
+
+          <div class="analyzing-block" *ngIf="analyzing">
+            <div class="brain-spinner"></div>
+            <h3>MRI Analysis in progress...</h3>
+            <p>The VGG16 model is analyzing the MRI image.<br>This may take a few seconds.</p>
+          </div>
+
+          <div class="result-card" *ngIf="result && !analyzing" [ngClass]="getRiskClass(result.aiRisk)">
+
+            <div class="risk-banner">
+              <span class="risk-emoji">{{ getRiskIcon(result.aiRisk) }}</span>
+              <div>
+                <div class="risk-level">{{ result.aiRisk }}</div>
+                <div class="risk-message">{{ getRiskLabel(result.aiRisk) }}</div>
+              </div>
+            </div>
+
+            <div class="result-section">
+              <div class="result-row">
+                <span class="result-label">AI Diagnosis</span>
+                <span class="result-value diagnostic-text">{{ result.aiDiagnostic }}</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Confidence</span>
+                <div class="confidence-wrap">
+                  <div class="confidence-bar">
+                    <div class="confidence-fill" [style.width.%]="result.aiConfidence"></div>
+                  </div>
+                  <span class="confidence-pct">{{ result.aiConfidence | number:'1.1-1' }}%</span>
+                </div>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Technician</span>
+                <span class="result-value">{{ result.technicianName }}</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Status</span>
+                <span class="status-chip completed">{{ result.status }}</span>
+              </div>
+            </div>
+
+            <div class="alert-sent" *ngIf="result.aiAlertSent">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+              MRI report sent by email
+            </div>
+
+            <!-- CTA: Générer plan clinique -->
+            <div class="cta-clinical" *ngIf="!showClinicalForm">
+              <div class="cta-text">
+                <span class="cta-icon">🔬</span>
+                <div>
+                  <strong>Generate Clinical Plan</strong>
+                  <p>Complete with patient clinical data to obtain an RF risk score and personalized recommendations.</p>
+                </div>
+              </div>
+              <button class="btn-clinical" (click)="openClinicalForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V19.5a2.25 2.25 0 002.25 2.25h.75m0-3H12" />
+                </svg>
+                Generate Clinical Plan
+              </button>
+            </div>
+
+            <div class="disclaimer">
+              This diagnosis is an AI-generated medical aid. The final decision belongs to the doctor.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════ STEP 2 : CLINICAL PLAN ═══════════════════ -->
+      <div class="clinical-section" id="clinical-section" *ngIf="showClinicalForm && result">
+
+        <div class="clinical-header">
+          <div class="clinical-header-icon">🔬</div>
+          <div>
+            <h2>Clinical Evaluation — Random Forest</h2>
+            <p>Complete the clinical parameters to obtain a risk score and personalized action plan.</p>
+          </div>
+        </div>
+
+        <!-- MRI pre-fill banner -->
+        <div class="mri-prefill-banner" *ngIf="mriPrefilledClass">
+          <span class="prefill-icon">🧠</span>
+          <div class="prefill-text">
+            <strong>Form pre-filled from MRI result</strong>
+            <span>VGG16 detected <span class="prefill-class">{{ mriPrefilledClass }}</span> — MMSE, ADL and symptoms have been set automatically. You can adjust before running the analysis.</span>
+          </div>
+        </div>
+
+        <div class="clinical-layout">
+
+          <!-- LEFT: clinical form -->
+          <div class="clinical-form-panel">
+
+            <!-- Group 1: Démographie -->
+            <div class="form-group-card">
+              <div class="group-title">👤 Demographic Data</div>
+              <div class="form-grid">
+                <div class="field-group">
+                  <label>Age</label>
+                  <input type="number" [(ngModel)]="clinical.age" class="field-input" min="50" max="90" />
+                </div>
+                <div class="field-group">
+                  <label>Gender</label>
+                  <select [(ngModel)]="clinical.gender" class="field-input">
+                    <option [ngValue]="0">Female</option>
+                    <option [ngValue]="1">Male</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label>Education Level</label>
+                  <select [(ngModel)]="clinical.educationLevel" class="field-input">
+                    <option [ngValue]="0">None</option>
+                    <option [ngValue]="1">Primary</option>
+                    <option [ngValue]="2">Secondary</option>
+                    <option [ngValue]="3">Higher</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label>Ethnicity</label>
+                  <select [(ngModel)]="clinical.ethnicity" class="field-input">
+                    <option [ngValue]="0">Caucasian</option>
+                    <option [ngValue]="1">African American</option>
+                    <option [ngValue]="2">Asian</option>
+                    <option [ngValue]="3">Other</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 2: Mode de vie -->
+            <div class="form-group-card">
+              <div class="group-title">🏃 Lifestyle</div>
+              <div class="form-grid">
+                <div class="field-group">
+                  <label>BMI</label>
+                  <input type="number" [(ngModel)]="clinical.bmi" class="field-input" step="0.1" min="15" max="45" />
+                </div>
+                <div class="field-group">
+                  <label>Smoking</label>
+                  <select [(ngModel)]="clinical.smoking" class="field-input">
+                    <option [ngValue]="0">No</option>
+                    <option [ngValue]="1">Yes</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label>Alcohol (L/week)</label>
+                  <input type="number" [(ngModel)]="clinical.alcoholConsumption" class="field-input" step="0.1" min="0" max="20" />
+                </div>
+                <div class="field-group">
+                  <label>Physical Activity (h/week)</label>
+                  <input type="number" [(ngModel)]="clinical.physicalActivity" class="field-input" step="0.5" min="0" max="10" />
+                </div>
+                <div class="field-group">
+                  <label>Diet Quality (0-10)</label>
+                  <input type="number" [(ngModel)]="clinical.dietQuality" class="field-input" step="0.1" min="0" max="10" />
+                </div>
+                <div class="field-group">
+                  <label>Sleep Quality (4-10)</label>
+                  <input type="number" [(ngModel)]="clinical.sleepQuality" class="field-input" step="0.1" min="4" max="10" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 3: Antécédents médicaux -->
+            <div class="form-group-card">
+              <div class="group-title">🏥 Medical History</div>
+              <div class="form-grid">
+                <div class="field-group" *ngFor="let f of medicalFlags">
+                  <label>{{ f.label }}</label>
+                  <select [(ngModel)]="clinical[f.key]" class="field-input">
+                    <option [ngValue]="0">No</option>
+                    <option [ngValue]="1">Yes</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 4: Mesures cliniques -->
+            <div class="form-group-card">
+              <div class="group-title">📊 Clinical Measurements</div>
+              <div class="form-grid">
+                <div class="field-group">
+                  <label>Systolic BP (mmHg)</label>
+                  <input type="number" [(ngModel)]="clinical.systolicBP" class="field-input" min="90" max="200" />
+                </div>
+                <div class="field-group">
+                  <label>Diastolic BP (mmHg)</label>
+                  <input type="number" [(ngModel)]="clinical.diastolicBP" class="field-input" min="60" max="130" />
+                </div>
+                <div class="field-group">
+                  <label>Total Cholesterol (mg/dL)</label>
+                  <input type="number" [(ngModel)]="clinical.cholesterolTotal" class="field-input" min="100" max="350" />
+                </div>
+                <div class="field-group">
+                  <label>LDL (mg/dL)</label>
+                  <input type="number" [(ngModel)]="clinical.cholesterolLDL" class="field-input" min="50" max="250" />
+                </div>
+                <div class="field-group">
+                  <label>HDL (mg/dL)</label>
+                  <input type="number" [(ngModel)]="clinical.cholesterolHDL" class="field-input" min="20" max="100" />
+                </div>
+                <div class="field-group">
+                  <label>Triglycerides (mg/dL)</label>
+                  <input type="number" [(ngModel)]="clinical.cholesterolTriglycerides" class="field-input" min="50" max="400" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 5: Cognition -->
+            <div class="form-group-card">
+              <div class="group-title">🧠 Cognitive Assessment</div>
+              <div class="form-grid">
+                <div class="field-group">
+                  <label>MMSE (0-30)</label>
+                  <input type="number" [(ngModel)]="clinical.mmse" class="field-input" min="0" max="30" />
+                </div>
+                <div class="field-group">
+                  <label>Functional Assessment (0-10)</label>
+                  <input type="number" [(ngModel)]="clinical.functionalAssessment" class="field-input" step="0.1" min="0" max="10" />
+                </div>
+                <div class="field-group">
+                  <label>ADL — Daily Activities (0-10)</label>
+                  <input type="number" [(ngModel)]="clinical.adl" class="field-input" step="0.1" min="0" max="10" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 6: Symptômes -->
+            <div class="form-group-card">
+              <div class="group-title">⚠️ Observed Symptoms</div>
+              <div class="form-grid">
+                <div class="field-group" *ngFor="let s of symptomFlags">
+                  <label>{{ s.label }}</label>
+                  <select [(ngModel)]="clinical[s.key]" class="field-input">
+                    <option [ngValue]="0">No</option>
+                    <option [ngValue]="1">Yes</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Error -->
+            <div class="error-alert" *ngIf="clinicalError">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+              {{ clinicalError }}
+            </div>
+
+            <div class="preset-bar">
+              <button class="btn-preset" type="button" (click)="loadHighRiskPreset()">
+                ⚠️ Load high-risk preset (test)
+              </button>
+            </div>
+
+            <button class="btn-analyze btn-rf" [disabled]="analyzingClinical" (click)="submitClinical()">
+              <span *ngIf="!analyzingClinical">
+                🔬 Analyze with Random Forest
+              </span>
+              <span *ngIf="analyzingClinical">
+                <div class="btn-spinner"></div> Evaluating...
+              </span>
+            </button>
+          </div>
+
+          <!-- RIGHT: RF result -->
+          <div class="clinical-result-panel">
+
+            <div class="result-placeholder" *ngIf="!clinicalResult && !analyzingClinical">
+              <div class="placeholder-icon">📋</div>
+              <h3>Clinical Plan</h3>
+              <p>Fill in the form and run<br>the analysis to see recommendations.</p>
+            </div>
+
+            <div class="analyzing-block" *ngIf="analyzingClinical">
+              <div class="brain-spinner"></div>
+              <h3>Evaluation in progress...</h3>
+              <p>The Random Forest model is analyzing<br>the clinical parameters.</p>
+            </div>
+
+            <div class="rf-result-card" *ngIf="clinicalResult && !analyzingClinical">
+
+              <!-- Combined result banner (VGG16 + RF) -->
+              <div class="combined-banner" [ngClass]="getCombinedRiskClass()">
+                <div class="combined-icon">🧬</div>
+                <div>
+                  <div class="combined-title">Combined Assessment (VGG16 + Random Forest)</div>
+                  <div class="combined-label">{{ getCombinedRiskLabel() }}</div>
+                  <div class="combined-sources">
+                    MRI: <strong>{{ mriPrefilledClass || result!.aiDiagnostic }}</strong>
+                    &nbsp;·&nbsp;
+                    RF Score: <strong>{{ clinicalResult.riskScore | number:'1.0-0' }}%</strong>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="rf-score-bar-wrap">
+                <div class="rf-score-bar">
+                  <div class="rf-score-fill" [style.width.%]="clinicalResult.riskScore"></div>
+                </div>
+                <span class="rf-score-pct">RF Score: {{ clinicalResult.riskScore | number:'1.0-0' }}%</span>
+              </div>
+
+              <!-- Email sent -->
+              <div class="alert-sent" *ngIf="clinicalResult.emailSent">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+                Combined report (MRI + Clinical) sent to the doctor
+              </div>
+
+              <!-- Recommendations -->
+              <div class="recs-header">
+                <span>Personalized Recommendations</span>
+                <span class="recs-count">{{ clinicalResult.totalRecommendations }}</span>
+              </div>
+
+              <!-- Priorité haute -->
+              <div class="priority-group" *ngIf="getHighRecs().length > 0">
+                <div class="priority-label high">🔴 High Priority</div>
+                <div class="rec-item" *ngFor="let r of getHighRecs()">
+                  <div class="rec-main">
+                    <div class="rec-feature">{{ r.feature }}</div>
+                    <div class="rec-text">{{ r.recommendation }}</div>
+                  </div>
+                  <div class="rec-badges">
+                    <span class="badge-cat">{{ r.category }}</span>
+                    <span class="badge-score">Impact: {{ r.contributionScore | number:'1.1-1' }}%</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Priorité moyenne -->
+              <div class="priority-group" *ngIf="getMediumRecs().length > 0">
+                <div class="priority-label medium">🟡 Medium Priority</div>
+                <div class="rec-item" *ngFor="let r of getMediumRecs()">
+                  <div class="rec-main">
+                    <div class="rec-feature">{{ r.feature }}</div>
+                    <div class="rec-text">{{ r.recommendation }}</div>
+                  </div>
+                  <div class="rec-badges">
+                    <span class="badge-cat">{{ r.category }}</span>
+                    <span class="badge-score">Impact: {{ r.contributionScore | number:'1.1-1' }}%</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

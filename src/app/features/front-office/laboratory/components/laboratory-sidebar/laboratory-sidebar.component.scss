@@ -107,6 +107,83 @@ $hover-bg: #f9fafb;
         }
     }
 
+    // ── Historique toggle ────────────────────────────────────
+    .history-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #374151;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background 0.2s;
+        position: relative;
+        margin: 0 0.5rem;
+
+        &:hover { background: #f3f4f6; color: $primary-green; }
+
+        .history-count {
+            background: #7c3aed; color: white;
+            font-size: 9px; font-weight: 700;
+            padding: 1px 5px; border-radius: 10px;
+            margin-left: auto;
+        }
+
+        .chevron {
+            font-size: 1.1rem; font-weight: 700; color: #9ca3af;
+            transition: transform 0.2s; margin-left: 4px;
+            &.open { transform: rotate(90deg); }
+        }
+    }
+
+    // ── Patient list ─────────────────────────────────────────
+    .patient-list {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        margin: 0 0.5rem;
+
+        &.visible { max-height: 400px; overflow-y: auto; }
+
+        .patient-empty {
+            font-size: 0.75rem; color: #9ca3af;
+            text-align: center; padding: 0.75rem 1rem;
+            font-style: italic;
+        }
+
+        .patient-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+            margin-bottom: 2px;
+
+            &:hover { background: #f0fdf4; }
+
+            .patient-risk { font-size: 0.9rem; flex-shrink: 0; }
+
+            .patient-info {
+                display: flex; flex-direction: column;
+                min-width: 0;
+
+                .patient-name {
+                    font-size: 0.8rem; font-weight: 600;
+                    color: #1e293b;
+                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                }
+
+                .patient-meta {
+                    font-size: 0.68rem; color: #94a3b8; margin-top: 1px;
+                }
+            }
+        }
+    }
+
     .sidebar-footer {
         padding: 1rem;
         border-top: 1px solid #f3f4f6;

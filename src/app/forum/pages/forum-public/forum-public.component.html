@@ -1,6 +1,6 @@
 <div class="forum-public-page">
 
-  <!-- ── Topbar ───────────────────────────────────────── -->
+  <!-- ── Topbar ─────────────────────────────────────────── -->
   <div class="topbar">
     <div class="topbar-left">
       <div class="toggle-menu">
@@ -22,8 +22,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
         </svg>
       </span>
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Search for a discussion...">
-      
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search discussions...">
       <select class="topbar-cat-select" [(ngModel)]="categoryFilter">
         <option value="">All Categories</option>
         <option value="General Health">General Health</option>
@@ -35,26 +34,32 @@
     </div>
 
     <div class="topbar-right">
+      <!-- Messaging toggle -->
+      <button class="ghost-btn messaging-toggle" (click)="toggleMessaging()" [class.active]="showMessaging">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+        </svg>
+        Messaging
+        <span class="msg-badge" *ngIf="channels.length > 0">{{ channels[0].unreadCount || 0 }}</span>
+      </button>
+
       <button class="ghost-btn" (click)="backToDashboard()">
         <i class="fas fa-th-large"></i> Dashboard
       </button>
 
       <div class="notification-wrap">
-        <div class="notification-icon" (click)="toggleNotifDropdown()">
+        <div class="notification-icon" [class.bell-pulse]="bellPulse" (click)="toggleNotifDropdown()">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="bell-icon">
             <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7c0-2.015-1.121-3.766-2.766-4.667a1.5 1.5 0 00-2.312-1.332 6.643 6.643 0 00-6.230 4.102C5.972 8.351 5.438 9.07 5.438 9.852v.702c0 2.222-1.387 4.122-3.355 4.887a23.448 23.448 0 005.33 1.258m5.454 1.31a1.2 1.2 0 01-2.4 0m2.4 0a1.265 1.265 0 01-1.012.42 1.265 1.265 0 01-1.011-.42m3.606-11.758c0 .265-.13.513-.348.665a.65.65 0 01-.652 0 .65.65 0 01-.348-.665" />
           </svg>
           <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
         </div>
-        
         <div class="notif-dropdown" *ngIf="showNotifDropdown">
-          <div class="notif-header">
-            <h3>Notifications</h3>
-          </div>
+          <div class="notif-header"><h3>Notifications</h3></div>
           <div class="notif-list">
-            <div *ngIf="notifications.length === 0" class="empty-notif">No new notifications</div>
-            <div class="notif-item" 
-                 *ngFor="let notif of notifications" 
+            <div *ngIf="notifications.length === 0" class="empty-notif">No notifications</div>
+            <div class="notif-item"
+                 *ngFor="let notif of notifications"
                  [class.unread]="!notif.isRead"
                  (click)="markNotifAsRead(notif)">
               <div class="notif-type-icon">
@@ -73,16 +78,25 @@
         <div class="avatar">{{ userInitials }}</div>
         <div class="user-info">
           <span class="user-name">{{ userName }}</span>
+          <span class="user-role-chip">{{ getRoleLabel(getCurrentRole()) }}</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── Forum Title (Green Box) - Hidden when Form is open ── -->
+  <!-- ── Read-only banner (patient / visitor) ───────── -->
+  <div class="readonly-banner" *ngIf="canOnlyLikeAndComment()">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+    </svg>
+    As a <strong>{{ getRoleLabel(getCurrentRole()) }}</strong>, you can like and comment on posts. Only healthcare professionals can create posts.
+  </div>
+
+  <!-- ── Welcome Banner ─────────────────────────────────── -->
   <div class="welcome-banner" *ngIf="!isCreating && !isEditing && !selectedPost">
     <div class="banner-text">
       <h1>Community Forum</h1>
-      <p>Share your experiences, ask questions, and get advice from healthcare professionals</p>
+      <p>Healthcare professionals — real-time collaboration</p>
     </div>
     <div class="banner-stats">
       <div class="stat-card">
@@ -94,267 +108,535 @@
         <div class="value">{{ getTotalComments() }}</div>
       </div>
       <div class="stat-card">
-        <div class="label">Total Likes</div>
+        <div class="label">Likes</div>
         <div class="value">{{ getTotalLikes() }}</div>
       </div>
+      <div class="stat-card">
+        <div class="label">Online</div>
+        <div class="value">{{ channels.length }}</div>
+      </div>
     </div>
-    
     <div *ngIf="canCreatePost()" class="banner-actions">
       <button class="modern-create-post-btn" (click)="createPost()">
-        <i class="fas fa-plus-circle"></i> Create a Post
+        <i class="fas fa-plus-circle"></i> New Post
       </button>
     </div>
   </div>
 
-  <!-- ── Main Content ───────────────────────────────── -->
+  <!-- ── WhatsApp success toast ──────────────────────────── -->
+  <div class="whatsapp-toast" *ngIf="whatsappSuccess">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+    WhatsApp alert sent to professionals!
+  </div>
+
+  <!-- ── Main Content ────────────────────────────────────── -->
   <div class="forum-layout-container">
     <div class="forum-content">
 
-    <!-- Loading -->
-    <div class="state-box loading-box" *ngIf="loading">
-      <i class="fas fa-spinner fa-spin"></i>
-      <p>Loading discussions...</p>
-    </div>
-
-    <!-- Error -->
-    <div class="state-box error-box" *ngIf="error && !loading">
-      <i class="fas fa-exclamation-triangle"></i>
-      <p>{{ error }}</p>
-      <button class="btn-retry" (click)="loadPosts()"><i class="fas fa-redo"></i> Retry</button>
-    </div>
-
-    <!-- ── POSTS LIST - Hidden when Form or Detail is open ── -->
-    <ng-container *ngIf="!loading && !error && !selectedPost && !isCreating && !isEditing">
-      <!-- Posts List Title -->
-      <div class="feed-header">
-        <h2>Recent Discussions</h2>
+      <!-- Loading -->
+      <div class="state-box loading-box" *ngIf="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading discussions...</p>
       </div>
 
-      <!-- Empty State -->
-      <div class="state-box" *ngIf="filteredPosts().length === 0">
-        <i class="fas fa-comment-slash"></i>
-        <p>No discussions found</p>
+      <!-- Error -->
+      <div class="state-box error-box" *ngIf="error && !loading">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ error }}</p>
+        <button class="btn-retry" (click)="loadPosts()"><i class="fas fa-redo"></i> Retry</button>
       </div>
 
-      <!-- Posts -->
-      <div class="posts-feed">
-        <div class="post-card" *ngFor="let post of filteredPosts()" (click)="selectPost(post)">
-          <div class="post-header">
-            <div class="post-category">
-              <span class="cat-badge">
-                <i class="fas fa-tag"></i> {{ post.category || 'General Health' }}
-              </span>
-            </div>
-            <!-- Edit + Delete -->
-            <div style="display:flex; gap:8px;" (click)="$event.stopPropagation()">
-              <!-- Edit -->
-              <button 
-                (click)="editPost(post)" 
-                style="
-                  background-color: #378ADD;
-                  color: white;
-                  border: none;
-                  border-radius: 8px;
-                  width: 32px;
-                  height: 32px;
-                  cursor: pointer;
-                  font-size: 14px;
-                  transition: all 0.15s ease;
-                ">
-                ✏️
-              </button>
-              <!-- Delete -->
-              <button 
-                (click)="deletePost(post)" 
-                style="
-                  background-color: #888780;
-                  color: white;
-                  border: none;
-                  border-radius: 8px;
-                  width: 32px;
-                  height: 32px;
-                  cursor: pointer;
-                  font-size: 14px;
-                  transition: all 0.15s ease;
-                ">
-                🗑️
-              </button>
-            </div>
+      <!-- ── POSTS LIST ──────────────────────────────────── -->
+      <ng-container *ngIf="!loading && !error && !selectedPost && !isCreating && !isEditing">
+        <div class="feed-header">
+          <h2>Recent Discussions</h2>
+          <div class="feed-header-actions">
+            <button class="btn-archived-toggle" (click)="showArchived = !showArchived">
+              <i class="fas fa-archive"></i>
+              {{ showArchived ? 'Hide Archived (' + archivedPostsCount() + ')' : 'Show Archived (' + archivedPostsCount() + ')' }}
+            </button>
           </div>
+        </div>
 
-          <div class="post-content">
-            <!-- Post Image (Feed) -->
-            <div class="post-image-container" *ngIf="post.imageUrl">
-              <img [src]="getImageUrl(post.imageUrl)" 
-                   [alt]="post.title" 
-                   class="post-feed-image"
-                   (error)="handleImageError($event)">
+        <div class="state-box" *ngIf="filteredPosts().length === 0">
+          <i class="fas fa-comment-slash"></i>
+          <p>No discussions found</p>
+        </div>
+
+        <div class="posts-feed">
+          <div class="post-card"
+               [class.card-alert]="post.postType === 'ALERT'"
+               [class.card-clinical]="post.postType === 'CLINICAL_CASE'"
+               [class.card-code-blue]="post.postType === 'CODE_BLUE'"
+               [class.card-archived]="post.status === 'ARCHIVED'"
+               *ngFor="let post of filteredPosts()"
+               (click)="selectPost(post)">
+
+            <!-- ── Top row: badges + action buttons ── -->
+            <div class="post-header">
+              <div class="post-badges">
+                <span class="type-badge" [ngClass]="getPostTypeBadgeClass(post.postType)">
+                  <span *ngIf="post.postType === 'ALERT'">🚨 Alert</span>
+                  <span *ngIf="post.postType === 'CLINICAL_CASE'">🔬 Clinical Case</span>
+                  <span *ngIf="post.postType === 'CODE_BLUE'">🆘 Code Blue</span>
+                  <span *ngIf="!post.postType || post.postType === 'DISCUSSION'">💬 Discussion</span>
+                </span>
+                <span class="cat-badge"><i class="fas fa-tag"></i> {{ post.category || 'General Health' }}</span>
+                <span class="archived-badge" *ngIf="post.status === 'ARCHIVED'">
+                  <i class="fas fa-archive"></i> Archived
+                </span>
+              </div>
+
+              <!-- Actions: WhatsApp + Edit + Delete -->
+              <div class="card-actions" (click)="$event.stopPropagation()">
+                <!-- WhatsApp button -->
+                <button class="btn-wa-card"
+                        *ngIf="canSendWhatsApp(post) && post.postType === 'ALERT' && !post.whatsappSent"
+                        [disabled]="sendingWhatsApp"
+                        (click)="sendWhatsAppAlert(post)"
+                        title="Send WhatsApp alert to professionals">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                  </svg>
+                  {{ sendingWhatsApp ? 'Sending...' : 'WhatsApp' }}
+                </button>
+
+                <!-- WhatsApp sent chip -->
+                <span class="wa-sent-chip" *ngIf="post.whatsappSent">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                  </svg>
+                  Alerted · {{ post.whatsappCount }}
+                </span>
+
+                <!-- Edit / Delete (author or ADMIN only) -->
+                <ng-container *ngIf="isPostAuthor(post)">
+                  <button class="btn-icon-card btn-edit-card" (click)="editPost(post)" title="Edit">
+                    <i class="fas fa-pen"></i>
+                  </button>
+                  <button class="btn-icon-card btn-delete-card" (click)="deletePost(post)" title="Delete">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </ng-container>
+              </div>
             </div>
 
-            <h3 class="post-title">{{ post.title }}</h3>
-            <p class="post-preview">{{ post.content | slice:0:150 }}{{ post.content.length > 150 ? '...' : '' }}</p>
-          </div>
-
-          <div class="post-meta">
-            <div class="author-info">
-              <div class="author-avatar">{{ getInitial(post.authorName) }}</div>
+            <!-- ── Author row ── -->
+            <div class="post-author-row">
+              <div class="author-avatar" [style.background]="getRoleColor(post.authorRole)">{{ getInitial(post.authorName) }}</div>
               <div class="author-details">
                 <span class="author-name">{{ post.authorName }}</span>
+                <span class="author-role-badge" [style.color]="getRoleColor(post.authorRole)">{{ getRoleLabel(post.authorRole) }}</span>
                 <span class="post-date"><i class="far fa-clock"></i> {{ post.createdAt | date:'d MMM y' }}</span>
               </div>
             </div>
-          </div>
 
-          <!-- Likes + Comments -->
-          <div class="post-footer">
-            <div class="engage-group" (click)="$event.stopPropagation()">
-              <div class="reaction-wrap">
-                <button class="icon-btn like-btn" [class.active]="post.isLikedByUser" (click)="likePost(post)" (contextmenu)="toggleReactionPicker(post.id, $event)">
-                  <i class="fas fa-heart" *ngIf="!postReactions[post.id]"></i>
-                  <span *ngIf="postReactions[post.id]" class="reacted-emoji">{{ postReactions[post.id] }}</span>
-                  <span>{{ post.likesCount || 0 }}</span>
-                </button>
-                
-                <!-- Emoji Picker -->
-                <div class="reaction-picker" *ngIf="activeReactionPostId === post.id">
-                  <div class="emoji-item" *ngFor="let r of reactions" (click)="onReactionSelect(post, r)">
-                    <span class="emoji">{{ r.icon }}</span>
+            <!-- ── Image ── -->
+            <div class="post-image-container" *ngIf="post.imageUrl">
+              <img [src]="getImageUrl(post.imageUrl)" [alt]="post.title" class="post-feed-image" (error)="handleImageError($event)">
+            </div>
+
+            <!-- ── Content ── -->
+            <div class="post-content">
+              <h3 class="post-title">{{ post.title }}</h3>
+              <p class="post-preview">{{ post.content | slice:0:150 }}{{ post.content.length > 150 ? '...' : '' }}</p>
+            </div>
+
+            <!-- ── Footer: likes + comments ── -->
+            <div class="post-footer">
+              <div class="engage-group" (click)="$event.stopPropagation()">
+                <div class="reaction-wrap">
+                  <button class="icon-btn like-btn" [class.active]="post.isLikedByUser" (click)="likePost(post)" (contextmenu)="toggleReactionPicker(post.id, $event)">
+                    <i class="fas fa-heart" *ngIf="!postReactions[post.id]"></i>
+                    <span *ngIf="postReactions[post.id]" class="reacted-emoji">{{ postReactions[post.id] }}</span>
+                    <span>{{ post.likesCount || 0 }}</span>
+                  </button>
+                  <div class="reaction-picker" *ngIf="activeReactionPostId === post.id">
+                    <div class="emoji-item" *ngFor="let r of reactions" (click)="onReactionSelect(post, r)">
+                      <span class="emoji">{{ r.icon }}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <button class="icon-btn comment-btn" (click)="selectPost(post)">
-                <i class="far fa-comment"></i>
-                <span>{{ post.comments?.length || 0 }}</span>
+                <button class="icon-btn comment-btn" (click)="selectPost(post)">
+                  <i class="far fa-comment"></i>
+                  <span>{{ post.comments?.length || 0 }} Comments</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- ── POST DETAIL ──────────────────────────────────── -->
+      <div class="post-detail-view" *ngIf="selectedPost && !loading && !isCreating && !isEditing">
+        <div class="detail-topbar">
+          <button class="back-btn" (click)="backToList()">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <!-- Edit / Delete in detail view -->
+          <div class="detail-top-actions" *ngIf="isPostAuthor(selectedPost)" (click)="$event.stopPropagation()">
+            <button class="btn-detail-edit" (click)="editPost(selectedPost!)" title="Edit post">
+              <i class="fas fa-pen"></i> Edit
+            </button>
+            <button class="btn-detail-delete" (click)="deletePost(selectedPost!)" title="Delete post">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-header">
+            <span class="type-badge" [ngClass]="getPostTypeBadgeClass(selectedPost.postType)">
+              <span *ngIf="selectedPost.postType === 'ALERT'">🚨 Alert</span>
+              <span *ngIf="selectedPost.postType === 'CLINICAL_CASE'">🔬 Clinical Case</span>
+              <span *ngIf="selectedPost.postType === 'CODE_BLUE'">🆘 Code Blue</span>
+              <span *ngIf="!selectedPost.postType || selectedPost.postType === 'DISCUSSION'">💬 Discussion</span>
+            </span>
+            <span class="detail-tag"><i class="fas fa-tag"></i> {{ selectedPost.category || 'General Health' }}</span>
+            <span class="wa-badge" *ngIf="selectedPost.whatsappSent">
+              WhatsApp · {{ selectedPost.whatsappCount }} sent
+            </span>
+          </div>
+
+          <h1 class="detail-title">{{ selectedPost.title }}</h1>
+
+          <div class="detail-author-row">
+            <div class="author-avatar-lg" [style.background]="getRoleColor(selectedPost.authorRole)">{{ getInitial(selectedPost.authorName) }}</div>
+            <div>
+              <div class="author-name-lg">{{ selectedPost.authorName }}</div>
+              <div class="author-role-badge" [style.color]="getRoleColor(selectedPost.authorRole)">
+                {{ getRoleLabel(selectedPost.authorRole) }}
+              </div>
+              <div class="author-date">{{ selectedPost.createdAt | date:'fullDate' }}</div>
+            </div>
+          </div>
+
+          <div class="detail-image-wrap" *ngIf="selectedPost.imageUrl">
+            <img [src]="getImageUrl(selectedPost.imageUrl)" [alt]="selectedPost.title" class="post-detail-image" (error)="handleImageError($event)">
+          </div>
+
+          <!-- Archive notice -->
+          <div class="detail-archived-notice" *ngIf="isArchived(selectedPost)">
+            <i class="fas fa-archive"></i>
+            This discussion has been automatically archived (no recent activity).
+          </div>
+
+          <div class="detail-body">{{ selectedPost.content }}</div>
+
+          <!-- Trending keywords found in this post -->
+          <div class="detail-trending-section" *ngIf="getPostTrendingKeywords(selectedPost).length > 0">
+            <div class="detail-trending-label">
+              <i class="fas fa-fire"></i> Trending topics in this post
+            </div>
+            <div class="detail-trending-tags">
+              <button class="kw-tag"
+                      *ngFor="let kw of getPostTrendingKeywords(selectedPost)"
+                      (click)="searchByKeyword(kw.word)"
+                      [title]="kw.count + ' mentions across forum'">
+                <span class="kw-word">#{{ kw.word }}</span>
+                <span class="kw-count">{{ kw.count }}</span>
               </button>
             </div>
           </div>
-        </div>
-      </div>
-    </ng-container>
 
-    <!-- ── POST DETAIL ─────────────────────────────── -->
-    <div class="post-detail-view" *ngIf="selectedPost && !loading && !isCreating && !isEditing">
-      <!-- Back Button -->
-      <button class="back-btn" (click)="backToList()">
-        <i class="fas fa-arrow-left"></i> Back to list
-      </button>
-
-      <!-- Post Content -->
-      <div class="detail-card">
-        <div class="detail-header">
-          <span class="detail-tag"><i class="fas fa-tag"></i> {{ selectedPost.category || 'General Health' }}</span>
-        </div>
-        <h1 class="detail-title">{{ selectedPost.title }}</h1>
-
-        <div class="detail-author-row">
-          <div class="author-avatar-lg">{{ getInitial(selectedPost.authorName) }}</div>
-          <div>
-            <div class="author-name-lg">{{ selectedPost.authorName }}</div>
-            <div class="author-date">{{ selectedPost.createdAt | date:'fullDate' }}</div>
-          </div>
-        </div>
-
-        <!-- Post Image (Detail) - Positioned ABOVE content as a featured image -->
-        <div class="detail-image-wrap" *ngIf="selectedPost.imageUrl">
-          <img [src]="getImageUrl(selectedPost.imageUrl)" 
-               [alt]="selectedPost.title" 
-               class="post-detail-image"
-               (error)="handleImageError($event)">
-        </div>
-
-        <div class="detail-body">{{ selectedPost.content }}</div>
-
-        <div class="detail-engage-bar">
-          <div class="reaction-wrap">
-            <button class="icon-btn-lg like-btn" [class.active]="selectedPost.isLikedByUser" (click)="likePost(selectedPost!)" (contextmenu)="toggleReactionPicker(selectedPost!.id, $event)">
-              <i class="fas fa-heart" *ngIf="!postReactions[selectedPost.id]"></i>
-              <span *ngIf="postReactions[selectedPost.id]" class="reacted-emoji-lg">{{ postReactions[selectedPost.id] }}</span>
-              <span class="count">{{ selectedPost.likesCount || 0 }} Likes</span>
-            </button>
-            
-            <!-- Long press/contextmenu for reactions -->
-            <div class="reaction-picker picker-lg" *ngIf="activeReactionPostId === selectedPost.id">
-              <div class="emoji-item" *ngFor="let r of reactions" (click)="onReactionSelect(selectedPost!, r)">
-                <span class="emoji">{{ r.icon }}</span>
+          <div class="detail-engage-bar">
+            <div class="reaction-wrap">
+              <button class="icon-btn-lg like-btn" [class.active]="selectedPost.isLikedByUser" (click)="likePost(selectedPost!)" (contextmenu)="toggleReactionPicker(selectedPost!.id, $event)">
+                <i class="fas fa-heart" *ngIf="!postReactions[selectedPost.id]"></i>
+                <span *ngIf="postReactions[selectedPost.id]" class="reacted-emoji-lg">{{ postReactions[selectedPost.id] }}</span>
+                <span class="count">{{ selectedPost.likesCount || 0 }} Likes</span>
+              </button>
+              <div class="reaction-picker picker-lg" *ngIf="activeReactionPostId === selectedPost.id">
+                <div class="emoji-item" *ngFor="let r of reactions" (click)="onReactionSelect(selectedPost!, r)">
+                  <span class="emoji">{{ r.icon }}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="engage-info">
             <button class="icon-btn-lg comment-btn" (click)="toggleComments()">
               <i class="far fa-comment"></i>
               <span>{{ selectedPost.comments?.length || 0 }} {{ showComments ? 'Hide' : 'Show' }} Comments</span>
             </button>
-          </div>
-        </div>
-      </div>
 
-      <!-- Comments -->
-      <div class="comments-card" *ngIf="showComments">
-        <h3 class="comments-heading">
-          <i class="fas fa-comments"></i> Comments
-          <span class="count-badge">{{ selectedPost.comments?.length || 0 }}</span>
-        </h3>
-
-        <!-- Comment Form -->
-        <div class="comment-form-wrap">
-          <div class="user-avatar-sm">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="comment-input-area">
-            <textarea [(ngModel)]="newComment" placeholder="Share your experience or advice..." [disabled]="submittingComment"></textarea>
-            <div class="comment-form-footer">
-              <button class="send-btn" (click)="submitComment()" [disabled]="!newComment.trim() || submittingComment">
-                <i class="fas" [class.fa-paper-plane]="!submittingComment" [class.fa-spinner]="submittingComment" [class.fa-spin]="submittingComment"></i>
-                {{ submittingComment ? 'Sending...' : 'Post' }}
-              </button>
-            </div>
+            <!-- WhatsApp on detail -->
+            <button class="btn-wa-detail"
+                    *ngIf="canSendWhatsApp(selectedPost!) && selectedPost.postType === 'ALERT' && !selectedPost.whatsappSent"
+                    [disabled]="sendingWhatsApp"
+                    (click)="sendWhatsAppAlert(selectedPost!)">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              {{ sendingWhatsApp ? 'Sending...' : 'Send WhatsApp Alert' }}
+            </button>
           </div>
         </div>
 
-        <!-- Comments List -->
-        <div class="loading-comments" *ngIf="loadingComments">
-          <i class="fas fa-spinner fa-spin"></i> Loading...
-        </div>
+        <!-- Comments -->
+        <div class="comments-card" *ngIf="showComments">
+          <h3 class="comments-heading">
+            <i class="fas fa-comments"></i> Comments
+            <span class="count-badge">{{ selectedPost.comments?.length || 0 }}</span>
+          </h3>
 
-        <div class="comments-list" *ngIf="!loadingComments">
-          <div class="comment-item" *ngFor="let comment of selectedPost?.comments">
-            <div class="comment-avatar">{{ getInitial(comment.authorName) }}</div>
-            <div class="comment-body">
-              <div class="comment-header">
-                <strong>{{ comment.authorName }}</strong>
-                <span class="comment-date">{{ comment.createdAt | date:'d MMM y, HH:mm' }}</span>
+          <div class="comment-form-wrap">
+            <div class="user-avatar-sm"><i class="fas fa-user"></i></div>
+            <div class="comment-input-area">
+              <textarea [(ngModel)]="newComment"
+                        placeholder="Share your experience or advice..."
+                        [disabled]="submittingComment"></textarea>
+
+              <!-- Violation error -->
+              <div class="comment-violation-error" *ngIf="commentViolationError">
+                <i class="fas fa-exclamation-triangle"></i> {{ commentViolationError }}
               </div>
-              <p class="comment-text">{{ comment.content }}</p>
+
+              <!-- Image preview -->
+              <div class="comment-img-preview" *ngIf="commentImagePreview">
+                <img [src]="commentImagePreview" alt="preview"/>
+                <button class="comment-img-remove" (click)="removeCommentImage()" title="Remove image">✕</button>
+              </div>
+
+              <div class="comment-form-footer">
+                <!-- Image picker -->
+                <label class="comment-img-btn" title="Add image">
+                  <i class="fas fa-image"></i>
+                  <input type="file" accept="image/*" hidden (change)="onCommentImageSelected($event)"/>
+                </label>
+
+                <button class="send-btn" (click)="submitComment()" [disabled]="!newComment.trim() || submittingComment">
+                  <i class="fas" [class.fa-paper-plane]="!submittingComment" [class.fa-spinner]="submittingComment" [class.fa-spin]="submittingComment"></i>
+                  {{ submittingComment ? 'Sending...' : 'Comment' }}
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="no-comments" *ngIf="!selectedPost?.comments?.length">
-            <i class="far fa-comment-dots"></i>
-            <p>Be the first to comment!</p>
+          <div class="loading-comments" *ngIf="loadingComments">
+            <i class="fas fa-spinner fa-spin"></i> Loading...
+          </div>
+
+          <div class="comments-list" *ngIf="!loadingComments">
+            <div class="comment-item" *ngFor="let comment of selectedPost?.comments">
+              <div class="comment-avatar">{{ getInitial(comment.authorName) }}</div>
+              <div class="comment-body">
+                <div class="comment-header">
+                  <div class="comment-meta">
+                    <strong>{{ comment.authorName }}</strong>
+                    <span class="comment-date">
+                      <i class="far fa-clock"></i>
+                      {{ comment.createdAt | date:'d MMM y, HH:mm' }}
+                    </span>
+                  </div>
+                  <button class="btn-delete-comment" *ngIf="canDeleteComment(comment)"
+                          (click)="deleteComment(comment.id)" title="Delete this comment">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Delete</span>
+                  </button>
+                </div>
+                <p class="comment-text">{{ comment.content }}</p>
+                <div class="comment-img-display" *ngIf="comment.imageUrl">
+                  <img [src]="getImageUrl(comment.imageUrl)" alt="comment image" (error)="handleImageError($event)"/>
+                </div>
+              </div>
+            </div>
+            <div class="no-comments" *ngIf="!selectedPost?.comments?.length">
+              <i class="far fa-comment-dots"></i>
+              <p>Be the first to comment!</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-  <!-- ── CREATE / EDIT FORM ──────────────────────────────── -->
-    <div class="form-panel" *ngIf="isCreating || isEditing">
-      <button class="back-btn" (click)="onCancel()">
-        <i class="fas fa-arrow-left"></i> Back to list
-      </button>
-      <app-post-form
-        [post]="isEditing ? selectedPost : null"
-        [isEditing]="isEditing"
-        (postSaved)="onPostSaved($event)"
-        (cancel)="onCancel()">
-      </app-post-form>
-    </div>
+      <!-- ── CREATE / EDIT FORM ───────────────────────────── -->
+      <div class="form-panel" *ngIf="isCreating || isEditing">
+        <button class="back-btn" (click)="onCancel()">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <app-post-form
+          [post]="isEditing ? selectedPost : null"
+          [isEditing]="isEditing"
+          (postSaved)="onPostSaved($event)"
+          (cancel)="onCancel()">
+        </app-post-form>
+      </div>
 
-    </div> <!-- end forum-content -->
+    </div><!-- end forum-content -->
 
+    <!-- ── Sidebar trending ────────────────────────────────── -->
     <div class="forum-sidebar" *ngIf="!isCreating && !isEditing && !selectedPost">
       <app-trending-topics (categorySelected)="onTrendingCategorySelected($event)"></app-trending-topics>
+
+      <!-- ── Trending Keywords Widget ─────────────────────── -->
+      <div class="trending-keywords-card" *ngIf="trendingKeywords.length > 0">
+        <div class="trending-kw-header">
+          <i class="fas fa-fire"></i> Trending This Week
+          <span class="kw-refresh-dot" title="Auto-refresh every 2 min"></span>
+        </div>
+        <div class="trending-kw-list">
+          <div class="kw-row"
+               *ngFor="let kw of trendingKeywords; let i = index"
+               (click)="searchByKeyword(kw.word)"
+               [title]="kw.count + ' mentions · score ' + kw.score">
+            <div class="kw-rank">{{ i + 1 }}</div>
+            <div class="kw-info">
+              <div class="kw-top-row">
+                <span class="kw-word">#{{ kw.word }}</span>
+                <span class="kw-count">{{ kw.count }} mentions</span>
+              </div>
+              <div class="kw-score-bar">
+                <div class="kw-score-fill" [style.width.%]="getScorePercent(kw)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="trending-kw-footer">
+          <i class="fas fa-sync-alt"></i>
+          Updated every 2 min
+          <span *ngIf="trendingLastUpdated"> · {{ trendingLastUpdated | date:'HH:mm:ss' }}</span>
+        </div>
+      </div>
     </div>
-  </div> <!-- end forum-layout-container -->
-</div> <!-- end forum-public-page -->
+
+  </div><!-- end forum-layout-container -->
+
+  <!-- ── Internal Messaging (floating panel) ──────────────── -->
+  <div class="messaging-panel" *ngIf="showMessaging" (click)="$event.stopPropagation()">
+    <div class="msg-panel-header">
+      <h3>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+        </svg>
+        Team Messaging
+      </h3>
+      <button class="msg-close" (click)="toggleMessaging()">✕</button>
+    </div>
+
+    <div class="msg-body">
+      <!-- Channels -->
+      <div class="msg-channels">
+        <div class="channel-item"
+             *ngFor="let ch of channels"
+             [class.active]="activeChannel?.id === ch.id"
+             (click)="selectChannel(ch)">
+          <span class="channel-hash">#</span>
+          <span class="channel-name">{{ ch.name }}</span>
+          <span class="channel-unread" *ngIf="ch.unreadCount && ch.unreadCount > 0">{{ ch.unreadCount }}</span>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="msg-messages" *ngIf="activeChannel">
+        <div class="msg-channel-title"># {{ activeChannel.name }}</div>
+
+        <div class="msg-list">
+          <div class="msg-empty" *ngIf="channelMessages.length === 0">
+            <i class="far fa-comment-dots"></i> No messages yet
+          </div>
+          <div class="msg-item" *ngFor="let m of channelMessages" [class.msg-own]="m.isOwn">
+            <div class="msg-avatar" [style.background]="getRoleColor(m.authorRole)">{{ getInitial(m.authorName) }}</div>
+            <div class="msg-bubble">
+              <div class="msg-author">
+                {{ m.authorName }}
+                <span class="msg-role">{{ getRoleLabel(m.authorRole) }}</span>
+                <span class="msg-time">{{ formatTimeAgo(m.createdAt) }}</span>
+              </div>
+              <div class="msg-text">{{ m.content }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="msg-input-bar">
+          <input type="text"
+                 [(ngModel)]="newChatMessage"
+                 placeholder="Message #{{ activeChannel.name }}..."
+                 (keyup.enter)="sendChatMessage()"
+                 [disabled]="sendingMessage">
+          <button class="msg-send-btn" (click)="sendChatMessage()" [disabled]="!newChatMessage.trim() || sendingMessage">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end forum-public-page -->
+
+<!-- ── CODE BLUE MODAL OVERLAY ─────────────────────────── -->
+<div class="code-blue-overlay" *ngIf="showCodeBlueModal" (click)="$event.stopPropagation()">
+  <div class="code-blue-modal">
+
+    <!-- Header -->
+    <div class="cb-header">
+      <div class="cb-pulse-dot"></div>
+      <span class="cb-title">🆘 CODE BLUE</span>
+      <span class="cb-subtitle">MEDICAL EMERGENCY — IMMEDIATE ACTION REQUIRED</span>
+    </div>
+
+    <!-- Incident info -->
+    <div class="cb-body">
+      <div class="cb-incident-title">{{ activeCodeBlue?.message }}</div>
+
+      <!-- Countdown -->
+      <div class="cb-timer-row">
+        <span class="cb-timer-label">Time elapsed since alert</span>
+        <span class="cb-timer" [class.cb-timer-urgent]="codeBlueCountdown < 60">
+          {{ formatCountdown(300 - codeBlueCountdown) }}
+        </span>
+      </div>
+
+      <!-- Presence list -->
+      <div class="cb-presence-section">
+        <div class="cb-presence-header">Notified Staff</div>
+        <div class="cb-presence-list">
+          <div *ngIf="codeBluePresences.length === 0" class="cb-no-presence">
+            Loading presences...
+          </div>
+          <div class="cb-presence-item"
+               *ngFor="let p of codeBluePresences"
+               [class.cb-confirmed]="p.confirmed">
+            <span class="cb-presence-dot" [class.dot-confirmed]="p.confirmed"></span>
+            <span class="cb-presence-name">{{ p.staffName }}</span>
+            <span class="cb-presence-role">{{ p.role }}</span>
+            <span class="cb-presence-status">
+              <span *ngIf="p.confirmed">✅ Confirmed</span>
+              <span *ngIf="!p.confirmed" class="cb-waiting">Waiting...</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jitsi Meet button -->
+      <div class="cb-meet-section" *ngIf="codeBlucMeetLink">
+        <a [href]="codeBlucMeetLink" target="_blank" class="cb-btn-meet">
+          📹 Join Emergency Meeting
+        </a>
+        <div class="cb-meet-link">{{ codeBlucMeetLink }}</div>
+      </div>
+
+      <!-- Actions -->
+      <div class="cb-actions">
+        <button class="cb-btn cb-btn-confirm"
+                (click)="confirmCodeBluePresence()"
+                [disabled]="currentUserConfirmed">
+          {{ currentUserConfirmed ? '✅ Presence Confirmed' : 'Confirm My Presence' }}
+        </button>
+        <button class="cb-btn cb-btn-resolve"
+                *ngIf="canResolveCodeBlue()"
+                (click)="resolveCodeBlue()">
+          Resolve Emergency
+        </button>
+        <button class="cb-btn cb-btn-close" (click)="closeCodeBlueModal()">
+          Close
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

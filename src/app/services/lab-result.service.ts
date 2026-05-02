@@ -16,6 +16,10 @@ export interface LabResultResponse {
   isAbnormal: boolean;
   completedAt: string;
   verifiedAt: string;
+  aiDiagnostic?: string;
+  aiRisk?: string;
+  aiConfidence?: number;
+  aiAlertSent?: boolean;
 }
 
 export interface LabResultRequest {
@@ -57,4 +61,26 @@ export class LabResultService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
   }
+
+  getPatientAlzheimerHistory(patientName: string): Observable<LabResultResponse[]> {
+    const encoded = encodeURIComponent(patientName);
+    return this.http.get<LabResultResponse[]>(
+      `/springsecurity/api/lab-results/patient-history/${encoded}`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getAlzheimerPatients(): Observable<AlzheimerPatientSummary[]> {
+    return this.http.get<AlzheimerPatientSummary[]>(
+      `/springsecurity/api/lab-results/alzheimer-patients`,
+      { headers: this.getHeaders() }
+    );
+  }
+}
+
+export interface AlzheimerPatientSummary {
+  patientName: string;
+  lastRisk: string;
+  totalAnalyses: number;
+  lastAnalysisDate: string;
 }

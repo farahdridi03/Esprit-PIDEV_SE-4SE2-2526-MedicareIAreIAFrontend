@@ -17,6 +17,7 @@ export interface LabRequestPayload {
   clinicalNotes: string;
   requestedBy: string;
   doctorId: null;
+  doctorEmail?: string;
 }
 
 export interface LabRequestResponse {
@@ -30,6 +31,7 @@ export interface LabRequestResponse {
   scheduledAt: string;
   clinicalNotes: string;
   requestedBy: string;
+  doctorEmail?: string;
 }
 
 @Injectable({ providedIn: 'root' })

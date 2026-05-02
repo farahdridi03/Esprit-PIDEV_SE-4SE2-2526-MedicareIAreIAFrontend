@@ -58,9 +58,9 @@ export class PostFormComponent {
 
       title: ['', [
 
-        Validators.required, 
+        Validators.required,
 
-        Validators.minLength(5), 
+        Validators.minLength(5),
 
         Validators.maxLength(200),
 
@@ -68,13 +68,15 @@ export class PostFormComponent {
 
       ]],
 
+      postType: ['DISCUSSION', [Validators.required]],
+
       category: ['General Health', [Validators.required]],
 
       content: ['', [
 
-        Validators.required, 
+        Validators.required,
 
-        Validators.minLength(20), 
+        Validators.minLength(20),
 
         Validators.maxLength(2000),
 
@@ -100,13 +102,13 @@ export class PostFormComponent {
         return { whitespaceOnly: true };
       }
       
-      // Check that the title starts with a letter
-      if (!/^[A-Za-z]/.test(title)) {
+      // Check that the title starts with a letter (including French accents)
+      if (!/^[A-Za-zÀ-ÿ]/.test(title)) {
         return { invalidStart: true };
       }
       
-      // Check for disallowed special characters
-      if (!/^[A-Za-z0-9\s\-_!?.,:;'"()]+$/.test(title)) {
+      // Check for disallowed special characters (French accents allowed)
+      if (!/^[A-Za-zÀ-ÿ0-9\s\-_!?.,:;'"()]+$/.test(title)) {
         return { invalidCharacters: true };
       }
       
@@ -149,11 +151,13 @@ export class PostFormComponent {
 
       this.postForm.patchValue({
 
-        title: this.post.title,
+        title:    this.post.title,
+
+        postType: this.post.postType || 'DISCUSSION',
 
         category: this.post.category || 'General Health',
 
-        content: this.post.content
+        content:  this.post.content
 
       });
 
@@ -188,8 +192,9 @@ export class PostFormComponent {
 
     // Create FormData to handle file upload
     const formData = new FormData();
-    formData.append('title', this.postForm.value.title);
-    formData.append('content', this.postForm.value.content);
+    formData.append('title',    this.postForm.value.title);
+    formData.append('postType', this.postForm.value.postType);
+    formData.append('content',  this.postForm.value.content);
     formData.append('category', this.postForm.value.category);
     formData.append('authorId', userId.toString());
     
@@ -212,8 +217,16 @@ export class PostFormComponent {
       },
       error: (err) => {
         setTimeout(() => {
-          this.error = 'Error while saving post';
           this.loading = false;
+          if (err.status === 422 && err.error?.error === 'CONTENT_VIOLATION') {
+            this.error = err.error.message || 'This image contains inappropriate content.';
+          } else if (err.status === 400 && err.error?.error) {
+            this.error = err.error.error;
+          } else if (err.status === 403) {
+            this.error = 'You are not allowed to perform this action.';
+          } else {
+            this.error = 'Error while saving post. Please try again.';
+          }
         });
         console.error('Error saving post:', err);
       }
@@ -298,36 +311,28 @@ export class PostFormComponent {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      
-      // Validation du type de fichier
-      if (!file.type.startsWith('image/')) {
-        this.postForm.get('image')?.setErrors({ invalidFileType: true });
-        this.postForm.get('image')?.markAsTouched();
-        return;
-      }
-      
-      // Validation de la taille (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        this.postForm.get('image')?.setErrors({ fileTooLarge: true });
-        this.postForm.get('image')?.markAsTouched();
-        return;
-      }
-      
-      this.selectedFile = file;
-      this.selectedFileName = file.name;
-      
-      // Créer un aperçu
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.imagePreview = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
-      
-      // Effacer les erreurs précédentes
-      this.postForm.get('image')?.setErrors(null);
+    if (!input.files?.length) return;
+    const file = input.files[0];
+
+    const allowedMime = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedMime.includes(file.type)) {
+      this.error = 'Invalid format. Only JPEG, PNG, GIF and WEBP are accepted.';
+      input.value = '';
+      return;
     }
+    if (file.size > 5 * 1024 * 1024) {
+      this.error = 'Image is too large. Maximum size is 5 MB.';
+      input.value = '';
+      return;
+    }
+
+    this.error = null;
+    this.selectedFile = file;
+    this.selectedFileName = file.name;
+
+    const reader = new FileReader();
+    reader.onload = (e) => { this.imagePreview = e.target?.result as string; };
+    reader.readAsDataURL(file);
   }
 
   removeImage(): void {

@@ -28,12 +28,15 @@ export interface LabRequestPayload {
   testType: string;
   clinicalNotes: string;
   scheduledAt: string;
+  doctorEmail?: string;
 }
 
 export interface LabRequestResponse {
   id: number;
   patientId: number;
   patientName: string;
+  doctorId?: number;
+  doctorName?: string;
   laboratoryId: number;
   laboratoryName: string;
   testType: string;
@@ -41,6 +44,7 @@ export interface LabRequestResponse {
   clinicalNotes: string;
   scheduledAt: string;
   requestedAt: string;
+  doctorEmail?: string;
 }
 
 export interface LabRequestResponseForLabStaff {

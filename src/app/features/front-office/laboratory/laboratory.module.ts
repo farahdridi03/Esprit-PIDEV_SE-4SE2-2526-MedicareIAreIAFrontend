@@ -17,6 +17,12 @@ import { LabResultsComponent } from './pages/lab-results/lab-results.component';
 import { LabResultFormComponent } from './pages/lab-results/lab-result-form.component';
 import { LabRequestsComponent } from './pages/lab-requests/lab-requests.component';
 import { LabResultService } from '../../../services/lab-result.service';
+import { AlzheimerAnalysisComponent } from './pages/alzheimer-analysis/alzheimer-analysis.component';
+import { AlzheimerHistoryComponent } from './pages/alzheimer-history/alzheimer-history.component';
+import { LabStaffPerformanceComponent } from './pages/lab-staff-performance/lab-staff-performance.component';
+import { AlzheimerService } from '../../../services/alzheimer.service';
+import { RecommendationService } from '../../../services/recommendation.service';
+import { LabAnalyticsService } from '../../../services/lab-analytics.service';
 
 
 const routes: Routes = [
@@ -32,7 +38,9 @@ const routes: Routes = [
     { path: 'lab-tests', component: LabTestsComponent },
     { path: 'lab-requests', component: LabRequestsComponent },
     { path: 'lab-results', component: LabResultsComponent },
-
+    { path: 'alzheimer-analysis/:id', component: AlzheimerAnalysisComponent },
+    { path: 'alzheimer-history/:patientName', component: AlzheimerHistoryComponent },
+    { path: 'performance', component: LabStaffPerformanceComponent },
 
 ];
 
@@ -47,7 +55,10 @@ const routes: Routes = [
         LabTestFormComponent,
         LabResultsComponent,
         LabResultFormComponent,
-        LabRequestsComponent
+        LabRequestsComponent,
+        AlzheimerAnalysisComponent,
+        AlzheimerHistoryComponent,
+        LabStaffPerformanceComponent
     ],
     imports: [
         CommonModule,
@@ -57,7 +68,10 @@ const routes: Routes = [
         RouterModule.forChild(routes)
     ],
     providers: [
-        LabResultService
+        LabResultService,
+        AlzheimerService,
+        RecommendationService,
+        LabAnalyticsService
     ],
     exports: [
         CommonModule,

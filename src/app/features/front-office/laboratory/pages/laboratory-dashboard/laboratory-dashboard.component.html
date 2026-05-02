@@ -1,8 +1,6 @@
 <div class="laboratory-wrapper">
-    <!-- Sidebar -->
     <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
 
-    <!-- Main Content -->
     <div class="main-body">
         <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
 
@@ -13,7 +11,6 @@
                     <h1>Welcome back, {{ firstName || 'User' }}!</h1>
                     <p>You have new test requests awaiting your review.</p>
                 </div>
-
                 <div class="banner-stats">
                     <div class="stat-card">
                         <div class="label">Incoming Requests</div>
@@ -30,20 +27,84 @@
                 </div>
             </div>
 
+            <!-- AI Narrator Card — dashboard only -->
+            <ng-container *ngIf="isDashboard">
+            <div class="ai-narrator-card">
+                <div class="narrator-left">
+                    <div class="narrator-icon">🤖</div>
+                    <div class="narrator-info">
+                        <div class="narrator-title">AI Lab Report Narrator</div>
+                        <div class="narrator-sub">
+                            Generates a <strong>clinical summary</strong> for the doctor
+                            and a <strong>simple explanation</strong> for the patient — powered by GPT
+                        </div>
+                        <div class="narrator-badge" *ngIf="pendingCount > 0">
+                            {{ pendingCount }} result(s) waiting for AI narrative
+                        </div>
+                        <div class="narrator-badge ok" *ngIf="pendingCount === 0 && !narratorLoading">
+                            All reports up to date ✓
+                        </div>
+                    </div>
+                </div>
+                <div class="narrator-actions">
+                    <button class="btn-generate" (click)="generateNarratives()" [disabled]="narratorLoading || pendingCount === 0">
+                        <span *ngIf="!narratorLoading">⚡ Generate for All</span>
+                        <span *ngIf="narratorLoading">Processing…</span>
+                    </button>
+                    <button class="btn-history" (click)="openHistoryModal()">View History</button>
+                </div>
+            </div>
+
+            <!-- History Modal -->
+            <div class="narrator-modal" *ngIf="showHistoryModal && isDashboard">
+                <div class="modal-overlay" (click)="showHistoryModal = false"></div>
+                <div class="modal-box">
+                    <div class="modal-header">
+                        <span>🤖 AI Narrative History</span>
+                        <button class="modal-close" (click)="showHistoryModal = false">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-empty" *ngIf="narratorHistory.length === 0">
+                            No AI narratives generated yet.
+                        </div>
+                        <div class="narrative-item" *ngFor="let n of narratorHistory">
+                            <div class="ni-header">
+                                <span class="ni-patient">{{ n.patientName }}</span>
+                                <span class="ni-risk" [ngClass]="'risk-' + n.aiRisk?.toLowerCase()">
+                                    {{ n.aiRisk }}
+                                </span>
+                                <span class="ni-date">{{ n.completedAt | date:'dd/MM/yyyy' }}</span>
+                                <button class="btn-regen" (click)="regenerate(n)" [disabled]="n.regenerating"
+                                        title="Regenerate narrative">
+                                    {{ n.regenerating ? '…' : '🔄' }}
+                                </button>
+                            </div>
+                            <!-- Doctor narrative: clinical/professional -->
+                            <div class="ni-section">
+                                <div class="ni-label">🩺 Doctor Summary <span class="ni-tag">Clinical Language</span></div>
+                                <div class="ni-text">{{ n.doctorNarrative }}</div>
+                            </div>
+                            <!-- Patient narrative: simple -->
+                            <div class="ni-section">
+                                <div class="ni-label">💬 Patient Explanation <span class="ni-tag patient">Simple Language</span></div>
+                                <div class="ni-text">{{ n.patientNarrative }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </ng-container>
+
             <!-- Dashboard Grid -->
             <div class="dashboard-grid">
-                <!-- Tests Section -->
                 <div class="tests-section">
                     <div class="section-header">
                         <h3>Today's Tests</h3>
                         <a href="#">View All →</a>
                     </div>
-
-                    <div class="test-list">
-                    </div>
+                    <div class="test-list"></div>
                 </div>
 
-                <!-- Calendar Section -->
                 <div class="calendar-section">
                     <div class="section-header">
                         <h3>Calendar</h3>
@@ -68,7 +129,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

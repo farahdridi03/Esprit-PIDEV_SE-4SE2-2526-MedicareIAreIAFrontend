@@ -90,6 +90,21 @@
                         placeholder="Additional instructions or context..."></textarea>
             </div>
 
+            <!-- Doctor Email -->
+            <div class="field">
+              <label class="field__label">
+                Doctor Email <span class="field__optional">(optional — for AI report)</span>
+              </label>
+              <input type="email" formControlName="doctorEmail" class="field__input"
+                     placeholder="doctor@hospital.com" />
+              <span class="field__err" *ngIf="form.get('doctorEmail')?.invalid && form.get('doctorEmail')?.touched">
+                Please enter a valid email address.
+              </span>
+              <p class="field__hint" *ngIf="form.get('doctorEmail')?.value">
+                The AI Alzheimer analysis report will be sent to this address.
+              </p>
+            </div>
+
             <!-- Error Banner -->
             <div class="form-error" *ngIf="submitError">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

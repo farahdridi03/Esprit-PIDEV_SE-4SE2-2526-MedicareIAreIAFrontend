@@ -69,9 +69,16 @@ export class LabRequestsComponent implements OnInit {
   }
 
 
+  analyzeAlzheimer(requestId: number): void {
+    this.router.navigate(['/front/laboratorystaff/alzheimer-analysis', requestId]);
+  }
+
+  viewAlzheimerHistory(patientName: string): void {
+    this.router.navigate(['/front/laboratorystaff/alzheimer-history', encodeURIComponent(patientName)]);
+  }
+
   acceptRequest(request: any) {
     console.log('Accepted:', request);
-    // Logic to move to lab-tests
   }
 
   rejectRequest(request: any) {
