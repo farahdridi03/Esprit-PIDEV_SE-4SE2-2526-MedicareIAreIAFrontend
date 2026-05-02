@@ -25,6 +25,13 @@ import { LifestyleFormComponent } from './patient/pages/lifestyle-form/lifestyle
 import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
 import { LifestyleDetailComponent } from './patient/pages/lifestyle-detail/lifestyle-detail.component';
+import { NutritionDashboardComponent } from './patient/pages/nutrition-dashboard/nutrition-dashboard.component';
+import { NutritionDailyReportComponent } from './patient/pages/nutrition-daily-report/nutrition-daily-report.component';
+import { DoctorWorkloadComponent } from './doctor/pages/doctor-workload/doctor-workload.component';
+import { PatientPrescriptionDetailComponent } from './patient/pages/patient-prescription-detail/patient-prescription-detail.component';
+import { RecipeListComponent } from './patient/pages/recipes/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './patient/pages/recipes/recipe-detail/recipe-detail.component';
+import { RecipeFavoritesComponent } from './patient/pages/recipes/recipe-favorites/recipe-favorites.component';
 import { AuthGuard } from '../../guards/auth.guard';
 
 const routes: Routes = [
@@ -67,6 +74,12 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
+    path: 'patient/medical-record/prescriptions/:id',
+    component: PatientPrescriptionDetailComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
     path: 'patient/lifestyle-wellness',
     component: LifestyleWellnessComponent,
     canActivate: [AuthGuard],
@@ -103,8 +116,44 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
+    path: 'patient/nutrition',
+    component: NutritionDashboardComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/nutrition/daily-report',
+    component: NutritionDailyReportComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/recipes',
+    component: RecipeListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/recipes/favorites',
+    component: RecipeFavoritesComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
+    path: 'patient/recipes/:id',
+    component: RecipeDetailComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
     path: 'doctor/dashboard',
     component: DoctorDashboardComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['DOCTOR'] }
+  },
+  {
+    path: 'doctor/workload',
+    component: DoctorWorkloadComponent,
     canActivate: [AuthGuard],
     data: { roles: ['DOCTOR'] }
   },

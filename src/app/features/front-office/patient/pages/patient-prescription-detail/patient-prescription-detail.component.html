@@ -1,0 +1,182 @@
+<div class="list-wrapper">
+    <app-sidebar></app-sidebar>
+    <div class="main-body">
+        <app-topbar></app-topbar>
+        <div class="content-area">
+            
+            <div class="welcome-banner green">
+                <div class="banner-content">
+                    <div class="banner-text">
+                        <h1>Prescription Details</h1>
+                        <p>View detailed information about your prescription.</p>
+                    </div>
+                    <div class="banner-actions-top">
+                        <button class="btn-back-glass" routerLink="/front/patient/medical-record/prescriptions">
+                            <i class="fas fa-arrow-left"></i> Back to Prescriptions
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="loading" class="loading-state">
+                <p>Loading details...</p>
+            </div>
+
+            <div *ngIf="!loading && !prescription" class="no-data">
+                <p>Prescription not found.</p>
+            </div>
+
+            <div class="prescription-card box" *ngIf="!loading && prescription" [class.expiring-soon]="expiringSoon">
+                
+                <div class="card-header">
+                    <div class="header-info">
+                        <h2>Prescription #{{ prescription.id }}</h2>
+                        <span class="date">Issued: {{ prescription.date | date:'mediumDate' }}</span>
+                        <span class="date" *ngIf="prescription.expiryDate">Expiry: {{ prescription.expiryDate | date:'mediumDate' }}</span>
+                    </div>
+                    <div class="header-badges">
+                        <span class="warning-badge" *ngIf="expiringSoon">Expires in {{ daysUntilExpiry }}d</span>
+                        <span class="status-badge" [ngClass]="prescription.status?.toLowerCase() || 'unknown'">{{ prescription.status || 'UNKNOWN' }}</span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- If items array exists and has length, show it -->
+                    <div class="items-table-container" *ngIf="prescription.items && prescription.items.length > 0; else flatFields">
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Dosage</th>
+                                    <th>Frequency</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of prescription.items">
+                                    <td class="bold">{{ item.medicationName }}</td>
+                                    <td>{{ item.dosage }}</td>
+                                    <td>{{ item.frequency }}</td>
+                                    <td>{{ item.duration }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Else, fall back to flat fields if the backend provides them this way -->
+                    <ng-template #flatFields>
+                        <div class="flat-details">
+                            <div class="detail-group">
+                                <label>Medication</label>
+                                <p class="bold">{{ prescription.medication || 'N/A' }}</p>
+                            </div>
+                            <div class="detail-group">
+                                <label>Dosage</label>
+                                <p>{{ prescription.dosage || 'N/A' }}</p>
+                            </div>
+                            <div class="detail-group instructions">
+                                <label>Instructions</label>
+                                <p>{{ prescription.instructions || 'N/A' }}</p>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <div class="card-footer">
+                    <button class="save-btn" (click)="downloadPrescription()" [disabled]="prescription.status === 'EXPIRED'">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                        Save / Download
+                    </button>
+                    <p class="disabled-msg" *ngIf="prescription.status === 'EXPIRED'">This prescription has expired and can no longer be downloaded.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Hidden PDF Template -->
+<div class="pdf-template-container" *ngIf="prescription">
+    <div id="prescription-pdf-template">
+        <div class="pdf-header">
+            <div class="doctor-info">
+                <h1>Dr. {{ prescription.doctorName || 'Medical Professional' }}</h1>
+                <p>medicareai</p>
+                <p *ngIf="prescription.doctorSpecialty">{{ prescription.doctorSpecialty }}</p>
+            </div>
+            <div class="branding">
+                <p class="logo-text">MediaCareAI</p>
+                <div class="plus-icons">
+                    <i class="fas fa-plus"></i>
+                    <i class="fas fa-plus" style="font-size: 40px; margin-top: -10px;"></i>
+                    <i class="fas fa-plus" style="font-size: 20px;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="pdf-patient-details">
+            <div class="detail-item">
+                <label>Patient Name:</label>
+                <span>{{ patientName }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Date:</label>
+                <span>{{ prescription.date | date:'longDate' }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Age:</label>
+                <span>{{ patientAge || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Gender:</label>
+                <span>{{ patientGender || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Weight:</label>
+                <span>{{ patientWeight ? patientWeight + ' kg' : 'N/A' }}</span>
+            </div>
+            <div class="detail-item full-width">
+                <label>Diagnosis:</label>
+                <span>{{ prescription.diagnosis || 'General Consultation' }}</span>
+            </div>
+        </div>
+
+        <div class="pdf-rx-section">
+            <div class="rx-symbol">R<span>x</span></div>
+            
+            <div class="medications-list">
+                <!-- Multi-item list -->
+                <div class="med-item" *ngFor="let item of prescription.items">
+                    <div class="med-name">{{ item.medicationName }} - {{ item.dosage }}</div>
+                    <div class="med-details">{{ item.frequency }} for {{ item.duration }}</div>
+                </div>
+
+                <!-- Fallback for flat fields -->
+                <div class="med-item" *ngIf="!prescription.items || prescription.items.length === 0">
+                    <div class="med-name">{{ prescription.medication }} - {{ prescription.dosage }}</div>
+                    <div class="med-details">{{ prescription.instructions }}</div>
+                </div>
+            </div>
+
+            <div class="watermark">MediaCareAI</div>
+        </div>
+
+        <div class="pdf-footer">
+            <div class="signature-area">
+                <div class="medical-stamp">
+                    <div class="stamp-stars">★★★★★</div>
+                    <div class="stamp-center">
+                        <p class="stamp-text" style="font-size: 8px;">Dr. {{ prescription.doctorName || 'Professional' }}</p>
+                    </div>
+                    <div class="stamp-date">{{ today | date:'dd MMM yyyy' }}</div>
+                </div>
+            </div>
+            <div class="contact-info">
+                <span><i class="fas fa-map-marker-alt"></i> MediaCare Digital Hospital</span>
+                <span><i class="fas fa-phone"></i> +216 71 000 000</span>
+                <span><i class="fas fa-envelope"></i> contact&#64;medicareai.com</span>
+            </div>
+        </div>
+    </div>
+</div>

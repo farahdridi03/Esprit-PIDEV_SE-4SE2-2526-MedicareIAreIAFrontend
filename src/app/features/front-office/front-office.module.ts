@@ -32,7 +32,13 @@ import { LifestyleSharedModule } from './patient/lifestyle-shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PatientProfileSettingsComponent } from './patient/pages/patient-profile-settings/patient-profile-settings.component';
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
-
+import { NutritionDashboardComponent } from './patient/pages/nutrition-dashboard/nutrition-dashboard.component';
+import { NutritionDailyReportComponent } from './patient/pages/nutrition-daily-report/nutrition-daily-report.component';
+import { DoctorWorkloadComponent } from './doctor/pages/doctor-workload/doctor-workload.component';
+import { PatientPrescriptionDetailComponent } from './patient/pages/patient-prescription-detail/patient-prescription-detail.component';
+import { RecipeListComponent } from './patient/pages/recipes/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './patient/pages/recipes/recipe-detail/recipe-detail.component';
+import { RecipeFavoritesComponent } from './patient/pages/recipes/recipe-favorites/recipe-favorites.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +67,14 @@ import { PatientProfileEditComponent } from './patient/pages/patient-profile-edi
     LifestyleListComponent,
     LifestyleFormComponent,
     PatientProfileSettingsComponent,
-    PatientProfileEditComponent
+    PatientProfileEditComponent,
+    NutritionDashboardComponent,
+    NutritionDailyReportComponent,
+    DoctorWorkloadComponent,
+    PatientPrescriptionDetailComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    RecipeFavoritesComponent
   ],
   imports: [
     CommonModule,

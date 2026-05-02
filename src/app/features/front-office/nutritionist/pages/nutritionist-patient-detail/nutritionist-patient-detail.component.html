@@ -134,12 +134,42 @@
                                         <p class="desc">{{ plan.description }}</p>
                                         <span class="dates">📅 {{ plan.startDate | date:'shortDate' }} — {{ plan.endDate ? (plan.endDate | date:'shortDate') : 'Until target' }}</span>
                                     </div>
-                                    <div class="plan-actions-wrapper">
-                                        <span class="status-badge" [ngClass]="getStatusClass(plan.status)">{{ formatLabel(plan.status) }}</span>
-                                    </div>
+                                    <span class="status-badge" [ngClass]="getStatusClass(plan.status)">{{ formatLabel(plan.status) }}</span>
                                 </div>
                             </div>
                             <ng-template #noPlans><p class="empty-msg">No active dietary plans.</p></ng-template>
+                        </div>
+                    </div>
+
+                    <!-- Food Diary Card -->
+                    <div class="lifestyle-card food-diary">
+                        <div class="card-header">
+                            <div class="title-with-icon">
+                                <span class="icon">🥘</span>
+                                <h3>Patient Food Diary</h3>
+                            </div>
+                            <button class="view-all-btn" [routerLink]="['/front/nutritionist/patient', patient.id, 'food-diary']">View All</button>
+                        </div>
+                        <div class="card-content">
+                            <div class="diary-scrollable-list" *ngIf="foodDiaryEntries && foodDiaryEntries.length > 0; else noDiary">
+                                <div class="diary-item" *ngFor="let entry of foodDiaryEntries">
+                                    <div class="entry-photo" *ngIf="entry.imageUrl">
+                                        <img [src]="entry.imageUrl" alt="Food">
+                                    </div>
+                                    <div class="entry-details">
+                                        <div class="entry-main">
+                                            <strong>{{ entry.foodName }}</strong>
+                                            <span class="kcal">{{ entry.calories }} kcal</span>
+                                        </div>
+                                        <div class="entry-sub">
+                                            <span>{{ entry.mealType }}</span>
+                                            <span class="dot">•</span>
+                                            <span>{{ entry.date | date:'mediumDate' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-template #noDiary><p class="empty-msg">No food diary entries found.</p></ng-template>
                         </div>
                     </div>
 
@@ -164,9 +194,6 @@
                                         <div class="track-metric">{{ track.metric }}: <strong>{{ track.value }}</strong></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="chart-box" *ngIf="patient.progressTrackings && patient.progressTrackings.length > 0">
-                                <app-progress-chart [data]="patient.progressTrackings" title="Growth & Metrics"></app-progress-chart>
                             </div>
                             <ng-template #noTrackings><p class="empty-msg">No progress metrics recorded recently.</p></ng-template>
                         </div>

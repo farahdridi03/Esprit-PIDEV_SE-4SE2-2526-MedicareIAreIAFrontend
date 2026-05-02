@@ -99,24 +99,75 @@ $green: #38a169;
           }
         }
 
-        .back-btn {
-          padding: 12px 24px;
-          background: #fff;
-          border: 1px solid $border-color;
-          border-radius: 12px;
-          color: $text-muted;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
+        .header-actions {
           display: flex;
+          gap: 12px;
           align-items: center;
-          gap: 8px;
-          
-          &:hover {
-            background: #f8fafc;
-            color: $text-dark;
-            transform: translateX(-4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+
+          .ai-summary-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, $blue 0%, lighten($blue, 10%) 100%);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(14, 124, 102, 0.2);
+
+            &:hover:not(:disabled) {
+              transform: translateY(-2px) scale(1.02);
+              box-shadow: 0 8px 25px rgba(14, 124, 102, 0.3);
+              background: linear-gradient(135deg, lighten($blue, 5%) 0%, lighten($blue, 15%) 100%);
+            }
+
+            &:active:not(:disabled) {
+              transform: translateY(0);
+            }
+
+            &:disabled {
+              opacity: 0.7;
+              cursor: not-allowed;
+              background: $text-muted;
+              box-shadow: none;
+            }
+
+            .icon {
+              font-size: 18px;
+            }
+
+            .spinner {
+              width: 18px;
+              height: 18px;
+              border: 3px solid rgba(255, 255, 255, 0.3);
+              border-top-color: #fff;
+              border-radius: 50%;
+              animation: spin 0.8s linear infinite;
+            }
+          }
+
+          .back-btn {
+            padding: 12px 24px;
+            background: #fff;
+            border: 1px solid $border-color;
+            border-radius: 12px;
+            color: $text-muted;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            
+            &:hover {
+              background: #f8fafc;
+              color: $text-dark;
+              transform: translateX(-4px);
+              box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            }
           }
         }
       }

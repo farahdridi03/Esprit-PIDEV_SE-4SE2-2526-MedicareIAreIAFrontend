@@ -3,14 +3,39 @@
     <div class="main-body">
         <app-topbar></app-topbar>
         <div class="content-area">
-            <div class="container-header">
-                <h1>{{ title }}</h1>
-                <button class="back-btn" routerLink="/front/patient/medical-record">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                    </svg>
-                    Back to Record
-                </button>
+            <!-- Green Banner Header -->
+            <div class="welcome-banner green">
+                <div class="banner-content">
+                    <div class="banner-text">
+                        <h1>{{ title }}</h1>
+                        <p>View and manage your health records for {{ title.toLowerCase() }}.</p>
+                    </div>
+                    <div class="banner-actions-top">
+                        <button class="btn-back-glass" routerLink="/front/patient/medical-record">
+                            <i class="fas fa-arrow-left"></i> Back to Record
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Metrics for Prescriptions -->
+                <div class="banner-metrics" *ngIf="type === 'prescriptions'">
+                    <div class="metric-item">
+                        <span class="label">Total</span>
+                        <span class="value">{{ totalPrescriptions }}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="label">Active</span>
+                        <span class="value text-green">{{ activePrescriptions }}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="label">Expired</span>
+                        <span class="value text-red">{{ expiredPrescriptions }}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="label">Cancelled</span>
+                        <span class="value text-grey">{{ cancelledPrescriptions }}</span>
+                    </div>
+                </div>
             </div>
 
             <div class="table-card box">
@@ -51,7 +76,7 @@
                                     <th>Date</th>
                                     <th>Medication</th>
                                     <th>Dosage</th>
-                                    <th>Instructions</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -60,11 +85,18 @@
                                     <td>{{ item.date | date:'mediumDate' }}</td>
                                     <td class="bold">{{ item.medication }}</td>
                                     <td>{{ item.dosage }}</td>
-                                    <td>{{ item.instructions }}</td>
                                     <td>
-                                        <button class="download-btn" (click)="downloadPrescription(item)">
-                                            Download
-                                        </button>
+                                        <span class="status-badge" [ngClass]="item.status?.toLowerCase() || 'unknown'">{{ item.status || 'UNKNOWN' }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="icon-btn view-btn" [routerLink]="['/front/patient/medical-record/prescriptions', item.id]" title="View Details">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.301 8.844 6.88 5.4 12 5.4c5.12 0 8.697 3.321 9.964 6.278.141.25.141.544 0 .794-1.267 2.957-4.844 6.4-9.964 6.4-5.12 0-8.697-3.321-9.964-6.278L2.036 12.322z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                                            </button>
+                                            <button class="icon-btn download-btn" (click)="downloadPrescription(item)" [disabled]="item.status === 'EXPIRED'" title="Download">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -74,6 +106,7 @@
                         <ng-container *ngIf="type === 'treatments'">
                             <thead>
                                 <tr>
+                                    <th>Doctor</th>
                                     <th>Type</th>
                                     <th>Description</th>
                                     <th>Dosage</th>
@@ -83,11 +116,14 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let item of data">
+                                    <td>{{ item.doctorName || 'Unknown' }}</td>
                                     <td class="bold">{{ item.treatmentType }}</td>
                                     <td>{{ item.description }}</td>
                                     <td>{{ item.dosage }}</td>
                                     <td>{{ item.startDate | date:'shortDate' }} - {{ item.endDate | date:'shortDate' }}</td>
-                                    <td><span class="status-dot" [ngClass]="item.status.toLowerCase()"></span> {{ item.status }}</td>
+                                    <td>
+                                        <span class="status-badge" [ngClass]="item.status?.toLowerCase() || 'unknown'">{{ item.status || 'UNKNOWN' }}</span>
+                                    </td>
                                 </tr>
                             </tbody>
                         </ng-container>
@@ -96,12 +132,16 @@
                         <ng-container *ngIf="type === 'diagnoses'">
                             <thead>
                                 <tr>
+                                    <th>Date</th>
+                                    <th>Doctor</th>
                                     <th>Type</th>
                                     <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let item of data">
+                                    <td>{{ item.date | date:'mediumDate' }}</td>
+                                    <td>{{ item.doctorName || 'Unknown' }}</td>
                                     <td class="bold">{{ item.type }}</td>
                                     <td>{{ item.description }}</td>
                                 </tr>
@@ -109,6 +149,91 @@
                         </ng-container>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden PDF Template -->
+<div class="pdf-template-container" *ngIf="currentPrescription">
+    <div id="prescription-pdf-template">
+        <div class="pdf-header">
+            <div class="doctor-info">
+                <h1>Dr. {{ currentPrescription.doctorName || 'Medical Professional' }}</h1>
+                <p>medicareai</p>
+                <p *ngIf="currentPrescription.doctorSpecialty">{{ currentPrescription.doctorSpecialty }}</p>
+            </div>
+            <div class="branding">
+                <p class="logo-text">MediaCareAI</p>
+                <div class="plus-icons">
+                    <i class="fas fa-plus"></i>
+                    <i class="fas fa-plus" style="font-size: 40px; margin-top: -10px;"></i>
+                    <i class="fas fa-plus" style="font-size: 20px;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="pdf-patient-details">
+            <div class="detail-item">
+                <label>Patient Name:</label>
+                <span>{{ patientName }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Date:</label>
+                <span>{{ (currentPrescription.date || currentPrescription.startDate) | date:'longDate' }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Age:</label>
+                <span>{{ patientAge || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Gender:</label>
+                <span>{{ patientGender || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Weight:</label>
+                <span>{{ patientWeight ? patientWeight + ' kg' : 'N/A' }}</span>
+            </div>
+            <div class="detail-item full-width">
+                <label>Diagnosis:</label>
+                <span>{{ currentPrescription.diagnosis || 'General Consultation' }}</span>
+            </div>
+        </div>
+
+        <div class="pdf-rx-section">
+            <div class="rx-symbol">R<span>x</span></div>
+            
+            <div class="medications-list">
+                <!-- Multi-item list -->
+                <div class="med-item" *ngFor="let item of currentPrescription.items">
+                    <div class="med-name">{{ item.medicationName }} - {{ item.dosage }}</div>
+                    <div class="med-details">{{ item.frequency }} for {{ item.duration }}</div>
+                </div>
+
+                <!-- Fallback for flat fields -->
+                <div class="med-item" *ngIf="!currentPrescription.items || currentPrescription.items.length === 0">
+                    <div class="med-name">{{ currentPrescription.medication }} - {{ currentPrescription.dosage }}</div>
+                    <div class="med-details">{{ currentPrescription.instructions }}</div>
+                </div>
+            </div>
+
+            <div class="watermark">MediaCareAI</div>
+        </div>
+
+        <div class="pdf-footer">
+            <div class="signature-area">
+                <div class="medical-stamp">
+                    <div class="stamp-stars">★★★★★</div>
+                    <div class="stamp-center">
+                        <p class="stamp-text" style="font-size: 8px;">Dr. {{ currentPrescription.doctorName || 'Professional' }}</p>
+                    </div>
+                    <div class="stamp-date">{{ today | date:'dd MMM yyyy' }}</div>
+                </div>
+            </div>
+            <div class="contact-info">
+                <span><i class="fas fa-map-marker-alt"></i> MediaCare Digital Hospital</span>
+                <span><i class="fas fa-phone"></i> +216 71 000 000</span>
+                <span><i class="fas fa-envelope"></i> contact&#64;medicareai.com</span>
             </div>
         </div>
     </div>

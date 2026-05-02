@@ -1,0 +1,56 @@
+<div class="nutritionist-wrapper">
+    <app-nutritionist-sidebar></app-nutritionist-sidebar>
+
+    <div class="main-body">
+        <app-nutritionist-topbar></app-nutritionist-topbar>
+
+        <div class="content-area">
+            <div class="list-container">
+                <!-- Green Banner Header -->
+                <div class="welcome-banner green">
+                    <div class="banner-text">
+                        <h1>Patient Food Diary History</h1>
+                        <p>Complete record of logged meals and nutritional intake.</p>
+                    </div>
+                    <div class="banner-actions-top">
+                        <button class="btn-back-glass" [routerLink]="getBackLink()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                    </div>
+                </div>
+
+                <div class="diary-grid" *ngIf="!isLoading && foodDiaryEntries.length > 0">
+                    <div class="diary-card" *ngFor="let entry of foodDiaryEntries">
+                        <div class="card-image" *ngIf="entry.imageUrl">
+                            <img [src]="entry.imageUrl" alt="Food">
+                            <div class="meal-type-overlay">{{ entry.mealType }}</div>
+                        </div>
+                        <div class="card-content">
+                            <div class="entry-meta">
+                                <span class="date">{{ entry.date | date:'mediumDate' }}</span>
+                                <span class="calories">{{ entry.calories }} kcal</span>
+                            </div>
+                            <h3>{{ entry.foodName }}</h3>
+                            <div class="meal-label">Meal Type: <strong>{{ entry.mealType }}</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="empty-state" *ngIf="isLoading">
+                    <div class="loader"></div>
+                    <p>Fetching full diary history...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" *ngIf="!isLoading && foodDiaryEntries.length === 0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                    <p>No food diary records found for this patient.</p>
+                    <button class="btn btn-outline-primary" [routerLink]="getBackLink()">Return to Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

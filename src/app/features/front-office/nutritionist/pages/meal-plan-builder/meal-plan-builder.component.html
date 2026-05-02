@@ -1,0 +1,100 @@
+<div class="nutritionist-wrapper">
+  <!-- Sidebar -->
+  <app-nutritionist-sidebar></app-nutritionist-sidebar>
+
+  <!-- Main Content -->
+  <div class="main-body">
+    <app-nutritionist-topbar></app-nutritionist-topbar>
+
+    <div class="content-area">
+      <div class="builder-container">
+        <!-- Green Banner Header -->
+        <div class="welcome-banner green">
+          <div class="banner-text">
+            <div class="title-row" style="display: flex; align-items: center; gap: 1.5rem;">
+              <button class="btn-back-glass" (click)="goBack()" title="Back to Plans" style="padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px; justify-content: center;">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <h1 style="margin: 0;">Meal Plan Builder</h1>
+            </div>
+            <p style="margin-top: 0.5rem; opacity: 0.9;">Building plan for: <strong>{{ planTitle }}</strong></p>
+          </div>
+          <div class="banner-actions-top">
+            <button class="btn-create-glass" (click)="savePlan()">
+              <i class="fas fa-save"></i> Save Plan
+            </button>
+            <button class="btn-back-glass" (click)="generateGroceryList()">
+              <i class="fas fa-shopping-cart"></i> Grocery List
+            </button>
+          </div>
+        </div>
+
+        <div class="week-selector">
+          <button *ngFor="let week of weeks" 
+                  [class.active]="selectedWeek === week" 
+                  (click)="changeWeek(week)"
+                  class="week-tab">
+            <span class="week-name">Week {{ week }}</span>
+            <span class="week-dates">{{ getWeekRange(week) }}</span>
+          </button>
+        </div>
+
+        <div class="builder-grid">
+          <div class="day-column" *ngFor="let day of days">
+            <div class="day-header">
+              <span class="day-name">{{ day }}</span>
+              <span class="day-date">{{ getDayDate(day) }}</span>
+            </div>
+            
+            <div class="meal-slot" *ngFor="let type of mealTypes">
+              <div class="slot-label">{{ type }}</div>
+              
+              <div class="assigned-recipe" *ngIf="getAssignedRecipe(day, type) as meal; else emptySlot">
+                <div class="recipe-mini-card">
+                  <div class="recipe-info">
+                    <span class="recipe-name">{{ meal.recipe?.title || meal.recipeTitle }}</span>
+                    <span class="recipe-cals">{{ meal.recipe?.calories || meal.recipeCalories }} kcal</span>
+                  </div>
+                  <button class="btn-remove" (click)="removeMeal(meal)">×</button>
+                </div>
+              </div>
+              
+              <ng-template #emptySlot>
+                <div class="empty-placeholder" (click)="openRecipePicker(day, type)">
+                  <span class="icon material-icons">add</span>
+                  <span>Assign Recipe</span>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recipe Picker Modal -->
+        <div class="modal-overlay" *ngIf="showPicker">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Select Recipe for {{ selectedDay }} {{ selectedType }}</h3>
+              <button class="close-btn" (click)="closePicker()">×</button>
+            </div>
+            <div class="search-bar">
+              <span class="material-icons search-icon">search</span>
+              <input type="text" [(ngModel)]="searchText" (ngModelChange)="filterRecipes()" placeholder="Search recipes by name or category...">
+            </div>
+            <div class="recipe-list">
+              <div class="recipe-option" *ngFor="let recipe of filteredRecipes" (click)="selectRecipe(recipe)">
+                <div class="option-info">
+                  <strong>{{ recipe.title }}</strong>
+                  <span class="meta">{{ recipe.category }} • {{ recipe.calories }} kcal</span>
+                </div>
+                <span class="icon material-icons">chevron_right</span>
+              </div>
+              <div class="no-recipes" *ngIf="filteredRecipes.length === 0">
+                No recipes found matching your search.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

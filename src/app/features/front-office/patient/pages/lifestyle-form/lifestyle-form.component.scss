@@ -30,29 +30,6 @@ $border: #e5e7eb;
     margin: 0 auto;
 }
 
-.form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-
-    h1 {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: $text-dark;
-        margin: 0;
-    }
-
-    .btn-cancel {
-        background: transparent;
-        color: $text-light;
-        border: none;
-        font-weight: 600;
-        cursor: pointer;
-        &:hover { color: $text-dark; }
-    }
-}
-
 .form-card {
     background: white;
     padding: 2.5rem;

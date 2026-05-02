@@ -5,25 +5,22 @@
         <div class="content-area">
             <div class="list-container">
                 
-                <header class="list-header">
-                    <div class="header-text">
+                <!-- Green Banner Header -->
+                <div class="welcome-banner green">
+                    <div class="banner-text">
                         <h1>{{ title }}</h1>
+                        <p>Manage and track your {{ type }} for a healthier lifestyle.</p>
                     </div>
-                    <div class="header-actions">
-                        <button class="btn-back" [routerLink]="getBackLink()">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                            </svg>
-                            Back
+                    <div class="banner-actions-top">
+                        <button class="btn-back-glass" [routerLink]="getBackLink()">
+                            <i class="fas fa-arrow-left"></i> Back
                         </button>
-                        <button class="btn-create-small" *ngIf="canCreate()" (click)="onCreate()">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
+                        <button class="btn-create-glass" *ngIf="canCreate()" (click)="onCreate()">
+                            <i class="fas fa-plus"></i>
                             {{ type === 'plans' ? 'Add Plan' : (type === 'goals' ? 'New Goal' : 'New Tracking') }}
                         </button>
                     </div>
-                </header>
+                </div>
 
                 <div class="list-card">
                     <div class="loading-spinner" *ngIf="isLoading">

@@ -1,0 +1,194 @@
+<div class="doctor-wrapper">
+    <!-- Sidebar -->
+    <app-doctor-sidebar></app-doctor-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+        <app-doctor-topbar></app-doctor-topbar>
+
+        <div class="content-area">
+            <div class="header-section">
+                <div class="title-info">
+                    <h1>My Workload</h1>
+                    <p>Track your performance and patient care metrics</p>
+                </div>
+
+                <div class="range-selector">
+                    <label for="timeRange">Time Range:</label>
+                    <select id="timeRange" [(ngModel)]="selectedRange" (change)="onRangeChange()">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="metrics-grid">
+                <!-- Total Patients -->
+                <div class="metric-card premium-card">
+                    <div class="card-icon patients">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Patients</h3>
+                        <p class="value">{{ totalPatients }}</p>
+                        <span class="trend">Overall</span>
+                    </div>
+                </div>
+
+                <!-- Total Consultations -->
+                <div class="metric-card premium-card">
+                    <div class="card-icon consultations">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008z" />
+                        </svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Consultations</h3>
+                        <p class="value">{{ totalConsultations }}</p>
+                        <span class="trend">Last {{ selectedRange }} days</span>
+                    </div>
+                </div>
+
+                <!-- Total Prescriptions -->
+                <div class="metric-card premium-card">
+                    <div class="card-icon prescriptions">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9" />
+                        </svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Prescriptions</h3>
+                        <p class="value">{{ totalPrescriptions }}</p>
+                        <span class="trend">Last {{ selectedRange }} days</span>
+                    </div>
+                </div>
+
+                <!-- Treatment Reviews -->
+                <div class="metric-card premium-card highlighted pointer" 
+                     [class.active]="selectedMetric === 'treatmentReviews'"
+                     (click)="showDetails('treatmentReviews')">
+                    <div class="card-icon active-c">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>Treatment Reviews</h3>
+                        <p class="value">{{ treatmentReviews }}</p>
+                        <span class="trend">Ending in 3 days</span>
+                    </div>
+                </div>
+
+                <!-- Pending Prescriptions -->
+                <div class="metric-card premium-card highlighted pointer"
+                     [class.active]="selectedMetric === 'pendingPrescriptions'"
+                     (click)="showDetails('pendingPrescriptions')">
+                    <div class="card-icon pending-p">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                        </svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>Pending Prescriptions</h3>
+                        <p class="value">{{ pendingPrescriptions }}</p>
+                        <span class="trend">Still ongoing</span>
+                    </div>
+                </div>
+
+                <!-- Active Treatments -->
+                <div class="metric-card premium-card highlighted pointer"
+                     [class.active]="selectedMetric === 'activeTreatments'"
+                     (click)="showDetails('activeTreatments')">
+                    <div class="card-icon active-t">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.027-.396.05-.6.075m-.6-8.081c-2.7-.35-5.463-.525-8.25-.525s-5.55.175-8.25.525m16.5 8.081c.204-.025.406-.048.6-.075m-1.5-8.006a2.18 2.18 0 00-.75 1.661v4.25m-15-5.911a2.18 2.18 0 00-.75 1.661v4.25m15-5.911a2.18 2.18 0 00-.75-1.661m-13.5 1.661a2.18 2.18 0 01.75-1.661m13.5 1.661a2.18 2.18 0 01.75 1.661v4.25m-15-5.911a2.18 2.18 0 00-.75-1.661m15 1.661v4.25" />
+                        </svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>Active Treatments</h3>
+                        <p class="value">{{ activeTreatments }}</p>
+                        <span class="trend">Currently Ongoing</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details Section -->
+            <div class="details-list-section" *ngIf="selectedMetric && !loading">
+                <div class="section-header">
+                    <h2>{{ selectedMetric === 'treatmentReviews' ? 'Treatments Ending Soon' : 
+                          selectedMetric === 'pendingPrescriptions' ? 'Active Prescriptions' : 
+                          'Ongoing Treatments' }}</h2>
+                    <button class="close-btn" (click)="selectedMetric = null">Close</button>
+                </div>
+
+                <div class="table-container card">
+                    <div *ngIf="detailsList.length === 0" class="empty-state">
+                        No records found for this category.
+                    </div>
+                    
+                    <table class="details-table" *ngIf="detailsList.length > 0">
+                        <thead>
+                            <tr *ngIf="selectedMetric !== 'pendingPrescriptions'">
+                                <th>Patient Name</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                            </tr>
+                            <tr *ngIf="selectedMetric === 'pendingPrescriptions'">
+                                <th>Patient Name</th>
+                                <th>Medication</th>
+                                <th>Dosage</th>
+                                <th>Date Issued</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of detailsList">
+                                <ng-container *ngIf="selectedMetric !== 'pendingPrescriptions'">
+                                    <td>{{ item.patientName }}</td>
+                                    <td>{{ item.treatmentType }}</td>
+                                    <td>{{ item.description }}</td>
+                                    <td>{{ item.startDate | date:'mediumDate' }}</td>
+                                    <td>{{ item.endDate | date:'mediumDate' }}</td>
+                                    <td><span class="badge" [class.ongoing]="item.status === 'ONGOING'">{{ item.status }}</span></td>
+                                </ng-container>
+                                <ng-container *ngIf="selectedMetric === 'pendingPrescriptions'">
+                                    <td>{{ item.patientName }}</td>
+                                    <td>{{ item.medication }}</td>
+                                    <td>{{ item.dosage }}</td>
+                                    <td>{{ item.date | date:'mediumDate' }}</td>
+                                    <td>{{ (item.expiryDate | date:'mediumDate') || 'No Expiry Set' }}</td>
+                                    <td><span class="badge active">{{ item.status }}</span></td>
+                                </ng-container>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="details-section" *ngIf="!loading">
+                <div class="info-banner">
+                    <div class="banner-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                        </svg>
+                    </div>
+                    <div class="banner-text">
+                        <p>Workload analysis for period: <strong>{{ fromDate | date:'mediumDate' }}</strong> to <strong>{{ toDate | date:'mediumDate' }}</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading-overlay" *ngIf="loading">
+                <div class="spinner"></div>
+                <p>Calculating metrics...</p>
+            </div>
+        </div>
+    </div>
+</div>

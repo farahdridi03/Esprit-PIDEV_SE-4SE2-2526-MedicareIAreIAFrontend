@@ -33,6 +33,7 @@
                                 <th style="padding: 16px; color: #4a5568; font-weight: 700;">Medication</th>
                                 <th style="padding: 16px; color: #4a5568; font-weight: 700;">Dosage</th>
                                 <th style="padding: 16px; color: #4a5568; font-weight: 700;">Date</th>
+                                <th style="padding: 16px; color: #4a5568; font-weight: 700;">Status</th>
                                 <th style="padding: 16px; color: #4a5568; font-weight: 700; text-align: center;">Actions</th>
                             </tr>
                         </thead>
@@ -46,6 +47,9 @@
                                 </td>
                                 <td style="padding: 16px; color: #4a5568; font-weight: 500;">{{ item.dosage }}</td>
                                 <td style="padding: 16px; color: #718096; font-size: 14px;">{{ item.date | date:'mediumDate' }}</td>
+                                <td style="padding: 16px;">
+                                    <span class="status-badge" [ngClass]="item.status?.toLowerCase() || 'unknown'">{{ item.status || 'UNKNOWN' }}</span>
+                                </td>
                                 <td class="action-cells" style="padding: 16px;">
                                     <button class="action-btn" (click)="openView(item)" title="View Details">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.301 8.844 6.88 5.4 12 5.4c5.12 0 8.697 3.321 9.964 6.278.141.25.141.544 0 .794-1.267 2.957-4.844 6.4-9.964 6.4-5.12 0-8.697-3.321-9.964-6.278L2.036 12.322z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
@@ -68,10 +72,14 @@
                 </div>
 
                 <!-- Detail View Card -->
-                <div class="detail-view" *ngIf="viewMode && currentViewItem" style="background: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; animation: fadeIn 0.3s ease;">
+                <div class="detail-view" *ngIf="viewMode && currentViewItem" [class.expiring-soon]="expiringSoon" style="background: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; animation: fadeIn 0.3s ease;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px;">
                         <div>
-                            <h4 style="margin: 0; font-size: 22px; color: #1a202c;">Prescription Summary</h4>
+                            <h4 style="margin: 0; font-size: 22px; color: #1a202c; display: flex; align-items: center; gap: 10px;">
+                                Prescription Summary
+                                <span class="status-badge" [ngClass]="currentViewItem.status?.toLowerCase() || 'unknown'" style="font-size: 12px; padding: 4px 10px;">{{ currentViewItem.status || 'UNKNOWN' }}</span>
+                                <span class="warning-badge" *ngIf="expiringSoon" style="font-size: 12px; padding: 4px 10px;">⚠️ Expires in {{ daysUntilExpiry }}d</span>
+                            </h4>
                             <p style="margin: 5px 0 0 0; color: #718096;">Entity: #{{ currentViewItem.id }} • Issued from CS#{{ currentViewItem.consultationId }}</p>
                         </div>
                         <button (click)="closeView()" style="background: white; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">Close View</button>
@@ -85,7 +93,8 @@
                         </div>
                         <div style="background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
                             <label style="display: block; font-size: 11px; text-transform: uppercase; color: #a0aec0; font-weight: 700; margin-bottom: 15px;">Date Information</label>
-                            <p style="margin: 0; font-size: 18px; font-weight: 700;">Issued: {{ currentViewItem.date | date:'fullDate' }}</p>
+                            <p style="margin: 0; font-size: 16px; font-weight: 700;">Issued: {{ currentViewItem.date | date:'fullDate' }}</p>
+                            <p style="margin: 10px 0 0 0; font-size: 16px; font-weight: 700; color: #e53e3e;" *ngIf="currentViewItem.expiryDate">Expiry: {{ currentViewItem.expiryDate | date:'fullDate' }}</p>
                         </div>
                     </div>
 
@@ -163,5 +172,32 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.detail-view.expiring-soon {
+    border: 2px solid #f59e0b !important;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1) !important;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.status-badge.active { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.status-badge.expired { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.status-badge.cancelled { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+.status-badge.unknown { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+
+.warning-badge {
+    border-radius: 999px;
+    font-weight: 700;
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
 }
 </style>

@@ -5,10 +5,18 @@
         <div class="content-area">
             <div class="form-container">
                 
-                <header class="form-header">
-                    <h1>{{ isEditMode ? 'Edit' : 'New' }} {{ type === 'goals' ? 'Lifestyle Goal' : (type === 'plans' ? 'Dietary Plan' : 'Progress Tracking') }}</h1>
-                    <button class="btn-cancel" (click)="navigateBack()">Cancel</button>
-                </header>
+                <!-- Green Banner Header -->
+                <div class="welcome-banner green">
+                    <div class="banner-text">
+                        <h1>{{ isEditMode ? 'Edit' : 'New' }} {{ type === 'goals' ? 'Lifestyle Goal' : (type === 'plans' ? 'Dietary Plan' : 'Progress Tracking') }}</h1>
+                        <p>Fill in the details below to {{ isEditMode ? 'update your' : 'create a new' }} record.</p>
+                    </div>
+                    <div class="banner-actions-top">
+                        <button class="btn-back-glass" (click)="navigateBack()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
 
                 <div class="form-card">
                     <form (ngSubmit)="onSubmit()" #lifestyleForm="ngForm">

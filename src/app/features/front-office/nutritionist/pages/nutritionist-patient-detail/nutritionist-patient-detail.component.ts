@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../../../../../services/patient.service';
 import { PatientResponseDTO } from '../../../../../models/patient.model';
 import { LifestyleService } from '../../../../../services/lifestyle.service';
+import { NutritionService } from '../../../../../services/nutrition.service';
+import { FoodDiary } from '../../../../../models/nutrition.model';
 
 @Component({
   selector: 'app-nutritionist-patient-detail',
@@ -12,6 +14,7 @@ import { LifestyleService } from '../../../../../services/lifestyle.service';
 export class NutritionistPatientDetailComponent implements OnInit {
   patientId: number | null = null;
   patient: PatientResponseDTO | null = null;
+  foodDiaryEntries: FoodDiary[] = [];
   loading: boolean = true;
   error: string | null = null;
 
@@ -19,6 +22,7 @@ export class NutritionistPatientDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private patientService: PatientService,
     private lifestyleService: LifestyleService,
+    private nutritionService: NutritionService,
     public router: Router
   ) {}
 
@@ -27,6 +31,7 @@ export class NutritionistPatientDetailComponent implements OnInit {
       this.patientId = +params['id'];
       if (this.patientId) {
         this.fetchPatientDetails(this.patientId);
+        this.fetchFoodDiary(this.patientId);
       }
     });
   }
@@ -42,6 +47,17 @@ export class NutritionistPatientDetailComponent implements OnInit {
         console.error('Error fetching patient details:', err);
         this.error = 'Failed to load patient health information.';
         this.loading = false;
+      }
+    });
+  }
+
+  fetchFoodDiary(id: number): void {
+    this.nutritionService.getFoodDiariesByPatient(id).subscribe({
+      next: (data) => {
+        this.foodDiaryEntries = data;
+      },
+      error: (err) => {
+        console.error('Error fetching food diary:', err);
       }
     });
   }
