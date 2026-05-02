@@ -8,7 +8,7 @@ import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor
 import { DoctorProfileComponent } from './doctor/pages/doctor-profile/doctor-profile.component';
 import { AuthGuard } from '../../guards/auth.guard';
 import { EventsDiscoveryComponent } from './pages/events/events-discovery/events-discovery.component';
-import { EventDetailsComponent } from './pages/events/event-details/event-details.component';
+import { EventDetailComponent } from './patient/pages/event-detail/event-detail.component';
 import { MyRegistrationsComponent } from './pages/events/my-registrations/my-registrations.component';
 import { PatientEventsComponent } from './patient/pages/events/patient-events.component';
 
@@ -20,7 +20,7 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'contact', component: ContactComponent },
       { path: 'events', component: EventsDiscoveryComponent },
-      { path: 'events/:id', component: EventDetailsComponent },
+      { path: 'events/:id', component: EventDetailComponent },
       { path: 'my-event-registrations', component: MyRegistrationsComponent, canActivate: [AuthGuard] }
     ]
   },

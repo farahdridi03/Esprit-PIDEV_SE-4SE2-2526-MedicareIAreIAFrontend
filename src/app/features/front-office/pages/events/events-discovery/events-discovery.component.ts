@@ -89,7 +89,7 @@ export class EventsDiscoveryComponent implements OnInit {
     
     const role = this.authService.getUserRole();
     if (role === 'PHARMACIST') {
-        this.router.navigate(['/pharmacist/stock/events', id]);
+        this.router.navigate(['/front/events', id]);
     } else if (role === 'PATIENT') {
         this.router.navigate(['/front/events', id]); // Or /front/patient/events if they have a specific page
     } else {

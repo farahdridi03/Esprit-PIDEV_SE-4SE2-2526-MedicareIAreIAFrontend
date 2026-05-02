@@ -10,6 +10,7 @@ import { TopbarComponent } from '../../components/topbar/topbar.component';
 import { PharmacistSidebarComponent } from '../../../pharmacist/components/pharmacist-sidebar/pharmacist-sidebar.component';
 import { PharmacistTopbarComponent } from '../../../pharmacist/components/pharmacist-topbar/pharmacist-topbar.component';
 import { AuthService } from '../../../../../services/auth.service';
+import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
 
 interface HotelTable  { tableNumber: number; seats: any[]; }
@@ -22,6 +23,7 @@ interface ConferenceRow  { rowNumber: number; seats: any[]; }
   standalone: true,
   imports: [
     CommonModule, 
+    FormsModule,
     RouterModule, 
     SidebarComponent, 
     TopbarComponent,
@@ -33,13 +35,15 @@ interface ConferenceRow  { rowNumber: number; seats: any[]; }
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
   event?: MedicalEvent;
-  isParticipating: boolean = false;
-  participationStatus: string = '';
+  participation: any = null;
   loading: boolean = true;
   submitting: boolean = false;
   userId?: number;
   userRole: string | null = null;
   isInPortal: boolean = false;
+  
+  toastMessage: string | null = null;
+  toastType: 'success' | 'error' = 'success';
 
   // Seating state
   seats: any[] = [];
@@ -47,6 +51,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   hotelTables: HotelTable[] = [];
   stadiumSections: StadiumSection[] = [];
   conferenceRows: ConferenceRow[] = [];
+
+  // Feedback state
+  feedbackSubmitted = false;
+  selectedRating = 0;
+  feedbackComment = '';
 
   private map: L.Map | null = null;
 
@@ -59,9 +68,14 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     private authService: AuthService
   ) {}
 
+  get isPastEvent(): boolean {
+    if (!this.event) return false;
+    return new Date(this.event.date) < new Date();
+  }
+
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.isInPortal = this.router.url.includes('/pharmacist/stock/');
+    this.isInPortal = this.router.url.includes('/pharmacist/stock/') || this.router.url.includes('/admin/');
     
     if (id) {
       this.loadEvent(id);
@@ -74,7 +88,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private loadUserId() {
     const userStr = localStorage.getItem('user');
     if (userStr) {
-      this.userId = JSON.parse(userStr).id;
+      const u = JSON.parse(userStr);
+      this.userId = u.id;
     }
   }
 
@@ -85,10 +100,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/front/events']);
+    this.location.back();
   }
 
   loadEvent(id: number): void {
+    this.loading = true;
     this.eventService.getPublicEventById(id).subscribe({
       next: (data) => {
         this.event = data;
@@ -101,6 +117,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Error loading event detail', err);
         this.loading = false;
+        this.showToast('Failed to load event details', 'error');
       }
     });
   }
@@ -152,8 +169,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   checkParticipation(id: number): void {
     this.eventService.isParticipating(id).subscribe({
       next: (res) => {
-        this.isParticipating = res.participating;
-        this.participationStatus = res.status || '';
+        if (res.participating) {
+            this.participation = res;
+        } else {
+            this.participation = null;
+        }
       },
       error: (err) => {
         console.error('Error checking participation', err);
@@ -161,45 +181,72 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleParticipation(): void {
+  register(): void {
     if (!this.event || this.submitting) return;
 
     this.submitting = true;
-    if (this.isParticipating) {
-      this.eventService.cancelParticipation(this.event.id).subscribe({
-        next: () => {
-          this.isParticipating = false;
-          this.submitting = false;
-        },
-        error: (err) => {
-          console.error('Error cancelling participation', err);
-          this.submitting = false;
-        }
-      });
-    } else {
-      this.eventService.participateInEvent(this.event.id).subscribe({
-        next: () => {
-          this.isParticipating = true;
-          this.submitting = false;
-        },
-        error: (err) => {
-          console.error('Error joining event', err);
-          this.submitting = false;
-        }
-      });
-    }
+    this.eventService.participateInEvent(this.event.id).subscribe({
+      next: () => {
+        this.submitting = false;
+        this.showToast('Join request sent to admin!', 'success');
+        this.checkParticipation(this.event!.id);
+      },
+      error: (err) => {
+        console.error('Error joining event', err);
+        this.submitting = false;
+        this.showToast(err.error?.message || 'Failed to join event', 'error');
+      }
+    });
   }
 
-  formatDate(dateStr?: string): string {
-    if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+  cancelParticipation(): void {
+    if (!this.event || this.submitting) return;
+    
+    this.submitting = true;
+    this.eventService.cancelParticipation(this.event.id).subscribe({
+      next: () => {
+        this.submitting = false;
+        this.participation = null;
+        this.showToast('Participation cancelled', 'success');
+      },
+      error: (err) => {
+        console.error('Error cancelling participation', err);
+        this.submitting = false;
+        this.showToast('Failed to cancel participation', 'error');
+      }
     });
+  }
+
+  submitFeedback() {
+    if (!this.event || !this.selectedRating) return;
+    this.eventService.submitFeedback(this.event.id, { rating: this.selectedRating, comment: this.feedbackComment })
+      .subscribe({
+        next: () => {
+          this.feedbackSubmitted = true;
+          this.showToast('Thank you for your feedback!', 'success');
+        },
+        error: (err) => this.showToast('Error submitting feedback', 'error')
+      });
+  }
+
+  downloadTicket() {
+    if (!this.participation?.participationId) return;
+    this.eventService.downloadTicket(this.participation.participationId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Ticket_${this.event?.title}_${this.participation.participationId}.pdf`;
+        a.click();
+      },
+      error: (err) => this.showToast('Failed to download ticket', 'error')
+    });
+  }
+
+  showToast(msg: string, type: 'success' | 'error' = 'success') {
+    this.toastMessage = msg;
+    this.toastType = type;
+    setTimeout(() => this.toastMessage = null, 3000);
   }
 
   // Seating Methods
@@ -273,8 +320,9 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         this.selectedSeat.status = 'RESERVED';
         this.selectedSeat = null;
         this.loadSeats(this.event!.id);
+        this.showToast('Seat reserved successfully!', 'success');
       },
-      error: (err) => console.error('Error reserving seat', err)
+      error: (err) => this.showToast('Error reserving seat', 'error')
     });
   }
 

@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PharmacistDashboardComponent } from './pages/pharmacist-dashboard/pharmacist-dashboard.component';
 import { AuthGuard } from '../../../guards/auth.guard';
 import { EventsDiscoveryComponent } from '../pages/events/events-discovery/events-discovery.component';
-import { EventDetailsComponent } from '../pages/events/event-details/event-details.component';
+import { EventDetailComponent } from '../patient/pages/event-detail/event-detail.component';
 
 const routes: Routes = [
   {
@@ -25,7 +25,7 @@ const routes: Routes = [
   },
   {
     path: 'events/:id',
-    component: EventDetailsComponent,
+    component: EventDetailComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PHARMACIST'] }
   }
