@@ -34,6 +34,11 @@ export interface Prescription {
   id?: number;
   consultationId: number;
   date: string;
+  expiryDate?: string;
+  status?: string;
+  medication?: string;
+  dosage?: string;
+  instructions?: string;
   items: PrescriptionItem[];
 }
 

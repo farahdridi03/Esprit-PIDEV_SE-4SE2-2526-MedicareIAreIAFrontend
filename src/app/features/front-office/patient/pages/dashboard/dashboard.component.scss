@@ -2,7 +2,7 @@ $primary-green: #0e7c66;
 $text-dark: #111827;
 $text-light: #6b7280;
 
-// Layout Wrappers
+// ── Layout Wrappers ────────────────────────────────────────────────────────
 .dashboard-wrapper {
     display: flex;
     height: 100vh;
@@ -10,103 +10,121 @@ $text-light: #6b7280;
     background-color: #f9fafb;
 }
 
-// Ensure Sidebar stays to the left and has fixed width is handled in its own SCSS, 
-// but flex layout here orchestrates it.
-
 .main-body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden; // Prevent outer scroll
+    overflow: hidden;
 }
 
 .content-area {
     flex: 1;
-    overflow-y: auto; // Content scrolls independently
+    overflow-y: auto;
     background-color: #f9fafb;
 }
 
-// Existing Styles
+// ── Main Content ───────────────────────────────────────────────────────────
 .dashboard-main-content {
-    padding: 2rem;
+    padding: 1.5rem;
     font-family: 'Inter', sans-serif;
+    animation: fadeIn 0.4s ease-out;
 }
 
-// Welcome Banner
-.welcome-banner {
-    background-color: $primary-green;
-    border-radius: 16px;
-    padding: 2.5rem;
-    color: white;
-    margin-bottom: 2.5rem;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── Dashboard Grid ─────────────────────────────────────────────────────────
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+
+    @media (max-width: 1280px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.left-column,
+.right-column {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
+}
 
-    .banner-text {
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0 0 0.5rem 0;
-        }
+// ── Premium Card Sections ──────────────────────────────────────────────────
+.info-section,
+.quick-actions-section {
+    background: white;
+    border-radius: 20px;
+    padding: 1.75rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
 
-        p {
+    &:hover {
+        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        h3 {
             margin: 0;
-            opacity: 0.9;
-            font-size: 1rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: $text-dark;
+            letter-spacing: -0.01em;
         }
-    }
 
-    .banner-stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
-
-        .stat-card {
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            padding: 1.25rem;
-            border-radius: 12px;
-
-            .label {
-                font-size: 0.85rem;
-                opacity: 0.8;
-                margin-bottom: 0.5rem;
-            }
-
-            .value {
-                font-size: 1.25rem;
-                font-weight: 700;
-            }
+        a {
+            color: $primary-green;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: opacity 0.2s;
+            &:hover { opacity: 0.75; }
         }
     }
 }
 
+// ── Section Title (standalone) ─────────────────────────────────────────────
 .section-title {
-    font-size: 1.25rem;
-    color: $text-dark;
+    font-size: 1.15rem;
     font-weight: 700;
-    margin-bottom: 1.5rem;
+    color: $text-dark;
+    margin: 0 0 1.25rem 0;
+    letter-spacing: -0.01em;
 }
 
-// Quick Actions
+// ── Quick Actions Grid ─────────────────────────────────────────────────────
 .quick-actions-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1.25rem;
 
     .action-card {
-        background: white;
-        padding: 1.5rem;
+        background: #f9fafb;
+        padding: 1.5rem 1rem;
         border-radius: 16px;
         border: 1px solid #e5e7eb;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
 
         &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            transform: translateY(-5px);
+            background: white;
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
+            border-color: $primary-green;
         }
 
         .icon-wrapper {
@@ -116,159 +134,35 @@ $text-light: #6b7280;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.9rem;
             color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
-            svg {
-                width: 24px;
-                height: 24px;
-            }
+            svg { width: 24px; height: 24px; }
 
-            &.blue {
-                background-color: #3b82f6;
-            }
-
-            &.purple {
-                background-color: #a855f7;
-            }
-
-            &.green {
-                background-color: #0e7c66;
-            }
-
-            &.red {
-                background-color: #ef4444;
-            }
+            &.blue   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+            &.purple { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+            &.green  { background: linear-gradient(135deg, #10b981, #059669); }
+            &.red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
         }
 
         h4 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1rem;
-            font-weight: 600;
+            margin: 0 0 0.4rem 0;
+            font-size: 0.9rem;
+            font-weight: 700;
             color: $text-dark;
         }
 
         p {
             margin: 0;
-            font-size: 0.85rem;
-            color: $text-light;
-            margin-bottom: 1.5rem;
-        }
-
-        .arrow {
-            color: $primary-green;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
-    }
-}
-
-// Bottom Grid
-.bottom-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1.5rem;
-
-    .info-section {
-        background: white;
-        border-radius: 16px;
-        padding: 1.5rem;
-        border: 1px solid #e5e7eb;
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-
-            h3 {
-                margin: 0;
-                font-size: 1.1rem;
-                font-weight: 700;
-                color: $text-dark;
-            }
-
-            a {
-                color: $primary-green;
-                text-decoration: none;
-                font-size: 0.9rem;
-                font-weight: 600;
-            }
-        }
-    }
-}
-
-// Appointment Card
-.appointment-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: #f9fafb;
-    border-radius: 12px;
-
-    .doctor-icon {
-        width: 48px;
-        height: 48px;
-        background-color: #e5e7eb;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        color: #6b7280;
-    }
-
-    .appointment-details {
-        flex: 1;
-
-        h4 {
-            margin: 0 0 0.25rem 0;
-            font-size: 1rem;
-            color: $text-dark;
-        }
-
-        .specialty {
-            font-size: 0.85rem;
-            color: $text-light;
-            margin-bottom: 0.5rem;
-        }
-
-        .time {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.85rem;
-            color: #4b5563;
-            font-weight: 500;
-        }
-    }
-
-    .appointment-status {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: flex-end;
-
-        .badge {
             font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 99px;
+            color: $text-light;
             font-weight: 500;
-
-            &.gray {
-                background-color: #e5e7eb;
-                color: #374151;
-            }
-
-            &.green {
-                background-color: #dcfce7;
-                color: #166534;
-            }
         }
     }
 }
 
-// Notification List
+// ── Notifications List ─────────────────────────────────────────────────────
 .notification-list {
     display: flex;
     flex-direction: column;
@@ -276,52 +170,45 @@ $text-light: #6b7280;
 
     .notification-item {
         display: flex;
-        gap: 0.75rem;
+        align-items: flex-start;
+        gap: 1rem;
         padding: 1rem;
-        border-radius: 12px;
+        border-radius: 14px;
+        transition: background 0.2s ease;
 
-        &.success {
-            background-color: #f0fdf4;
-        }
-
-        // Green tint
-        &.error {
-            background-color: #fef2f2;
-        }
-
-        // Red tint
+        &.success { background-color: #f0fdf4; border: 1px solid #dcfce7; }
+        &.info    { background-color: #eff6ff; border: 1px solid #dbeafe; }
+        &.error   { background-color: #fef2f2; border: 1px solid #fee2e2; }
 
         .icon {
-            width: 24px;
-            height: 24px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 
-            &.success {
-                color: #0e7c66;
-            }
-
-            // In CSS modules this might be targeted differently, but here:
+            svg { width: 20px; height: 20px; }
         }
 
-        &.success .icon {
-            color: #0e7c66;
-        }
-
-        &.error .icon {
-            color: #ef4444;
-        }
+        &.success .icon svg { color: #10b981; }
+        &.info    .icon svg { color: #3b82f6; }
+        &.error   .icon svg { color: #ef4444; }
 
         .content {
             p {
                 margin: 0;
                 font-size: 0.9rem;
-                font-weight: 500;
+                font-weight: 600;
                 color: $text-dark;
             }
 
             span {
                 display: block;
-                margin-top: 0.25rem;
+                margin-top: 0.2rem;
                 font-size: 0.75rem;
                 color: $text-light;
             }
@@ -329,17 +216,11 @@ $text-light: #6b7280;
     }
 }
 
-// Responsive Tweaks
-@media (max-width: 1024px) {
-    .banner-stats {
-        grid-template-columns: 1fr;
-    }
-
-    .quick-actions-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .bottom-grid {
-        grid-template-columns: 1fr;
-    }
+// ── Empty State ────────────────────────────────────────────────────────────
+.empty-state {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: $text-light;
+    font-size: 0.9rem;
+    font-style: italic;
 }

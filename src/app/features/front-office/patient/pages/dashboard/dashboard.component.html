@@ -13,68 +13,113 @@
         <div class="content-area">
 
             <div class="dashboard-main-content">
-                <!-- Welcome Banner -->
-                <div class="welcome-banner">
+
+                <!-- Welcome Banner (Premium Green) -->
+                <div class="welcome-banner green">
                     <div class="banner-text">
                         <h1>Welcome back, {{ firstName || 'User' }}!</h1>
-                    </div>
-
-                    <div class="banner-stats">
-                        <div class="stat-card">
-                            <div class="label">Next Appointment</div>
-                            
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="label">Pending lab results </div>
-                            
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="label">Glucose Rate</div>
-                            
-                        </div>
+                        <p>Manage your health, appointments, and medical records in one place.</p>
                     </div>
                 </div>
 
-                <div class="bottom-grid">
-                    <!-- Upcoming Appointments -->
-                    <div class="info-section">
-                        <div class="section-header">
-                            <h3>Upcoming Appointments</h3>
-                            <a href="#">View All →</a>
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+
+                    <!-- Left Column -->
+                    <div class="left-column">
+
+                        <!-- Upcoming Appointments -->
+                        <div class="info-section">
+                            <div class="section-header">
+                                <h3>Upcoming Appointments</h3>
+                                <a routerLink="/front/patient/appointments">View All →</a>
+                            </div>
+                            <div class="empty-state">
+                                <p>No upcoming appointments found.</p>
+                            </div>
                         </div>
+
+                        <!-- Quick Actions -->
+                        <div class="quick-actions-section">
+                            <h3 class="section-title">Quick Actions</h3>
+                            <div class="quick-actions-grid">
+                                <div class="action-card" routerLink="/front/patient/doctors">
+                                    <div class="icon-wrapper blue">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <h4>Book Doctor</h4>
+                                    <p>Find and schedule</p>
+                                </div>
+                                <div class="action-card" routerLink="/front/patient/lab-requests">
+                                    <div class="icon-wrapper purple">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                        </svg>
+                                    </div>
+                                    <h4>Lab Tests</h4>
+                                    <p>View your results</p>
+                                </div>
+                                <div class="action-card" routerLink="/front/patient/pharmacy">
+                                    <div class="icon-wrapper green">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                        </svg>
+                                    </div>
+                                    <h4>Pharmacy</h4>
+                                    <p>Order medicines</p>
+                                </div>
+                                <div class="action-card" routerLink="/front/patient/emergency">
+                                    <div class="icon-wrapper red">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                    </div>
+                                    <h4>Emergency</h4>
+                                    <p>Get instant help</p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- Notifications -->
-                    <div class="info-section">
-                        <div class="section-header">
-                            <h3>Notifications</h3>
-                        </div>
+                    <!-- Right Column -->
+                    <div class="right-column">
 
-                        <div class="notification-list">
-                            <div class="notification-item success">
-                                <div class="icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                            
+                        <!-- Notifications -->
+                        <div class="info-section">
+                            <div class="section-header">
+                                <h3>Notifications</h3>
                             </div>
 
-                            <div class="notification-item error">
-                                <div class="icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                                    </svg>
+                            <div class="notification-list">
+                                <div class="notification-item success">
+                                    <div class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div class="content">
+                                        <p>Profile updated successfully</p>
+                                        <span>Just now</span>
+                                    </div>
                                 </div>
-                            
+
+                                <div class="notification-item info">
+                                    <div class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                        </svg>
+                                    </div>
+                                    <div class="content">
+                                        <p>Welcome to MediCareAI!</p>
+                                        <span>2 hours ago</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -82,4 +127,5 @@
 
         </div>
     </div>
+
 </div>

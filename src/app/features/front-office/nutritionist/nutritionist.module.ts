@@ -15,11 +15,20 @@ import { NutritionistLifestyleFormComponent } from './pages/nutritionist-lifesty
 import { LifestyleSharedModule } from '../patient/lifestyle-shared.module';
 import { NutritionistProfileEditComponent } from './pages/nutritionist-profile-edit/nutritionist-profile-edit.component';
 import { NutritionistProfileSettingsComponent } from './pages/nutritionist-profile-settings/nutritionist-profile-settings.component';
+import { RecipeManagementComponent } from './pages/recipe-management/recipe-management.component';
+import { MealPlanBuilderComponent } from './pages/meal-plan-builder/meal-plan-builder.component';
+
+import { NutritionistFoodDiaryListComponent } from './pages/nutritionist-food-diary-list/nutritionist-food-diary-list.component';
+import { NutritionistPredictionComponent } from './pages/nutritionist-prediction/nutritionist-prediction.component';
 
 const routes: Routes = [
     {
         path: 'dashboard',
         component: NutritionistDashboardComponent
+    },
+    {
+        path: 'recipes',
+        component: RecipeManagementComponent
     },
     {
         path: 'patients',
@@ -28,6 +37,10 @@ const routes: Routes = [
     {
         path: 'patient/:id',
         component: NutritionistPatientDetailComponent
+    },
+    {
+        path: 'patient/:id/food-diary',
+        component: NutritionistFoodDiaryListComponent
     },
     {
         path: 'patient/:id/lifestyle/:type',
@@ -46,6 +59,14 @@ const routes: Routes = [
         component: LifestyleDetailComponent
     },
     {
+        path: 'patient/:id/lifestyle/:type/ai-assist',
+        component: NutritionistPredictionComponent
+    },
+    {
+        path: 'patient/:id/lifestyle-plan/:planId/meal-plan',
+        component: MealPlanBuilderComponent
+    },
+    {
         path: 'profile',
         component: NutritionistProfileSettingsComponent
     },
@@ -60,10 +81,14 @@ const routes: Routes = [
         NutritionistDashboardComponent,
         NutritionistPatientsComponent,
         NutritionistPatientDetailComponent,
+        NutritionistFoodDiaryListComponent,
         NutritionistLifestyleListComponent,
         NutritionistLifestyleFormComponent,
         NutritionistProfileEditComponent,
-        NutritionistProfileSettingsComponent
+        NutritionistProfileSettingsComponent,
+        RecipeManagementComponent,
+        MealPlanBuilderComponent,
+        NutritionistPredictionComponent
     ],
     imports: [
         CommonModule,

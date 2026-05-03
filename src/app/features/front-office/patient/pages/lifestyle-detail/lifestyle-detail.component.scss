@@ -18,31 +18,6 @@
         margin: 0 auto;
     }
 
-    .detail-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 2rem;
-
-        h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0;
-        }
-
-        .subtitle {
-            color: #64748b;
-            margin-top: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-    }
-
     .detail-card {
         background: white;
         border-radius: 16px;

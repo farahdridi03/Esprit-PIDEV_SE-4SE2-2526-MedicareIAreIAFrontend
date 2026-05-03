@@ -17,7 +17,7 @@ export class DoctorPatientsComponent implements OnInit {
   todayAppointments: AppointmentDTO[] = [];
   allAppointments: AppointmentDTO[] = []; // All appointments individually
   allPatients: any[] = []; // Unique patients summary
-  displayMode: 'today' | 'all' = 'today';
+  displayMode: 'today' | 'all' | 'patients' = 'today';
   isLoadingAppointments: boolean = true;
   firstName: string = '';
 
@@ -130,7 +130,7 @@ export class DoctorPatientsComponent implements OnInit {
     });
   }
 
-  setMode(mode: 'today' | 'all'): void {
+  setMode(mode: 'today' | 'all' | 'patients'): void {
     this.displayMode = mode;
     this.cdr.detectChanges();
   }

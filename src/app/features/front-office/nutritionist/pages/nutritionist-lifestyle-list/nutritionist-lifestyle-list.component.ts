@@ -118,6 +118,11 @@ export class NutritionistLifestyleListComponent implements OnInit {
     this.router.navigate([`/front/nutritionist/patient/${this.patientId}/lifestyle/${this.type}/view/${id}`]);
   }
 
+  onBuildMealPlan(id: number | undefined): void {
+    if (!id || !this.patientId) return;
+    this.router.navigate([`/front/nutritionist/patient/${this.patientId}/lifestyle-plan/${id}/meal-plan`]);
+  }
+
   canCreate(): boolean {
     return this.type === 'plans';
   }

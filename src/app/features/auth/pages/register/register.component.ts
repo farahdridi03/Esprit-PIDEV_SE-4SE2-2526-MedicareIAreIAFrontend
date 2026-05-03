@@ -121,8 +121,23 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.onRoleChange();
+    this.onConsultationModeChange();
     this.loadHomeCareServices();
     this.loadClinics();
+  }
+
+  onConsultationModeChange() {
+    this.registerForm.get('consultationMode')?.valueChanges.subscribe(mode => {
+      const clinicIdCtrl = this.registerForm.get('clinicId');
+      if (this.isDoctor) {
+        if (mode !== 'ONLINE') {
+          clinicIdCtrl?.setValidators([Validators.required]);
+        } else {
+          clinicIdCtrl?.clearValidators();
+        }
+        clinicIdCtrl?.updateValueAndValidity();
+      }
+    });
   }
 
   onProfileImageSelected(event: any) {

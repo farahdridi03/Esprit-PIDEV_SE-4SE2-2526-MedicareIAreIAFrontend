@@ -21,6 +21,8 @@ export class DoctorPatientPrescriptionsComponent implements OnInit {
   isEdit = false;
   viewMode = false;
   currentViewItem: any = null;
+  daysUntilExpiry: number | null = null;
+  expiringSoon: boolean = false;
   
   currentPrescription: any = {
     consultationId: null,
@@ -34,6 +36,23 @@ export class DoctorPatientPrescriptionsComponent implements OnInit {
     this.currentViewItem = item;
     this.viewMode = true;
     this.showForm = false;
+    this.calculateExpiry();
+  }
+
+  calculateExpiry(): void {
+    if (this.currentViewItem && this.currentViewItem.expiryDate && this.currentViewItem.status === 'ACTIVE') {
+      const diffTime = new Date(this.currentViewItem.expiryDate).getTime() - new Date().getTime();
+      this.daysUntilExpiry = Math.ceil(diffTime / 86400000);
+      
+      if (this.daysUntilExpiry > 0 && this.daysUntilExpiry <= 7) {
+        this.expiringSoon = true;
+      } else {
+        this.expiringSoon = false;
+      }
+    } else {
+      this.daysUntilExpiry = null;
+      this.expiringSoon = false;
+    }
   }
 
   closeView(): void {

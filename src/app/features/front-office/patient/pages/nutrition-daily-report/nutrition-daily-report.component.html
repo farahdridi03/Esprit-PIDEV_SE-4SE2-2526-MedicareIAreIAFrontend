@@ -1,0 +1,91 @@
+<div class="lifestyle-wellness-wrapper">
+  <app-sidebar></app-sidebar>
+  <div class="main-body">
+    <app-topbar></app-topbar>
+    <div class="content-area">
+      <div class="report-header">
+        <button class="back-link" routerLink="/front/patient/nutrition">← Back to Nutrition Dashboard</button>
+        <h1>Your daily report</h1>
+      </div>
+
+      <div class="report-grid">
+        <div class="metric-card">
+          <span class="label">Calories consumed</span>
+          <h2>{{ totalConsumedToday }}</h2>
+          <span class="subtext">of {{ dailyCalorieTarget }} expected</span>
+        </div>
+        <div class="metric-card">
+          <span class="label">Calorie balance</span>
+          <h2 [class.positive]="calorieBalance <= 0" [class.negative]="calorieBalance > 0">
+            {{ calorieBalance > 0 ? '+' : '' }}{{ calorieBalance }}
+          </h2>
+          <span class="subtext">within healthy range</span>
+        </div>
+        <div class="metric-card">
+          <span class="label">Weight vs goal</span>
+          <h2 [class.positive]="weightDiff <= 0" [class.negative]="weightDiff > 0">
+             {{ weightDiff > 0 ? '+' : '' }}{{ weightDiff | number:'1.1-1' }} kg
+          </h2>
+          <span class="subtext">goal: {{ weightGoal }} kg</span>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <h3>Calorie progress</h3>
+        <div class="progress-row">
+          <span>Consumed</span>
+          <span>{{ totalConsumedToday }} / {{ dailyCalorieTarget }} kcal</span>
+        </div>
+        <div class="progress-bar">
+          <div class="fill green" [style.width.%]="(totalConsumedToday / dailyCalorieTarget) * 100"></div>
+        </div>
+
+        <div class="progress-row mt-3">
+          <span>Meals logged</span>
+          <span>{{ mealsLoggedToday }} / {{ expectedMeals }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="fill blue" [style.width.%]="(mealsLoggedToday / expectedMeals) * 100"></div>
+        </div>
+      </div>
+
+      <div class="anomaly-card">
+        <h3>Anomaly status</h3>
+        <div class="badge-group">
+          <span class="badge" [class.danger]="hasAnomaly('OVEREATING')" [class.safe]="!hasAnomaly('OVEREATING')">
+            • {{ hasAnomaly('OVEREATING') ? 'Overeating' : 'No overeating' }}
+          </span>
+          <span class="badge" [class.danger]="hasAnomaly('UNDEREATING')" [class.safe]="!hasAnomaly('UNDEREATING')">
+            • {{ hasAnomaly('UNDEREATING') ? 'Undereating' : 'No undereating' }}
+          </span>
+          <span class="badge" [class.warning]="hasAnomaly('NO_WEIGHT_PROGRESS')" [class.safe]="!hasAnomaly('NO_WEIGHT_PROGRESS')">
+            • {{ hasAnomaly('NO_WEIGHT_PROGRESS') ? 'Slow weight progress' : 'Weight on track' }}
+          </span>
+          <span class="badge" [class.danger]="hasAnomaly('MISSED_LOG')" [class.safe]="!hasAnomaly('MISSED_LOG')">
+             • {{ hasAnomaly('MISSED_LOG') ? 'Missed logs' : 'All meals logged' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="history-card">
+        <div class="card-header-with-action">
+          <h3>Last 7 days</h3>
+          <button class="btn-sync" (click)="syncHistory()" [disabled]="isSyncing" [class.loading]="isSyncing" title="Sync with database">
+            <i class="fas" [class.fa-sync-alt]="!isSyncing" [class.fa-spinner]="isSyncing" [class.fa-spin]="isSyncing"></i> 
+            {{ isSyncing ? 'Syncing...' : 'Sync Data' }}
+          </button>
+        </div>
+        <div class="history-list">
+          <div class="history-item" *ngFor="let day of last7DaysStats">
+            <span class="dot" [class.red]="day.status === 'OVEREATING' || day.status === 'UNDEREATING' || day.status === 'MISSED_LOG'" [class.green]="day.status === 'OK'"></span>
+            <span class="date">{{ day.date }}</span>
+            <span class="spacer"></span>
+            <span class="calories">{{ day.calories }} kcal</span>
+            <span class="status-badge" [ngClass]="day.status.toLowerCase().replace('_', '-')">{{ day.status }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

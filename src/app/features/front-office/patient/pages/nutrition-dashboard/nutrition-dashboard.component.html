@@ -1,0 +1,186 @@
+<div class="lifestyle-wellness-wrapper">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Body -->
+  <div class="main-body">
+    <!-- Topbar -->
+    <app-topbar></app-topbar>
+
+    <!-- Page Content Area -->
+    <div class="content-area">
+      <div class="lifestyle-main-content">
+
+        <!-- Welcome Banner -->
+        <div class="welcome-banner green">
+          <div class="banner-text">
+            <h1>My Nutrition</h1>
+            <p>Track your dietary plan, shopping list, and daily intake.</p>
+          </div>
+          <div class="banner-actions-top">
+            <button class="btn-back-premium" routerLink="/front/patient/lifestyle-wellness">
+              <i class="fas fa-arrow-left"></i>
+              Back to Lifestyle
+            </button>
+          </div>
+        </div>
+
+        <div class="lifestyle-grid">
+          <!-- Today's Meal Plan Card -->
+          <section class="lifestyle-card">
+            <div class="card-header">
+              <div class="header-left">
+                <h3>Today's Plan</h3>
+              </div>
+              <div class="header-actions">
+                <select [(ngModel)]="selectedPlanId" (change)="loadData()" class="plan-select">
+                  <option *ngFor="let plan of lifestylePlans" [value]="plan.id">{{ plan.title }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-content">
+              <div class="item-list">
+                <div class="item-row" *ngFor="let type of mealTypes">
+                  <div class="item-info">
+                    <h4>{{ type }}</h4>
+                    <p *ngIf="getTodayMeal(type) as meal">{{ meal.recipe?.title || meal.recipeTitle }}</p>
+                    <p *ngIf="!getTodayMeal(type)" class="muted">No meal planned</p>
+                    <span class="badge completed" *ngIf="getTodayMeal(type)">
+                      {{ getTodayMeal(type)?.recipe?.calories || getTodayMeal(type)?.recipeCalories }} kcal
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="lifestyle-card">
+            <div class="card-header">
+              <div class="header-left">
+                <h3>Weekly Grocery List</h3>
+              </div>
+              <div class="header-actions">
+                <span class="week-range" style="font-size: 0.8rem; color: #666; margin-right: 10px;">{{
+                  getCurrentWeekRange() }}</span>
+                <button class="btn-new" (click)="loadGroceryItems()">Refresh</button>
+              </div>
+            </div>
+            <div class="card-content">
+              <div class="item-list">
+                <div class="item-row" *ngFor="let item of groceryItems" [class.purchased]="item.purchased">
+                  <div class="item-info">
+                    <label class="checkbox-container">
+                      <input type="checkbox" [checked]="item.purchased" (change)="toggleGroceryItem(item)">
+                      <span class="checkmark"></span>
+                      <div class="item-text">
+                        <h4>{{ item.itemName }}</h4>
+                        <span class="qty" *ngIf="item.quantity">{{ item.quantity }} {{ item.unit }}</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <div class="empty-state" *ngIf="groceryItems.length === 0">
+                  <p>Your shopping list for this week is ready to be created.</p>
+                  <button class="btn-generate" (click)="generateWeeklyList()">
+                    <i class="fas fa-shopping-basket"></i>
+                    Generate Weekly List
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Food Diary Card -->
+          <section class="lifestyle-card trackings">
+            <div class="card-header">
+              <div class="header-left">
+                <h3>Daily Food Diary</h3>
+              </div>
+              <div class="header-actions" style="display: flex; gap: 1rem; align-items: center;">
+                <button class="btn-new" style="background-color: #0e7c66;"
+                  routerLink="/front/patient/nutrition/daily-report">Daily Report</button>
+                <div class="calorie-summary" [class.over-limit]="isOverLimit()">
+                  <span class="label">Today's Budget:</span>
+                  <span class="value">{{ totalConsumedToday }} / {{ dailyCalorieTarget }} kcal</span>
+                  <div class="remaining" *ngIf="!isOverLimit()">Remaining: {{ remainingCalories }} kcal</div>
+                  <div class="alert-over" *ngIf="isOverLimit()">Over Limit: {{ -remainingCalories }} kcal!</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-content tracking-layout">
+              <div class="diary-form-box">
+                <form [formGroup]="diaryForm" (ngSubmit)="logFood()">
+                  <div class="form-grid">
+                    <div class="form-field">
+                      <input type="text" formControlName="foodName" placeholder="What did you eat?">
+                    </div>
+                    <div class="form-field inline-fields">
+                      <input type="number" formControlName="calories" placeholder="kcal">
+                      <select formControlName="mealType">
+                        <option *ngFor="let type of mealTypes" [value]="type">{{ type }}</option>
+                      </select>
+                    </div>
+
+                    <div class="photo-upload-container">
+                      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden>
+                      <button type="button" class="btn-photo" (click)="fileInput.click()">
+                        <span class="icon">photo_camera</span>
+                        {{ selectedImage ? 'Change Photo' : 'Add Meal Photo' }}
+                      </button>
+                      <div class="image-preview" *ngIf="selectedImage">
+                        <img [src]="selectedImage" alt="Preview">
+                        <button class="btn-remove-preview" (click)="selectedImage = null">×</button>
+                      </div>
+                    </div>
+
+                    <div class="form-actions">
+                      <button type="submit" class="btn-new btn-submit" [disabled]="diaryForm.invalid">
+                        {{ editingEntryId ? 'Update Meal' : 'Log Meal' }}
+                      </button>
+                      <button type="button" class="btn-cancel" *ngIf="editingEntryId" (click)="cancelEdit()">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <div class="item-list">
+                <div class="item-row entry-with-photo" *ngFor="let entry of diaryEntries">
+                  <div class="entry-image" *ngIf="entry.imageUrl">
+                    <img [src]="entry.imageUrl" alt="Meal">
+                  </div>
+                  <div class="entry-image no-photo" *ngIf="!entry.imageUrl">
+                    <span class="icon">restaurant</span>
+                  </div>
+                  <div class="item-info">
+                    <h4>{{ entry.foodName }}</h4>
+                    <p>{{ entry.mealType }} • {{ entry.calories }} kcal</p>
+                  </div>
+                  <div class="item-actions">
+                    <button class="action-btn icon-only edit" (click)="editDiaryEntry(entry)" title="Edit entry">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 20.07a4.5 4.5 0 01-1.897 1.13L6 22l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                      </svg>
+                    </button>
+                    <button class="action-btn icon-only delete" (click)="deleteDiaryEntry(entry.id!)"
+                      title="Delete entry">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

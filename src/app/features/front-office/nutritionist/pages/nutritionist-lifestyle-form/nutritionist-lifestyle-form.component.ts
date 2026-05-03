@@ -127,6 +127,13 @@ export class NutritionistLifestyleFormComponent implements OnInit {
       if (this.type === 'tracking' || this.type === 'plans') {
         this.loadGoals();
       }
+
+      // Check for AI recommendation in query params
+      this.route.queryParams.subscribe(queryParams => {
+        if (queryParams['description']) {
+          this.plan.description = queryParams['description'];
+        }
+      });
     });
   }
 
@@ -205,5 +212,9 @@ export class NutritionistLifestyleFormComponent implements OnInit {
 
   navigateBack(): void {
     this.router.navigate([`/front/nutritionist/patient/${this.patientId}/lifestyle/${this.type}`]);
+  }
+
+  goToAiAssist(): void {
+    this.router.navigate([`/front/nutritionist/patient/${this.patientId}/lifestyle/${this.type}/ai-assist`]);
   }
 }

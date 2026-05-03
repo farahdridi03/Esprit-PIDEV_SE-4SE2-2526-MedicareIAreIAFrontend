@@ -27,4 +27,11 @@ export class MedicalRecordService {
   getByPatientId(patientId: number): Observable<MedicalRecord> {
     return this.http.get<MedicalRecord>(`${this.apiUrl}/patient/${patientId}`);
   }
+
+  getAudioSummary(recordId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${recordId}/speak`, {
+      responseType: 'blob'
+    });
+  }
 }
+

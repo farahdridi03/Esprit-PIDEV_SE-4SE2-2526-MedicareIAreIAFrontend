@@ -5,25 +5,21 @@
         <div class="content-area">
             <div class="list-container">
                 
-                <header class="list-header">
-                    <div class="header-text">
+                <!-- Green Banner Header -->
+                <div class="welcome-banner green">
+                    <div class="banner-text">
                         <h1>{{ title }}</h1>
+                        <p>Managing {{ type }} records for this patient.</p>
                     </div>
-                    <div class="header-actions">
-                        <button class="btn-back" [routerLink]="getBackLink()">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                            </svg>
-                            Back
+                    <div class="banner-actions-top">
+                        <button class="btn-back-glass" [routerLink]="getBackLink()">
+                            <i class="fas fa-arrow-left"></i> Back
                         </button>
-                        <button class="btn-create-small" *ngIf="canCreate()" (click)="onCreate()">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            {{ type === 'plans' ? 'Add Plan' : (type === 'goals' ? 'New Goal' : 'New Tracking') }}
+                        <button class="btn-create-glass" *ngIf="canCreate()" (click)="onCreate()">
+                            <i class="fas fa-plus"></i> {{ type === 'plans' ? 'Add Plan' : (type === 'goals' ? 'New Goal' : 'New Tracking') }}
                         </button>
                     </div>
-                </header>
+                </div>
 
                 <div class="list-card">
                     <div class="loading-spinner" *ngIf="isLoading">
@@ -93,6 +89,12 @@
 
                                     <td class="actions" *ngIf="canEditDelete()">
                                         
+                                        <button class="action-btn view" *ngIf="type === 'plans'" title="Build Meal Plan" (click)="onBuildMealPlan(item.id)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                            </svg>
+                                        </button>
+
                                         <button class="action-btn view" *ngIf="type === 'plans'" title="View Details" (click)="onView(item.id)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.301 8.844 6.88 5.4 12 5.4c5.12 0 8.697 3.321 9.964 6.278.141.25.141.544 0 .794-1.267 2.957-4.844 6.4-9.964 6.4-5.12 0-8.697-3.321-9.964-6.278L2.036 12.322z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
                                         </button>

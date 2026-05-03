@@ -8,8 +8,14 @@
 
         <div class="content-area">
             <div class="page-header">
-                <h2>My Patients</h2>
-                <p>Track the health and lifestyle progress of your assigned patients.</p>
+                <div>
+                    <h2>My Patients</h2>
+                    <p>Track the health and lifestyle progress of your assigned patients.</p>
+                </div>
+                <button class="btn-overview" (click)="toggleOverview()">
+                    <i class="fas fa-chart-line"></i>
+                    {{ showOverview ? 'View All Patients' : 'Patient Overview' }}
+                </button>
             </div>
 
             <div *ngIf="loading" class="loading-state">
@@ -25,7 +31,72 @@
                 <p>No patients found. Ensure appointments are scheduled via the portal.</p>
             </div>
 
-            <div *ngIf="!loading && !error && patients.length > 0" class="patients-grid">
+            <!-- Overview Dashboard -->
+            <div *ngIf="showOverview" class="overview-dashboard animate-fade-in">
+                <div *ngIf="loadingSummary" class="loading-summary">
+                    <div class="spinner"></div>
+                    <span>Fetching latest data...</span>
+                </div>
+
+                <div *ngIf="!loadingSummary && healthReports.length === 0" class="empty-summary">
+                    <p>No health data available for today.</p>
+                </div>
+
+                <div *ngIf="!loadingSummary && healthReports.length > 0">
+                    <!-- Needing Attention -->
+                    <div class="summary-section">
+                        <h3>Patients needing attention</h3>
+                        <div class="patient-list glass-panel">
+                            <div class="patient-item" *ngFor="let report of patientsNeedingAttention">
+                                <div class="p-avatar">
+                                    <img [src]="report.patientPhoto" *ngIf="report.patientPhoto">
+                                    <span *ngIf="!report.patientPhoto">{{ report.patientName.charAt(0) }}</span>
+                                </div>
+                                <div class="p-details">
+                                    <div class="p-name">{{ report.patientName }}</div>
+                                    <div class="p-sub" [ngSwitch]="true">
+                                        <span *ngSwitchCase="report.missedLog">No diary entries logged yesterday</span>
+                                        <span *ngSwitchCase="hasAnomaly(report, 'OVEREATING') || hasAnomaly(report, 'UNDEREATING')">
+                                            {{ report.actualCalories }} kcal consumed · expected {{ report.expectedCalories }}
+                                        </span>
+                                        <span *ngSwitchCase="hasAnomaly(report, 'NO_WEIGHT_PROGRESS')">
+                                            Weight unchanged for 7 days
+                                        </span>
+                                        <span *ngSwitchDefault>Status requires attention</span>
+                                    </div>
+                                </div>
+                                <div class="p-status">
+                                    <span [class]="'badge ' + getStatusClass(report)">{{ getStatusLabel(report) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- On Track -->
+                    <div class="summary-section mt-6">
+                        <h3>Patients on track</h3>
+                        <div class="patient-list glass-panel">
+                            <div class="patient-item" *ngFor="let report of patientsOnTrack">
+                                <div class="p-avatar">
+                                    <img [src]="report.patientPhoto" *ngIf="report.patientPhoto">
+                                    <span *ngIf="!report.patientPhoto">{{ report.patientName.charAt(0) }}</span>
+                                </div>
+                                <div class="p-details">
+                                    <div class="p-name">{{ report.patientName }}</div>
+                                    <div class="p-sub">
+                                        {{ report.actualCalories }} kcal · weight {{ report.weightDifference > 0 ? '+' : '' }}{{ report.weightDifference }} kg this week
+                                    </div>
+                                </div>
+                                <div class="p-status">
+                                    <span [class]="'badge ' + getStatusClass(report)">On track</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="!loading && !error && patients.length > 0 && !showOverview" class="patients-grid">
                 <div class="patient-card" *ngFor="let patient of patients">
                     <div class="patient-header">
                         <div class="patient-avatar" style="overflow: hidden; display: flex; align-items: center; justify-content: center; background: #3182ce; color: white;">

@@ -59,6 +59,13 @@ import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-d
 import { DoctorProfileEditComponent } from './doctor/pages/doctor-profile-edit/doctor-profile-edit.component';
 import { EventDetailComponent } from './pages/event-detail/event-detail.component';
 import { PatientEventsComponent } from './pages/patient-events/patient-events.component';
+import { NutritionDashboardComponent } from './patient/pages/nutrition-dashboard/nutrition-dashboard.component';
+import { NutritionDailyReportComponent } from './patient/pages/nutrition-daily-report/nutrition-daily-report.component';
+import { DoctorWorkloadComponent } from './doctor/pages/doctor-workload/doctor-workload.component';
+import { PatientPrescriptionDetailComponent } from './patient/pages/patient-prescription-detail/patient-prescription-detail.component';
+import { RecipeListComponent } from './patient/pages/recipes/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './patient/pages/recipes/recipe-detail/recipe-detail.component';
+import { RecipeFavoritesComponent } from './patient/pages/recipes/recipe-favorites/recipe-favorites.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +113,14 @@ import { PatientEventsComponent } from './pages/patient-events/patient-events.co
     DoctorPatientTreatmentsComponent,
     DoctorPatientPrescriptionsComponent,
     DoctorPatientDiagnosesComponent,
-    DoctorProfileEditComponent
+    DoctorProfileEditComponent,
+    NutritionDashboardComponent,
+    NutritionDailyReportComponent,
+    DoctorWorkloadComponent,
+    PatientPrescriptionDetailComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    RecipeFavoritesComponent
   ],
   imports: [
     SharedModule,

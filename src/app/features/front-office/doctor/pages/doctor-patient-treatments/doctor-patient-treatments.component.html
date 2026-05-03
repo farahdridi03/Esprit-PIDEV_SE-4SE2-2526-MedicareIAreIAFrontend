@@ -40,7 +40,7 @@
                             <tr *ngFor="let item of treatments" style="border-bottom: 1px solid #f1f5f9;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
                                 <td style="padding: 16px;"><strong>{{ item.treatmentType || item.name }}</strong></td>
                                 <td style="padding: 16px;">
-                                    <span class="badge" [style.background]="'#f0fff4'" [style.color]="'#38a169'" [style.padding]="'4px 10px'" [style.borderRadius]="'8px'" [style.fontSize]="'11px'" [style.fontWeight]="'800'">{{ item.status || 'ACTIVE' }}</span>
+                                    <span class="status-badge" [ngClass]="item.status?.toLowerCase() || 'unknown'">{{ item.status || 'UNKNOWN' }}</span>
                                 </td>
                                 <td style="padding: 16px; color: #4a5568; font-size: 14px;">{{ item.startDate | date:'shortDate' }} — {{ item.endDate ? (item.endDate | date:'shortDate') : 'Present' }}</td>
                                 <td class="action-cells" style="padding: 16px;">
@@ -81,7 +81,9 @@
                         </div>
                         <div style="background: white; padding: 20px; border-radius: 12px;">
                             <label style="display: block; font-size: 11px; text-transform: uppercase; color: #a0aec0; font-weight: 700;">Status</label>
-                            <p style="margin: 5px 0; font-size: 18px; font-weight: 700; color: #38a169;">{{ currentViewItem.status }}</p>
+                            <p style="margin: 5px 0; font-size: 18px; font-weight: 700;">
+                                <span class="status-badge" [ngClass]="currentViewItem.status?.toLowerCase() || 'unknown'">{{ currentViewItem.status || 'UNKNOWN' }}</span>
+                            </p>
                         </div>
                         <div style="background: white; padding: 20px; border-radius: 12px;">
                             <label style="display: block; font-size: 11px; text-transform: uppercase; color: #a0aec0; font-weight: 700;">Duration</label>

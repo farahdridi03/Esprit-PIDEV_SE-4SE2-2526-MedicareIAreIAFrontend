@@ -21,6 +21,9 @@ export class DoctorMedicalRecordComponent implements OnInit {
   newConsultationObservations = '';
   newConsultationNotes = '';
   doctorId: number | null = null;
+  summarizing = false;
+  audio: HTMLAudioElement | null = null;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -139,4 +142,34 @@ export class DoctorMedicalRecordComponent implements OnInit {
       error: (err) => console.error('Error adding consultation', err)
     });
   }
+
+  summarizeAndRead(): void {
+    if (!this.medicalRecordId) {
+      alert("No medical record ID found for this patient.");
+      return;
+    }
+
+    this.summarizing = true;
+    
+    // If audio is already playing, stop it
+    if (this.audio) {
+      this.audio.pause();
+      this.audio = null;
+    }
+
+    this.medicalRecordService.getAudioSummary(this.medicalRecordId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        this.audio = new Audio(url);
+        this.audio.play();
+        this.summarizing = false;
+      },
+      error: (err) => {
+        console.error('Error generating summary or audio', err);
+        alert('Failed to generate summary. Please try again.');
+        this.summarizing = false;
+      }
+    });
+  }
 }
+

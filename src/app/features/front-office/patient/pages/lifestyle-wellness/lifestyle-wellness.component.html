@@ -11,18 +11,24 @@
         <div class="content-area">
             <div class="lifestyle-main-content">
                 
-                <!-- Welcome Banner -->
-                <div class="welcome-banner">
+                <!-- Green Banner Header -->
+                <div class="welcome-banner green">
                     <div class="banner-text">
                         <h1>Lifestyle</h1>
                         <p>Take care of your health with personalized lifestyle goals and plans.</p>
                         <div class="banner-metrics" *ngIf="patient">
                             <span class="metric-badge">
+                                <i class="fas fa-arrows-alt-v"></i>
                                 <strong>Height:</strong> {{ patient.height ? patient.height + ' cm' : 'N/A' }}
                             </span>
                             <span class="metric-badge">
+                                <i class="fas fa-weight"></i>
                                 <strong>Weight:</strong> {{ patient.weight ? patient.weight + ' kg' : 'N/A' }}
                             </span>
+                            <button class="btn-banner-action" routerLink="/front/patient/nutrition">
+                                <span class="icon">🥗</span>
+                                My Nutrition
+                            </button>
                         </div>
                     </div>
                     <div class="banner-icon">
