@@ -41,6 +41,6 @@ export class SidebarComponent implements OnInit {
     const rawRole = currentUser.role || '';
     const userRole = rawRole.toUpperCase().replace(/^ROLE_/, '');
 
-    return !patientRoles.includes(userRole);
+    return patientRoles.includes(userRole);
   }
 }

@@ -41,12 +41,18 @@
                 "output": "/"
               }
             ],
-            "styles": ["src/styles.scss"],
+
+            "styles": [
+              "src/styles.scss",
+              "node_modules/leaflet/dist/leaflet.css"
+            ],
+            
             "optimization": {
               "fonts": {
                 "inline": false
               }
             },
+
             "scripts": []
           },
           "configurations": {

@@ -80,6 +80,21 @@ export interface CreateServiceRequestDTO {
   patientNotes?: string;
 }
 
+export interface FastBookRequestDTO {
+  serviceId: number;
+  requestedDateTime: string;   // ISO: 2026-05-01T10:00:00
+  address: string;
+  patientNotes?: string;
+}
+
+export interface FastBookResultDTO {
+  requestId: number;
+  providerName: string;
+  providerRating: number;
+  serviceName: string;
+  requestedDateTime: string;
+}
+
 export interface CompleteRequestDTO {
   providerNotes: string;
 }
@@ -137,4 +152,13 @@ export interface CalendarEvent {
   status?: string;   // For REQUEST type
   patientName?: string;
   requestId?: number;
+}
+
+export interface ServiceRecommendationDTO {
+  recommendedService: string;
+  confidence: number;
+  urgencyLevel: 'HIGH' | 'MODERATE' | 'LOW';
+  detectedKeywords: string[];
+  alternatives: { service: string; confidence: number }[];
+  message: string;
 }

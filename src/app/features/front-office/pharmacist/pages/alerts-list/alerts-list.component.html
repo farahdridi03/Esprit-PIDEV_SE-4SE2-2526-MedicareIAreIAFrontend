@@ -1,55 +1,53 @@
-<div class="page-header">
-    <div>
-        <h1>Stock <em>Alerts</em></h1>
-        <p>Low stock warnings and expiring batch alerts</p>
-    </div>
-</div>
+<div class="pharmacist-wrapper">
+  <app-pharmacist-sidebar></app-pharmacist-sidebar>
+  <div class="main-body">
+    <app-pharmacist-topbar></app-pharmacist-topbar>
+    <div class="content-area">
+      <div class="page-header">
+        <h2>Stock Alerts</h2>
+        <button class="btn-secondary" (click)="loadAlerts()">↻ Refresh</button>
+      </div>
 
-<div class="panel">
-    <div class="panel-head">
-        <div class="panel-title">Open Alerts</div>
-        <button 
-            (click)="loadAlerts()"
-            style="display:flex; align-items:center; gap:0.5rem; padding:0.62rem 1.2rem; background:linear-gradient(135deg,#1A7A5E,#14614A); border:none; border-radius:10px; color:#fff; font-family:inherit; font-size:0.84rem; font-weight:600; cursor:pointer; box-shadow:0 4px 14px rgba(26,122,94,0.3); transition:all 0.18s;"
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(26,122,94,0.35)';"
-            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(26,122,94,0.3)';">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:15px;height:15px;">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-            </svg>
-            Refresh
-        </button>
-    </div>
-    
-    <div class="loader" *ngIf="loading">Loading alerts...</div>
+      <div *ngIf="loading" class="loading-state">Loading alerts...</div>
+      <div *ngIf="error" class="error-state">{{ error }}</div>
 
-    <table class="tbl" *ngIf="!loading && alerts.length > 0">
-        <thead>
-            <tr>
-                <th>Alert ID</th>
-                <th>Type</th>
-                <th>Message</th>
-                <th>Created At</th>
-                <th style="text-align: right;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let a of alerts">
-                <td>{{ a.id }}</td>
-                <td>
-                    <span class="chip" [ngClass]="a.alertType === 'EXPIRING_BATCH' ? 'ck-amber' : 'ck-rose'">
-                        {{ a.alertType }}
-                    </span>
-                </td>
-                <td><div class="cn">{{ a.message }}</div></td>
-                <td>{{ a.createdAt | date:'medium' }}</td>
-                <td style="text-align: right;">
-                    <button class="action-btn" style="color: #0e7c66;" (click)="resolveAlert(a.id)">Resolve ✓</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div *ngIf="!loading && alerts.length === 0" class="no-data" style="color:#0e7c66; font-weight:bold;">
-        🎉 All good! No open alerts.
+      <div *ngIf="!loading && alerts.length === 0 && !error" class="empty-state success-state">
+        ✓ No open alerts. All stock levels are healthy!
+      </div>
+
+      <div *ngIf="!loading && alerts.length > 0" class="alerts-grid">
+        <div *ngFor="let alert of pagedAlerts" class="alert-card" [ngClass]="{
+          'alert-low-stock': alert.alertType === 'LOW_STOCK',
+          'alert-expiry': alert.alertType === 'EXPIRY_WARNING'
+        }">
+          <div class="alert-icon">
+            <span *ngIf="alert.alertType === 'LOW_STOCK'">⚠️</span>
+            <span *ngIf="alert.alertType === 'EXPIRY_WARNING'">📅</span>
+            <span *ngIf="alert.alertType !== 'LOW_STOCK' && alert.alertType !== 'EXPIRY_WARNING'">🔔</span>
+          </div>
+          <div class="alert-body">
+            <div class="alert-type">{{ alert.alertType | titlecase }}</div>
+            <div class="alert-message">{{ alert.message }}</div>
+            <div class="alert-time">{{ alert.createdAt | date:'medium' }}</div>
+          </div>
+          <div class="alert-actions">
+            <button
+              class="btn-sm btn-primary"
+              (click)="resolveAlert(alert.id)"
+              [disabled]="resolvingId === alert.id">
+              {{ resolvingId === alert.id ? 'Resolving...' : 'Resolve' }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-bar" *ngIf="totalPages > 1">
+        <span class="page-info">{{ (currentPage-1)*pageSize+1 }}–{{ pageEnd }} of {{ alerts.length }}</span>
+        <div class="page-controls">
+          <button class="page-btn" (click)="goToPage(currentPage-1)" [disabled]="currentPage===1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+          <button *ngFor="let p of pages" class="page-btn" [class.active]="p===currentPage" (click)="goToPage(p)">{{p}}</button>
+          <button class="page-btn" (click)="goToPage(currentPage+1)" [disabled]="currentPage===totalPages"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

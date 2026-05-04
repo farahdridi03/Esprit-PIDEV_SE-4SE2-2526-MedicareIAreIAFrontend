@@ -119,7 +119,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
     initRealTimeUpdates(): void {
         const email = this.authService.getUserEmail();
         if (email) {
-            this.deliveryTrackingService.connectToUserNotifications(email);
+            const token = this.authService.getToken();
+        if (token) this.deliveryTrackingService.connectToUserNotifications(email, token);
             this.notifSub = this.notificationService.notifications$.subscribe(notifs => {
                 if (notifs.length > 0) {
                     const latest = notifs[0];

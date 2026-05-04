@@ -46,22 +46,62 @@
                         </div>
                     </div>
 
-                    <!-- Monitoring Row (Alerts & Sales) -->
+                    <!-- Charts Row -->
                     <div class="monitoring-row">
-                        <!-- Alerts -->
+                        <!-- Order Status Doughnut -->
                         <div class="section-card alerts-section">
                             <div class="section-header">
-                                <h3>Alerts</h3>
+                                <h3>Order Status</h3>
                             </div>
-                            <div class="alerts-list">
+                            <div style="position:relative;height:190px;">
+                                <canvas id="statusChart"></canvas>
                             </div>
                         </div>
 
-                        <!-- Sales per Category -->
+                        <!-- Top Products Revenue Bar -->
                         <div class="section-card sales-section">
                             <div class="section-header">
-                                <h3>Sales per Category</h3>
+                                <h3>Top 5 Products Revenue</h3>
                             </div>
+                            <div style="position:relative;height:190px;">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monitoring Row (Sales Table) -->
+                    <div class="monitoring-row">
+                        <div class="section-card" style="flex:1;">
+                        </div>
+
+                        <!-- Sales per Product (Task 2 — JPQL) -->
+                        <div class="section-card sales-section">
+                            <div class="section-header">
+                                <h3>Top Product Sales</h3>
+                                <span class="badge-info" style="font-size:11px;padding:3px 8px;border-radius:8px;">DELIVERED only</span>
+                            </div>
+                            <div *ngIf="loadingProductSales" class="text-center py-3">
+                                <div class="spinner-border spinner-border-sm text-primary"></div>
+                            </div>
+                            <div *ngIf="!loadingProductSales && productSales.length === 0" class="text-muted text-center py-3" style="font-size:13px;">No sales data yet</div>
+                            <table *ngIf="!loadingProductSales && productSales.length > 0" class="table table-sm mb-0" style="font-size:13px;">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th class="text-center">Qty</th>
+                                        <th class="text-end">Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let s of productSales">
+                                        <td class="fw-medium">{{ s.productName }}</td>
+                                        <td class="text-muted">{{ s.productCategory }}</td>
+                                        <td class="text-center">{{ s.totalQuantitySold }}</td>
+                                        <td class="text-end fw-bold">{{ s.totalRevenue | currency:'TND':'symbol':'1.2-2' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

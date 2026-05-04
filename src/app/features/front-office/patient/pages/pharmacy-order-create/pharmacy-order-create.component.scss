@@ -409,3 +409,46 @@ $border-color: #e5e7eb;
     .form-grid, .pharmacy-grid { grid-template-columns: 1fr; .full-width { grid-column: span 1; } }
     .stepper { .step-label { display: none; } }
 }
+
+// Delivery address validation
+.form-input {
+    &.input-valid {
+        border-color: #22c55e !important;
+        background-color: #f0fdf4 !important;
+    }
+    &.input-error {
+        border-color: #ef4444 !important;
+        background-color: #fef2f2 !important;
+    }
+}
+
+.address-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.4rem;
+    line-height: 1.4;
+    svg { flex-shrink: 0; margin-top: 1px; }
+}
+
+.address-error {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    color: #dc2626;
+    margin-top: 0.35rem;
+    font-weight: 500;
+}
+
+.address-success {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    color: #16a34a;
+    margin-top: 0.35rem;
+    font-weight: 500;
+}

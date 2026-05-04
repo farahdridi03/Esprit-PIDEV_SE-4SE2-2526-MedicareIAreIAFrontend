@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StockService } from '../../../../../services/stock.service';
-import { PharmacyService } from '../../../../../services/pharmacy.service';
+import { Batch, ReceiveBatchRequest } from '../../../../../models/stock.model';
 import { ProductService } from '../../../../../services/product.service';
-import { Batch } from '../../../../../models/stock.model';
-import { Pharmacy } from '../../../../../models/pharmacy.model';
 import { Product } from '../../../../../models/product.model';
+import { PharmacyService } from '../../../../../services/pharmacy.service';
+import { Pharmacy } from '../../../../../models/pharmacy.model';
 
 @Component({
   selector: 'app-batches-list',
@@ -13,104 +13,90 @@ import { Product } from '../../../../../models/product.model';
   styleUrls: ['./batches-list.component.scss']
 })
 export class BatchesListComponent implements OnInit {
-  stockId!: number;
+  pharmacyStockId!: number;
   batches: Batch[] = [];
   loading = false;
+  error: string | null = null;
+  showForm = false;
 
-  viewState: 'list' | 'add' = 'list';
-  fieldErrors: { [key: string]: string } = {};
-  globalError: string | null = null;
-  todayDate: string;
-
-  pharmacies: Pharmacy[] = [];
   products: Product[] = [];
+  pharmacies: Pharmacy[] = [];
 
-  formModel: any = {
-    pharmacyId: null,
-    productId: null,
+  formModel: ReceiveBatchRequest = {
+    pharmacyId: 0,
+    productId: 0,
     batchNumber: '',
-    quantity: 1,
+    quantity: 0,
     expirationDate: '',
     purchasePrice: 0,
     sellingPrice: 0,
-    minQuantityThreshold: 10
+    minQuantityThreshold: 0
   };
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private stockService: StockService,
-    private pharmacyService: PharmacyService,
-    private productService: ProductService
-  ) {
-    this.todayDate = new Date().toISOString().split('T')[0];
+    private productService: ProductService,
+    private pharmacyService: PharmacyService
+  ) {}
+
+  ngOnInit(): void {
+    this.pharmacyStockId = Number(this.route.snapshot.paramMap.get('pharmacyStockId'));
+    this.loadBatches();
+    this.productService.getAllProducts().subscribe({ next: (p) => this.products = p });
+    this.pharmacyService.getAllPharmacies().subscribe({ next: (p) => this.pharmacies = p });
   }
 
-  ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.stockId = Number(params.get('pharmacyStockId'));
-      if (this.stockId) this.loadBatches();
-    });
-    this.loadDropdowns();
-  }
-
-  loadBatches() {
+  loadBatches(): void {
     this.loading = true;
-    this.stockService.getBatchesByStockId(this.stockId).subscribe({
-      next: res => { this.batches = res; this.loading = false; },
-      error: err => { console.error(err); this.loading = false; }
+    this.error = null;
+    this.stockService.getBatchesByStockId(this.pharmacyStockId).subscribe({
+      next: (res) => {
+        this.batches = res;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load batches', err);
+        this.error = 'Failed to load batches.';
+        this.loading = false;
+      }
     });
   }
 
-  loadDropdowns() {
-    this.pharmacyService.getAllPharmacies().subscribe(res => this.pharmacies = res);
-    this.productService.getAllProducts().subscribe(res => this.products = res);
-  }
-
-  viewAdd() {
+  openForm(): void {
     this.formModel = {
-      pharmacyId: null,
-      productId: null,
+      pharmacyId: 0,
+      productId: 0,
       batchNumber: '',
-      quantity: 1,
+      quantity: 0,
       expirationDate: '',
       purchasePrice: 0,
       sellingPrice: 0,
-      minQuantityThreshold: 10
+      minQuantityThreshold: 0
     };
-
-    // Attempt to guess the pharmacy/product if we knew them, but here we don't naturally 
-    // know them without fetching the stock. We'll leave them to be manually selected.
-
-    this.fieldErrors = {};
-    this.globalError = null;
-    this.viewState = 'add';
+    this.showForm = true;
   }
 
-  cancelForm() {
-    this.viewState = 'list';
+  cancelForm(): void {
+    this.showForm = false;
   }
 
-  saveBatch() {
+  saveBatch(): void {
     this.loading = true;
-    this.fieldErrors = {};
-    this.globalError = null;
-
     this.stockService.receiveBatch(this.formModel).subscribe({
       next: () => {
-        this.viewState = 'list';
-        this.loadBatches(); // Reload batches for this stock
+        this.showForm = false;
+        this.loadBatches();
       },
       error: (err) => {
+        console.error('Failed to receive batch', err);
         this.loading = false;
-
-        if (err.error?.fields) {
-          this.fieldErrors = err.error.fields;
-        } else if (err.error?.message) {
-          this.globalError = err.error.message;
-        } else {
-          this.globalError = 'Failed to receive batch.';
-        }
       }
     });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/pharmacist/inventory']);
   }
 }

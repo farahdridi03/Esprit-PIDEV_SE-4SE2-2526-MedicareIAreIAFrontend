@@ -16,6 +16,21 @@ export class AdminProvidersComponent implements OnInit {
   searchQuery = '';
   filterStatus = 'ALL'; // ALL, VERIFIED, UNVERIFIED
 
+  // Pagination
+  currentPage = 1;
+  pageSize = 8;
+
+  get totalPages(): number { return Math.ceil(this.filteredProviders.length / this.pageSize); }
+  get pageEnd(): number { return Math.min(this.currentPage * this.pageSize, this.filteredProviders.length); }
+  get pages(): number[] { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
+  get pagedProviders(): ServiceProvider[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredProviders.slice(start, start + this.pageSize);
+  }
+  goToPage(p: number): void { if (p >= 1 && p <= this.totalPages) this.currentPage = p; }
+  get verifiedCount(): number { return this.providers.filter(p => p.verified).length; }
+  get pendingCount(): number { return this.providers.filter(p => !p.verified).length; }
+
   constructor(private homecare: HomecareService) {}
 
   ngOnInit(): void {
@@ -38,6 +53,7 @@ export class AdminProvidersComponent implements OnInit {
   }
 
   applyFilters(): void {
+    this.currentPage = 1;
     this.filteredProviders = this.providers.filter(p => {
       const matchesSearch = !this.searchQuery || 
         p.user?.fullName?.toLowerCase().includes(this.searchQuery.toLowerCase()) ||

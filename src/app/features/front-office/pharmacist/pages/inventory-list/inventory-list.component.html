@@ -1,65 +1,62 @@
-<div class="page-header">
-    <div>
-        <h1>Inventory <em>Overview</em></h1>
-        <p>Monitor current stock levels per pharmacy</p>
-    </div>
-</div>
-
-<div class="panel">
-    <div class="panel-head">
-        <div class="panel-title">Pharmacy Stock</div>
-        <div style="display: flex; gap: 1rem; align-items: center;">
-            <select class="role-filter" [(ngModel)]="selectedPharmacyId" (change)="onPharmacyChange()">
-                <option *ngFor="let p of pharmacies" [value]="p.id">{{ p.name }}</option>
-            </select>
-            <button class="panel-action" (click)="loadInventory()">Refresh List ⭮</button>
+<div class="pharmacist-wrapper">
+  <app-pharmacist-sidebar></app-pharmacist-sidebar>
+  <div class="main-body">
+    <app-pharmacist-topbar></app-pharmacist-topbar>
+    <div class="content-area">
+      <div class="page-header">
+        <h2>Inventory</h2>
+        <div class="pharmacy-select-wrap">
+          <label for="pharmacySelect">Pharmacy:</label>
+          <select id="pharmacySelect" [(ngModel)]="selectedPharmacyId" (change)="onPharmacyChange()">
+            <option *ngFor="let p of pharmacies" [ngValue]="p.id">{{ p.name }}</option>
+          </select>
         </div>
-    </div>
+      </div>
 
-    <div *ngIf="loading" class="loader">Loading inventory...</div>
+      <div *ngIf="loading" class="loading-state">Loading inventory...</div>
+      <div *ngIf="error" class="error-state">{{ error }}</div>
 
-    <table class="tbl" *ngIf="!loading && stocks.length > 0">
+      <table *ngIf="!loading && stocks.length > 0" class="data-table">
         <thead>
-            <tr>
-                <th>Stock ID</th>
-                <th>Product</th>
-                <th>Total Quantity & Threshold</th>
-                <th>Product Type & Unit</th>
-                <th style="text-align: right;">Actions</th>
-            </tr>
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Total Qty</th>
+            <th>Min Threshold</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let s of stocks">
-                <td>{{ s.id }}</td>
-                <td>
-                    <div class="ucell">
-                        <div class="mav ma1">{{ s.product.name.substring(0,2).toUpperCase() }}</div>
-                        <div>
-                            <div class="cn">{{ s.product.name }}</div>
-                            <div class="cs">{{ s.product.barcode || 'N/A' }}</div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="cn" [ngStyle]="{'color': s.totalQuantity <= s.minQuantityThreshold ? '#e74c3c' : '#2c3e50'}">
-                        <strong>{{ s.totalQuantity }}</strong>
-                        <span *ngIf="s.totalQuantity <= s.minQuantityThreshold" style="margin-left:8px; font-size:12px; font-weight:normal; background: #fee2e2; color:#b91c1c; padding:2px 6px; border-radius:4px;">Low Stock</span>
-                    </div>
-                    <div class="cs">Min. Threshold: {{ s.minQuantityThreshold }}</div>
-                </td>
-                <td>
-                    <span class="chip ck-teal">{{ s.product.type }}</span>
-                    <span style="font-size: 0.85rem; color: #666; margin-left: 8px;">{{ s.product.unit }}</span>
-                </td>
-                <td style="text-align: right;">
-                    <button class="action-btn text-pharma" (click)="viewBatches(s.id)">Batches</button>
-                    <button class="action-btn" style="color: #0e7c66;" (click)="viewMovements(s.id)">Movements</button>
-                </td>
-            </tr>
+          <tr *ngFor="let s of pagedStocks" [class.low-stock-row]="isLowStock(s)">
+            <td>{{ s.product.name }}</td>
+            <td>{{ s.product.category }}</td>
+            <td>{{ s.totalQuantity }}</td>
+            <td>{{ s.minQuantityThreshold }}</td>
+            <td>
+              <span class="badge" [ngClass]="isLowStock(s) ? 'badge-danger' : 'badge-success'">
+                {{ isLowStock(s) ? 'Low Stock' : 'OK' }}
+              </span>
+            </td>
+            <td class="actions">
+              <button class="btn-sm btn-primary" (click)="viewBatches(s.id)">Batches</button>
+              <button class="btn-sm btn-secondary" (click)="viewMovements(s.id)">Movements</button>
+            </td>
+          </tr>
         </tbody>
-    </table>
+      </table>
 
-    <div *ngIf="!loading && stocks.length === 0" class="no-data">
-        No products found in this pharmacy's stock. Please receive batches to initialize stock.
+      <div class="pagination-bar" *ngIf="totalPages > 1">
+        <span class="page-info">{{ (currentPage-1)*pageSize+1 }}–{{ pageEnd }} of {{ stocks.length }}</span>
+        <div class="page-controls">
+          <button class="page-btn" (click)="goToPage(currentPage-1)" [disabled]="currentPage===1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+          <button *ngFor="let p of pages" class="page-btn" [class.active]="p===currentPage" (click)="goToPage(p)">{{p}}</button>
+          <button class="page-btn" (click)="goToPage(currentPage+1)" [disabled]="currentPage===totalPages"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+      <div *ngIf="!loading && stocks.length === 0 && !error" class="empty-state">
+        No inventory records found for this pharmacy.
+      </div>
     </div>
+  </div>
 </div>

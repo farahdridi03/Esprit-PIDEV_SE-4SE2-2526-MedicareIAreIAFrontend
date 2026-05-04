@@ -385,14 +385,22 @@ $red:          #ef4444;
   }
 }
 
-.terms-link {
-  color: $green-mid;
-  font-weight: 600;
-  text-decoration: none;
-  &:hover { text-decoration: underline; }
+
+// Submit Button
+.gps-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: $green-mid;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  &:hover { background: $green-dark; }
 }
 
-// ── Submit ─────────────────────────────────────────────────
 .submit-btn {
   width: 100%;
   padding: 13px;

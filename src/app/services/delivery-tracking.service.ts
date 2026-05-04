@@ -14,6 +14,7 @@ import { NotificationResponseDTO } from '../models/notification.model';
 export class DeliveryTrackingService {
   private readonly apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/deliveries';
   private stompClient: Client | null = null;
+  private notificationStompClient: Client | null = null;
   private deliveryUpdateSubject = new Subject<DeliveryResponseDTO>();
   private isConnectedSubject = new BehaviorSubject<boolean>(false);
 
@@ -63,41 +64,41 @@ export class DeliveryTrackingService {
     this.stompClient.activate();
   }
 
-  connectToUserNotifications(userEmail: string): void {
-    if (this.stompClient && this.stompClient.active) {
-      this.disconnect();
+  connectToUserNotifications(userEmail: string, token: string): void {
+    if (this.notificationStompClient && this.notificationStompClient.active) {
+      this.notificationStompClient.deactivate();
     }
 
     const socket = new SockJS('http://localhost:8081/springsecurity/ws');
-    this.stompClient = new Client({
+    this.notificationStompClient = new Client({
       webSocketFactory: () => socket as any,
+      connectHeaders: { Authorization: 'Bearer ' + token },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     });
 
-    this.stompClient.onConnect = (frame: any) => {
-      this.isConnectedSubject.next(true);
-      
-      // On s'abonne à la queue privée de l'utilisateur
-      this.stompClient?.subscribe(`/user/queue/notifications`, (message: IMessage) => {
+    this.notificationStompClient.onConnect = () => {
+      this.notificationStompClient?.subscribe(`/user/queue/notifications`, (message: IMessage) => {
         if (message.body) {
           const notification = JSON.parse(message.body) as NotificationResponseDTO;
-          console.log('Received real-time notification!', notification);
           this.notificationService.addNotification(notification);
         }
       });
     };
 
-    this.stompClient.onStompError = (frame: any) => {
-      console.error('Broker reported error (Notifications): ' + frame.headers['message']);
+    this.notificationStompClient.onStompError = (frame: any) => {
+      console.error('Notification WS error: ' + frame.headers['message']);
     };
 
-    this.stompClient.onWebSocketClose = () => {
-      this.isConnectedSubject.next(false);
-    };
+    this.notificationStompClient.activate();
+  }
 
-    this.stompClient.activate();
+  disconnectNotifications(): void {
+    if (this.notificationStompClient && this.notificationStompClient.active) {
+      this.notificationStompClient.deactivate();
+      this.notificationStompClient = null;
+    }
   }
 
   disconnect(): void {

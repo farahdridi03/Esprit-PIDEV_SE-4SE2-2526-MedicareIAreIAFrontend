@@ -21,9 +21,18 @@
                                 <p class="lead opacity-75 mb-0" *ngIf="serviceDetails">{{ serviceDetails.category }} •
                                     {{ serviceDetails.durationMinutes }} min</p>
                             </div>
-                            <div class="price-pill-lg">
-                                <span class="label">Starting from</span>
-                                <span class="value">{{ serviceDetails?.price }} TND</span>
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <div class="price-pill-lg">
+                                    <span class="label">Starting from</span>
+                                    <span class="value">{{ serviceDetails?.price }} TND</span>
+                                </div>
+                                <button class="fast-book-hero-btn" (click)="openFastBookModal()" *ngIf="!isLoading">
+                                    <span class="fbb-icon">⚡</span>
+                                    <span class="fbb-content">
+                                        <span class="fbb-title">Fast Booking</span>
+                                        <span class="fbb-sub">Best provider auto-matched</span>
+                                    </span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -316,6 +325,108 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fast Booking Modal -->
+    <div class="book-modal-backdrop fade show" *ngIf="showFastBookModal" (click)="closeFastBookModal()"></div>
+    <div class="book-modal fade show d-block" *ngIf="showFastBookModal" tabindex="-1">
+        <div class="fb-modal-dialog">
+            <div class="fb-modal-card">
+
+                <!-- Hero Header -->
+                <div class="fb-modal-header">
+                    <div class="fb-header-icon">⚡</div>
+                    <div class="fb-header-text">
+                        <h4>Fast Booking</h4>
+                        <p>The best available provider will be automatically selected for you</p>
+                    </div>
+                    <button class="fb-close-btn" (click)="closeFastBookModal()">✕</button>
+                </div>
+
+                <!-- Info Banner -->
+                <div class="fb-info-banner" *ngIf="!fastBookResult">
+                    <span class="fb-badge">AI</span>
+                    Our algorithm selects based on <strong>rating + availability + workload</strong>
+                </div>
+
+                <!-- Success State -->
+                <div class="fb-success" *ngIf="fastBookResult">
+                    <div class="fb-success-icon">✅</div>
+                    <h5>Booking Confirmed!</h5>
+                    <p class="fb-req-id">Request #{{ fastBookResult.requestId }}</p>
+
+                    <div class="fb-provider-card">
+                        <div class="fb-avatar">{{ fastBookResult.providerName.charAt(0).toUpperCase() }}</div>
+                        <div class="fb-provider-info">
+                            <div class="fb-provider-name">{{ fastBookResult.providerName }}</div>
+                            <div class="fb-provider-rating">
+                                <span *ngFor="let s of [1,2,3,4,5]" [style.color]="s <= fastBookResult.providerRating ? '#f59e0b' : '#e5e7eb'">★</span>
+                                {{ fastBookResult.providerRating.toFixed(1) }}
+                            </div>
+                        </div>
+                        <div class="fb-auto-badge">Auto-selected</div>
+                    </div>
+
+                    <div class="fb-datetime">
+                        📅 {{ fastBookResult.requestedDateTime | date:'EEEE d MMMM yyyy' }}
+                        &nbsp;·&nbsp;
+                        🕐 {{ fastBookResult.requestedDateTime | date:'HH:mm' }}
+                    </div>
+
+                    <button class="fb-cta-btn" (click)="goToMyRequests()">
+                        View my requests →
+                    </button>
+                </div>
+
+                <!-- Form State -->
+                <div class="fb-form-body" *ngIf="!fastBookResult">
+                    <div class="fb-error" *ngIf="fastBookError">
+                        ⚠️ {{ fastBookError }}
+                    </div>
+                    <form [formGroup]="fastBookForm" (ngSubmit)="submitFastBook()">
+
+                        <div class="fb-field-row">
+                            <div class="fb-field">
+                                <label>📅 Preferred Date *</label>
+                                <input type="date" formControlName="requestedDate"
+                                    [min]="minDate" [max]="maxDate"
+                                    [class.invalid]="fastBookForm.get('requestedDate')?.invalid && fastBookForm.get('requestedDate')?.touched">
+                            </div>
+                            <div class="fb-field">
+                                <label>🕐 Time *</label>
+                                <select formControlName="requestedTime"
+                                    [class.invalid]="fastBookForm.get('requestedTime')?.invalid && fastBookForm.get('requestedTime')?.touched">
+                                    <option value="">Choose...</option>
+                                    <option *ngFor="let h of fastBookHours" [value]="h">{{ h }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="fb-field">
+                            <label>📍 Intervention Address *</label>
+                            <textarea formControlName="address" rows="2"
+                                placeholder="Street, city, postal code..."
+                                [class.invalid]="fastBookForm.get('address')?.invalid && fastBookForm.get('address')?.touched"></textarea>
+                        </div>
+
+                        <div class="fb-field">
+                            <label class="optional">📝 Notes <span>(optional)</span></label>
+                            <textarea formControlName="patientNotes" rows="2"
+                                placeholder="Useful information for the provider..."></textarea>
+                        </div>
+
+                        <button type="submit" class="fb-submit-btn" [disabled]="isFastBooking">
+                            <span *ngIf="!isFastBooking">⚡ Book Automatically</span>
+                            <span *ngIf="isFastBooking" class="fb-loading">
+                                <span class="fb-spinner"></span>
+                                Finding best provider...
+                            </span>
+                        </button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>

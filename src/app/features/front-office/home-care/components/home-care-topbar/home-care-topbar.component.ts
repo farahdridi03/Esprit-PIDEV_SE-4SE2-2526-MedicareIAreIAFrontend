@@ -58,8 +58,9 @@ export class HomeCareTopbarComponent implements OnInit, OnDestroy {
     if (userId) {
       this.notificationService.getNotifications(userId).subscribe();
     }
-    if (email) {
-      this.deliveryTrackingService.connectToUserNotifications(email);
+    const token = this.authService.getToken();
+    if (email && token) {
+      this.deliveryTrackingService.connectToUserNotifications(email, token);
     }
   }
 

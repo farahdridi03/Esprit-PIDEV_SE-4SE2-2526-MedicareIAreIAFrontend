@@ -13,6 +13,13 @@ export class HomecareRequestListComponent implements OnInit, OnDestroy {
   requests: ServiceRequest[] = [];
   isLoading = true;
   error = '';
+
+  currentPage = 1; pageSize = 5;
+  get totalPages() { return Math.ceil(this.requests.length / this.pageSize); }
+  get pagedRequests() { const s = (this.currentPage - 1) * this.pageSize; return this.requests.slice(s, s + this.pageSize); }
+  get pages() { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
+  get pageEnd() { return Math.min(this.currentPage * this.pageSize, this.requests.length); }
+  goToPage(p: number) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; }
   
   private stompClient: Client | null = null;
 
@@ -59,7 +66,7 @@ export class HomecareRequestListComponent implements OnInit, OnDestroy {
         this.requests = data;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (_err) => {
         this.error = 'Failed to load requests.';
         this.isLoading = false;
       }
@@ -72,7 +79,7 @@ export class HomecareRequestListComponent implements OnInit, OnDestroy {
         next: () => {
           this.loadRequests(); // refresh
         },
-        error: (err) => {
+        error: (_err) => {
           alert('Failed to cancel request. It may be already in progress.');
         }
       });
@@ -86,7 +93,7 @@ export class HomecareRequestListComponent implements OnInit, OnDestroy {
           this.loadRequests();
           alert('Intervention marked as completed. You can now leave a review!');
         },
-        error: (err) => {
+        error: (_err) => {
           alert('Failed to complete the intervention.');
         }
       });

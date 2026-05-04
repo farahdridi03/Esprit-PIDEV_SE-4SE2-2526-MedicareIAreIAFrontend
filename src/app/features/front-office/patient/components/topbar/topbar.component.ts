@@ -3,6 +3,7 @@ import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { PatientService } from '../../../../../services/patient.service';
 import { NotificationService, AppNotification } from '../../../../../services/notification.service';
+import { DeliveryTrackingService } from '../../../../../services/delivery-tracking.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -32,6 +33,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private patientService: PatientService,
     private notificationService: NotificationService,
+    private deliveryTrackingService: DeliveryTrackingService,
     private router: Router
   ) {}
 
@@ -65,11 +67,18 @@ export class TopbarComponent implements OnInit, OnDestroy {
       this.notifications = notifs;
       this.unreadCount = notifs.filter(n => !n.read).length;
     });
+
+    const email = this.authService.getUserEmail();
+    const token = this.authService.getToken();
+    if (email && token) {
+      this.deliveryTrackingService.connectToUserNotifications(email, token);
+    }
   }
 
   ngOnDestroy() {
     this.profileSub?.unsubscribe();
     this.notifSub?.unsubscribe();
+    this.deliveryTrackingService.disconnectNotifications();
   }
 
   private setNames(fullName: string) {
@@ -85,7 +94,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
     this.showNotifications = !this.showNotifications;
   }
 
-  markAllAsRead(userId?: number) {
+  markAllAsRead(_userId?: number) {
     this.notificationService.markAllRead();
   }
 

@@ -46,11 +46,24 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
     selectedCompatiblePharmacy: CompatiblePharmacy | null = null;
     hasSearchedPharmacies = false;
 
+    // Tunisian cities recognized by the ML geocoding pipeline
+    readonly SUPPORTED_CITIES = [
+        'Tunis', 'Sfax', 'Sousse', 'Kairouan', 'Bizerte', 'Gabès', 'Ariana',
+        'Gafsa', 'Monastir', 'Ben Arous', 'Kasserine', 'Médenine', 'Nabeul',
+        'Béja', 'Jendouba', 'Mahdia', 'Siliana', 'Zaghouan', 'Tozeur',
+        'Kébili', 'Tataouine', 'Hammamet', 'Djerba'
+    ];
+
     // Form data
     deliveryAddress = '';
     scheduledDeliveryDate: string | null = null;
     prescriptionImageUrl = '';
     deliveryType: 'PICKUP' | 'HOME_DELIVERY' = 'PICKUP';
+
+    // Address validation
+    addressError = '';
+    addressValid = false;
+    detectedCity = '';
 
     // States
     isLoading = false;
@@ -201,8 +214,6 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
                         pharmacyStockMap.get(stock.pharmacyId)!.push(stock);
                     });
 
-                    const requiredProductCount = this.selectedProducts.length;
-
                     for (const [pharmacyId, stockDetails] of pharmacyStockMap.entries()) {
                         let totalPrice = 0;
                         const foundProductIds = stockDetails.map(s => s.productId);
@@ -331,7 +342,14 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
                 },
                 error: (err) => {
                     console.error('Error creating order:', err);
-                    this.error = err.error?.message || 'Error creating order.';
+                    // Backend validation error on deliveryAddress field
+                    if (err.error?.deliveryAddress) {
+                        this.addressError = err.error.deliveryAddress;
+                        this.addressValid = false;
+                        this.error = '';
+                    } else {
+                        this.error = err.error?.message || err.error?.error || 'Error creating order.';
+                    }
                     this.isSubmitting = false;
                 }
             });
@@ -355,12 +373,60 @@ export class PharmacyOrderCreateComponent implements OnInit, OnDestroy {
             return false;
         }
 
-        if (this.deliveryType === 'HOME_DELIVERY' && !this.deliveryAddress.trim()) {
-            this.error = 'Please enter a delivery address.';
-            return false;
+        if (this.deliveryType === 'HOME_DELIVERY') {
+            this.validateDeliveryAddress();
+            if (!this.addressValid) {
+                this.error = this.addressError || 'Please enter a valid delivery address.';
+                return false;
+            }
         }
 
         return true;
+    }
+
+    validateDeliveryAddress(): void {
+        const addr = this.deliveryAddress.trim();
+        this.addressError = '';
+        this.addressValid = false;
+        this.detectedCity = '';
+
+        if (!addr) {
+            this.addressError = 'Address is required.';
+            return;
+        }
+
+        // Require comma separator: "Street, City" format
+        if (!addr.includes(',')) {
+            this.addressError = 'Incomplete address. Required format: "Street/Avenue, City" — e.g. "Avenue Bourguiba, Tunis"';
+            return;
+        }
+
+        const parts = addr.split(',');
+        const streetPart = parts.slice(0, parts.length - 1).join(',').trim();
+        const cityPart = parts[parts.length - 1].trim();
+
+        if (streetPart.length < 3) {
+            this.addressError = 'Street name is too short. Please enter a complete street name.';
+            return;
+        }
+
+        if (cityPart.length < 2) {
+            this.addressError = 'City name is missing after the comma.';
+            return;
+        }
+
+        // City must be in the last part (after the comma)
+        const found = this.SUPPORTED_CITIES.find(city =>
+            cityPart.toLowerCase().includes(city.toLowerCase())
+        );
+
+        if (!found) {
+            this.addressError = `"${cityPart}" is not a recognized Tunisian city. Supported: Tunis, Sousse, Sfax, Ariana, Nabeul, Monastir, Gabès, Bizerte…`;
+            return;
+        }
+
+        this.detectedCity = found;
+        this.addressValid = true;
     }
 
     goBackToStep(step: number): void {

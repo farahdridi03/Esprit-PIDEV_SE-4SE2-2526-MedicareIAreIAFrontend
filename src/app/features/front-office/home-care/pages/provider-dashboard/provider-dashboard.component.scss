@@ -27,6 +27,42 @@
   .subtitle { color: #64748b; font-size: 1rem; }
 }
 
+.stats-chart-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stat-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  padding: 1rem 1.4rem;
+  min-width: 110px;
+
+  .sp-value { font-size: 2rem; font-weight: 800; line-height: 1; }
+  .sp-label { font-size: 0.75rem; font-weight: 500; margin-top: 0.25rem; opacity: 0.8; }
+
+  &.sp-amber  { background: #fef3c7; color: #92400e; }
+  &.sp-indigo { background: #e0e7ff; color: #3730a3; }
+  &.sp-emerald{ background: #d1fae5; color: #065f46; }
+}
+
+.chart-pill {
+  flex: 1;
+  min-width: 200px;
+  max-width: 340px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  position: relative;
+}
+
 .glass-card {
   background: white;
   border-radius: 20px;

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HomecareService } from '../../../../../services/homecare.service';
-import { HomeCareService, ProviderProfileDTO, CreateServiceRequestDTO } from '../../../../../models/homecare.model';
+import { HomeCareService, ProviderProfileDTO, CreateServiceRequestDTO, FastBookRequestDTO, FastBookResultDTO } from '../../../../../models/homecare.model';
 import { interventionDateValidator, getTodayDateString, getMaxInterventionDateString, getInterventionDateErrorMessage } from '../../../../../validators/intervention-date.validator';
 import { ToastService } from '../../../../../services/toast.service';
 
@@ -48,6 +48,14 @@ export class HomecareBookComponent implements OnInit {
     { id: 'BOOKING_FORM', label: 'Scheduling', icon: 'bi-calendar-event' }
   ];
 
+  // Fast Booking
+  showFastBookModal = false;
+  fastBookForm!: FormGroup;
+  isFastBooking = false;
+  fastBookResult: FastBookResultDTO | null = null;
+  fastBookError = '';
+  fastBookHours: string[] = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+
   // Détails Profil
   selectedProviderProfile: ProviderProfileDTO | null = null;
   isLoadingProfile = false;
@@ -92,6 +100,56 @@ export class HomecareBookComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  initFastBookForm(): void {
+    this.fastBookForm = this.fb.group({
+      requestedDate: ['', [Validators.required, interventionDateValidator(90)]],
+      requestedTime: ['', Validators.required],
+      address: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
+      patientNotes: ['', Validators.maxLength(1000)]
+    });
+  }
+
+  openFastBookModal(): void {
+    this.initFastBookForm();
+    this.fastBookResult = null;
+    this.fastBookError = '';
+    this.showFastBookModal = true;
+  }
+
+  closeFastBookModal(): void {
+    this.showFastBookModal = false;
+    this.fastBookResult = null;
+    this.fastBookError = '';
+  }
+
+  submitFastBook(): void {
+    if (this.fastBookForm.invalid) { this.fastBookForm.markAllAsTouched(); return; }
+    this.isFastBooking = true;
+    this.fastBookError = '';
+    const v = this.fastBookForm.value;
+    const dto: FastBookRequestDTO = {
+      serviceId: this.serviceId,
+      requestedDateTime: `${v.requestedDate}T${v.requestedTime}:00`,
+      address: v.address,
+      patientNotes: v.patientNotes || undefined
+    };
+    this.homecare.fastBook(dto).subscribe({
+      next: (result) => {
+        this.isFastBooking = false;
+        this.fastBookResult = result;
+      },
+      error: (err) => {
+        this.isFastBooking = false;
+        this.fastBookError = err.error?.message || 'Aucun prestataire disponible pour ce créneau.';
+      }
+    });
+  }
+
+  goToMyRequests(): void {
+    this.closeFastBookModal();
+    this.router.navigate(['/front/patient/homecare/my-requests']);
   }
 
   initForm(): void {

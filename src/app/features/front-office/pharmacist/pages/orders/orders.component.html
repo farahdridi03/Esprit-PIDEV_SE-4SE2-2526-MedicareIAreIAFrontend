@@ -159,23 +159,23 @@
                     <h3>Reject order #{{ selectedOrderId }}</h3>
                     <button class="close-icon" (click)="closeRejectModal()">&times;</button>
                 </div>
-                
+
                 <p class="modal-desc">Please indicate the reason for rejecting this order. The patient will be notified instantly.</p>
-                
+
                 <form [formGroup]="rejectForm" (ngSubmit)="confirmReject()">
                     <div class="form-group">
                         <label for="rejectReason">Reason for rejection <span class="required">*</span></label>
-                        <textarea id="rejectReason" formControlName="reason" 
+                        <textarea id="rejectReason" formControlName="reason"
                             placeholder="Out of stock, invalid prescription, etc..."
                             [class.is-invalid]="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched"></textarea>
-                        
+
                         <div class="error-feedback" *ngIf="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched">
                             <span *ngIf="rejectForm.get('reason')?.errors?.['required']">Reason is required.</span>
                             <span *ngIf="rejectForm.get('reason')?.errors?.['minlength']">Reason must be at least 5 characters.</span>
                             <span *ngIf="rejectForm.get('reason')?.errors?.['maxlength']">Reason cannot exceed 1000 characters.</span>
                         </div>
                     </div>
-                    
+
                     <div class="modal-actions">
                         <button type="button" class="btn btn-outline" (click)="closeRejectModal()">Cancel</button>
                         <button type="submit" class="btn btn-danger" [disabled]="rejectForm.invalid">
@@ -193,7 +193,7 @@
                     <h3>Dispatch order #{{ currentDispatchOrderId }}</h3>
                     <button class="close-icon" (click)="closeDispatchModal()">&times;</button>
                 </div>
-                
+
                 <p class="modal-desc">Select a delivery agency and an available courier to handle this order.</p>
 
                 <form [formGroup]="dispatchForm" (ngSubmit)="confirmDispatch()">
@@ -239,4 +239,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

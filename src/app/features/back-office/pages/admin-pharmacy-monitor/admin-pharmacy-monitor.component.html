@@ -1,0 +1,133 @@
+<div class="page-header">
+  <div>
+    <h1>Pharmacy Orders <em>Monitor</em></h1>
+    <p>Live aging report — pending and reviewing orders with auto-escalation.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn-secondary" (click)="loadAging()" [disabled]="isLoading">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" width="15" height="15">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+      </svg>
+      Refresh
+    </button>
+    <button class="btn-escalate" (click)="triggerEscalation()" [disabled]="isTriggering">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" width="15" height="15">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+      </svg>
+      {{ isTriggering ? 'Escalating...' : 'Run Escalation Now' }}
+    </button>
+  </div>
+</div>
+
+<!-- Escalation result banner -->
+<div class="alert-banner alert-success" *ngIf="escalationResult">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+  <span><strong>{{ escalationResult.escalated }}</strong> order(s) escalated PENDING → REVIEWING &nbsp;·&nbsp; {{ escalationResult.triggeredAt | date:'HH:mm:ss' }}</span>
+  <button class="close-btn" (click)="escalationResult = null">✕</button>
+</div>
+<div class="alert-banner alert-error" *ngIf="escalationError">
+  {{ escalationError }}
+  <button class="close-btn" (click)="escalationError = ''">✕</button>
+</div>
+
+<!-- Urgency stat cards -->
+<div class="stats-row" *ngIf="!isLoading">
+  <div class="stat-card stat-critical">
+    <div class="stat-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="22" height="22">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+      </svg>
+    </div>
+    <div>
+      <div class="stat-value">{{ critical }}</div>
+      <div class="stat-label">Critical (&gt;24h)</div>
+    </div>
+  </div>
+  <div class="stat-card stat-high">
+    <div class="stat-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="22" height="22">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+      </svg>
+    </div>
+    <div>
+      <div class="stat-value">{{ high }}</div>
+      <div class="stat-label">High (6–24h)</div>
+    </div>
+  </div>
+  <div class="stat-card stat-medium">
+    <div class="stat-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="22" height="22">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <div>
+      <div class="stat-value">{{ medium }}</div>
+      <div class="stat-label">Medium (1–6h)</div>
+    </div>
+  </div>
+  <div class="stat-card stat-low">
+    <div class="stat-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="22" height="22">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <div>
+      <div class="stat-value">{{ low }}</div>
+      <div class="stat-label">Low (&lt;1h)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Orders aging table -->
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-title">Pending &amp; Reviewing Orders — Aging Report</div>
+    <div class="total-badge">{{ orders.length }} order(s)</div>
+  </div>
+
+  <div class="loader" *ngIf="isLoading">Loading aging data...</div>
+  <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+  <table class="tbl" *ngIf="!isLoading && orders.length > 0">
+    <thead>
+      <tr>
+        <th>Order #</th>
+        <th>Pharmacy</th>
+        <th>Patient</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th class="text-center">Hours Waiting</th>
+        <th class="text-center">Urgency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let o of orders" [class.row-critical]="o.urgencyLevel === 'CRITICAL'">
+        <td class="id-cell">#{{ o.orderId }}</td>
+        <td class="cn">{{ o.pharmacyName }}</td>
+        <td>{{ o.patientName }}</td>
+        <td>
+          <span class="chip"
+            [ngClass]="{
+              'ck-amber': o.status === 'PENDING',
+              'ck-indigo': o.status === 'REVIEWING'
+            }">
+            {{ o.status }}
+          </span>
+        </td>
+        <td class="cs">{{ o.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td class="text-center hours-cell">{{ o.hoursWaiting }}h</td>
+        <td class="text-center">
+          <span class="chip" [ngClass]="urgencyClass(o.urgencyLevel)">
+            {{ o.urgencyLevel }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="no-data" *ngIf="!isLoading && !error && orders.length === 0">
+    No pending or reviewing orders — all clear!
+  </div>
+</div>

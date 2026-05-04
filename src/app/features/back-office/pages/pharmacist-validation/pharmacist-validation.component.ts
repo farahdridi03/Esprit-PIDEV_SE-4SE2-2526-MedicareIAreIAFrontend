@@ -14,6 +14,19 @@ export class PharmacistValidationComponent implements OnInit {
   isLoading: boolean = true;
   selectedDocument: string | null = null;
 
+  pharmPage = 1; provPage = 1; pageSize = 5;
+  get pharmTotalPages() { return Math.ceil(this.pendingPharmacists.length / this.pageSize); }
+  get pagedPharmacists() { const s = (this.pharmPage - 1) * this.pageSize; return this.pendingPharmacists.slice(s, s + this.pageSize); }
+  get pharmPages() { return Array.from({ length: this.pharmTotalPages }, (_, i) => i + 1); }
+  get pharmPageEnd() { return Math.min(this.pharmPage * this.pageSize, this.pendingPharmacists.length); }
+  goToPharmPage(p: number) { if (p >= 1 && p <= this.pharmTotalPages) this.pharmPage = p; }
+
+  get provTotalPages() { return Math.ceil(this.pendingProviders.length / this.pageSize); }
+  get pagedProviders() { const s = (this.provPage - 1) * this.pageSize; return this.pendingProviders.slice(s, s + this.pageSize); }
+  get provPages() { return Array.from({ length: this.provTotalPages }, (_, i) => i + 1); }
+  get provPageEnd() { return Math.min(this.provPage * this.pageSize, this.pendingProviders.length); }
+  goToProvPage(p: number) { if (p >= 1 && p <= this.provTotalPages) this.provPage = p; }
+
   constructor(private adminService: AdminService) { }
 
   ngOnInit(): void {

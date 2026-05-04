@@ -14,6 +14,31 @@ export class PharmacyOrderListComponent implements OnInit {
   isLoading = true;
   error = '';
 
+  // Pagination
+  currentPage = 1;
+  pageSize = 5;
+
+  get totalPages(): number {
+    return Math.ceil(this.orders.length / this.pageSize);
+  }
+
+  get pagedOrders(): PharmacyOrderResponseDTO[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.orders.slice(start, start + this.pageSize);
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  get pageEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.orders.length);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) this.currentPage = page;
+  }
+
   constructor(
     private orderService: PharmacyOrderService,
     private authService: AuthService,
