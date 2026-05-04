@@ -28,9 +28,15 @@ export class WebSocketNotificationService implements OnDestroy {
   private patientNotifs = new BehaviorSubject<WsNotification[]>([]);
   patientNotifications$ = this.patientNotifs.asObservable();
 
+  // Notifications clinic
+  private clinicNotifs = new BehaviorSubject<WsNotification[]>([]);
+  clinicNotifications$ = this.clinicNotifs.asObservable();
+
   // Subs actifs
-  private adminSub: any   = null;
-  private patientSub: any = null;
+  private adminSub: any     = null;
+  private patientSub: any   = null;
+  private clinicSub: any    = null;
+  private currentPatientId: number | null = null;
 
   constructor(private zone: NgZone) {}
 
@@ -49,7 +55,10 @@ export class WebSocketNotificationService implements OnDestroy {
           console.log('[WS] ✅ Connecté au broker STOMP', frame);
           // Re-souscrire après reconnexion
           if (this.adminSub !== null) { this.adminSub = null; this.subscribeAsAdmin(); }
-          if (this.patientSub !== null) { this.patientSub = null; }
+          if (this.patientSub !== null && this.currentPatientId !== null) {
+            this.patientSub = null; this.subscribeAsPatient(this.currentPatientId);
+          }
+          if (this.clinicSub !== null) { this.clinicSub = null; this.subscribeAsClinic(); }
         });
       },
       onDisconnect: () => {
@@ -101,6 +110,7 @@ export class WebSocketNotificationService implements OnDestroy {
 
   /** S'abonner aux notifications d'un patient spécifique */
   subscribeAsPatient(patientId: number): void {
+    this.currentPatientId = patientId;
     this.waitForConnection(() => {
       if (this.patientSub) return;
       this.patientSub = this.client.subscribe(
@@ -119,6 +129,24 @@ export class WebSocketNotificationService implements OnDestroy {
     });
   }
 
+  /** S'abonner aux notifications clinic (broadcast toutes cliniques) */
+  subscribeAsClinic(): void {
+    this.waitForConnection(() => {
+      if (this.clinicSub) return;
+      this.clinicSub = this.client.subscribe(
+        '/topic/clinic/notifications',
+        (msg: IMessage) => {
+          this.zone.run(() => {
+            const notif: WsNotification = { ...JSON.parse(msg.body), read: false };
+            const current = this.clinicNotifs.value;
+            this.clinicNotifs.next([notif, ...current].slice(0, 50));
+          });
+        }
+      );
+      console.log('[WS] Abonné : /topic/clinic/notifications');
+    });
+  }
+
   unsubscribeAdmin(): void {
     this.adminSub?.unsubscribe();
     this.adminSub = null;
@@ -127,6 +155,11 @@ export class WebSocketNotificationService implements OnDestroy {
   unsubscribePatient(): void {
     this.patientSub?.unsubscribe();
     this.patientSub = null;
+  }
+
+  unsubscribeClinic(): void {
+    this.clinicSub?.unsubscribe();
+    this.clinicSub = null;
   }
 
   // ─── Helpers ─────────────────────────────────────────────────────────────

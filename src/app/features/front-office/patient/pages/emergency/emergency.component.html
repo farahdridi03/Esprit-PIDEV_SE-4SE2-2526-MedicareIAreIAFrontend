@@ -150,18 +150,41 @@
                     <span>{{ submitSuccess }}</span>
                 </div>
 
-                <!-- Smart Device ID -->
+                <!-- Smart Device (auto-detected) -->
                 <div class="form-group">
-                    <label class="form-label">Smart Device ID <span class="required">*</span></label>
-                    <input class="form-input" [class.input-error]="hasError('smartDeviceId')"
-                        type="number" [(ngModel)]="alertForm.smartDeviceId" name="smartDeviceId"
-                        (blur)="markTouched('smartDeviceId')" (input)="validateField('smartDeviceId')"
-                        placeholder="e.g.: 1001" min="1" id="smartDeviceId">
-                    <div class="field-error" *ngIf="hasError('smartDeviceId')">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <label class="form-label">Smart Device</label>
+
+                    <!-- Loading -->
+                    <div *ngIf="deviceLoading" class="device-info-panel device-loading">
+                        <div class="spinner-sm"></div>
+                        <span>Fetching your smart device...</span>
+                    </div>
+
+                    <!-- Error -->
+                    <div *ngIf="!deviceLoading && deviceError" class="device-info-panel device-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                         </svg>
-                        {{ getError('smartDeviceId') }}
+                        <span>{{ deviceError }}</span>
+                    </div>
+
+                    <!-- Device found -->
+                    <div *ngIf="!deviceLoading && deviceInfo" class="device-info-panel device-found">
+                        <div *ngIf="deviceInfo.emergencyContactName" class="device-row contact-row" style="border-top:none;padding-top:0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                            </svg>
+                            <span class="device-label">Emergency Contact:</span>
+                            <span class="device-value">{{ deviceInfo.emergencyContactName }}
+                                <span *ngIf="deviceInfo.emergencyContactPhone"> — {{ deviceInfo.emergencyContactPhone }}</span>
+                            </span>
+                        </div>
+                        <div *ngIf="!deviceInfo.emergencyContactName" class="device-row contact-row contact-missing">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            </svg>
+                            <span>No emergency contact on file — SMS will not be sent. Update your profile to add one.</span>
+                        </div>
                     </div>
                 </div>
 
@@ -226,26 +249,11 @@
                     </div>
                 </div>
 
-                <!-- Emergency Phone -->
-                <div class="form-group">
-                    <label class="form-label">Emergency Phone <span class="optional">(optional)</span></label>
-                    <input class="form-input" [class.input-error]="hasError('emergencyPhone')"
-                        type="tel" [(ngModel)]="alertForm.emergencyPhone" name="emergencyPhone"
-                        (blur)="markTouched('emergencyPhone')" (input)="validateField('emergencyPhone')"
-                        placeholder="e.g.: +216 12 345 678" id="emergencyPhone">
-                    <div class="field-error" *ngIf="hasError('emergencyPhone')">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                        </svg>
-                        {{ getError('emergencyPhone') }}
-                    </div>
-                </div>
-
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
-                <button type="submit" class="btn-save btn-alert" [disabled]="submitting || !isFormValid">
+                <button type="submit" class="btn-save btn-alert" [disabled]="submitting || !isFormValid || deviceLoading">
                     <svg *ngIf="!submitting" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
                         <path d="M5 13l4 4L19 7" />

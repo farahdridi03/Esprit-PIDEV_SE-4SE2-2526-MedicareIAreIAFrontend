@@ -2,6 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface SmartDeviceResponse {
+  id: number;
+  patientId: number;
+  patientName: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+}
+
 export interface EmergencyAlertResponse {
   id: number;
   smartDeviceId: number;
@@ -48,6 +56,14 @@ export class EmergencyService {
   getInterventionsByClinic(clinicId: number): Observable<EmergencyInterventionResponse[]> {
     return this.http.get<EmergencyInterventionResponse[]>(`${this.base}/interventions/clinic/${clinicId}`);
   }
+
+  autoDispatch(alertId: number): Observable<AutoDispatchResponse> {
+    return this.http.post<AutoDispatchResponse>(`${this.base}/interventions/auto-dispatch/${alertId}`, {});
+  }
+
+  getSmartDeviceByPatientId(patientId: number): Observable<SmartDeviceResponse> {
+    return this.http.get<SmartDeviceResponse>(`${this.base}/smart-devices/by-patient/${patientId}`);
+  }
 }
 
 export interface EmergencyAlertRequest {
@@ -74,4 +90,17 @@ export interface EmergencyInterventionResponse {
   dispatchedAt: string;
   arrivedAt?: string;
   completedAt?: string;
+}
+
+export interface AutoDispatchResponse {
+  interventionId: number;
+  emergencyAlertId: number;
+  patientName: string;
+  ambulanceId: number;
+  ambulanceLicensePlate: string;
+  clinicId: number;
+  clinicName: string;
+  distanceKm: number;
+  status: string;
+  dispatchedAt: string;
 }

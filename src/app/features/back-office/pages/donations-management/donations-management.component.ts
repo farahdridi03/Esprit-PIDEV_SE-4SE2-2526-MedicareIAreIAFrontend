@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Donation, DonationStatus, DonationType, AidRequest, AidRequestStatus, DonationAssignment } from '../../../../models/donation.model';
 import { EligibilityResult } from '../../../../models/eligibility.model';
@@ -9,7 +9,7 @@ import { DonationService } from '../../../../services/donation.service';
     templateUrl: './donations-management.component.html',
     styleUrls: ['./donations-management.component.scss']
 })
-export class DonationsManagementComponent implements OnInit {
+export class DonationsManagementComponent implements OnInit, OnDestroy {
     donations: Donation[] = [];
     aidRequests: AidRequest[] = [];
 
@@ -34,6 +34,11 @@ export class DonationsManagementComponent implements OnInit {
     showAssignmentsModal = false;
     selectedDonationAssignments: DonationAssignment[] = [];
     assignmentsLoading = false;
+
+    // Toast notification
+    toastVisible = false;
+    toastMessage = '';
+    private toastTimer: any;
 
     // AI Eligibility
     eligibilityResults: Map<number, EligibilityResult> = new Map();
@@ -135,20 +140,37 @@ export class DonationsManagementComponent implements OnInit {
     confirmAssignment(): void {
         if (!this.selectedReq?.id || !this.selectedDonationId) return;
         this.loading = true;
+        const patientName = this.selectedReq.patientName;
         this.donationService.assignDonation({
             donationId: this.selectedDonationId,
             aidRequestId: this.selectedReq.id
         }).subscribe({
             next: () => {
-                // La notification WebSocket est envoyée directement par le backend
                 this.closeAssignModal();
                 this.refresh();
+                this.showToast(`Don assigné à ${patientName} — Emails de confirmation envoyés au patient et au donneur.`);
             },
             error: (err) => {
                 console.error('Error assigning donation', err);
                 this.loading = false;
             }
         });
+    }
+
+    showToast(msg: string): void {
+        this.toastMessage = msg;
+        this.toastVisible = true;
+        clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => this.toastVisible = false, 6000);
+    }
+
+    hideToast(): void {
+        clearTimeout(this.toastTimer);
+        this.toastVisible = false;
+    }
+
+    ngOnDestroy(): void {
+        clearTimeout(this.toastTimer);
     }
 
     getInitials(name: string | undefined): string {
@@ -224,6 +246,7 @@ export class DonationsManagementComponent implements OnInit {
         this.eligibilityLoading.add(req.id);
         this.donationService.checkEligibility(req.id).subscribe({
             next: (result) => {
+                result.requestType = req.type;
                 this.eligibilityResults.set(req.id!, result);
                 this.eligibilityLoading.delete(req.id!);
                 this.selectedEligibility = result;

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { EmergencyService, EmergencyAlertRequest } from '../../../../../services/emergency.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { EmergencyService, EmergencyAlertRequest, SmartDeviceResponse } from '../../../../../services/emergency.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 export interface EmergencyAlert {
@@ -12,15 +12,12 @@ export interface EmergencyAlert {
     longitude: number;
     canceledByPatient: boolean;
     createdAt: string;
-    emergencyPhone?: string;
 }
 
 export interface FormErrors {
-    smartDeviceId?: string;
     severity?: string;
     latitude?: string;
     longitude?: string;
-    emergencyPhone?: string;
 }
 
 @Component({
@@ -28,11 +25,18 @@ export interface FormErrors {
     templateUrl: './emergency.component.html',
     styleUrls: ['./emergency.component.scss']
 })
-export class EmergencyComponent implements OnInit {
+export class EmergencyComponent implements OnInit, OnDestroy {
     alerts: EmergencyAlert[] = [];
     loading = false;
     cancelingId: number | null = null;
     currentUserFullName: string | null = null;
+
+    private refreshTimer: ReturnType<typeof setInterval> | null = null;
+
+    // Smart device (auto-fetched)
+    deviceInfo: SmartDeviceResponse | null = null;
+    deviceLoading = false;
+    deviceError = '';
 
     // Modal state
     isModalOpen = false;
@@ -40,13 +44,11 @@ export class EmergencyComponent implements OnInit {
     submitError = '';
     submitSuccess = '';
 
-    // Form model
-    alertForm: EmergencyAlertRequest = {
-        smartDeviceId: 0,
+    // Form model (no smartDeviceId or emergencyPhone — both come from profile)
+    alertForm: Omit<EmergencyAlertRequest, 'smartDeviceId' | 'emergencyPhone'> = {
         severity: 'HIGH',
         latitude: 0,
-        longitude: 0,
-        emergencyPhone: ''
+        longitude: 0
     };
 
     // Validation
@@ -62,6 +64,11 @@ export class EmergencyComponent implements OnInit {
     ngOnInit(): void {
         this.currentUserFullName = this.authService.getUserFullName();
         this.loadAlerts();
+        this.refreshTimer = setInterval(() => this.loadAlerts(), 30_000);
+    }
+
+    ngOnDestroy(): void {
+        if (this.refreshTimer) clearInterval(this.refreshTimer);
     }
 
     loadAlerts(): void {
@@ -83,6 +90,7 @@ export class EmergencyComponent implements OnInit {
     openModal(): void {
         this.resetForm();
         this.isModalOpen = true;
+        this.fetchSmartDevice();
     }
 
     closeModal(): void {
@@ -92,17 +100,42 @@ export class EmergencyComponent implements OnInit {
 
     resetForm(): void {
         this.alertForm = {
-            smartDeviceId: 0,
             severity: 'HIGH',
             latitude: 0,
-            longitude: 0,
-            emergencyPhone: ''
+            longitude: 0
         };
         this.formErrors = {};
         this.formTouched = {};
         this.submitError = '';
         this.submitSuccess = '';
         this.submitting = false;
+        this.deviceError = '';
+    }
+
+    // ── DEVICE AUTO-FETCH ──────────────────────────────────
+
+    private fetchSmartDevice(): void {
+        const patientId = this.authService.getUserId();
+        if (!patientId) {
+            this.deviceError = 'Unable to identify your account. Please log in again.';
+            return;
+        }
+        this.deviceLoading = true;
+        this.deviceInfo = null;
+        this.deviceError = '';
+        this.emergencyService.getSmartDeviceByPatientId(patientId).subscribe({
+            next: (device) => {
+                this.deviceInfo = device;
+                this.deviceLoading = false;
+            },
+            error: (err: any) => {
+                console.error('Error fetching smart device', err);
+                this.deviceError = err.status === 404
+                    ? 'No smart device linked to your profile. Please contact your clinic.'
+                    : 'Unable to load smart device information.';
+                this.deviceLoading = false;
+            }
+        });
     }
 
     // ── VALIDATION ─────────────────────────────────────────
@@ -114,21 +147,11 @@ export class EmergencyComponent implements OnInit {
 
     validateField(field: string): void {
         switch (field) {
-            case 'smartDeviceId':
-                if (!this.alertForm.smartDeviceId || this.alertForm.smartDeviceId <= 0) {
-                    this.formErrors.smartDeviceId = 'L\'ID du dispositif est requis et doit être supérieur à 0.';
-                } else if (!Number.isInteger(Number(this.alertForm.smartDeviceId))) {
-                    this.formErrors.smartDeviceId = 'L\'ID du dispositif doit être un nombre entier.';
-                } else {
-                    delete this.formErrors.smartDeviceId;
-                }
-                break;
-
             case 'severity':
                 if (!this.alertForm.severity) {
-                    this.formErrors.severity = 'La sévérité est requise.';
-                } else if (!this.severities.includes(this.alertForm.severity)) {
-                    this.formErrors.severity = 'Sévérité invalide. Choisissez parmi: LOW, MEDIUM, HIGH, CRITICAL.';
+                    this.formErrors.severity = 'Severity is required.';
+                } else if (!this.severities.includes(this.alertForm.severity as any)) {
+                    this.formErrors.severity = 'Invalid severity. Choose from: LOW, MEDIUM, HIGH, CRITICAL.';
                 } else {
                     delete this.formErrors.severity;
                 }
@@ -136,12 +159,12 @@ export class EmergencyComponent implements OnInit {
 
             case 'latitude':
                 const lat = Number(this.alertForm.latitude);
-                if (this.alertForm.latitude === null || this.alertForm.latitude === undefined || this.alertForm.latitude.toString() === '') {
-                    this.formErrors.latitude = 'La latitude est requise.';
+                if (this.alertForm.latitude === null || this.alertForm.latitude === undefined) {
+                    this.formErrors.latitude = 'Latitude is required.';
                 } else if (isNaN(lat)) {
-                    this.formErrors.latitude = 'La latitude doit être un nombre valide.';
+                    this.formErrors.latitude = 'Latitude must be a valid number.';
                 } else if (lat < -90 || lat > 90) {
-                    this.formErrors.latitude = 'La latitude doit être entre -90 et 90.';
+                    this.formErrors.latitude = 'Latitude must be between -90 and 90.';
                 } else {
                     delete this.formErrors.latitude;
                 }
@@ -149,31 +172,21 @@ export class EmergencyComponent implements OnInit {
 
             case 'longitude':
                 const lng = Number(this.alertForm.longitude);
-                if (this.alertForm.longitude === null || this.alertForm.longitude === undefined || this.alertForm.longitude.toString() === '') {
-                    this.formErrors.longitude = 'La longitude est requise.';
+                if (this.alertForm.longitude === null || this.alertForm.longitude === undefined) {
+                    this.formErrors.longitude = 'Longitude is required.';
                 } else if (isNaN(lng)) {
-                    this.formErrors.longitude = 'La longitude doit être un nombre valide.';
+                    this.formErrors.longitude = 'Longitude must be a valid number.';
                 } else if (lng < -180 || lng > 180) {
-                    this.formErrors.longitude = 'La longitude doit être entre -180 et 180.';
+                    this.formErrors.longitude = 'Longitude must be between -180 and 180.';
                 } else {
                     delete this.formErrors.longitude;
-                }
-                break;
-
-            case 'emergencyPhone':
-                const phone = this.alertForm.emergencyPhone?.trim() || '';
-                if (phone && !/^[+]?[\d\s\-()]{8,20}$/.test(phone)) {
-                    this.formErrors.emergencyPhone = 'Numéro de téléphone invalide (8-20 chiffres, +, - et espaces autorisés).';
-                } else {
-                    delete this.formErrors.emergencyPhone;
                 }
                 break;
         }
     }
 
     validateAll(): boolean {
-        // Mark all fields as touched
-        ['smartDeviceId', 'severity', 'latitude', 'longitude', 'emergencyPhone'].forEach(f => {
+        ['severity', 'latitude', 'longitude'].forEach(f => {
             this.formTouched[f] = true;
             this.validateField(f);
         });
@@ -189,15 +202,13 @@ export class EmergencyComponent implements OnInit {
     }
 
     get isFormValid(): boolean {
-        // Quick check without mutating touched state
+        if (!this.deviceInfo) return false;
         const f = this.alertForm;
-        if (!f.smartDeviceId || f.smartDeviceId <= 0) return false;
-        if (!f.severity || !this.severities.includes(f.severity)) return false;
+        if (!f.severity || !this.severities.includes(f.severity as any)) return false;
         const lat = Number(f.latitude);
         if (isNaN(lat) || lat < -90 || lat > 90) return false;
         const lng = Number(f.longitude);
         if (isNaN(lng) || lng < -180 || lng > 180) return false;
-        if (f.emergencyPhone?.trim() && !/^[+]?[\d\s\-()]{8,20}$/.test(f.emergencyPhone.trim())) return false;
         return true;
     }
 
@@ -207,7 +218,7 @@ export class EmergencyComponent implements OnInit {
 
     useCurrentLocation(): void {
         if (!navigator.geolocation) {
-            this.submitError = 'La géolocalisation n\'est pas supportée par votre navigateur.';
+            this.submitError = 'Geolocation is not supported by your browser.';
             return;
         }
         this.detectingLocation = true;
@@ -234,6 +245,11 @@ export class EmergencyComponent implements OnInit {
         this.submitError = '';
         this.submitSuccess = '';
 
+        if (!this.deviceInfo) {
+            this.submitError = 'Smart device not loaded. Please wait or refresh.';
+            return;
+        }
+
         if (!this.validateAll()) {
             this.submitError = 'Please correct the errors in the form before submitting.';
             return;
@@ -242,11 +258,10 @@ export class EmergencyComponent implements OnInit {
         this.submitting = true;
 
         const payload: EmergencyAlertRequest = {
-            smartDeviceId: Number(this.alertForm.smartDeviceId),
-            severity: this.alertForm.severity,
+            smartDeviceId: this.deviceInfo.id,
+            severity: this.alertForm.severity as any,
             latitude: Number(this.alertForm.latitude),
-            longitude: Number(this.alertForm.longitude),
-            emergencyPhone: this.alertForm.emergencyPhone?.trim() || undefined
+            longitude: Number(this.alertForm.longitude)
         };
 
         this.emergencyService.createAlert(payload).subscribe({
@@ -256,7 +271,7 @@ export class EmergencyComponent implements OnInit {
                 setTimeout(() => {
                     this.closeModal();
                     this.loadAlerts();
-                }, 1200);
+                }, 2000);
             },
             error: (err: any) => {
                 this.submitting = false;
@@ -331,10 +346,10 @@ export class EmergencyComponent implements OnInit {
 
     getSeverityLabel(severity: string): string {
         switch (severity) {
-            case 'CRITICAL': return '🚨 Critique';
-            case 'HIGH': return '⚠️ Élevée';
-            case 'MEDIUM': return '🔔 Moyenne';
-            case 'LOW': return '💡 Faible';
+            case 'CRITICAL': return '🚨 Critical';
+            case 'HIGH': return '⚠️ High';
+            case 'MEDIUM': return '🔔 Medium';
+            case 'LOW': return '💡 Low';
             default: return severity;
         }
     }

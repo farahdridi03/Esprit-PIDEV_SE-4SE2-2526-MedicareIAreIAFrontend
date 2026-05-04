@@ -362,6 +362,84 @@ $border: #e5e7eb;
   &:focus { outline: none; border-color: $primary; background-color: $white; box-shadow: 0 0 0 4px $primary-light; }
 }
 
+.btn-auto-dispatch {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: $white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) { background: linear-gradient(135deg, #4f46e5, #7c3aed); transform: translateY(-1px); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+/* Auto-Dispatch Result Modal */
+.auto-dispatch-result {
+  max-width: 480px;
+}
+
+.dispatch-success-icon {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.dispatch-success-msg {
+  text-align: center;
+  font-weight: 600;
+  color: $text-dark;
+  margin-bottom: 1.5rem;
+}
+
+.dispatch-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dispatch-info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background: $bg;
+  border-radius: 10px;
+  border: 1px solid $border;
+
+  &.highlight {
+    background: #ede9fe;
+    border-color: #c4b5fd;
+  }
+
+  .info-label {
+    font-size: 0.8rem;
+    color: $text-light;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .info-value {
+    font-size: 0.9rem;
+    color: $text-dark;
+    font-weight: 700;
+
+    &.distance { color: #7c3aed; font-size: 1rem; }
+    &.status-badge {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      font-size: 0.75rem;
+    }
+  }
+}
+
 .modal-actions {
   display: flex;
   gap: 1rem;

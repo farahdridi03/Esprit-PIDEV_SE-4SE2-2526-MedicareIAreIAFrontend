@@ -200,3 +200,61 @@
 .form-group label { font-weight: 600; font-size: 0.85rem; color: var(--text-1); }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Email info notice inside assign modal */
+.email-notice {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    color: #166534;
+    line-height: 1.5;
+}
+
+/* Toast notification */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #fff;
+    border: 1.5px solid #bbf7d0;
+    border-left: 5px solid #22c55e;
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    max-width: 420px;
+    animation: slideInToast 0.3s ease;
+}
+
+@keyframes slideInToast {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.toast-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.toast-msg {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #166534;
+    flex: 1;
+    line-height: 1.4;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: #86efac;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+    &:hover { color: #166534; }
+}

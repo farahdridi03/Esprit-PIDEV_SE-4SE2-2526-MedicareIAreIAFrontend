@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { EmergencyService, EmergencyAlertResponse } from '../../../../../services/emergency.service';
 import { AmbulanceService } from '../../../../../services/ambulance.service';
+import { WebSocketNotificationService, WsNotification } from '../../../../../services/websocket-notification.service';
 
 @Component({
   selector: 'app-clinic-topbar',
@@ -19,13 +21,16 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
   dispatchingAlertId: number | null = null;
   dispatchMessage: string = '';
   dispatchSuccess: boolean = true;
+
   private intervalId: any;
+  private wsSub: Subscription | null = null;
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
     private emergencyService: EmergencyService,
-    private ambulanceService: AmbulanceService
+    private ambulanceService: AmbulanceService,
+    private wsNotif: WebSocketNotificationService
   ) {}
 
   ngOnInit() {
@@ -37,12 +42,29 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
       error: (err) => console.error('Error fetching clinic profile', err)
     });
 
+    // Polling pour maintenir la liste à jour
     this.checkAlerts();
     this.intervalId = setInterval(() => this.checkAlerts(), 10000);
+
+    // WebSocket : notification immédiate quand un patient envoie une alerte
+    this.wsNotif.connect();
+    this.wsNotif.subscribeAsClinic();
+    this.wsSub = this.wsNotif.clinicNotifications$.subscribe((notifs: WsNotification[]) => {
+      if (notifs.length > 0) {
+        // Recharger la liste d'alertes immédiatement
+        this.checkAlerts();
+        // Incrémenter le badge si le panel est fermé
+        if (!this.showNotifications) {
+          this.unreadCount++;
+        }
+      }
+    });
   }
 
   ngOnDestroy() {
     if (this.intervalId) clearInterval(this.intervalId);
+    this.wsSub?.unsubscribe();
+    this.wsNotif.unsubscribeClinic();
   }
 
   toggleNotifications() {
@@ -76,7 +98,6 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
     this.dispatchingAlertId = alertData.id;
     this.dispatchMessage = '';
 
-    // Step 1: Find an available ambulance
     this.ambulanceService.getAll().subscribe({
       next: (ambulances) => {
         const available = ambulances.filter(
@@ -92,7 +113,6 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
 
         const ambulance = available[0];
 
-        // Step 2: Mark ambulance as ON_DUTY and set destination coordinates
         this.ambulanceService.update(ambulance.id, {
           clinicId: ambulance.clinicId,
           currentLat: alertData.latitude,
@@ -101,7 +121,6 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
           status: 'ON_DUTY'
         }).subscribe({
           next: () => {
-            // Step 3: Resolve the alert
             this.emergencyService.updateAlertStatus(alertData.id, 'RESOLVED').subscribe({
               next: () => {
                 this.notifications = this.notifications.filter(a => a.id !== alertData.id);
@@ -109,7 +128,6 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
                 this.dispatchMessage = `✅ Ambulance ${plate} dispatched successfully. Alert resolved.`;
                 this.dispatchSuccess = true;
                 this.dispatchingAlertId = null;
-                // Auto-hide message after 4 seconds
                 setTimeout(() => { this.dispatchMessage = ''; }, 4000);
               },
               error: () => {

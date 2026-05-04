@@ -60,6 +60,45 @@
         <h3>No alerts found</h3>
         <p>There are no emergency alerts for the selected filter.</p>
       </div>
+      <!-- Auto-Dispatch Result Modal -->
+      <div class="modal-overlay" *ngIf="autoDispatchResult" (click)="closeAutoDispatchResult()">
+        <div class="modal-card auto-dispatch-result" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h2>🤖 Auto-Dispatch Complete</h2>
+            <button class="close-btn" (click)="closeAutoDispatchResult()">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="dispatch-success-icon">✅</div>
+            <p class="dispatch-success-msg">Nearest ambulance automatically dispatched!</p>
+            <div class="dispatch-info-grid">
+              <div class="dispatch-info-item">
+                <span class="info-label">Patient</span>
+                <span class="info-value">{{ autoDispatchResult.patientName }}</span>
+              </div>
+              <div class="dispatch-info-item">
+                <span class="info-label">Ambulance</span>
+                <span class="info-value">🚑 {{ autoDispatchResult.ambulanceLicensePlate }}</span>
+              </div>
+              <div class="dispatch-info-item">
+                <span class="info-label">Clinic</span>
+                <span class="info-value">🏥 {{ autoDispatchResult.clinicName }}</span>
+              </div>
+              <div class="dispatch-info-item highlight">
+                <span class="info-label">Distance</span>
+                <span class="info-value distance">📍 {{ autoDispatchResult.distanceKm }} km</span>
+              </div>
+              <div class="dispatch-info-item">
+                <span class="info-label">Status</span>
+                <span class="info-value status-badge">{{ autoDispatchResult.status }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-actions" style="margin-top: 1.5rem;">
+            <button class="btn-confirm" (click)="closeAutoDispatchResult()">Close</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Dispatch Modal -->
       <div class="modal-overlay" *ngIf="dispatchingAlertId" (click)="cancelDispatch()">
         <div class="modal-card" (click)="$event.stopPropagation()">
@@ -68,7 +107,7 @@
                 <button class="close-btn" (click)="cancelDispatch()">✕</button>
             </div>
             <div class="modal-body">
-                <p>Select an available ambulance for Alert #{{ dispatchingAlertId }}</p>
+                <p>Select an available ambulance for this emergency alert.</p>
                 <div class="form-group" style="margin-top: 20px;">
                     <label>Available Ambulances</label>
                     <select [(ngModel)]="selectedAmbulanceId" class="ambulance-select">
@@ -112,7 +151,6 @@
               <div class="patient-avatar">{{ (alert.patientName || 'P')[0].toUpperCase() }}</div>
               <div>
                 <div class="patient-name">{{ alert.patientName || 'Unknown Patient' }}</div>
-                <div class="alert-id">Alert #{{ alert.id }}</div>
               </div>
             </div>
 
@@ -148,9 +186,18 @@
             <button
               *ngIf="alert.status === 'ACKNOWLEDGED'"
               class="btn-dispatch"
-              [disabled]="updatingId === alert.id"
+              [disabled]="updatingId === alert.id || autoDispatchingId === alert.id"
               (click)="openDispatchModal(alert.id)">
-              🚑 Dispatch Ambulance
+              🚑 Dispatch
+            </button>
+
+            <button
+              *ngIf="alert.status === 'ACKNOWLEDGED'"
+              class="btn-auto-dispatch"
+              [disabled]="updatingId === alert.id || autoDispatchingId === alert.id"
+              (click)="autoDispatch(alert.id)"
+              title="Automatically select the nearest available ambulance">
+              {{ autoDispatchingId === alert.id ? '⏳ Dispatching...' : '🤖 Auto-Dispatch' }}
             </button>
 
             <button

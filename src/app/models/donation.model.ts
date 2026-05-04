@@ -31,10 +31,17 @@ export enum AidRequestStatus {
     REJECTED = 'REJECTED'
 }
 
+export enum AidRequestType {
+    MONEY = 'MONEY',
+    MATERIEL = 'MATERIEL',
+    MEDICAMENT = 'MEDICAMENT'
+}
+
 export interface AidRequest {
     id?: number;
     patientId: number;
     patientName?: string;
+    type?: AidRequestType;
     description: string;
     supportingDocument?: string;
     status?: AidRequestStatus;

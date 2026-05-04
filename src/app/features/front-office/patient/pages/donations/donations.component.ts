@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Donation, DonationStatus, DonationType, AidRequest, AidRequestStatus } from '../../../../../models/donation.model';
+import { Donation, DonationStatus, DonationType, AidRequest, AidRequestStatus, AidRequestType } from '../../../../../models/donation.model';
 import { DonationService } from '../../../../../services/donation.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { UserService } from '../../../../../services/user.service';
@@ -20,6 +20,7 @@ export class DonationsComponent implements OnInit {
   DonationType = DonationType;
   DonationStatus = DonationStatus;
   AidRequestStatus = AidRequestStatus;
+  AidRequestType = AidRequestType;
 
   error: string = '';
 
@@ -48,6 +49,7 @@ export class DonationsComponent implements OnInit {
   myAidRequests: AidRequest[] = [];
   myAssignedDonations: Donation[] = [];
   isRequestModalOpen = false;
+  requestType: AidRequestType = AidRequestType.MONEY;
   requestDescription = '';
   requestDoc = '';
   currentPatientId: number | null = null;
@@ -324,6 +326,7 @@ export class DonationsComponent implements OnInit {
 
   openRequestModal(): void {
     this.isRequestModalOpen = true;
+    this.requestType = AidRequestType.MONEY;
     this.requestDescription = '';
     this.requestDoc = '';
     this.reqError = '';
@@ -333,6 +336,7 @@ export class DonationsComponent implements OnInit {
   closeRequestModal(): void {
     this.isRequestModalOpen = false;
     this.editingRequestId = null;
+    this.requestType = AidRequestType.MONEY;
     this.requestDescription = '';
     this.requestDoc = '';
     this.reqError = '';
@@ -355,6 +359,7 @@ export class DonationsComponent implements OnInit {
 
   openEditRequestModal(req: AidRequest): void {
     this.editingRequestId = req.id || null;
+    this.requestType = req.type || AidRequestType.MONEY;
     this.requestDescription = req.description;
     this.requestDoc = req.supportingDocument || '';
     this.reqError = '';
@@ -396,7 +401,7 @@ export class DonationsComponent implements OnInit {
   validateAidRequest(): boolean {
     this.reqFieldErrors = {};
     let isValid = true;
-    
+
     if (!this.requestDescription || this.requestDescription.trim().length === 0) {
       this.reqFieldErrors.description = 'La description est requise.';
       isValid = false;
@@ -404,7 +409,12 @@ export class DonationsComponent implements OnInit {
       this.reqFieldErrors.description = 'La description doit comporter entre 10 et 500 caractères.';
       isValid = false;
     }
-    
+
+    if (this.requestType === AidRequestType.MEDICAMENT && !this.requestDoc) {
+      this.reqFieldErrors.document = 'Une ordonnance (prescription) est obligatoire pour ce type de demande.';
+      isValid = false;
+    }
+
     return isValid;
   }
 
@@ -422,6 +432,7 @@ export class DonationsComponent implements OnInit {
 
     const reqDto = {
       patientId: this.currentPatientId,
+      type: this.requestType,
       description: this.requestDescription,
       supportingDocument: this.requestDoc,
       // Données AI éligibilité

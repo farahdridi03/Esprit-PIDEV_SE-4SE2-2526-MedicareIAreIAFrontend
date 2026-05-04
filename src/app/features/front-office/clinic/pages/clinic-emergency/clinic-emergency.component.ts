@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EmergencyService, EmergencyAlertResponse } from '../../../../../services/emergency.service';
+import { EmergencyService, EmergencyAlertResponse, AutoDispatchResponse } from '../../../../../services/emergency.service';
 import { AmbulanceService, AmbulanceResponse } from '../../../../../services/ambulance.service';
 import { AuthService } from '../../../../../services/auth.service';
 
@@ -18,6 +18,8 @@ export class ClinicEmergencyComponent implements OnInit {
   updatingId: number | null = null;
   dispatchingAlertId: number | null = null;
   selectedAmbulanceId: number | null = null;
+  autoDispatchingId: number | null = null;
+  autoDispatchResult: AutoDispatchResponse | null = null;
 
   statuses = ['ALL', 'PENDING', 'ACKNOWLEDGED', 'CLINIC_NOTIFIED', 'RESOLVED', 'CANCELED'];
 
@@ -126,6 +128,28 @@ export class ClinicEmergencyComponent implements OnInit {
         this.error = 'Dispatch failed.';
       }
     });
+  }
+
+  autoDispatch(alertId: number) {
+    this.autoDispatchingId = alertId;
+    this.autoDispatchResult = null;
+    this.error = '';
+    this.emergencyService.autoDispatch(alertId).subscribe({
+      next: (result) => {
+        this.autoDispatchResult = result;
+        this.autoDispatchingId = null;
+        this.loadAlerts();
+        this.loadClinicAmbulances();
+      },
+      error: (err) => {
+        this.autoDispatchingId = null;
+        this.error = err?.error?.message || 'Auto-dispatch failed: no available ambulance found.';
+      }
+    });
+  }
+
+  closeAutoDispatchResult() {
+    this.autoDispatchResult = null;
   }
 
   resolve(alert: EmergencyAlertResponse) {
