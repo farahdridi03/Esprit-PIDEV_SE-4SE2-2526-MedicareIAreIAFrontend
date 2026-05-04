@@ -1,28 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService, UserProfile } from '../../../../../services/user.service';
+import { CommonModule } from '@angular/common';
+import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
-  selector: 'app-nutritionist-topbar',
-  templateUrl: './nutritionist-topbar.component.html',
-  styleUrls: ['./nutritionist-topbar.component.scss']
+    selector: 'app-nutritionist-topbar',
+    standalone: true,
+    imports: [CommonModule],
+    templateUrl: './nutritionist-topbar.component.html',
+    styleUrls: ['./nutritionist-topbar.component.scss']
 })
 export class NutritionistTopbarComponent implements OnInit {
   firstName: string = 'Nutritionist';
   initials: string = 'N';
-  photo: string | null = null;
 
   constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user: UserProfile) => {
+      next: (user) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error('Error fetching nutritionist profile', err);
       }
     });
@@ -30,7 +32,9 @@ export class NutritionistTopbarComponent implements OnInit {
 
   private loadUserInfo() {
     const fullName = this.authService.getUserFullName();
-    if (fullName) this.setNames(fullName);
+    if (fullName) {
+      this.setNames(fullName);
+    }
   }
 
   private setNames(fullName: string) {

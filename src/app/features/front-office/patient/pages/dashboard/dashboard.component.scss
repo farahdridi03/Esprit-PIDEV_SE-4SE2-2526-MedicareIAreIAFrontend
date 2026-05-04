@@ -10,6 +10,8 @@ $text-light: #6b7280;
     background-color: #f9fafb;
 }
 
+// Ensure Sidebar stays to the left and has fixed width is handled in its own SCSS, 
+// but flex layout here orchestrates it.
 .main-body {
     flex: 1;
     display: flex;
@@ -88,8 +90,7 @@ $text-light: #6b7280;
             font-size: 0.9rem;
             font-weight: 700;
             transition: opacity 0.2s;
-            &:hover { opacity: 0.75; }
-        }
+            &:hover { opacity: 0.75; }        }
     }
 }
 
@@ -124,8 +125,7 @@ $text-light: #6b7280;
             transform: translateY(-5px);
             background: white;
             box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
-            border-color: $primary-green;
-        }
+            border-color: $primary-green;        }
 
         .icon-wrapper {
             width: 48px;
@@ -149,16 +149,14 @@ $text-light: #6b7280;
         h4 {
             margin: 0 0 0.4rem 0;
             font-size: 0.9rem;
-            font-weight: 700;
-            color: $text-dark;
+            font-weight: 700;            color: $text-dark;
         }
 
         p {
             margin: 0;
             font-size: 0.75rem;
             color: $text-light;
-            font-weight: 500;
-        }
+            font-weight: 500;        }
     }
 }
 
@@ -197,19 +195,16 @@ $text-light: #6b7280;
         &.success .icon svg { color: #10b981; }
         &.info    .icon svg { color: #3b82f6; }
         &.error   .icon svg { color: #ef4444; }
-
         .content {
             p {
                 margin: 0;
                 font-size: 0.9rem;
-                font-weight: 600;
-                color: $text-dark;
+                font-weight: 600;                color: $text-dark;
             }
 
             span {
                 display: block;
-                margin-top: 0.2rem;
-                font-size: 0.75rem;
+                margin-top: 0.2rem;                font-size: 0.75rem;
                 color: $text-light;
             }
         }
@@ -222,5 +217,4 @@ $text-light: #6b7280;
     text-align: center;
     color: $text-light;
     font-size: 0.9rem;
-    font-style: italic;
-}
+    font-style: italic;}

@@ -1,87 +1,49 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
-import { NotificationService, AppNotification } from '../../../../../services/notification.service';
-import { Subscription } from 'rxjs';
+
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-pharmacist-topbar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './pharmacist-topbar.component.html',
   styleUrls: ['./pharmacist-topbar.component.scss']
 })
-export class PharmacistTopbarComponent implements OnInit, OnDestroy {
+export class PharmacistTopbarComponent implements OnInit {
   firstName: string = 'Pharmacist';
   initials: string = 'P';
   photo: string | null = null;
-
-  notifications: AppNotification[] = [];
+  notifications: any[] = [];
   unreadCount: number = 0;
   showNotifPanel: boolean = false;
 
-  private notifSub?: Subscription;
-
-  constructor(
-    private userService: UserService,
-    private authService: AuthService,
-    private notificationService: NotificationService
-  ) {}
+  constructor(private userService: UserService, private authService: AuthService) { }
 
   ngOnInit() {
     this.loadUserInfo();
-    this.userService.profile$.subscribe(user => {
-      if (user) {
-        if (user.fullName) {
+    this.userService.getProfile().subscribe({
+      next: (user) => {
+        if (user && user.fullName) {
           this.setNames(user.fullName);
         }
-        this.photo = (user as any).photo || null;
+        if (user && user.photo) {
+          this.photo = user.photo;
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching pharmacist profile', err);
       }
     });
-    this.userService.refreshProfile();
-
-    this.notifSub = this.notificationService.notifications$.subscribe(notifs => {
-      this.notifications = notifs;
-      this.unreadCount = notifs.filter(n => !n.read).length;
-    });
-  }
-
-  ngOnDestroy() {
-    this.notifSub?.unsubscribe();
-  }
-
-  toggleNotifPanel(event?: Event) {
-    if (event) event.stopPropagation();
-    this.showNotifPanel = !this.showNotifPanel;
-  }
-
-  getNotificationIcon(type: string): string {
-    switch (type) {
-      case 'aid_request': return '🤝';
-      case 'warning': return '⚠️';
-      default: return '🔔';
-    }
-  }
-
-  markAsRead(notif: AppNotification) {
-    if (!notif.read) {
-      this.notificationService.markRead(notif.id);
-    }
-  }
-
-  markAllAsRead() {
-    this.notificationService.markAllRead();
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.notification-container') && !target.closest('.notification-dropdown')) {
-      this.showNotifPanel = false;
-    }
   }
 
   private loadUserInfo() {
     const fullName = this.authService.getUserFullName();
-    if (fullName) this.setNames(fullName);
+    if (fullName) {
+      this.setNames(fullName);
+    }
   }
 
   private setNames(fullName: string) {
@@ -90,5 +52,24 @@ export class PharmacistTopbarComponent implements OnInit, OnDestroy {
     this.firstName = parts[0];
     this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
     if (!this.initials) this.initials = this.firstName[0].toUpperCase();
+  }
+
+  toggleNotifPanel(event: MouseEvent) {
+    event.stopPropagation();
+    this.showNotifPanel = !this.showNotifPanel;
+  }
+
+  markAllAsRead() {
+    this.notifications.forEach(n => n.isRead = true);
+    this.unreadCount = 0;
+  }
+
+  markAsRead(n: any) {
+    n.isRead = true;
+    this.unreadCount = this.notifications.filter(notif => !notif.isRead).length;
+  }
+
+  getNotificationIcon(type: string): string {
+    return '🔔';
   }
 }

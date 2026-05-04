@@ -18,22 +18,21 @@ import { NutritionistSidebarComponent } from '../nutritionist/components/nutriti
 import { NutritionistTopbarComponent } from '../nutritionist/components/nutritionist-topbar/nutritionist-topbar.component';
 
 @NgModule({
-  declarations: [
-    FrontLayoutComponent,
-    PasswordModalComponent,
-    DoctorSidebarComponent,
-    DoctorTopbarComponent,
-    NutritionistSidebarComponent,
-    NutritionistTopbarComponent
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
     FormsModule,
+    FrontLayoutComponent,
     // Standalone components
     SidebarComponent,
-    TopbarComponent
+    TopbarComponent,
+    NutritionistSidebarComponent,
+    NutritionistTopbarComponent,
+    DoctorSidebarComponent,
+    DoctorTopbarComponent,
+    PasswordModalComponent
   ],
   exports: [
     FrontLayoutComponent,

@@ -1,0 +1,723 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+// ── Design tokens (Light Health / Medical Theme) ───────────────────────────
+$bg:         #f0f9ff; // Very soft medical sky blue
+$surface:    #ffffff; // Clean white for cards
+$surface2:   #f8fafc; // Off-white for secondary surfaces
+$border:     #e0f2fe; // Light blue borders
+$text:       #0f172a; // Dark slate text for readability
+$muted:      #64748b; // Muted slate text
+
+$green:  #10b981; // Medical emerald green
+$red:    #ef4444; // Red for reserved
+$gray:   #94a3b8; // Slate gray for blocked
+$amber:  #f59e0b;
+$blue:   #0ea5e9; // Medical primary blue
+$purple: #8b5cf6;
+
+// status colours
+$c-available: $green;
+$c-reserved:  $red;
+$c-blocked:   $gray;
+
+// Section accent colours (STADIUM)
+$sec-a: #6366f1;
+$sec-b: #0ea5e9;
+$sec-c: #f59e0b;
+$sec-colors: ('Section A': $sec-a, 'Section B': $sec-b, 'Section C': $sec-c);
+
+// ── Base ───────────────────────────────────────────────────────────────────
+:host {
+  display: block;
+  background: $bg;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: $text;
+  padding: 24px 32px 60px;
+}
+
+// ── Header ─────────────────────────────────────────────────────────────────
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0 0 2px;
+    em { font-style: normal; color: $blue; }
+  }
+
+  .subtitle {
+    margin: 0;
+    color: $muted;
+    font-size: 0.9rem;
+  }
+}
+
+.venue-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px; height: 64px;
+  border-radius: 14px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  gap: 2px;
+  .venue-icon { font-size: 1.4rem; }
+
+  &.hotel      { background: rgba(168,85,247,.15); border: 1px solid $purple; color: $purple; }
+  &.stadium    { background: rgba(59,130,246,.15);  border: 1px solid $blue;   color: $blue; }
+  &.conference { background: rgba(245,158,11,.15);  border: 1px solid $amber;  color: $amber; }
+}
+
+.fallback-gen {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.venue-select {
+  padding: 9px 14px;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 8px;
+  color: $text;
+  font-size: 0.9rem;
+  outline: none;
+  &:focus { border-color: $blue; }
+}
+
+.btn-regen {
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: 1px solid $blue;
+  background: rgba(59,130,246,.12);
+  color: $blue;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  &:hover { background: $blue; color: #fff; }
+}
+
+// ── Alerts ─────────────────────────────────────────────────────────────────
+.alert {
+  padding: 12px 18px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  &.alert-success { background: rgba(34,197,94,.15); border: 1px solid $green; color: $green; }
+  &.alert-error   { background: rgba(239,68,68,.15);  border: 1px solid $red;   color: $red; }
+  &.mt-2 { margin-top: 14px; }
+}
+
+// ── Stats bar ──────────────────────────────────────────────────────────────
+.stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 14px;
+  padding: 16px 24px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 72px;
+  .stat-number { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+  .stat-label  { font-size: 0.7rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: $muted; margin-top: 2px; }
+
+  &.total     .stat-number { color: $text; }
+  &.available .stat-number { color: $green; }
+  &.reserved  .stat-number { color: $red; }
+  &.blocked   .stat-number { color: $gray; }
+}
+
+.occupancy-bar {
+  flex: 1;
+  min-width: 160px;
+  .occ-label { font-size: 0.78rem; color: $muted; display: block; margin-bottom: 6px; }
+  .occ-track {
+    height: 8px;
+    background: $surface2;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .occ-fill {
+    height: 100%;
+    background: linear-gradient(90deg, $green, $amber);
+    border-radius: 999px;
+    transition: width .6s ease;
+  }
+}
+
+// ── Toolbar (search + legend) ──────────────────────────────────────────────
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.search-input {
+  width: 280px;
+  padding: 9px 14px;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 8px;
+  color: $text;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color .2s;
+  &:focus { border-color: $blue; }
+}
+
+.btn-search, .btn-clear {
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all .2s;
+  border: 1px solid $border;
+  background: $surface;
+  color: $text;
+  &:hover { background: $surface2; }
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 0.82rem;
+  color: $muted;
+}
+
+.leg-dot {
+  display: inline-block;
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+  &.available { background: $c-available; }
+  &.reserved  { background: $c-reserved; }
+  &.blocked   { background: $c-blocked; }
+}
+
+// ── Loading ────────────────────────────────────────────────────────────────
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 0;
+  color: $muted;
+  gap: 16px;
+}
+
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid $border;
+  border-top-color: $blue;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── Shared seat status colours ─────────────────────────────────────────────
+%seat-base {
+  cursor: default;
+  transition: transform .15s, box-shadow .15s;
+  user-select: none;
+  &.available { background: $c-available; cursor: pointer; &:hover { transform: scale(1.15); box-shadow: 0 0 10px rgba(34,197,94,.5); } }
+  &.reserved  { background: $c-reserved; opacity: .75; }
+  &.blocked   { background: $c-blocked;  opacity: .55; }
+}
+
+// ── Section title ──────────────────────────────────────────────────────────
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $muted;
+  margin-bottom: 24px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// HOTEL LAYOUT
+// ════════════════════════════════════════════════════════════════════════════
+.hotel-layout { padding-bottom: 40px; }
+
+.tables-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: flex-start;
+}
+
+.hotel-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $purple;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.table-ring {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-center {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: rgba(168,85,247,.18);
+  border: 2px solid $purple;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: $purple;
+  z-index: 2;
+}
+
+.hotel-seat {
+  @extend %seat-base;
+  position: absolute;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #fff;
+  top: 50%; left: 50%;
+  margin-top: -13px; margin-left: -13px;
+  transform-origin: center;
+}
+
+.table-summary {
+  font-size: 0.72rem;
+  color: $green;
+  font-weight: 600;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// STADIUM LAYOUT (Graphical View)
+// ════════════════════════════════════════════════════════════════════════════
+.stadium-layout {
+  padding-bottom: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 700px;
+}
+
+.stadium-wrapper {
+  position: relative;
+  width: 960px;
+  height: 640px;
+  margin-top: 20px;
+}
+
+/* The Soccer Field */
+.field-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  height: 240px;
+  background: repeating-linear-gradient(
+    90deg,
+    #16a34a,
+    #16a34a 40px,
+    #15803d 40px,
+    #15803d 80px
+  );
+  border: 6px solid rgba(255,255,255,0.8);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: .1em;
+  font-size: 1.4rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.4), 0 16px 40px rgba(0,0,0,0.6);
+  z-index: 10;
+  overflow: hidden;
+
+  /* Center line */
+  &::before {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    background: rgba(255,255,255,0.7);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  /* Center circle */
+  &::after {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 4px solid rgba(255,255,255,0.7);
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Goal areas */
+  .goal-area-left, .goal-area-right {
+    position: absolute;
+    width: 40px;
+    height: 100px;
+    border: 3px solid rgba(255,255,255,0.7);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .goal-area-left {
+    left: 0;
+    border-left: none;
+  }
+  .goal-area-right {
+    right: 0;
+    border-right: none;
+  }
+}
+
+.sections-wrap {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+}
+
+.stadium-section {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid $border;
+  border-radius: 24px;
+  box-shadow: 0 12px 30px rgba(14, 165, 233, 0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* Layout absolute positioning for A, B, C */
+  &:nth-child(1) {
+    /* Section A - TOP */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 640px;
+    border-bottom: 6px solid $sec-a;
+    .section-header { background: rgba(99,102,241,.15); color: $sec-a; }
+  }
+  &:nth-child(2) {
+    /* Section B - BOTTOM */
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 640px;
+    border-top: 6px solid $sec-b;
+    .section-header { background: rgba(14,165,233,.15); color: $sec-b; }
+  }
+  &:nth-child(3) {
+    /* Section C - RIGHT */
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 240px;
+    height: 520px;
+    border-left: 6px solid $sec-c;
+    .section-header { background: rgba(245,158,11,.15); color: $sec-c; }
+    
+    /* Modify row layout for vertical flow */
+    .stadium-row {
+      flex-direction: column;
+      gap: 4px;
+    }
+    .row-seats {
+      flex-direction: column;
+    }
+  }
+}
+
+.section-header {
+  padding: 10px 16px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: .08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.section-body {
+  padding: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+  align-items: center;
+}
+
+.stadium-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.row-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: $muted;
+  min-width: 28px;
+  text-align: center;
+}
+
+.row-seats {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+}
+
+.grid-seat {
+  @extend %seat-base;
+  width: 14px; height: 14px;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// CONFERENCE LAYOUT
+// ════════════════════════════════════════════════════════════════════════════
+.conference-layout { padding-bottom: 40px; }
+
+.stage-bar {
+  text-align: center;
+  background: linear-gradient(90deg, transparent, rgba(245,158,11,.22), transparent);
+  border: 1px solid rgba(245,158,11,.35);
+  border-radius: 12px;
+  padding: 16px;
+  font-weight: 700;
+  color: $amber;
+  letter-spacing: .1em;
+  margin-bottom: 32px;
+  font-size: 1rem;
+}
+
+.conf-rows { display: flex; flex-direction: column; gap: 10px; }
+
+.conf-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  .row-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: $muted;
+    min-width: 48px;
+    text-align: right;
+  }
+
+  .row-seats { display: flex; gap: 8px; flex-wrap: wrap; }
+}
+
+.chair-seat {
+  @extend %seat-base;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 34px;
+
+  .chair-back {
+    width: 28px; height: 8px;
+    border-radius: 4px 4px 0 0;
+    background: inherit;
+    filter: brightness(1.3);
+  }
+
+  .chair-body {
+    width: 30px; height: 22px;
+    border-radius: 4px;
+    background: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  &.available .chair-back,
+  &.available .chair-body { background: $c-available; }
+  &.reserved  .chair-back,
+  &.reserved  .chair-body { background: $c-reserved; }
+  &.blocked   .chair-back,
+  &.blocked   .chair-body { background: $c-blocked; }
+}
+
+// ── No layout fallback ─────────────────────────────────────────────────────
+.no-layout {
+  display: flex;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.no-layout-inner {
+  text-align: center;
+  .no-icon { font-size: 3rem; }
+  h3 { margin: 16px 0 8px; font-size: 1.3rem; }
+  p  { color: $muted; line-height: 1.6; }
+}
+
+// ── Reservation Modal ──────────────────────────────────────────────────────
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 20px;
+  padding: 36px 40px;
+  min-width: 380px;
+  max-width: 460px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
+  animation: modal-in .2s ease;
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: none;
+    border: none;
+    color: $muted;
+    font-size: 1.1rem;
+    cursor: pointer;
+    &:hover { color: $text; }
+  }
+
+  .modal-icon { font-size: 2.5rem; text-align: center; margin-bottom: 10px; }
+
+  h2 {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin: 0 0 20px;
+  }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(-20px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.modal-seat-info {
+  background: $surface2;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  .info-key { color: $muted; font-weight: 500; }
+  .info-val { font-weight: 700; }
+}
+
+.status-badge {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  &.available { background: rgba(34,197,94,.18); color: $green; }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 11px;
+  border-radius: 10px;
+  border: 1px solid $border;
+  background: $surface2;
+  color: $muted;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  &:hover { background: $surface; color: $text; }
+}
+
+.btn-confirm {
+  flex: 2;
+  padding: 11px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, $green, #16a34a);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  &:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(34,197,94,.3); }
+}

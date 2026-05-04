@@ -7,7 +7,9 @@ import {
   ReceiveBatchRequest,
   StockAlert,
   StockMovement,
-  StockMovementRequest
+  StockMovementRequest,
+  ReplenishmentPrediction,
+  ExpirationRisk
 } from '../models/stock.model';
 
 @Injectable({
@@ -15,6 +17,7 @@ import {
 })
 export class StockService {
   private apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/stocks';
+  private stockApiUrl = 'http://localhost:8081/springsecurity/api/stock';
 
   constructor(private http: HttpClient) {}
 
@@ -50,11 +53,21 @@ export class StockService {
     return this.http.patch<void>(`${this.apiUrl}/alerts/${alertId}/resolve`, {});
   }
 
-  getExpirationRiskDashboard(pharmacyId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/pharmacy/${pharmacyId}/expiration-risks`);
+  getExpirationRiskDashboard(pharmacyId: number): Observable<ExpirationRisk[]> {
+    return this.http.get<ExpirationRisk[]>(`${this.apiUrl}/pharmacy/${pharmacyId}/expiration-risks`);
   }
 
-  predictReplenishment(pharmacyId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/pharmacy/${pharmacyId}/replenishment-predictions`);
+  predictReplenishment(pharmacyId: number): Observable<ReplenishmentPrediction[]> {
+    return this.http.get<ReplenishmentPrediction[]>(`${this.apiUrl}/pharmacy/${pharmacyId}/replenishment-predictions`);
+  }
+
+  getStockSummary(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.stockApiUrl}/summary`);
+  }
+
+  searchProducts(keyword: string, page: number = 0, size: number = 10): Observable<any> {
+    return this.http.get<any>(`${this.stockApiUrl}/search`, {
+      params: { keyword, page: page.toString(), size: size.toString() }
+    });
   }
 }

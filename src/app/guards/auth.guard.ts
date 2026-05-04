@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
+import {
+    CanActivate,
+    ActivatedRouteSnapshot,
+    RouterStateSnapshot,
+    Router,
+    UrlTree
+} from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
@@ -7,7 +13,11 @@ import { AuthService } from '../services/auth.service';
     providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-    constructor(private authService: AuthService, private router: Router) { }
+
+    constructor(
+        private authService: AuthService,
+        private router: Router
+    ) { }
 
     canActivate(
         route: ActivatedRouteSnapshot,
@@ -15,6 +25,7 @@ export class AuthGuard implements CanActivate {
     ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
         if (this.authService.isAuthenticated()) {
+
             const requiredRoles = route.data['roles'] as Array<string>;
             const userRole = this.authService.getUserRole();
 
@@ -33,7 +44,9 @@ export class AuthGuard implements CanActivate {
             return this.router.createUrlTree(['/auth/login']);
         }
 
-        // Not authenticated
-        return this.router.createUrlTree(['/auth/login'], { queryParams: { returnUrl: state.url } });
+        // ❌ Not authenticated → keep returnUrl (important UX improvement)
+        return this.router.createUrlTree(['/auth/login'], {
+            queryParams: { returnUrl: state.url }
+        });
     }
 }

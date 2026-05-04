@@ -1,20 +1,24 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    constructor(private authService: AuthService) { }
+    constructor(private injector: Injector) { }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-        const token = this.authService.getToken();
+        const authService = this.injector.get(AuthService);
+        const router = this.injector.get(Router);
+        const token = authService.getToken();
 
         const url = request.url;
         const isLogin = url.endsWith('/auth/login') || url.includes('/auth/login?') || url.endsWith('/login');
         const isRegister = url.endsWith('/auth/register') || url.includes('/auth/register?') || url.endsWith('/register');
-        const isAuthUrl = isLogin || isRegister;
+        const isGoogleVerify = url.endsWith('/google/verify') || url.includes('/google/verify?');
+        const isAuthUrl = isLogin || isRegister || isGoogleVerify;
 
         if (token && !isAuthUrl) {
             request = request.clone({
@@ -26,9 +30,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
-                // Only force logout on 401 (token invalid/expired), not 403 (wrong role/forbidden)
                 if (error.status === 401 && !isAuthUrl && token) {
-                    this.authService.logout();
+                    authService.logout();
+                    router.navigate(['/login']);
                 }
                 return throwError(() => error);
             })
@@ -36,5 +40,5 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 }
 
-// Note: Ensure that the Spring Boot backend allows CORS from http://localhost:4200
-// and that the context path used here (/springsecurity) matches the backend.
+// Note: Assurez-vous que le backend Spring Boot autorise les CORS depuis http://localhost:4200
+// et que le context path utilisé ici (/springsecurity) correspond bien au backend.

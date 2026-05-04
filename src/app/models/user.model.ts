@@ -11,7 +11,6 @@ export interface UserResponseDTO {
     pharmacyName?: string;
 }
 
-
 export interface UserRequestDTO {
     fullName: string;
     email: string;

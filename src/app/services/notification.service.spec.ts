@@ -39,7 +39,7 @@ describe('NotificationService', () => {
                 }
             ];
 
-            service.getNotifications(1).subscribe(notifications => {
+            service.getNotifications().subscribe(notifications => {
                 expect(notifications.length).toBe(1);
                 expect(notifications[0].type).toBe(NotificationType.ORDER_CREATED);
             });
@@ -71,7 +71,7 @@ describe('NotificationService', () => {
                 }
             });
 
-            service.getNotifications(1).subscribe();
+            service.getNotifications().subscribe();
 
             const req = httpMock.expectOne(`${apiUrl}/user/1`);
             req.flush(mockNotifications);
@@ -108,7 +108,7 @@ describe('NotificationService', () => {
                 }
             });
 
-            service.getNotifications(1).subscribe();
+            service.getNotifications().subscribe();
 
             const req = httpMock.expectOne(`${apiUrl}/user/1`);
             req.flush(mockNotifications);

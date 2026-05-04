@@ -1,485 +1,403 @@
-// ── Brand tokens ───────────────────────────────────────────
-$green-dark:   #0f5c4a;
-$green-mid:    #1a7a5e;
-$green-accent: #4ecda4;
-$bg:           #f7f9f8;
-$text-dark:    #1a2e25;
-$text-muted:   #6b8c7d;
-$input-bg:     #f0faf6;
-$input-border: #b8e6d4;
-$red:          #ef4444;
+// Variables
+$primary-green: #0e7c66;
+$primary-hover: #0a6955;
+$bg-color: #f7f9fc;
+$text-dark: #1f2937;
+$text-light: #6b7280;
+$input-bg: #f3f4f6;
+$border-color: #e5e7eb;
 
-// ── Page shell ─────────────────────────────────────────────
-.register-page {
+.register-wrapper {
   min-height: 100vh;
   display: flex;
-  align-items: flex-start;
   justify-content: center;
-  background: $bg url('../../../../../assets/img/medical-bg.svg') center/cover no-repeat;
-  padding: 32px 16px 56px;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  align-items: center;
+  padding: 40px 20px; // Add padding top/bottom for scrolling on small screens
+  background-color: $bg-color;
+  font-family: 'Inter', sans-serif;
 }
 
-// ── Outer container ────────────────────────────────────────
-.register-container {
+.register-card {
   width: 100%;
   max-width: 440px;
-  position: relative;
-  border-radius: 24px;
-  overflow: visible;
-  box-shadow: 0 24px 64px rgba(15, 92, 74, 0.18);
-}
-
-// ── Header block ───────────────────────────────────────────
-.register-header {
-  position: relative;
-  background: linear-gradient(135deg, $green-dark 0%, $green-mid 100%);
-  padding: 36px 40px 60px;
-  border-radius: 24px 24px 0 0;
-  overflow: hidden;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
   text-align: center;
-
-  .deco-circles {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
 }
 
-.brand {
-  display: inline-flex;
+// Brand / Logo
+.brand-header {
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
-  position: relative;
+  margin-bottom: 2rem;
 
-  &-icon {
-    width: 36px;
-    height: 36px;
-    background: rgba(255,255,255,0.18);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    color: $primary-green;
 
-    svg { width: 20px; height: 20px; fill: white; }
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
 
-  &-name {
-    font-size: 1.3rem;
+  .brand-name {
+    font-size: 1.25rem;
     font-weight: 700;
-    color: white;
-    letter-spacing: 0.02em;
+    color: #111827;
+    letter-spacing: -0.025em;
   }
 }
 
-.brand-tagline {
-  color: rgba(255,255,255,0.75);
-  font-size: 0.875rem;
-  margin: 0;
-  position: relative;
-}
-
-// ── Avatar ─────────────────────────────────────────────────
-.avatar-wrap {
-  display: flex;
-  justify-content: center;
-  position: relative;
-  z-index: 10;
-  margin-top: -44px;
-}
-
-.avatar-circle {
-  width: 88px;
-  height: 88px;
-  background: $green-accent;
-  border: 4px solid white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 24px rgba(78, 205, 164, 0.4);
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-
-  svg { width: 40px; height: 40px; }
-}
-
-.avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.avatar-upload-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: opacity 0.2s;
-
-  svg { width: 22px; height: 22px; }
-}
-
-.avatar-circle:hover .avatar-upload-overlay { opacity: 1; }
-
-// ── White card ─────────────────────────────────────────────
-.register-card {
-  background: white;
-  padding: 16px 36px 36px;
-  border-radius: 0 0 24px 24px;
-}
-
-.card-title {
-  font-size: 1.3rem;
+// Headings
+.welcome-title {
+  font-size: 1.75rem;
   font-weight: 700;
   color: $text-dark;
-  margin: 12px 0 4px;
-  text-align: center;
+  margin: 0 0 0.5rem 0;
 }
 
-.card-subtitle {
-  color: $text-muted;
-  font-size: 0.875rem;
-  margin: 0 0 20px;
-  text-align: center;
+.welcome-subtitle {
+  color: $text-light;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
 }
 
-// ── Error alert ────────────────────────────────────────────
-.error-alert {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #b91c1c;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  margin-bottom: 16px;
-
-  svg { width: 18px; height: 18px; flex-shrink: 0; stroke: #b91c1c; }
+// Form Styling
+.register-form {
+  margin-bottom: 1.5rem;
+  text-align: left;
 }
-
-// ── Photo hint ─────────────────────────────────────────────
-.photo-hint {
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.photo-hint-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: $green-mid;
-  cursor: pointer;
-  padding: 6px 14px;
-  border-radius: 20px;
-  background: $input-bg;
-  border: 1.5px solid $input-border;
-  transition: border-color 0.2s, background 0.2s;
-
-  svg { width: 14px; height: 14px; stroke: $green-mid; }
-
-  &:hover { border-color: $green-accent; background: white; }
-}
-
-// ── Section title ──────────────────────────────────────────
-.form-section-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: $green-mid;
-  margin: 20px 0 12px;
-  padding-bottom: 6px;
-  border-bottom: 1.5px solid $input-border;
-}
-
-// ── Form ───────────────────────────────────────────────────
-.register-form { text-align: left; }
 
 .form-group {
-  margin-bottom: 14px;
+  margin-bottom: 1rem; // Tighter spacing for register form as it has many fields
 
   label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: $text-dark;
-    margin-bottom: 5px;
+    color: #374151;
+    margin-bottom: 0.4rem;
   }
-}
 
-.row-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.input-wrap {
-  position: relative;
-
-  .input-icon {
-    position: absolute;
-    left: 11px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 17px;
-    height: 17px;
+  .input-wrapper {
+    position: relative;
     display: flex;
     align-items: center;
 
-    svg { width: 100%; height: 100%; stroke: $green-accent; }
-  }
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      color: #9ca3af;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-  input, select {
-    width: 100%;
-    padding: 10px 12px 10px 36px;
-    background: $input-bg;
-    border: 1.5px solid $input-border;
-    border-radius: 10px;
-    font-size: 0.875rem;
-    color: $text-dark;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    box-sizing: border-box;
-    font-family: inherit;
-
-    &::placeholder { color: #a0b9ae; }
-
-    &:focus {
-      outline: none;
-      border-color: $green-accent;
-      box-shadow: 0 0 0 3px rgba(78,205,164,0.18);
-      background: white;
+      svg {
+        width: 100%;
+        height: 100%;
+      }
     }
 
-    &.invalid {
-      border-color: $red;
-      &:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
+    input,
+    select {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+      background-color: $input-bg;
+      border-radius: 10px;
+      color: $text-dark;
+      transition: all 0.2s ease;
+      appearance: none; // For the select dropdown
+
+      &::placeholder {
+        color: #9ca3af;
+      }
+
+      &:focus {
+        outline: none;
+        background-color: white;
+        border-color: $primary-green;
+        box-shadow: 0 0 0 3px rgba($primary-green, 0.1);
+      }
+
+      &.is-invalid {
+        border-color: #ef4444;
+
+        &:focus {
+          box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+      }
+    }
+
+    .currency-suffix {
+      position: absolute;
+      right: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: $text-light;
+      pointer-events: none;
+    }
+
+    // Adjust padding when currency suffix is present
+    input[type="number"] {
+      padding-right: 3rem;
+    }
+
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+    }
+
+    // override select without icon
+    select.role-select {
+      padding-left: 1rem;
     }
   }
-}
 
-// Select & no-icon inputs
-.form-select {
-  width: 100%;
-  padding: 10px 12px 10px 36px;
-  background: $input-bg;
-  border: 1.5px solid $input-border;
-  border-radius: 10px;
-  font-size: 0.875rem;
-  color: $text-dark;
-  font-family: inherit;
-  appearance: none;
-  box-sizing: border-box;
-  cursor: pointer;
+  .error-message {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+    display: block;
+  }
 
-  &:focus {
-    outline: none;
-    border-color: $green-accent;
-    box-shadow: 0 0 0 3px rgba(78,205,164,0.18);
-    background: white;
+  .helper-text {
+    font-size: 0.75rem;
+    color: $text-light;
+    margin-top: 0.35rem;
+    margin-bottom: 0;
   }
 }
 
-// Inputs inside row-2 without icon
-.row-2 .input-wrap:not(:has(.input-icon)) input {
-  padding-left: 12px;
-}
-
-.form-textarea {
-  width: 100%;
-  padding: 10px 12px;
-  background: $input-bg;
-  border: 1.5px solid $input-border;
-  border-radius: 10px;
-  font-size: 0.875rem;
-  color: $text-dark;
-  font-family: inherit;
-  resize: vertical;
-  box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: $green-accent;
-    box-shadow: 0 0 0 3px rgba(78,205,164,0.18);
-    background: white;
-  }
-}
-
-.field-error {
-  display: block;
-  color: $red;
-  font-size: 0.73rem;
-  margin-top: 3px;
-}
-
-// ── File upload ────────────────────────────────────────────
-.file-upload-wrap { margin-top: 4px; }
-
-.file-upload-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
-  background: $input-bg;
-  border: 1.5px dashed $input-border;
-  border-radius: 10px;
-  font-size: 0.875rem;
-  color: $green-mid;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-
-  svg { width: 16px; height: 16px; stroke: $green-mid; }
-
-  &:hover { border-color: $green-accent; background: white; }
-}
-
-// ── Services grid ──────────────────────────────────────────
-.services-grid {
+.row-splits {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 6px;
+  gap: 1rem;
 }
 
-.service-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.82rem;
-  color: $text-dark;
-  cursor: pointer;
+.patient-fields {
+  background-color: #fcfcfd;
+  border: 1px dashed $border-color;
+  padding: 1.2rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
 
-  input[type="checkbox"] { accent-color: $green-accent; }
-}
-
-// ── Terms ──────────────────────────────────────────────────
-.terms-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 0.82rem;
-  color: $text-muted;
-  margin: 16px 0 4px;
-  cursor: pointer;
-
-  input[type="checkbox"] {
-    accent-color: $green-accent;
-    margin-top: 2px;
-    flex-shrink: 0;
+  .margin-top {
+    margin-top: 1rem;
+    margin-bottom: 0;
   }
 }
 
-.terms-link {
-  color: $green-mid;
-  font-weight: 600;
-  text-decoration: none;
-  &:hover { text-decoration: underline; }
+// Terms Checkbox
+.terms-row {
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+  text-align: left;
 }
 
-// ── Submit ─────────────────────────────────────────────────
+.checkbox-container {
+  display: flex;
+  align-items: center; // Align checkbox with text top
+  cursor: pointer;
+  color: #374151;
+  font-weight: 400;
+
+  input {
+    margin-right: 0.5rem;
+    width: 16px;
+    height: 16px;
+    accent-color: $primary-green;
+    cursor: pointer;
+    flex-shrink: 0; // Prevent checkbox from shrinking
+  }
+
+  span {
+    line-height: 1.4;
+
+    a {
+      color: $primary-green;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Submit Button
 .submit-btn {
   width: 100%;
-  padding: 13px;
-  background: linear-gradient(135deg, $green-dark 0%, $green-mid 100%);
+  background-color: $primary-green;
   color: white;
+  padding: 0.875rem;
   border: none;
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 14px;
-  transition: opacity 0.2s, transform 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  transition: background-color 0.2s;
 
-  &:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); }
-  &:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+  &:hover {
+    background-color: $primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
 }
 
-.spinner-wrap { display: flex; align-items: center; gap: 8px; }
-
-.spinner {
-  width: 20px;
-  height: 20px;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-// ── Footer ─────────────────────────────────────────────────
+// Footer
 .footer-text {
-  font-size: 0.875rem;
-  color: $text-muted;
-  text-align: center;
-  margin: 18px 0 0;
+  font-size: 0.95rem;
+  color: $text-light;
+  margin-top: 1.5rem;
 
   .login-link {
-    color: $green-mid;
-    font-weight: 600;
+    color: $primary-green;
     text-decoration: none;
-    &:hover { text-decoration: underline; }
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
-// ── Responsive ─────────────────────────────────────────────
-@media (max-width: 480px) {
-  .register-page {
-    padding: 0;
-    align-items: stretch;
-    background-size: cover;
+// Medical History Section
+.medical-history-container {
+  border-top: 1px dashed $border-color;
+  padding-top: 1rem;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: $text-dark;
+      margin: 0;
+    }
+
+    .add-history-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background-color: rgba($primary-green, 0.1);
+      color: $primary-green;
+      border: 1px solid rgba($primary-green, 0.2);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: $primary-green;
+        color: white;
+      }
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
   }
 
-  .register-container {
-    max-width: 100%;
-    border-radius: 0;
-    box-shadow: none;
-    min-height: 100vh;
+  .medical-history-list {
     display: flex;
     flex-direction: column;
+    gap: 0.75rem;
   }
 
-  .register-header {
-    padding: 28px 20px 56px;
-    border-radius: 0;
+  .history-card {
+    background-color: white;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    padding: 12px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+    .history-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f3f4f6;
+
+      .entry-number {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .remove-entry-btn {
+        background: none;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          color: #ef4444;
+          background-color: #fee2e2;
+        }
+
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+
+    .history-fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+
+      .no-margin {
+        margin-bottom: 0;
+      }
+    }
   }
 
-  .avatar-wrap {
-    margin-top: -44px;
+  .empty-history {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    border: 1px dashed #d1d5db;
+    color: #9ca3af;
+    font-size: 0.85rem;
+
+    p {
+      margin: 0;
+    }
   }
-
-  .register-card {
-    padding: 12px 18px 32px;
-    border-radius: 0;
-    flex: 1;
-  }
-
-  .row-2 {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .card-title { font-size: 1.15rem; }
-  .card-subtitle { font-size: 0.82rem; }
-
-  .submit-btn { font-size: 0.95rem; padding: 12px; }
-
-  .services-grid { grid-template-columns: 1fr; }
 }

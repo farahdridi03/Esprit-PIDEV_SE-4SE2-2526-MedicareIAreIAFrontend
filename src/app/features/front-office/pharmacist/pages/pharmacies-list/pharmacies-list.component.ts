@@ -56,10 +56,10 @@ export class PharmaciesListComponent implements OnInit {
     this.formModel = {
       name: p.name,
       address: p.address,
-      locationLat: p.locationLat,
-      locationLng: p.locationLng,
-      phoneNumber: p.phoneNumber,
-      email: p.email
+      locationLat: p.locationLat || 0,
+      locationLng: p.locationLng || 0,
+      phoneNumber: p.phoneNumber || '',
+      email: p.email || ''
     };
     this.currentId = p.id;
     this.fieldErrors = {};

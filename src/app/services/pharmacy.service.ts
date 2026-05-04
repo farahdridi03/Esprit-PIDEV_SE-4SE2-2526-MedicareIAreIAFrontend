@@ -1,27 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PharmacyResponseDTO, PharmacyStockResponseDTO } from '../models/pharmacy.model';
-import { Pharmacy, PharmacyRequest } from '../models/pharmacy.model';
+import { Pharmacy, PharmacyRequest, PharmacyResponseDTO, PharmacyStockResponseDTO } from '../models/pharmacy.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PharmacyService {
-  private readonly apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/pharmacies';
+  private readonly apiUrl = 'http://localhost:8081/springsecurity/api/pharmacies';
+  private readonly searchApiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/pharmacies';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getAllPharmacies(): Observable<PharmacyResponseDTO[]> {
-    return this.http.get<PharmacyResponseDTO[]>(this.apiUrl);
+  getAllPharmacies(): Observable<Pharmacy[]> {
+    return this.http.get<Pharmacy[]>(this.apiUrl);
   }
 
-  getPharmacyById(id: number): Observable<PharmacyResponseDTO> {
-    return this.http.get<PharmacyResponseDTO>(`${this.apiUrl}/${id}`);
+  getPharmacyById(id: number): Observable<Pharmacy> {
+    return this.http.get<Pharmacy>(`${this.apiUrl}/${id}`);
   }
 
   searchPharmacies(name: string): Observable<PharmacyResponseDTO[]> {
-    return this.http.get<PharmacyResponseDTO[]>(`${this.apiUrl}/search`, {
+    return this.http.get<PharmacyResponseDTO[]>(`${this.searchApiUrl}/search`, {
       params: { name }
     });
   }
@@ -35,7 +35,7 @@ export class PharmacyService {
       params = params.set('city', city);
     }
 
-    return this.http.get<PharmacyStockResponseDTO[]>(`${this.apiUrl}/search/product`, { params });
+    return this.http.get<PharmacyStockResponseDTO[]>(`${this.searchApiUrl}/search/product`, { params });
   }
 
   searchByProducts(productIds: number[], minQty: number = 1): Observable<PharmacyStockResponseDTO[]> {
@@ -43,18 +43,18 @@ export class PharmacyService {
       .set('productIds', productIds.join(','))
       .set('minQty', minQty.toString());
 
-    return this.http.get<PharmacyStockResponseDTO[]>(`${this.apiUrl}/search/batch`, { params });
+    return this.http.get<PharmacyStockResponseDTO[]>(`${this.searchApiUrl}/search/batch`, { params });
   }
 
-  deletePharmacy(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  createPharmacy(pharmacy: PharmacyRequest): Observable<Pharmacy> {
+    return this.http.post<Pharmacy>(this.apiUrl, pharmacy);
   }
 
   updatePharmacy(id: number, pharmacy: PharmacyRequest): Observable<Pharmacy> {
     return this.http.put<Pharmacy>(`${this.apiUrl}/${id}`, pharmacy);
   }
 
-  createPharmacy(pharmacy: PharmacyRequest): Observable<Pharmacy> {
-    return this.http.post<Pharmacy>(this.apiUrl, pharmacy);
+  deletePharmacy(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

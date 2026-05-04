@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Toast, ToastService } from '../../services/toast.service';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-toast',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './toast.component.html',
   styleUrls: ['./toast.component.scss']
 })

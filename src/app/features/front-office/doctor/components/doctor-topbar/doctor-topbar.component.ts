@@ -1,35 +1,40 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
   selector: 'app-doctor-topbar',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './doctor-topbar.component.html',
   styleUrls: ['./doctor-topbar.component.scss']
 })
 export class DoctorTopbarComponent implements OnInit {
   firstName: string = 'Doctor';
   initials: string = 'D';
-  photo: string | null = null;
 
   constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit() {
     this.loadUserInfo();
-    this.userService.profile$.subscribe(user => {
-      if (user) {
-        if (user.fullName) {
+    this.userService.getProfile().subscribe({
+      next: (user) => {
+        if (user && user.fullName) {
           this.setNames(user.fullName);
         }
-        this.photo = (user as any).photo || null;
+      },
+      error: (err) => {
+        console.error('Error fetching doctor profile', err);
       }
     });
-    this.userService.refreshProfile();
   }
 
   private loadUserInfo() {
     const fullName = this.authService.getUserFullName();
-    if (fullName) this.setNames(fullName);
+    if (fullName) {
+      this.setNames(fullName);
+    }
   }
 
   private setNames(fullName: string) {

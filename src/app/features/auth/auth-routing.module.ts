@@ -4,12 +4,16 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { VerifyCodeComponent } from './pages/verify-code/verify-code.component';
+import { GoogleCallbackComponent } from './pages/google-callback/google-callback.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'verify-code', component: VerifyCodeComponent },
+  { path: 'google/callback', component: GoogleCallbackComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 

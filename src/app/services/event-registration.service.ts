@@ -15,12 +15,12 @@ export class EventRegistrationService {
     return this.http.post<EventRegistration>(this.baseUrl, request);
   }
 
-  validateRegistration(id: number): Observable<EventRegistration> {
-    return this.http.patch<EventRegistration>(`${this.baseUrl}/${id}/validate`, {});
+  validateRegistration(id: number): Observable<any> {
+    return this.http.put<any>(`http://localhost:8081/springsecurity/api/events/participation/${id}/accept`, {});
   }
 
-  getRegistrationsByEvent(eventId: number): Observable<EventRegistration[]> {
-    return this.http.get<EventRegistration[]>(`${this.baseUrl}/event/${eventId}`);
+  getRegistrationsByEvent(eventId: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/events/${eventId}/participants`);
   }
 
   getRegistrationsByParticipant(participantId: number): Observable<EventRegistration[]> {

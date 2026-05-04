@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
-import { LayoutModule } from '../layout/layout.module';
 import { LaboratoryStaffProfileSettingsComponent } from './pages/laboratory-profile-settings/laboratory-profile-settings.component';
 import { LaboratoryProfileEditComponent } from './pages/laboratory-profile-edit/laboratory-profile-edit.component';
 
@@ -29,8 +28,9 @@ const routes: Routes = [
     { path: 'lab-requests', component: LaboratoryStaffLabRequestsComponent },
     { path: 'lab-results', component: LabResultsComponent },
     { path: 'requests', component: LaboratoryDashboardComponent },
-    { path: 'results', component: LaboratoryDashboardComponent }
-];
+    { path: 'results', component: LaboratoryDashboardComponent }];
+
+import { PasswordModalComponent } from '../patient/components/password-modal/password-modal.component';
 
 @NgModule({
     declarations: [
@@ -49,7 +49,7 @@ const routes: Routes = [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        LayoutModule,
+        PasswordModalComponent,
         RouterModule.forChild(routes)
     ],
     providers: [
@@ -60,6 +60,5 @@ const routes: Routes = [
         FormsModule,
         ReactiveFormsModule
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-})
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]})
 export class LaboratoryStaffModule { }

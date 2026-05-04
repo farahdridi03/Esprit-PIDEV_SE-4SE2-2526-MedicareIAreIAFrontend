@@ -1,0 +1,307 @@
+<div [class.patient-portal-wrapper]="!isInPortal" [class.portal-mode]="isInPortal">
+  <!-- Dynamic Sidebar - Only show if NOT in portal -->
+  <ng-container *ngIf="!isInPortal">
+    <app-sidebar *ngIf="userRole === 'PATIENT'"></app-sidebar>
+    <app-pharmacist-sidebar *ngIf="userRole === 'PHARMACIST'"></app-pharmacist-sidebar>
+  </ng-container>
+
+  <div [class.main-body]="!isInPortal">
+    <!-- Dynamic Topbar - Only show if NOT in portal -->
+    <ng-container *ngIf="!isInPortal">
+      <app-topbar *ngIf="userRole === 'PATIENT'"></app-topbar>
+      <app-pharmacist-topbar *ngIf="userRole === 'PHARMACIST'"></app-pharmacist-topbar>
+    </ng-container>
+
+    <div class="content-area">
+      <div class="page-container" *ngIf="loading; else content">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading event details...</p>
+        </div>
+      </div>
+
+      <ng-template #content>
+        <div class="event-details-hero" *ngIf="event">
+          <div class="hero-image-overlay">
+            <img [src]="event.imageUrl || 'https://images.unsplash.com/photo-1505751172107-16016a260844?auto=format&fit=crop&q=80&w=2070'" 
+                 alt="Event Hero" 
+                 class="hero-img">
+          </div>
+          
+          <div class="hero-content">
+            <div class="breadcrumb" (click)="goBack()">
+              <span class="icon">←</span> Back to Events
+            </div>
+            
+            <div class="title-section">
+              <div class="badge-wrapper">
+                <span class="type-badge" [class.physical]="event.eventType === 'PHYSICAL'" [class.online]="event.eventType === 'ONLINE'">
+                  {{ event.eventType === 'PHYSICAL' ? '📍 PHYSICAL' : '💻 ONLINE' }}
+                </span>
+                <span class="date-badge">{{ event.date | date:'MMM dd, yyyy' }}</span>
+                <span class="status-badge" *ngIf="participation">
+                    {{ participation.status === 'CONFIRMED' ? '✓ Confirmed' : (participation.status === 'REJECTED' ? '❌ Rejected' : '⏳ Pending Approval') }}
+                </span>
+              </div>
+              <h1>{{ event.title }}</h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-content-layout" *ngIf="event">
+          <div class="container">
+            <div class="grid-layout">
+              <!-- Left Column: Description & Logistics -->
+              <div class="info-column">
+                <section class="details-section glass-card">
+                  <h2 class="section-title">About this event</h2>
+                  <p class="description">{{ event.description }}</p>
+                </section>
+
+                <section class="logistics-section glass-card" *ngIf="event.eventType === 'PHYSICAL'">
+                  <h2 class="section-title">📍 Venue Details</h2>
+                  <div class="venue-info">
+                    <div class="info-item">
+                      <span class="label">Name:</span>
+                      <span class="value">{{ event.venueName }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Address:</span>
+                      <span class="value">{{ event.address }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Location:</span>
+                      <span class="value">{{ event.city }}, {{ event.country }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Capacity:</span>
+                      <span class="value">{{ event.capacity }} people maximum</span>
+                    </div>
+                  </div>
+                  <!-- Real Map Container -->
+                  <div id="event-map" class="event-map-container"></div>
+                </section>
+
+                <!-- SEAT SELECTION -->
+                <section class="logistics-section glass-card" *ngIf="event.eventType === 'PHYSICAL' && participation?.status === 'CONFIRMED'">
+                  <h2 class="section-title">🪑 Reserve Your Seat</h2>
+                  
+                  <div *ngIf="seats.length === 0" class="no-seats-fallback">
+                    <p>The seating plan for this event has not been published yet. Please check back later!</p>
+                  </div>
+
+                  <div *ngIf="seats.length > 0">
+                    <p class="section-desc">Choose a vacant seat by clicking on it.</p>
+                    
+                    <div class="patient-seat-map-container" [ngClass]="event.venueType?.toLowerCase()">
+                       <!-- HOTEL -->
+                       <div class="hotel-layout" *ngIf="event.venueType === 'HOTEL'">
+                         <div class="tables-grid">
+                           <div class="hotel-table-wrapper" *ngFor="let table of hotelTables">
+                             <div class="table-ring">
+                               <div class="table-center">T{{ table.tableNumber }}</div>
+                               <div
+                                 class="hotel-seat"
+                                 *ngFor="let seat of table.seats; let i = index"
+                                 [ngClass]="[seat.status.toLowerCase(), selectedSeat?.id === seat.id ? 'selected' : '']"
+                                 [class.clickable]="seat.status === 'AVAILABLE'"
+                                 [style.transform]="'rotate(' + (i * (360 / table.seats.length)) + 'deg) translate(0, -68px) rotate(-' + (i * (360 / table.seats.length)) + 'deg)'"
+                                 (click)="selectSeat(seat)"
+                                 [title]="seat.seatLabel"
+                               >
+                                 <span>{{ seat.seatNumber }}</span>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+
+                       <!-- STADIUM -->
+                       <div class="stadium-layout" *ngIf="event.venueType === 'STADIUM'">
+                         <div class="stadium-wrapper-scale">
+                           <div class="stadium-wrapper">
+                             <div class="field-indicator">
+                               <div class="goal-area-left"></div>
+                               <div class="goal-area-right"></div>
+                               <span style="z-index: 20;">⚽ FIELD</span>
+                             </div>
+                             <div class="sections-wrap">
+                               <div class="stadium-section" *ngFor="let section of stadiumSections">
+                                 <div class="section-header">{{ section.name }}</div>
+                                 <div class="section-body">
+                                   <div class="stadium-row" *ngFor="let row of section.rows">
+                                     <span class="row-label">R{{ row.rowNumber }}</span>
+                                     <div class="row-seats">
+                                       <div
+                                         class="grid-seat"
+                                         *ngFor="let seat of row.seats; trackBy: trackById"
+                                         [ngClass]="[seat.status.toLowerCase(), selectedSeat?.id === seat.id ? 'selected' : '']"
+                                         [class.clickable]="seat.status === 'AVAILABLE'"
+                                         (click)="selectSeat(seat)"
+                                         [title]="seat.seatLabel"
+                                       ></div>
+                                     </div>
+                                   </div>
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+
+                       <!-- CONFERENCE -->
+                       <div class="conference-layout" *ngIf="event.venueType === 'CONFERENCE'">
+                         <div class="stage-bar">🎤 STAGE / PODIUM</div>
+                         <div class="conf-rows">
+                           <div class="conf-row" *ngFor="let row of conferenceRows">
+                             <span class="row-label">Row {{ row.rowNumber }}</span>
+                             <div class="row-seats">
+                               <div
+                                 class="chair-seat"
+                                 *ngFor="let seat of row.seats; trackBy: trackById"
+                                 [ngClass]="[seat.status.toLowerCase(), selectedSeat?.id === seat.id ? 'selected' : '']"
+                                 [class.clickable]="seat.status === 'AVAILABLE'"
+                                 (click)="selectSeat(seat)"
+                                 [title]="seat.seatLabel"
+                               >
+                                 <div class="chair-back"></div>
+                                 <div class="chair-body">{{ seat.seatNumber }}</div>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                    </div>
+
+                    <div class="selection-actions" *ngIf="selectedSeat">
+                      <button class="btn-confirm-seat" (click)="reserveSeat()">
+                        Confirm Reservation: {{ selectedSeat.seatLabel }}
+                      </button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="logistics-section glass-card" *ngIf="event.eventType === 'ONLINE'">
+                  <h2 class="section-title">💻 Digital Connection</h2>
+                  <div class="venue-info">
+                    <div class="info-item">
+                      <span class="label">Platform:</span>
+                      <span class="value">{{ event.platformName }}</span>
+                    </div>
+                    
+                    <div *ngIf="participation?.status === 'CONFIRMED'; else hiddenLink" class="link-reveal">
+                        <div class="info-item">
+                            <span class="label">Access Link:</span>
+                            <a [href]="event.meetingLink" target="_blank" class="value link">{{ event.meetingLink }}</a>
+                        </div>
+                        <div class="info-item" *ngIf="event.meetingPassword">
+                            <span class="label">Passcode:</span>
+                            <code class="passcode">{{ event.meetingPassword }}</code>
+                        </div>
+                    </div>
+
+                    <ng-template #hiddenLink>
+                        <div class="access-lock">
+                            <p>Meeting link is visible after registration is <strong>confirmed</strong> by admin.</p>
+                        </div>
+                    </ng-template>
+                  </div>
+                </section>
+
+                <!-- FEEDBACK SECTION -->
+                <section class="details-section glass-card" *ngIf="isPastEvent && participation?.status === 'CONFIRMED'">
+                    <h2 class="section-title">⭐ Event Feedback</h2>
+                    <div class="feedback-card">
+                        <div *ngIf="!feedbackSubmitted; else feedbackDoneTpl">
+                            <p>How would you rate your experience?</p>
+                            <div class="rating-stars">
+                                <span *ngFor="let s of [1,2,3,4,5]" 
+                                      (click)="selectedRating = s" 
+                                      [class.active]="selectedRating >= s">★</span>
+                            </div>
+                            <textarea [(ngModel)]="feedbackComment" placeholder="Any suggestions?"></textarea>
+                            <button class="btn-primary" [disabled]="!selectedRating" (click)="submitFeedback()">Submit Feedback</button>
+                        </div>
+                        <ng-template #feedbackDoneTpl>
+                            <div class="feedback-success">
+                                <h3>Thank you!</h3>
+                                <p>Your feedback has been recorded.</p>
+                            </div>
+                        </ng-template>
+                    </div>
+                </section>
+              </div>
+
+              <!-- Right Column: Registration Card -->
+              <div class="sidebar-column">
+                <div class="registration-card sticky-card" [class.registered]="participation">
+                  <div class="card-content">
+                    <div class="date-time-block">
+                      <div class="calendar-icon">
+                        <span class="month">{{ event.date | date:'MMM' }}</span>
+                        <span class="day">{{ event.date | date:'dd' }}</span>
+                      </div>
+                      <div class="time-info">
+                        <p class="full-date">{{ event.date | date:'EEEE, MMMM d, yyyy' }}</p>
+                        <p class="time">{{ event.date | date:'HH:mm' }}</p>
+                      </div>
+                    </div>
+
+                    <div class="price-block" *ngIf="!participation && event.ticketPrice">
+                        <span class="price-label">Ticket Price:</span>
+                        <span class="price-value">{{ event.ticketPrice | currency:'USD' }}</span>
+                    </div>
+
+                    <div class="action-buttons">
+                      <div *ngIf="!participation">
+                        <button class="btn-primary join-btn" 
+                                [disabled]="submitting" 
+                                (click)="register()">
+                          <span class="btn-icon">✅</span>
+                          {{ submitting ? 'Processing...' : 'Join Event' }}
+                        </button>
+                      </div>
+                      
+                      <div *ngIf="participation" class="registered-view">
+                        <div class="status-banner" [ngClass]="participation.status.toLowerCase()">
+                             {{ participation.status === 'CONFIRMED' ? '✓ Request Confirmed' : (participation.status === 'REJECTED' ? '✕ Request Rejected' : '⏳ Request Pending') }}
+                        </div>
+                        
+                        <p class="status-desc" *ngIf="participation.status === 'CONFIRMED'">Your request was accepted. Download your ticket below.</p>
+                        <p class="status-desc" *ngIf="participation.status === 'PENDING'">Your request is being reviewed by the administrator.</p>
+
+                        <button class="btn-primary download-btn" *ngIf="participation.status === 'CONFIRMED'" (click)="downloadTicket()">
+                          Download Ticket (PDF)
+                        </button>
+                        
+                        <button class="btn-secondary cancel-btn" [disabled]="submitting" (click)="cancelParticipation()">
+                          Cancel Participation
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="share-block">
+                      <p>Invite your colleagues:</p>
+                      <div class="social-icons">
+                        <span class="social-icon">🔗</span>
+                        <span class="social-icon">📧</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST SYSTEM -->
+<div class="toast-system" *ngIf="toastMessage">
+    <div class="toast" [ngClass]="toastType">
+        <span class="toast-icon">{{ toastType === 'success' ? '✅' : '❌' }}</span>
+        <span class="toast-text">{{ toastMessage }}</span>
+    </div>
+</div>

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../../../services/auth.service';
-import { SidebarService } from '../../../../../services/sidebar.service';
-import { CommonModule } from '@angular/common';
+import { SidebarService } from '../../../../../services/sidebar.service';import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -28,11 +27,9 @@ export class SidebarComponent implements OnInit {
   toggleSidebar(): void {
     this.sidebarService.toggle();
   }
-
   logout() {
     this.authService.logout();
   }
-
   canAccessForum(): boolean {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     if (!currentUser || !currentUser.token) return false;

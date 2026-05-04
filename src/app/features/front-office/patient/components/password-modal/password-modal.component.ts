@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../../../../services/user.service';
 
 @Component({
   selector: 'app-password-modal',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './password-modal.component.html',
   styleUrls: ['./password-modal.component.scss']
 })

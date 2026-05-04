@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FrontLayoutComponent } from '../front-office/layout/front-layout/front-layout.component';
+import { AppLayoutComponent } from '../../shared/layout/app-layout.component';
 import { PharmacistDashboardComponent } from './pages/pharmacist-dashboard/pharmacist-dashboard.component';
 import { PharmaciesListComponent } from './pages/pharmacies-list/pharmacies-list.component';
 import { ProductListComponent } from './pages/product-list/product-list.component';
@@ -11,11 +11,13 @@ import { AlertsListComponent } from './pages/alerts-list/alerts-list.component';
 import { PredictionsListComponent } from './pages/predictions-list/predictions-list.component';
 import { ExpirationRisksComponent } from './pages/expiration-risks/expiration-risks.component';
 import { AuthGuard } from '../../guards/auth.guard';
+import { EventsDiscoveryComponent } from '../front-office/pages/events/events-discovery/events-discovery.component';
+import { EventDetailComponent } from '../front-office/patient/pages/event-detail/event-detail.component';
 
 const routes: Routes = [
   {
     path: 'stock',
-    component: FrontLayoutComponent,
+    component: AppLayoutComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PHARMACIST'] },
     children: [
@@ -28,6 +30,8 @@ const routes: Routes = [
       { path: 'alerts', component: AlertsListComponent },
       { path: 'predictions', component: PredictionsListComponent },
       { path: 'expiration-risks', component: ExpirationRisksComponent },
+      { path: 'events', component: EventsDiscoveryComponent },
+      { path: 'events/:id', component: EventDetailComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

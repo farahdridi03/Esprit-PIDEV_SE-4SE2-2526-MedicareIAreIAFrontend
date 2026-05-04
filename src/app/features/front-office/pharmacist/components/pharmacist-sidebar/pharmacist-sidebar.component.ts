@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../../../services/auth.service';
 import { SidebarService } from '../../../../../services/sidebar.service';
 
 @Component({
   selector: 'app-pharmacist-sidebar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './pharmacist-sidebar.component.html',
   styleUrls: ['./pharmacist-sidebar.component.scss']
 })

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Notification } from '../models/notification.model';
 
 export interface AppNotification {
   id: string;
@@ -19,6 +21,7 @@ export interface AppNotification {
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly STORAGE_KEY = 'admin_notifications';
+  private baseUrl = 'http://localhost:8081/springsecurity/api/notifications';
 
   private notificationsSubject = new BehaviorSubject<AppNotification[]>(this.loadFromStorage());
   notifications$ = this.notificationsSubject.asObservable();
@@ -31,12 +34,36 @@ export class NotificationService {
     return this.notificationsSubject.value.filter(n => !n.read).length;
   }
 
-  constructor() {
+  constructor(private http: HttpClient) {
     // Keep unreadCount$ in sync
     this.notificationsSubject.subscribe(notifs => {
       this.unreadCountSubject.next(notifs.filter(n => !n.read).length);
     });
   }
+
+  // ==== HTTP BACKEND METHODS (from Oussama) ====
+  
+  getNotifications(): Observable<Notification[]> {
+    return this.http.get<Notification[]>(this.baseUrl);
+  }
+
+  markAsRead(id: number | string): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${id}/read`, {});
+  }
+
+  markAllRead(): Observable<any> {
+    return this.http.put(`${this.baseUrl}/read-all`, {});
+  }
+
+  deleteNotification(id: number | string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`);
+  }
+
+  clearAll(): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/clear-all`);
+  }
+
+  // ==== LOCAL CACHE METHODS (from HEAD) ====
 
   addNotification(titleOrDto: any, message?: string, type: AppNotification['type'] = 'info'): void {
     let notif: AppNotification;
@@ -70,10 +97,11 @@ export class NotificationService {
     this.saveToStorage(updated);
   }
 
-  markAllRead(): void {
+  markAllAsRead(userId?: number): Observable<void> {
     const updated = this.notificationsSubject.value.map(n => ({ ...n, read: true, isRead: true }));
     this.notificationsSubject.next(updated);
     this.saveToStorage(updated);
+    return of(undefined);
   }
 
   markRead(id: string): void {
@@ -84,29 +112,8 @@ export class NotificationService {
     this.saveToStorage(updated);
   }
 
-  clearAll(): void {
-    this.notificationsSubject.next([]);
-    this.saveToStorage([]);
-  }
-
-  // ==== COMPAT API (used by aziz's components) ====
-
-  /** Returns notifications as an Observable (ignores userId — same store) */
-  getNotifications(userId?: number): Observable<AppNotification[]> {
+  getLocalNotifications(userId?: number): Observable<AppNotification[]> {
     return of(this.notificationsSubject.value);
-  }
-
-  /** Marks a single notification as read, returns Observable */
-  markAsRead(id: number | string): Observable<AppNotification> {
-    this.markRead(String(id));
-    const notif = this.notificationsSubject.value.find(n => n.id === String(id));
-    return of(notif as AppNotification);
-  }
-
-  /** Marks all notifications as read, returns Observable */
-  markAllAsRead(userId?: number): Observable<void> {
-    this.markAllRead();
-    return of(undefined);
   }
 
   getUnreadCount(userId?: number): Observable<{ unreadCount: number }> {

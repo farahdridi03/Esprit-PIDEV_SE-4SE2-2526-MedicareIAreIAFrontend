@@ -10,6 +10,8 @@ import { InventoryListComponent } from './pages/inventory-list/inventory-list.co
 import { BatchesListComponent } from './pages/batches-list/batches-list.component';
 import { MovementsListComponent } from './pages/movements-list/movements-list.component';
 import { AlertsListComponent } from './pages/alerts-list/alerts-list.component';
+import { EventsDiscoveryComponent } from '../pages/events/events-discovery/events-discovery.component';
+import { EventDetailComponent } from '../patient/pages/event-detail/event-detail.component';
 
 const routes: Routes = [
   {
@@ -26,6 +28,12 @@ const routes: Routes = [
   {
     path: 'orders',
     component: OrdersComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PHARMACIST'] }
+  },
+  {
+    path: 'events',
+    component: EventsDiscoveryComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PHARMACIST'] }
   },
@@ -69,6 +77,12 @@ const routes: Routes = [
   {
     path: 'alerts',
     component: AlertsListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PHARMACIST'] }
+  },
+  {
+    path: 'events/:id',
+    component: EventDetailComponent,
     canActivate: [AuthGuard],
     data: { roles: ['PHARMACIST'] }
   }

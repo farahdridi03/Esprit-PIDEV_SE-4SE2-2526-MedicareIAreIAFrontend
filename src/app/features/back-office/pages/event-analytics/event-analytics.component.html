@@ -1,0 +1,99 @@
+<div class="analytics-container" *ngIf="analytics; else loadingTpl">
+  <div class="header">
+    <div class="title-group">
+      <h1>Event Performance Report</h1>
+      <p class="subtitle">{{ analytics.eventTitle }}</p>
+    </div>
+    <div class="export-actions">
+      <button class="btn-secondary">Download PDF</button>
+      <button class="btn-primary">Share Report</button>
+    </div>
+  </div>
+
+  <!-- Key Metrics Row -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon attendance-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+      <div class="metric-info">
+        <span class="label">Attendance Rate</span>
+        <h2 class="value">{{ analytics.attendanceRate | number:'1.0-1' }}%</h2>
+        <span class="trend" [class.up]="analytics.attendanceDrift >= 0" [class.down]="analytics.attendanceDrift < 0">
+          {{ analytics.attendanceDrift >= 0 ? '+' : '' }}{{ analytics.attendanceDrift }}% vs previous
+        </span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon revenue-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="metric-info">
+        <span class="label">Gross Revenue</span>
+        <h2 class="value">{{ analytics.totalRevenue | currency:'USD' }}</h2>
+        <span class="sub-label">{{ analytics.actualAttendance }} Tickets sold</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon satisfaction-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="metric-info">
+        <span class="label">User Satisfaction</span>
+        <h2 class="value">{{ analytics.averageSatisfaction }}/5</h2>
+        <span class="trend" [class.up]="analytics.satisfactionDrift >= 0" [class.down]="analytics.satisfactionDrift < 0">
+          {{ analytics.satisfactionDrift >= 0 ? '+' : '' }}{{ analytics.satisfactionDrift | number:'1.0-2' }} pt shift
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <!-- Attendance Progress -->
+    <div class="chart-card">
+      <h3>Attendance Breakdown</h3>
+      <div class="progress-container">
+        <div class="prog-info">
+          <span>Actual vs Registrations</span>
+          <span>{{ analytics.actualAttendance }}/{{ analytics.totalRegistrations }}</span>
+        </div>
+        <div class="prog-bar-bg">
+          <div class="prog-bar-fill" [style.width.%]="analytics.attendanceRate"></div>
+        </div>
+      </div>
+      <p class="chart-desc">This event reached {{ analytics.attendanceRate }}% of its registered capacity.</p>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="chart-card recommendations">
+      <h3>💡 Smart Recommendations</h3>
+      <ul class="rec-list">
+        <li *ngFor="let rec of analytics.recommendations">{{ rec }}</li>
+      </ul>
+      <div class="qr-preview">
+        <div class="qr-info">
+          <p>Scan for detailed feedback</p>
+          <span>Live during event</span>
+        </div>
+        <div class="qr-mock">
+          <svg viewBox="0 0 100 100"><rect width="100%" height="100%" fill="#f3f4f6"/><path d="M20 20h20v20h-20zM60 20h20v20h-20zM20 60h20v20h-20zM45 45h10v10h-10z" fill="#1f2937"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Generating analytics report...</p>
+  </div>
+</ng-template>

@@ -34,8 +34,6 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-
-
     updateProfile(request: UpdateProfileRequest): Observable<any> {
         return this.http.put(`${this.baseUrlLegacy}/profile`, request);
     }
@@ -50,7 +48,6 @@ export class UserService {
         if (passwordData !== undefined) {
             return this.http.post<any>(`${this.apiUrl}/${idOrRequest}/change-password`, passwordData);
         }
-        // Legacy single-argument call from password-modal
         return this.http.put(`${this.baseUrlLegacy}/change-password`, idOrRequest);
     }
 
@@ -134,5 +131,17 @@ export class UserService {
 
     refreshProfile(): void {
         this.getProfile().subscribe();
+    }
+
+    getPendingPharmacists(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/admin/pharmacists/pending`);
+    }
+
+    approvePharmacist(id: number): Observable<any> {
+        return this.http.patch(`http://localhost:8081/springsecurity/api/admin/pharmacists/${id}/approve`, {});
+    }
+
+    rejectPharmacist(id: number): Observable<any> {
+        return this.http.patch(`http://localhost:8081/springsecurity/api/admin/pharmacists/${id}/reject`, {});
     }
 }

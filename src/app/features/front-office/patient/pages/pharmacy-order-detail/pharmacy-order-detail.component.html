@@ -73,7 +73,7 @@
                     </div>
 
                     <!-- Step 2: Payée (ou validée si pas de paiement requis) -->
-                    <div class="step" [class.completed]="['PAID', 'ASSIGNING', 'ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.status)" [class.active]="['VALIDATED', 'PAYMENT_PENDING'].includes(order.status)">
+                    <div class="step" [class.completed]="['PAID', 'ASSIGNING', 'ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.status || '')" [class.active]="['VALIDATED', 'PAYMENT_PENDING'].includes(order.status || '')">
                         <div class="step-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
@@ -83,7 +83,7 @@
                     </div>
 
                     <!-- Step 3: Préparée / Livreur assigné -->
-                    <div class="step" [class.completed]="['ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.status)" [class.active]="['PAID', 'ASSIGNING'].includes(order.status)">
+                    <div class="step" [class.completed]="['ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.status || '')" [class.active]="['PAID', 'ASSIGNING'].includes(order.status || '')">
                         <div class="step-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
@@ -93,7 +93,7 @@
                     </div>
 
                     <!-- Step 4: En transit -->
-                    <div class="step" [class.completed]="['OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.status)" [class.active]="['ASSIGNED', 'PICKED_UP'].includes(order.status)">
+                    <div class="step" [class.completed]="['OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.status || '')" [class.active]="['ASSIGNED', 'PICKED_UP'].includes(order.status || '')">
                         <div class="step-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -135,7 +135,7 @@
                                 </div>
                                 <div class="data-row">
                                     <span class="label">Status:</span>
-                                    <span class="status-badge" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+                                    <span class="status-badge" [ngClass]="order.status.toLowerCase() || ''">{{ order.status }}</span>
                                 </div>
                                 <div class="data-row">
                                     <span class="label">Pharmacy:</span>
@@ -188,7 +188,7 @@
                                 </div>
                                 <div class="data-row">
                                     <span class="label">Status:</span>
-                                    <span class="status-badge" [ngClass]="existingPayment.status.toLowerCase()">{{ existingPayment.status }}</span>
+                                    <span class="status-badge" [ngClass]="existingPayment.status.toLowerCase() || ''">{{ existingPayment.status }}</span>
                                 </div>
                                 <div class="data-row" *ngIf="existingPayment.transactionId">
                                     <span class="label">Transaction:</span>
@@ -229,7 +229,8 @@
                         </div>
                         <div class="card-body">
                             <div class="tracking-meta">
-                                <div class="meta-item">\n                                    <span class="label">Courier</span>
+                                <div class="meta-item">
+                                    <span class="label">Courier</span>
                                     <span class="value">{{ delivery.agencyName }}</span>
                                 </div>
                                 <div class="meta-item">
@@ -242,7 +243,7 @@
                                 </div>
                             </div>
 
-                            <div class="live-map">
+                            <div class="live-map" *ngIf="delivery">
                                 <div class="delivery-marker" [style.left.%]="delivery.currentLng ? (50 + (delivery.currentLng % 1) * 10) : 45" [style.top.%]="delivery.currentLat ? (50 + (delivery.currentLat % 1) * 10) : 45">
                                     <div class="marker-pin">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">

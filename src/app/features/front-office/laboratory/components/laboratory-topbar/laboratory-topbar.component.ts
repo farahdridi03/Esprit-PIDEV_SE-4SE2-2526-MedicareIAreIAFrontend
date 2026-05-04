@@ -11,27 +11,23 @@ export class LaboratoryTopbarComponent implements OnInit {
   firstName: string = 'Laboratory';
   initials: string = 'L';
   photo: string | null = null;
-
   constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user: UserProfile) => {
-        if (user && user.fullName) {
+      next: (user: UserProfile) => {        if (user && user.fullName) {
           this.setNames(user.fullName);
         }
       },
       error: (err: any) => {
-        console.error('Error fetching laboratory profile', err);
-      }
+        console.error('Error fetching laboratory profile', err);      }
     });
   }
 
   private loadUserInfo() {
     const fullName = this.authService.getUserFullName();
-    if (fullName) this.setNames(fullName);
-  }
+    if (fullName) this.setNames(fullName);  }
 
   private setNames(fullName: string) {
     if (!fullName) return;

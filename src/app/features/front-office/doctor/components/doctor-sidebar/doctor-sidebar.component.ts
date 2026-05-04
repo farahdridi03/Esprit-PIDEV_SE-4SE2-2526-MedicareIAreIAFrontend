@@ -1,35 +1,19 @@
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../../../services/auth.service';
-import { SidebarService } from '../../../../../services/sidebar.service';
 
 @Component({
   selector: 'app-doctor-sidebar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './doctor-sidebar.component.html',
   styleUrls: ['./doctor-sidebar.component.scss']
 })
-export class DoctorSidebarComponent implements OnInit {
-  @Input() currentView: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients' = 'calendar';
-  @Output() viewChange = new EventEmitter<'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients'>();
-  isCollapsed = false;
+export class DoctorSidebarComponent {
+  @Input() currentView: string = '';
 
-  constructor(
-    private authService: AuthService,
-    private sidebarService: SidebarService
-  ) { }
-
-  ngOnInit(): void {
-    this.sidebarService.isCollapsed$.subscribe(
-      collapsed => this.isCollapsed = collapsed
-    );
-  }
-
-  toggleSidebar(): void {
-    this.sidebarService.toggle();
-  }
-
-  setView(view: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients') {
-    this.viewChange.emit(view);
-  }
+  constructor(private authService: AuthService) { }
 
   logout() {
     this.authService.logout();

@@ -1,4 +1,4 @@
-{
+﻿{
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
@@ -42,12 +42,12 @@
               }
             ],
             "styles": ["src/styles.scss"],
+            "scripts": [],
             "optimization": {
               "fonts": {
                 "inline": false
               }
-            },
-            "scripts": []
+            }
           },
           "configurations": {
             "production": {
@@ -102,8 +102,7 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing",
-              "src/polyfills-test.ts"
+              "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
@@ -120,10 +119,6 @@
       }
     }
   },
-  "cli": {
-    "analytics": "71db7e5c-b0ea-45e9-96cc-081fb5f0f76b"
-  }
-}
   "cli": {
     "analytics": "71db7e5c-b0ea-45e9-96cc-081fb5f0f76b"
   }

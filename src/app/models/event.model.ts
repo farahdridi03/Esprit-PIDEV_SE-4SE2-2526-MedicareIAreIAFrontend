@@ -1,5 +1,5 @@
 export type EventType = 'ONLINE' | 'PHYSICAL';
-export type RegistrationStatus = 'REGISTERED' | 'VALIDATED';
+export type RegistrationStatus = 'REGISTERED' | 'VALIDATED' | 'PENDING' | 'CONFIRMED' | 'REJECTED';
 
 export interface MedicalEvent {
   id: number;
@@ -16,6 +16,7 @@ export interface MedicalEvent {
   postalCode?: string;
   country?: string;
   capacity?: number;
+  venueType?: string;
   
   // Online Event Details
   platformName?: string;
@@ -25,17 +26,80 @@ export interface MedicalEvent {
   // Custom Fields for UI
   imageUrl?: string;
   attendeeImages?: string[]; // Optional: URLs of participant avatars
+  ticketPrice?: number;
 }
 
 export interface EventRegistration {
   id: number;
   eventId: number;
-  participantId: number;
+  participantId?: number;
+  userId?: number;
+  userFullName?: string;
+  userEmail?: string;
   status: RegistrationStatus;
-  createdAt: string;
+  createdAt?: string;
+  registeredAt?: string;
+  attended?: boolean;
 }
 
 export interface EventRegistrationRequest {
   eventId: number;
   participantId: number;
+}
+
+export type SeatStatus = 'AVAILABLE' | 'RESERVED' | 'BLOCKED';
+
+export interface EventSeat {
+  id: number;
+  eventId: number;
+  zoneName: string;
+  seatLabel: string;
+  posX: number;
+  posY: number;
+  status: SeatStatus;
+  reservedByFullName?: string;
+  rowNumber?: number;
+  seatNumber?: number;
+  tableNumber?: number;
+}
+
+export interface SaveSeatRequest {
+  id?: number;
+  zoneName: string;
+  seatLabel: string;
+  posX: number;
+  posY: number;
+  status: SeatStatus;
+}
+
+export interface SeatZoneSummary {
+  zoneName: string;
+  totalSeats: number;
+  availableSeats: number;
+  reservedSeats: number;
+  blockedSeats: number;
+}
+
+export interface SeatingStats {
+  eventId: number;
+  eventTitle: string;
+  venueType: string;
+  totalSeats: number;
+  availableSeats: number;
+  reservedSeats: number;
+  blockedSeats: number;
+  byZone: SeatZoneSummary[];
+}
+
+export interface EventAnalytics {
+  eventId: number;
+  eventTitle: string;
+  totalRegistrations: number;
+  actualAttendance: number;
+  attendanceRate: number;
+  averageSatisfaction: number;
+  totalRevenue: number;
+  attendanceDrift: number;
+  satisfactionDrift: number;
+  recommendations: string[];
 }

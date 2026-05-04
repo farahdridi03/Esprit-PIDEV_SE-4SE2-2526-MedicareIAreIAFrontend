@@ -26,7 +26,7 @@
   <!-- Dashboard -->
   <div class="dashboard-content" *ngIf="currentAgent">
     <div class="agent-info">
-      <div class="profile">
+      <div class="profile" *ngIf="currentAgent">
         <div class="avatar">{{currentAgent.name.charAt(0)}}</div>
         <div class="details">
           <h2>{{currentAgent.name}}</h2>

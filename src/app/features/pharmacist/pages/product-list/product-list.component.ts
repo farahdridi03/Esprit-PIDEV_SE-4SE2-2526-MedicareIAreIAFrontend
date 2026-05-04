@@ -36,8 +36,20 @@ export class ProductListComponent implements OnInit {
     isApproved = false;
 
     ngOnInit(): void {
-      this.isApproved = true;
-      this.refresh();
+      if (this.authService.getUserRole() === 'PHARMACIST') {
+          this.authService.pharmacistProfile$.subscribe((profile: any) => {
+              if (profile && profile.status === 'APPROVED' && profile.pharmacySetupCompleted) {
+                  this.isApproved = true;
+                  this.refresh();
+              } else {
+                  this.isApproved = false;
+                  this.loading = false;
+              }
+          });
+      } else {
+          this.isApproved = true;
+          this.refresh();
+      }
     }
 
     refresh() {

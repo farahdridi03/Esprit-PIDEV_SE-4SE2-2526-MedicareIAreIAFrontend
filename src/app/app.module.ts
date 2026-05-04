@@ -1,32 +1,26 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { DatePipe, CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import { ToastComponent } from './components/toast/toast.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ToastComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule,
     HttpClientModule,
-    CommonModule,
-    RouterModule
+    ToastComponent
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    DatePipe
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

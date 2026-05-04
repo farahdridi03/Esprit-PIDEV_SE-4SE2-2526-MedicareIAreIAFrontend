@@ -1,0 +1,234 @@
+<!-- ════════════════════════════════════════════════════════════════════
+     SMART SEATING LAYOUT — Dynamic venue renderer (no drag-and-drop)
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!-- ── Header ──────────────────────────────────────────────────────────── -->
+<div class="page-header">
+  <div class="header-left">
+    <div class="venue-badge" [ngClass]="venueType ? venueType.toLowerCase() : ''">
+      <span class="venue-icon">
+        <ng-container *ngIf="venueType === 'HOTEL'">🏨</ng-container>
+        <ng-container *ngIf="venueType === 'STADIUM'">🏟️</ng-container>
+        <ng-container *ngIf="venueType === 'CONFERENCE'">🎤</ng-container>
+      </span>
+      {{ venueType || 'SEATING' }}
+    </div>
+    <div>
+      <h1>Smart Seat <em>Manager</em></h1>
+      <p class="subtitle">{{ eventTitle }}</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="fallback-gen" *ngIf="!venueType">
+      <select [(ngModel)]="selectedFallbackVenue" class="venue-select">
+        <option value="">-- Select Venue Type --</option>
+        <option value="HOTEL">Hotel Banquet</option>
+        <option value="STADIUM">Stadium</option>
+        <option value="CONFERENCE">Conference</option>
+      </select>
+      <button class="btn-regen" (click)="regenerateLayout()" [disabled]="!selectedFallbackVenue">
+        ✨ Generate Layout
+      </button>
+    </div>
+    <button class="btn-regen" (click)="regenerateLayout()" *ngIf="venueType">
+      ↺ Regenerate Layout
+    </button>
+  </div>
+</div>
+
+<!-- ── Success / Error banner ───────────────────────────────────────────── -->
+<div class="alert alert-success" *ngIf="successMsg">{{ successMsg }}</div>
+<div class="alert alert-error"   *ngIf="errorMsg">{{ errorMsg }}</div>
+
+<!-- ── Stats bar ────────────────────────────────────────────────────────── -->
+<div class="stats-bar" *ngIf="stats">
+  <div class="stat-chip total">
+    <span class="stat-number">{{ stats.totalSeats }}</span>
+    <span class="stat-label">Total</span>
+  </div>
+  <div class="stat-chip available">
+    <span class="stat-number">{{ stats.availableSeats }}</span>
+    <span class="stat-label">Available</span>
+  </div>
+  <div class="stat-chip reserved">
+    <span class="stat-number">{{ stats.reservedSeats }}</span>
+    <span class="stat-label">Reserved</span>
+  </div>
+  <div class="stat-chip blocked">
+    <span class="stat-number">{{ stats.blockedSeats }}</span>
+    <span class="stat-label">Blocked</span>
+  </div>
+  <!-- Occupancy progress bar -->
+  <div class="occupancy-bar">
+    <span class="occ-label">Occupancy {{ occupancyPercent() }}%</span>
+    <div class="occ-track">
+      <div class="occ-fill" [style.width.%]="occupancyPercent()"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Search + Legend ──────────────────────────────────────────────────── -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by zone, seat label…"
+      [(ngModel)]="searchKeyword"
+      (keyup.enter)="onSearch()"
+    />
+    <button class="btn-search" (click)="onSearch()">🔍</button>
+    <button class="btn-clear"  (click)="clearSearch()" *ngIf="searchKeyword">✕</button>
+  </div>
+  <div class="legend">
+    <span class="leg-dot available"></span> Available
+    <span class="leg-dot reserved"></span>  Reserved
+    <span class="leg-dot blocked"></span>   Blocked
+  </div>
+</div>
+
+<!-- ── Loading spinner ──────────────────────────────────────────────────── -->
+<div class="loading-wrap" *ngIf="isLoading">
+  <div class="spinner"></div>
+  <p>Loading seating layout…</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     HOTEL LAYOUT — round tables with seats around each table
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="hotel-layout" *ngIf="!isLoading && venueType === 'HOTEL'">
+  <div class="section-title">🏨 Hotel Banquet — {{ hotelTables.length }} Tables</div>
+  <div class="tables-grid">
+    <div class="hotel-table-wrapper" *ngFor="let table of hotelTables">
+      <div class="table-label">Table {{ table.tableNumber }}</div>
+      <div class="table-ring">
+        <div class="table-center">T{{ table.tableNumber }}</div>
+        <div
+          class="hotel-seat"
+          *ngFor="let seat of table.seats; let i = index"
+          [ngClass]="seat.status.toLowerCase()"
+          [class.clickable]="seat.status === 'AVAILABLE'"
+          [style.transform]="'rotate(' + (i * (360 / table.seats.length)) + 'deg) translate(0, -68px) rotate(-' + (i * (360 / table.seats.length)) + 'deg)'"
+          (click)="onSeatClick(seat)"
+          [title]="seat.seatLabel + (seat.reservedByFullName ? ' — ' + seat.reservedByFullName : '')"
+        >
+          <span>{{ seat.seatNumber }}</span>
+        </div>
+      </div>
+      <div class="table-summary">
+        <span class="ts-avail">{{ table.seats | seatCount:'AVAILABLE' }} free</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     STADIUM LAYOUT — sections with rows × seat grids
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="stadium-layout" *ngIf="!isLoading && venueType === 'STADIUM'">
+  <div class="stadium-wrapper">
+    <!-- The Graphical Field -->
+    <div class="field-indicator">
+      <div class="goal-area-left"></div>
+      <div class="goal-area-right"></div>
+      <span style="z-index: 20;">⚽ FIELD</span>
+    </div>
+    
+    <!-- The surrounding sections -->
+    <div class="sections-wrap">
+      <div class="stadium-section" *ngFor="let section of stadiumSections">
+        <div class="section-header">{{ section.name }}</div>
+        <div class="section-body">
+          <div class="stadium-row" *ngFor="let row of section.rows">
+            <span class="row-label">R{{ row.rowNumber }}</span>
+            <div class="row-seats">
+              <div
+                class="grid-seat"
+                *ngFor="let seat of row.seats; trackBy: trackById"
+                [ngClass]="seat.status.toLowerCase()"
+                [class.clickable]="seat.status === 'AVAILABLE'"
+                (click)="onSeatClick(seat)"
+                [title]="seat.seatLabel + (seat.reservedByFullName ? ' — ' + seat.reservedByFullName : '')"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CONFERENCE LAYOUT — straight rows facing a stage
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="conference-layout" *ngIf="!isLoading && venueType === 'CONFERENCE'">
+  <div class="stage-bar">🎤 STAGE / PODIUM</div>
+  <div class="conf-rows">
+    <div class="conf-row" *ngFor="let row of conferenceRows">
+      <span class="row-label">Row {{ row.rowNumber }}</span>
+      <div class="row-seats">
+        <div
+          class="chair-seat"
+          *ngFor="let seat of row.seats; trackBy: trackById"
+          [ngClass]="seat.status.toLowerCase()"
+          [class.clickable]="seat.status === 'AVAILABLE'"
+          (click)="onSeatClick(seat)"
+          [title]="seat.seatLabel + (seat.reservedByFullName ? ' — ' + seat.reservedByFullName : '')"
+        >
+          <div class="chair-back"></div>
+          <div class="chair-body">{{ seat.seatNumber }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     FALLBACK — no venueType set
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="no-layout" *ngIf="!isLoading && !venueType">
+  <div class="no-layout-inner">
+    <span class="no-icon">🪑</span>
+    <h3>No seating layout</h3>
+    <p>This event does not have an auto-generated seating plan.<br>
+       Use the button above to generate one, or create a physical event with a venue type.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     RESERVATION MODAL
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showReserveModal" (click)="closeModal()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeModal()">✕</button>
+    <div class="modal-icon">🪑</div>
+    <h2>Reserve Seat</h2>
+    <div class="modal-seat-info" *ngIf="selectedSeat">
+      <div class="info-row">
+        <span class="info-key">Seat</span>
+        <span class="info-val">{{ selectedSeat.seatLabel }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">Zone</span>
+        <span class="info-val">{{ selectedSeat.zoneName }}</span>
+      </div>
+      <div class="info-row" *ngIf="selectedSeat.rowNumber">
+        <span class="info-key">Row</span>
+        <span class="info-val">{{ selectedSeat.rowNumber }}</span>
+      </div>
+      <div class="info-row" *ngIf="selectedSeat.tableNumber">
+        <span class="info-key">Table</span>
+        <span class="info-val">{{ selectedSeat.tableNumber }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">Status</span>
+        <span class="info-val status-badge available">{{ selectedSeat.status }}</span>
+      </div>
+    </div>
+    <div class="alert alert-error mt-2" *ngIf="errorMsg">{{ errorMsg }}</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeModal()">Cancel</button>
+      <button class="btn-confirm" (click)="confirmReservation()">✅ Confirm Reservation</button>
+    </div>
+  </div>
+</div>

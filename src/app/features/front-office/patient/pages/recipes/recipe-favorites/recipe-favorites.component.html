@@ -26,28 +26,28 @@
 
                 <div class="recipe-grid" *ngIf="!loading && recipes.length > 0">
                     <div class="recipe-card" *ngFor="let recipe of recipes">
-                        <div class="recipe-image" *ngIf="recipe.imageUrl">
-                            <img [src]="recipe.imageUrl" [alt]="recipe.title">
-                            <div class="category-badge">{{ recipe.category }}</div>
+                        <div class="recipe-image" *ngIf="recipe?.imageUrl">
+                            <img [src]="recipe?.imageUrl" [alt]="recipe?.title">
+                            <div class="category-badge">{{ recipe?.category }}</div>
                         </div>
-                        <div class="recipe-image placeholder" *ngIf="!recipe.imageUrl">
+                        <div class="recipe-image placeholder" *ngIf="!recipe?.imageUrl">
                             <span class="material-icons">restaurant</span>
-                            <div class="category-badge">{{ recipe.category }}</div>
+                            <div class="category-badge">{{ recipe?.category }}</div>
                         </div>
                         
                         <div class="recipe-content">
                             <div class="recipe-meta-top">
-                                <span class="badge category">{{ recipe.category }}</span>
+                                <span class="badge category">{{ recipe?.category }}</span>
                                 <div class="quick-stats">
-                                    <span class="stat"><span class="material-icons">schedule</span> {{ recipe.prepTimeMinutes }}m</span>
-                                    <span class="stat-calories">{{ recipe.calories }} kcal</span>
+                                    <span class="stat"><span class="material-icons">schedule</span> {{ recipe?.prepTimeMinutes }}m</span>
+                                    <span class="stat-calories">{{ recipe?.calories }} kcal</span>
                                 </div>
                             </div>
                             
                             <div class="recipe-main-info">
                                 <div class="title-row">
-                                    <h3>{{ recipe.title }}</h3>
-                                    <button class="btn-icon-view" [routerLink]="['/front/patient/recipes', recipe.id]">
+                                    <h3>{{ recipe?.title }}</h3>
+                                    <button class="btn-icon-view" [routerLink]="['/front/patient/recipes', recipe?.id]">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.644C3.323 8.19 7.03 5 11.99 5c4.959 0 8.666 3.19 10.954 6.678.216.33.216.768 0 1.098C20.666 15.81 16.96 19 11.99 19c-4.96 0-8.667-3.19-10.954-6.678z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

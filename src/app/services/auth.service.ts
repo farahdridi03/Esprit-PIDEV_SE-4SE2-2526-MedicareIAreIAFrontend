@@ -6,6 +6,7 @@ import { tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
 import { AuthResponse } from '../models/auth-response.model';
 import { LoginRequest } from '../models/login-request.model';
+import { RegisterRequest } from '../models/register-request.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -13,13 +14,36 @@ import { environment } from '../../environments/environment';
 })
 export class AuthService {
     private readonly baseUrl = `${environment.apiUrl}/auth`;
+    private readonly pharmacistUrl = `${environment.apiUrl}/api/pharmacist`;
     private readonly TOKEN_KEY = 'auth_token';
+    
     private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
     public authStatus$ = this.authStatusSubject.asObservable();
+    
     private pharmacistProfileSubject = new BehaviorSubject<any>(null);
     public pharmacistProfile$ = this.pharmacistProfileSubject.asObservable();
 
-    constructor(private http: HttpClient, private router: Router) { }
+    constructor(private http: HttpClient, private router: Router) { 
+        setTimeout(() => {
+            if (this.isAuthenticated() && this.getUserRole() === 'PHARMACIST') {
+                this.loadPharmacistProfile().subscribe({
+                    error: (err) => console.error('Failed to load profile early', err)
+                });
+            }
+        });
+    }
+
+    loadPharmacistProfile(): Observable<any> {
+        return this.http.get<any>(`${this.pharmacistUrl}/me`).pipe(
+            tap(profile => this.pharmacistProfileSubject.next(profile))
+        );
+    }
+
+    setupPharmacy(formData: any): Observable<any> {
+        return this.http.post(`${this.pharmacistUrl}/setup-pharmacy`, formData).pipe(
+            tap(() => this.loadPharmacistProfile().subscribe())
+        );
+    }
 
     login(payload: LoginRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.baseUrl}/login`, payload).pipe(
@@ -34,24 +58,38 @@ export class AuthService {
                         token: response.token
                     }));
                     this.authStatusSubject.next(true);
+                    if (this.getUserRole() === 'PHARMACIST') {
+                        this.loadPharmacistProfile().subscribe();
+                    }
                 }
             })
         );
     }
 
-    register(formData: FormData): Observable<string> {
-        return this.http.post(`${this.baseUrl}/register`, formData, { responseType: 'text' }) as Observable<string>;
-    }
-
-    setupPharmacy(formData: any): Observable<any> {
-        return this.http.post(`${this.baseUrl}/setup-pharmacy`, formData);
+    register(payload: RegisterRequest | FormData): Observable<string> {
+        if (payload instanceof FormData) {
+            return this.http.post(`${this.baseUrl}/register`, payload, { responseType: 'text' }) as Observable<string>;
+        }
+        
+        const formData = new FormData();
+        formData.append('user', JSON.stringify(payload));
+        return this.http.post(
+            `${this.baseUrl}/register`,
+            formData,
+            { responseType: 'text' }
+        ) as Observable<string>;
     }
 
     logout(): void {
         localStorage.removeItem(this.TOKEN_KEY);
         localStorage.removeItem('currentUser');
         this.authStatusSubject.next(false);
-        this.router.navigate(['/front']);
+        this.router.navigate(['/auth/login']);
+    }
+
+    setToken(token: string): void {
+        localStorage.setItem(this.TOKEN_KEY, token);
+        this.authStatusSubject.next(true);
     }
 
     getToken(): string | null {
@@ -207,5 +245,15 @@ export class AuthService {
             const decoded: any = jwtDecode(token);
             return decoded.role ?? null;
         } catch { return null; }
+    }
+
+    verifyGoogleAuth(email: string, code: string): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.baseUrl}/google/verify`, { email, code }).pipe(
+            tap(response => {
+                if (response && response.token) {
+                    this.setToken(response.token);
+                }
+            })
+        );
     }
 }

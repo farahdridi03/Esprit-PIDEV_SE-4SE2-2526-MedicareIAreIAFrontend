@@ -26,7 +26,7 @@ describe('LaboratoryService', () => {
     });
 
     it('should fetch my laboratory info', () => {
-        const mockLaboratory: LaboratoryResponseDTO = {
+        const mockLaboratory: any = {
             id: 1,
             name: 'Central Lab',
             address: '123 Medical St',

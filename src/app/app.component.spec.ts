@@ -21,8 +21,7 @@ describe('AppComponent', () => {
   });
 
   it('should create the app', () => {
-    fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
+    fixture = TestBed.createComponent(AppComponent);    const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
 
@@ -37,5 +36,4 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('router-outlet')).toBeTruthy();
-  });
-});
+  });});

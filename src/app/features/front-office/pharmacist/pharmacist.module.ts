@@ -18,8 +18,6 @@ import { ProductListComponent } from './pages/product-list/product-list.componen
   declarations: [
     PharmacistDashboardComponent,
     OrdersComponent,
-    PharmacistSidebarComponent,
-    PharmacistTopbarComponent,
     PharmacistProfileComponent,
     AlertsListComponent,
     BatchesListComponent,
@@ -32,7 +30,13 @@ import { ProductListComponent } from './pages/product-list/product-list.componen
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    PharmacistRoutingModule
+    PharmacistRoutingModule,
+    PharmacistTopbarComponent,
+    PharmacistSidebarComponent
+  ],
+  exports: [
+    PharmacistSidebarComponent,
+    PharmacistTopbarComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

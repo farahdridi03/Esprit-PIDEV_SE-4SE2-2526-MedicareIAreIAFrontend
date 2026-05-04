@@ -9,7 +9,7 @@ import { InventoryListComponent } from './pages/inventory-list/inventory-list.co
 import { BatchesListComponent } from './pages/batches-list/batches-list.component';
 import { MovementsListComponent } from './pages/movements-list/movements-list.component';
 import { AlertsListComponent } from './pages/alerts-list/alerts-list.component';
-import { LayoutModule } from '../front-office/layout/layout.module';
+import { SharedLayoutModule } from '../../shared/layout/shared-layout.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PharmacistSetupModalComponent } from './components/pharmacist-setup-modal/pharmacist-setup-modal.component';
@@ -34,7 +34,7 @@ import { ExpirationRisksComponent } from './pages/expiration-risks/expiration-ri
   imports: [
     CommonModule,
     PharmacistRoutingModule,
-    LayoutModule,
+    SharedLayoutModule,
     FormsModule,
     ReactiveFormsModule
   ]

@@ -27,5 +27,4 @@ export class LaboratoryDashboardComponent implements OnInit {
   private loadUserInfo() {
     const fullName = this.authService.getUserFullName();
     if (fullName) this.fullName = fullName;
-  }
-}
+  }}

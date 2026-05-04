@@ -63,7 +63,6 @@ import { MovementsListComponent } from './pharmacist/pages/movements-list/moveme
 import { AlertsListComponent } from './pharmacist/pages/alerts-list/alerts-list.component';
 import { EventDetailComponent } from './pages/event-detail/event-detail.component';
 import { PatientEventsComponent } from './pages/patient-events/patient-events.component';
-
 const routes: Routes = [
   {
     path: '',
@@ -80,8 +79,7 @@ const routes: Routes = [
     path: 'forum',
     loadChildren: () =>
       import('../../forum/forum.module').then(m => m.ForumModule)
-  },
-  {
+  },  {
     path: 'patient/dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard],
@@ -281,8 +279,7 @@ const routes: Routes = [
   },
   {
     path: 'patient/recipes/:id',
-    component: RecipeDetailComponent,
-    canActivate: [AuthGuard],
+    component: RecipeDetailComponent,    canActivate: [AuthGuard],
     data: { roles: ['PATIENT'] }
   },
   {
@@ -297,85 +294,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['DOCTOR'] }
   },
-  {
-    path: 'doctor/profile',
-    component: DoctorProfileComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/profile/edit',
-    component: DoctorProfileEditComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/patients',
-    component: DoctorPatientsComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/calendar',
-    component: DoctorCalendarCalendarComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/calendar/exceptions',
-    component: DoctorCalendarExceptionsComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/calendar/settings',
-    component: DoctorCalendarSettingsComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/patient/:id/record',
-    component: DoctorMedicalRecordComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/patient/:id/consultations',
-    component: DoctorPatientConsultationsComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/patient/:id/treatments-list',
-    component: DoctorPatientTreatmentsComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/patient/:id/prescriptions-list',
-    component: DoctorPatientPrescriptionsComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/patient/:id/diagnoses-list',
-    component: DoctorPatientDiagnosesComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'doctor/patient/:id/consultation/:cid',
-    component: DoctorConsultationDetailsComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['DOCTOR'] }
-  },
-  {
-    path: 'delivery/courier-dashboard',
-    component: CourierDashboardComponent,
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'nutritionist',
+  {    path: 'nutritionist',
     loadChildren: () =>
       import('./nutritionist/nutritionist.module')
         .then(m => m.NutritionistModule)
@@ -405,6 +324,7 @@ const routes: Routes = [
         .then(m => m.ClinicModule)
   }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
