@@ -12,6 +12,7 @@ export class RegisterComponent implements OnInit {
 
   registerForm: FormGroup;
   errorMessage: string = '';
+  isSubmitting: boolean = false;
 
   roles = [
     { value: 'DOCTOR', label: 'Doctor' },
@@ -227,29 +228,26 @@ export class RegisterComponent implements OnInit {
     checkArray.updateValueAndValidity();
   }
 
+  selectedDiplomaFile: File | null = null;
+  selectedCertificationFile: File | null = null;
+
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.registerForm.patchValue({
-          certificationDocument: reader.result as string
-        });
-      };
-      reader.readAsDataURL(file);
+      this.selectedCertificationFile = file;
+      this.registerForm.patchValue({
+        certificationDocument: file.name
+      });
     }
   }
 
   onDiplomaFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.registerForm.patchValue({
-          diplomaDocument: reader.result as string
-        });
-      };
-      reader.readAsDataURL(file);
+      this.selectedDiplomaFile = file;
+      this.registerForm.patchValue({
+        diplomaDocument: file.name
+      });
     }
   }
 
@@ -268,74 +266,94 @@ export class RegisterComponent implements OnInit {
   removeMedicalHistory(index: number) {
     this.medicalHistories.removeAt(index);
   }
-onSubmit() {
-  console.log('=== SUBMIT ===');
-  console.log('Valid:', this.registerForm.valid);
-  
-  // ✅ Afficher les champs invalides
-  Object.keys(this.registerForm.controls).forEach(key => {
-    const ctrl = this.registerForm.get(key);
-    if (ctrl?.invalid) console.log('❌ INVALID:', key, ctrl.errors);
-  });
 
-  if (!this.registerForm.valid) {
-    this.registerForm.markAllAsTouched();
-    return;
-  }
-
-  const formValue = this.registerForm.value;
-  const role = formValue.role;
-
-  let finalPayload: any = {
-    fullName: formValue.fullName,
-    email: formValue.email,
-    password: formValue.password,
-    role: role,
-    phone: formValue.phone,
-    birthDate: formValue.birthDate,
-  };
-
-  if (role === 'LABORATORY_STAFF') {
-    finalPayload = { ...finalPayload,
-      labName: formValue.labName,
-      labAddress: formValue.labAddress,
-      labPhone: formValue.labPhone,
-    };
-  } else if (role === 'PATIENT') {
-    finalPayload = { ...finalPayload,
-      gender: formValue.gender,
-      bloodType: formValue.bloodType,
-      emergencyContactName: formValue.emergencyContactName,
-      emergencyContactPhone: formValue.emergencyContactPhone,
-    };
-  } else if (role === 'DOCTOR' || role === 'NUTRITIONIST') {
-    finalPayload = { ...finalPayload,
-      specialty: formValue.specialty,
-      licenseNumber: formValue.licenseNumber,
-      consultationFee: formValue.consultationFee,
-      consultationMode: formValue.consultationMode,
-    };
-  } else if (role === 'PHARMACIST') {
-    finalPayload = { ...finalPayload,
-      pharmacyName: formValue.pharmacyName,
-      pharmacyAddress: formValue.pharmacyAddress,
-      pharmacyPhone: formValue.pharmacyPhone,
-      pharmacyEmail: formValue.pharmacyEmail,
-      diplomaDocument: formValue.diplomaDocument,
-    };
-  }
-
-  console.log('✅ PAYLOAD:', JSON.stringify(finalPayload));
-
-  this.authService.register(finalPayload).subscribe({
-    next: (res) => {
-      console.log('✅ SUCCESS:', res);
-      this.router.navigate(['/login']);
-    },
-    error: (err: any) => {
-      console.log('❌ ERROR:', err);
-      this.errorMessage = err.error || err.message || 'Erreur inscription';
+  onSubmit() {
+    if (!this.registerForm.valid) {
+      this.registerForm.markAllAsTouched();
+      return;
     }
-  });
-}
+
+    this.isSubmitting = true;
+    this.errorMessage = '';
+
+    const formValue = this.registerForm.value;
+    const role = formValue.role;
+
+    // Basic User Data
+    let userPayload: any = {
+      fullName: formValue.fullName,
+      email: formValue.email,
+      password: formValue.password,
+      role: role,
+      phone: formValue.phone,
+      birthDate: formValue.birthDate,
+    };
+
+    // Role Specific Data
+    if (role === 'LABORATORY_STAFF') {
+      userPayload = { ...userPayload,
+        labName: formValue.labName,
+        labAddress: formValue.labAddress,
+        labPhone: formValue.labPhone,
+      };
+    } else if (role === 'PATIENT') {
+      userPayload = { ...userPayload,
+        gender: formValue.gender,
+        bloodType: formValue.bloodType,
+        emergencyContactName: formValue.emergencyContactName,
+        emergencyContactPhone: formValue.emergencyContactPhone,
+      };
+    } else if (role === 'DOCTOR' || role === 'NUTRITIONIST') {
+      userPayload = { ...userPayload,
+        specialty: formValue.specialty,
+        licenseNumber: formValue.licenseNumber,
+        consultationFee: formValue.consultationFee,
+        consultationMode: formValue.consultationMode,
+      };
+    } else if (role === 'PHARMACIST') {
+      userPayload = { ...userPayload,
+        pharmacyName: formValue.pharmacyName,
+        pharmacyAddress: formValue.pharmacyAddress,
+        pharmacyPhone: formValue.pharmacyPhone,
+        pharmacyEmail: formValue.pharmacyEmail,
+      };
+    } else if (role === 'CLINIC') {
+      userPayload = { ...userPayload,
+        clinicName: formValue.clinicName,
+        clinicAddress: formValue.clinicAddress,
+        clinicPhone: formValue.clinicPhone,
+        emergencyPhone: formValue.emergencyPhone,
+        ambulancePhone: formValue.ambulancePhone,
+      };
+    } else if (role === 'HOME_CARE_PROVIDER') {
+      userPayload = { ...userPayload,
+        specialtyIds: formValue.selectedServices.map((id: any) => Number(id))
+      };
+    }
+
+    // Create FormData for multipart/form-data request
+    const formData = new FormData();
+    formData.append('user', JSON.stringify(userPayload));
+    
+    // Append document if applicable
+    if (role === 'PHARMACIST' && this.selectedDiplomaFile) {
+      formData.append('document', this.selectedDiplomaFile);
+    } else if (role === 'HOME_CARE_PROVIDER' && this.selectedCertificationFile) {
+      formData.append('document', this.selectedCertificationFile);
+    } else if ((role === 'DOCTOR' || role === 'NUTRITIONIST') && this.selectedDiplomaFile) {
+      // Assuming doctors/nutritionists might also upload a document (though form doesn't show it yet)
+      formData.append('document', this.selectedDiplomaFile);
+    }
+
+    this.authService.register(formData).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        this.router.navigate(['/login']);
+      },
+      error: (err: any) => {
+        this.isSubmitting = false;
+        this.errorMessage = err.error?.error || err.error?.message || err.message || 'Registration failed';
+      }
+    });
+  }
 }
