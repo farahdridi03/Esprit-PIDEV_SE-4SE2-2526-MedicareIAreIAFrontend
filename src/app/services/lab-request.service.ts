@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Laboratory {
   id: number;
@@ -28,12 +29,15 @@ export interface LabRequestPayload {
   testType: string;
   clinicalNotes: string;
   scheduledAt: string;
+  doctorEmail?: string;
 }
 
 export interface LabRequestResponse {
   id: number;
   patientId: number;
   patientName: string;
+  doctorId?: number;
+  doctorName?: string;
   laboratoryId: number;
   laboratoryName: string;
   testType: string;
@@ -41,6 +45,7 @@ export interface LabRequestResponse {
   clinicalNotes: string;
   scheduledAt: string;
   requestedAt: string;
+  doctorEmail?: string;
 }
 
 export interface LabRequestResponseForLabStaff {
@@ -58,7 +63,7 @@ export interface LabRequestResponseForLabStaff {
 @Injectable({ providedIn: 'root' })
 export class LabRequestService {
 
-  private base = '/springsecurity/api';
+  private base = `${environment.apiUrl}/api`;
 
   constructor(private http: HttpClient) {}
 
@@ -159,7 +164,7 @@ export class LabRequestService {
       'Authorization': `Bearer ${token}` 
     });
     return this.http.get<LabRequestResponse[]>(
-      'http://localhost:8081/springsecurity/api/lab-requests/status/PENDING',
+      `${environment.apiUrl}/api/lab-requests/status/PENDING`,
       { headers }
     );
   }

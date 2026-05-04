@@ -1,0 +1,153 @@
+<div class="laboratory-wrapper">
+  <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
+
+  <div class="main-body">
+    <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
+
+    <div class="content-area">
+<div class="perf-page">
+
+  <!-- ── Header ── -->
+  <div class="perf-header">
+    <div class="header-left">
+      <h1 class="page-title">
+        <span class="title-icon">📊</span>
+        Lab Staff Performance
+      </h1>
+      <p class="page-subtitle">Daily analysis statistics by technician</p>
+    </div>
+
+    <div class="header-actions">
+      <div class="date-range">
+        <label>From</label>
+        <input type="date" [(ngModel)]="fromDate" />
+        <label>To</label>
+        <input type="date" [(ngModel)]="toDate" />
+        <button class="btn-filter" (click)="loadReport()" [disabled]="loading">
+          <span *ngIf="!loading">Search</span>
+          <span *ngIf="loading">Loading…</span>
+        </button>
+      </div>
+      <button class="btn-today" (click)="loadToday()">Today</button>
+    </div>
+  </div>
+
+  <!-- ── Error ── -->
+  <div class="error-banner" *ngIf="error">
+    <span>⚠️ {{ error }}</span>
+  </div>
+
+  <!-- ── Loading skeleton ── -->
+  <div class="skeleton-grid" *ngIf="loading">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
+  </div>
+
+  <ng-container *ngIf="!loading && report">
+
+    <!-- ── Summary cards ── -->
+    <div class="summary-grid">
+
+      <div class="summary-card">
+        <div class="card-icon blue">🔬</div>
+        <div class="card-body">
+          <div class="card-value">{{ report.totalAnalyses }}</div>
+          <div class="card-label">Total Analyses</div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="card-icon red">🚨</div>
+        <div class="card-body">
+          <div class="card-value urgent">{{ report.urgentCount }}</div>
+          <div class="card-label">Urgent Cases</div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="card-icon green">👨‍🔬</div>
+        <div class="card-body">
+          <div class="card-value">{{ report.technicianCount }}</div>
+          <div class="card-label">Active Technicians</div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="card-icon purple">📅</div>
+        <div class="card-body">
+          <div class="card-value date-val">{{ report.from }}</div>
+          <div class="card-label">Report Period</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── No data ── -->
+    <div class="empty-state" *ngIf="report.staff.length === 0">
+      <div class="empty-icon">🔬</div>
+      <h3>No analyses found</h3>
+      <p>No lab results were recorded for the selected period.</p>
+    </div>
+
+    <!-- ── Table ── -->
+    <div class="table-card" *ngIf="report.staff.length > 0">
+      <div class="table-header">
+        <span class="table-title">Performance by Technician</span>
+        <span class="period-badge">{{ report.from }} → {{ report.to }}</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Technician</th>
+              <th class="center">Total</th>
+              <th class="center urgent-col">🔴 URGENT</th>
+              <th class="center">🟠 ATTENTION</th>
+              <th class="center">🟡 SURVEILLANCE</th>
+              <th class="center">Urgent Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of report.staff; let i = index">
+              <td class="rank">{{ i + 1 }}</td>
+              <td class="tech-name">
+                <div class="tech-avatar">{{ s.technicianName ? s.technicianName.charAt(0).toUpperCase() : '?' }}</div>
+                {{ s.technicianName || 'Unknown' }}
+              </td>
+              <td class="center bold">{{ s.totalAnalyses }}</td>
+              <td class="center urgent-val">{{ s.urgentCases }}</td>
+              <td class="center attention-val">{{ s.attentionCases }}</td>
+              <td class="center surveillance-val">{{ s.surveillanceCases }}</td>
+              <td class="center">
+                <span class="rate-badge" [ngClass]="urgentRateClass(s.urgentRate)">
+                  {{ s.urgentRate | number:'1.1-1' }}%
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Bar chart (CSS only) ── -->
+    <div class="bar-section" *ngIf="report.staff.length > 0 && report.totalAnalyses > 0">
+      <div class="bar-title">Analyses Distribution</div>
+      <div class="bar-chart">
+        <div class="bar-row" *ngFor="let s of report.staff">
+          <div class="bar-label">{{ s.technicianName }}</div>
+          <div class="bar-track">
+            <div class="bar-fill"
+                 [style.width.%]="(s.totalAnalyses / report.totalAnalyses) * 100">
+              <span class="bar-count">{{ s.totalAnalyses }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface LabResultResponse {
   id: number;
@@ -16,6 +17,10 @@ export interface LabResultResponse {
   isAbnormal: boolean;
   completedAt: string;
   verifiedAt: string;
+  aiDiagnostic?: string;
+  aiRisk?: string;
+  aiConfidence?: number;
+  aiAlertSent?: boolean;
 }
 
 export interface LabResultRequest {
@@ -30,7 +35,7 @@ export interface LabResultRequest {
 
 @Injectable({ providedIn: 'root' })
 export class LabResultService {
-  private baseUrl = 'http://localhost:8081/springsecurity/api/lab-results';
+  private baseUrl = `${environment.apiUrl}/api/lab-results`;
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
@@ -57,4 +62,26 @@ export class LabResultService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
   }
+
+  getPatientAlzheimerHistory(patientName: string): Observable<LabResultResponse[]> {
+    const encoded = encodeURIComponent(patientName);
+    return this.http.get<LabResultResponse[]>(
+      `${this.baseUrl}/patient-history/${encoded}`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getAlzheimerPatients(): Observable<AlzheimerPatientSummary[]> {
+    return this.http.get<AlzheimerPatientSummary[]>(
+      `${this.baseUrl}/alzheimer-patients`,
+      { headers: this.getHeaders() }
+    );
+  }
+}
+
+export interface AlzheimerPatientSummary {
+  patientName: string;
+  lastRisk: string;
+  totalAnalyses: number;
+  lastAnalysisDate: string;
 }

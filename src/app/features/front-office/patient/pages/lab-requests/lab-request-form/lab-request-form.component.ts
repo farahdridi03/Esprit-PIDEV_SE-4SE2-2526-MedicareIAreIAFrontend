@@ -45,7 +45,8 @@ export class PatientLabRequestFormComponent implements OnInit {
       laboratoryId: [null, Validators.required],
       testType: ['', [Validators.required, Validators.minLength(3)]],
       scheduledAt: ['', Validators.required],
-      clinicalNotes: ['']
+      clinicalNotes: [''],
+      doctorEmail: ['', Validators.email]
     });
   }
 
@@ -65,7 +66,8 @@ export class PatientLabRequestFormComponent implements OnInit {
             laboratoryId: req.laboratoryId,
             testType: req.testType,
             scheduledAt: req.scheduledAt?.slice(0, 16),
-            clinicalNotes: req.clinicalNotes || ''
+            clinicalNotes: req.clinicalNotes || '',
+            doctorEmail: req.doctorEmail || ''
           });
         }
         this.isLoading = false;
@@ -97,7 +99,8 @@ export class PatientLabRequestFormComponent implements OnInit {
       scheduledAt: new Date(v.scheduledAt).toISOString().slice(0, 19),
       clinicalNotes: v.clinicalNotes || '',
       requestedBy: 'PATIENT',
-      doctorId: null
+      doctorId: null,
+      doctorEmail: v.doctorEmail?.trim() || undefined
     };
 
     this.isSubmitting = true;

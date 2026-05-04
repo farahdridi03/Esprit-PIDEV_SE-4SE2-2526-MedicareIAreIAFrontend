@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../../../environments/environment';
 
 export interface Laboratory {
   id: number;
@@ -17,6 +18,7 @@ export interface LabRequestPayload {
   clinicalNotes: string;
   requestedBy: string;
   doctorId: null;
+  doctorEmail?: string;
 }
 
 export interface LabRequestResponse {
@@ -30,12 +32,13 @@ export interface LabRequestResponse {
   scheduledAt: string;
   clinicalNotes: string;
   requestedBy: string;
+  doctorEmail?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class LabRequestService {
 
-  private base = '/springsecurity/api';
+  private base = `${environment.apiUrl}/api`;
 
   constructor(private http: HttpClient) {}
 

@@ -83,62 +83,68 @@
 
       <!-- Posts Grid -->
       <div class="posts-grid" *ngIf="!loading">
-        <div class="post-card" *ngFor="let post of filteredPosts()" (click)="selectPost(post)">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <!-- Badge catégorie à GAUCHE -->
-            <span style="
-              background: #E1F5EE;
-              color: #085041;
-              font-size: 11px;
-              padding: 4px 12px;
-              border-radius: 20px;
-            ">{{ post.category || 'General Health' }}</span>
+        <div class="post-card"
+             [class.card-alert]="post.postType === 'ALERT'"
+             [class.card-clinical]="post.postType === 'CLINICAL_CASE'"
+             [class.card-code-blue]="post.postType === 'CODE_BLUE'"
+             *ngFor="let post of filteredPosts()"
+             (click)="selectPost(post)">
 
-          <!-- Plus de boutons Edit + Delete -->
-          </div>
-
-          <!-- Titre + Contenu -->
-          <h3 style="margin: 12px 0 6px; font-weight: 500;">{{ post.title }}</h3>
-          <p style="color: var(--color-text-secondary); font-size: 14px;">{{ post.content | slice:0:160 }}{{ post.content.length > 160 ? '...' : '' }}</p>
-          
-          <!-- Image preview in post card -->
-          <div *ngIf="post.imageUrl" style="margin: 8px 0;">
-            <img [src]="post.imageUrl" [alt]="post.title" style="
-              width: 100%;
-              max-height: 150px;
-              object-fit: cover;
-              border-radius: 4px;
-            ">
-          </div>
-
-          <!-- Auteur -->
-          <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px;">
-            <div style="
-              width: 32px; height: 32px; border-radius: 50%;
-              background: #7F77DD; color: white;
-              display: flex; align-items: center; justify-content: center;
-              font-size: 13px; font-weight: 500;
-            ">{{ getInitial(post.authorName) }}</div>
-            <div>
-              <div style="font-size: 13px; font-weight: 500;">{{ post.authorName }}</div>
-              <div style="font-size: 11px; color: var(--color-text-secondary);">{{ post.createdAt | date:'d MMM y' }}</div>
+          <!-- Header: badges + actions -->
+          <div class="post-header">
+            <div class="post-badges">
+              <span class="type-badge" [ngClass]="getPostTypeBadgeClass(post.postType)">
+                <span *ngIf="post.postType === 'ALERT'">🚨 Alerte</span>
+                <span *ngIf="post.postType === 'CLINICAL_CASE'">🔬 Cas Clinique</span>
+                <span *ngIf="post.postType === 'CODE_BLUE'">🆘 Code Blue</span>
+                <span *ngIf="!post.postType || post.postType === 'DISCUSSION'">💬 Discussion</span>
+              </span>
+              <span class="cat-badge"><i class="fas fa-tag"></i> {{ post.category || 'General Health' }}</span>
             </div>
 
-            <!-- Like + Commentaire à DROITE en bas -->
-            <div style="margin-left: auto; display: flex; gap: 16px;" (click)="$event.stopPropagation()">
-              <button (click)="toggleLike(post)" style="
-                background: none; border: none;
-                color: #E24B4A; font-size: 13px;
-                font-weight: 500; cursor: pointer;
-                display: flex; align-items: center; gap:4px;
-              ">♥ {{ post.likesCount || 0 }} Likes</button>
+            <!-- Action buttons: Edit + Delete -->
+            <div class="card-actions" (click)="$event.stopPropagation()">
+              <button class="btn-icon-card btn-edit-card" (click)="editPost(post)" title="Modifier">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="btn-icon-card btn-delete-card" (click)="deletePost(post)" title="Supprimer">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
 
-              <button (click)="selectPost(post)" style="
-                background: none; border: none;
-                color: #1D9E75; font-size: 13px;
-                font-weight: 500; cursor: pointer;
-                display: flex; align-items: center; gap:4px;
-              ">💬 {{ post.comments?.length || 0 }} Commentaires</button>
+          <!-- Author row -->
+          <div class="post-author-row">
+            <div class="author-avatar" [style.background]="getRoleColor(post.authorRole)">{{ getInitial(post.authorName) }}</div>
+            <div class="author-details">
+              <span class="author-name">{{ post.authorName }}</span>
+              <span class="author-role-badge" [style.color]="getRoleColor(post.authorRole)">{{ getRoleLabel(post.authorRole) }}</span>
+              <span class="post-date"><i class="far fa-clock"></i> {{ post.createdAt | date:'d MMM y' }}</span>
+            </div>
+          </div>
+
+          <!-- Image -->
+          <div class="post-image-container" *ngIf="post.imageUrl">
+            <img [src]="getImageUrl(post.imageUrl)" [alt]="post.title" class="post-feed-image" (error)="handleImageError($event)">
+          </div>
+
+          <!-- Content -->
+          <div class="post-content">
+            <h3 class="post-title">{{ post.title }}</h3>
+            <p class="post-preview">{{ post.content | slice:0:160 }}{{ post.content.length > 160 ? '...' : '' }}</p>
+          </div>
+
+          <!-- Footer: likes + comments -->
+          <div class="post-footer">
+            <div class="engage-group" (click)="$event.stopPropagation()">
+              <button class="icon-btn like-btn" [class.active]="post.isLikedByUser" (click)="toggleLike(post)">
+                <i class="fas fa-heart"></i>
+                <span>{{ post.likesCount || 0 }}</span>
+              </button>
+              <button class="icon-btn comment-btn" (click)="selectPost(post)">
+                <i class="far fa-comment"></i>
+                <span>{{ post.comments?.length || 0 }} Commentaires</span>
+              </button>
             </div>
           </div>
         </div>

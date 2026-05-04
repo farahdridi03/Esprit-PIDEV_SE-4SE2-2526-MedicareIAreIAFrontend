@@ -3,19 +3,28 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+export type PostType = 'DISCUSSION' | 'ALERT' | 'CLINICAL_CASE' | 'CODE_BLUE';
+export type AuthorRole = 'DOCTOR' | 'PHARMACIST' | 'NUTRITIONIST' | 'LABORATORIST' | 'PATIENT' | 'VISITOR';
+
 export interface Post {
   id: number;
   title: string;
   content: string;
   createdAt: string;
   category?: string;
+  authorId?: number;
   authorName: string;
+  authorRole?: AuthorRole;
+  postType?: PostType;
   imageUrl?: string;
   comments?: Comment[];
   likes?: Like[];
   likeCount?: number;
-  likesCount?: number; // Backend sends likesCount
+  likesCount?: number;
   isLikedByUser?: boolean;
+  whatsappSent?: boolean;
+  whatsappCount?: number;
+  status?: string;
 }
 
 export interface Comment {
@@ -23,7 +32,10 @@ export interface Comment {
   content: string;
   createdAt: string;
   authorName: string;
+  authorRole?: string;
+  authorId?: number;
   postId: number;
+  imageUrl?: string;
 }
 
 export interface Like {
@@ -41,6 +53,7 @@ export interface PostRequest {
   title: string;
   content: string;
   category: string;
+  postType: PostType;
   authorId: number;
 }
 
@@ -78,6 +91,7 @@ export class ForumService {
     formData.append('title', post.title);
     formData.append('content', post.content);
     formData.append('category', post.category || '');
+    formData.append('postType', post.postType || 'DISCUSSION');
     formData.append('authorId', post.authorId.toString());
 
     return this.http.post<Post>(`${this.apiUrl}/api/forum/posts`, formData);
@@ -117,8 +131,13 @@ export class ForumService {
     return this.http.get<Comment[]>(`${this.apiUrl}/api/forum/posts/${postId}/comments`);
   }
 
-  createComment(comment: CommentRequest): Observable<Comment> {
-    return this.http.post<Comment>(`${this.apiUrl}/api/forum/posts/${comment.postId}/comments`, comment);
+  createComment(comment: CommentRequest, image?: File): Observable<Comment> {
+    const formData = new FormData();
+    formData.append('postId', comment.postId.toString());
+    formData.append('authorId', comment.authorId.toString());
+    formData.append('content', comment.content);
+    if (image) formData.append('image', image);
+    return this.http.post<Comment>(`${this.apiUrl}/api/comments`, formData);
   }
 
   updateComment(id: number, comment: CommentRequest): Observable<Comment> {
@@ -131,5 +150,26 @@ export class ForumService {
 
   getTrendingCategories(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/api/forum/trending-categories`);
+  }
+
+  getTrendingKeywords(): Observable<{ word: string; count: number; score: number }[]> {
+    return this.http.get<{ word: string; count: number; score: number }[]>(`${this.apiUrl}/api/forum/trending-keywords`);
+  }
+
+  // ── Code Blue ──────────────────────────────────────────────
+  getActiveCodeBlues(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/api/code-blue/active`);
+  }
+
+  getCodeBluePresences(postId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/api/code-blue/${postId}/presences`);
+  }
+
+  confirmCodeBluePresence(postId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/api/code-blue/${postId}/confirm`, {});
+  }
+
+  resolveCodeBlue(postId: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/api/code-blue/${postId}/resolve`, {});
   }
 }

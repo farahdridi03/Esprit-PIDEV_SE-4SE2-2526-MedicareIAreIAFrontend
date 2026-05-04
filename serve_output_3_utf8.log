@@ -1,0 +1,38 @@
+﻿
+> medi-care-ai@0.0.0 start
+> ng serve
+
+[33m>[39m Building...
+[32mÔêÜ[39m Building...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m              [2m | [22m [1mRaw size[22m
+[32mpolyfills.js[39m       [2m | [22m[2mpolyfills[22m          [2m | [22m [36m90.20 kB[39m[2m | [22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m               [2m | [22m  [36m9.93 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m             [2m | [22m  [36m8.84 kB[39m[2m | [22m
+[32mchunk-FV2IKOTI.js[39m  [2m | [22m[2m-[22m                  [2m | [22m  [36m8.09 kB[39m[2m | [22m
+[32mchunk-EUJHMJ74.js[39m  [2m | [22m[2m-[22m                  [2m | [22m  [36m1.39 kB[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m      [2m | [22m[1m118.44 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m              [2m | [22m [1mRaw size[22m
+[32mchunk-KPGI3VIT.js[39m  [2m | [22m[2mfront-office-module[22m[2m | [22m  [36m2.16 MB[39m[2m | [22m
+[32mchunk-5FLQAPDD.js[39m  [2m | [22m[2mlaboratory-module[22m  [2m | [22m[36m463.95 kB[39m[2m | [22m
+[32mchunk-GMUFJ5F2.js[39m  [2m | [22m[2mback-office-module[22m [2m | [22m[36m375.16 kB[39m[2m | [22m
+[32mchunk-OVMXQFTQ.js[39m  [2m | [22m[2m-[22m                  [2m | [22m[36m343.13 kB[39m[2m | [22m
+[32mchunk-G6PL4SAB.js[39m  [2m | [22m[2mnutritionist-module[22m[2m | [22m[36m311.19 kB[39m[2m | [22m
+[32mchunk-G3XAZIRX.js[39m  [2m | [22m[2mpharmacist-module[22m  [2m | [22m[36m297.56 kB[39m[2m | [22m
+[32mchunk-FRKOOA56.js[39m  [2m | [22m[2mclinic-module[22m      [2m | [22m[36m173.11 kB[39m[2m | [22m
+[32mchunk-QRM5E6EX.js[39m  [2m | [22m[2mhome-care-module[22m   [2m | [22m[36m151.65 kB[39m[2m | [22m
+[32mchunk-47Q5XEEA.js[39m  [2m | [22m[2mauth-module[22m        [2m | [22m[36m117.79 kB[39m[2m | [22m
+[32mchunk-KJWEJVY4.js[39m  [2m | [22m[2m-[22m                  [2m | [22m[36m117.63 kB[39m[2m | [22m
+[32mchunk-Q36V2W4S.js[39m  [2m | [22m[2m-[22m                  [2m | [22m [36m42.50 kB[39m[2m | [22m
+[32mchunk-MKGOWVNP.js[39m  [2m | [22m[2m-[22m                  [2m | [22m  [36m9.05 kB[39m[2m | [22m
+[32mchunk-E5DSMWCZ.js[39m  [2m | [22m[2m-[22m                  [2m | [22m  [36m8.69 kB[39m[2m | [22m
+[32mchunk-K37VALQ3.js[39m  [2m | [22m[2m-[22m                  [2m | [22m  [36m6.72 kB[39m[2m | [22m
+[32mchunk-RDS2J56X.js[39m  [2m | [22m[2m-[22m                  [2m | [22m  [36m6.32 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [8.181 seconds]
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32mÔ×£[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4200[22m/[39m

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ForumService, Post, Comment, CommentRequest } from '../../services/forum.service';
 import { AuthService } from '../../../services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-forum-moderation',
@@ -23,6 +24,22 @@ export class ForumModerationComponent implements OnInit {
   searchQuery = '';
   categoryFilter = '';
   sortMode: 'recent' | 'popular' = 'recent';
+
+  // Reactions
+  reactions = [
+    { type: 'like', icon: '👍', color: '#3b82f6' },
+    { type: 'love', icon: '❤️', color: '#ef4444' },
+    { type: 'haha', icon: '😂', color: '#f59e0b' },
+    { type: 'wow', icon: '😲', color: '#8b5cf6' },
+    { type: 'sad', icon: '😢', color: '#facc15' }
+  ];
+  postReactions: { [postId: number]: string } = {};
+  activeReactionPostId: number | null = null;
+
+  // Comment image
+  commentImageFile: File | null = null;
+  commentImagePreview: string | null = null;
+  commentViolationError: string | null = null;
 
   constructor(private forumService: ForumService, private authService: AuthService) {}
 
@@ -56,40 +73,25 @@ export class ForumModerationComponent implements OnInit {
   }
 
   createPost(): void {
-    console.log('createPost called');
-    console.log('canCreatePost():', this.canCreatePost());
-    
     if (!this.canCreatePost()) {
       this.showRestrictedAccessMessage('créer des posts');
       return;
     }
     
-    console.log('Setting up create mode...');
     this.isCreating = true;
     this.selectedPost = null;
     this.isEditing = false;
-    
-    console.log('isCreating:', this.isCreating);
-    console.log('Form should show now!');
   }
 
   editPost(post: Post): void {
-    console.log('editPost called with post:', post);
-    console.log('canCreatePost():', this.canCreatePost());
-    
     if (!this.canCreatePost()) {
       this.showRestrictedAccessMessage('modifier des posts');
       return;
     }
     
-    console.log('Setting up edit mode...');
     this.selectedPost = post;
     this.isEditing = true;
     this.isCreating = false;
-    
-    console.log('isEditing:', this.isEditing);
-    console.log('selectedPost:', this.selectedPost);
-    console.log('Form should show now!');
   }
 
   deletePost(post: Post): void {
@@ -154,12 +156,147 @@ export class ForumModerationComponent implements OnInit {
     return result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
-  getInitial(name?: string): string {
-    return name ? name.charAt(0).toUpperCase() : '?';
+  getRoleLabel(role?: string): string {
+    switch (role?.toUpperCase()) {
+      case 'DOCTOR':       return 'Médecin';
+      case 'PHARMACIST':   return 'Pharmacien';
+      case 'NUTRITIONIST': return 'Nutritionniste';
+      case 'LABORATORIST':    return 'Laborantin';
+      case 'LABORATORY_STAFF': return 'Laborantin';
+      case 'PATIENT':      return 'Patient';
+      default:             return role || 'Membre';
+    }
+  }
+
+  getRoleColor(role?: string): string {
+    switch (role?.toUpperCase()) {
+      case 'DOCTOR':       return '#2563eb';
+      case 'PHARMACIST':   return '#7c3aed';
+      case 'NUTRITIONIST': return '#059669';
+      case 'LABORATORIST':     return '#0891b2';
+      case 'LABORATORY_STAFF': return '#0891b2';
+      default:             return '#64748b';
+    }
+  }
+
+  getPostTypeLabel(type?: string): string {
+    switch (type) {
+      case 'ALERT':         return 'Alerte';
+      case 'CLINICAL_CASE': return 'Cas Clinique';
+      case 'CODE_BLUE':     return 'Code Blue';
+      default:              return 'Discussion';
+    }
+  }
+
+  getPostTypeBadgeClass(type?: string): string {
+    switch (type) {
+      case 'ALERT':         return 'badge-alert';
+      case 'CLINICAL_CASE': return 'badge-clinical';
+      case 'CODE_BLUE':     return 'badge-code-blue';
+      default:              return 'badge-discussion';
+    }
+  }
+
+  getImageUrl(imagePath: string): string {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http')) return imagePath;
+    let baseUrl = environment.apiUrl;
+    const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+    const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+    return `${cleanBaseUrl}${cleanPath}`;
+  }
+
+  handleImageError(event: any): void {
+    event.target.style.display = 'none';
+    if (event.target.parentElement) {
+      event.target.parentElement.style.display = 'none';
+    }
+  }
+
+  onCommentImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    const file = input.files[0];
+    if (!file.type.startsWith('image/')) return;
+    this.commentImageFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => { this.commentImagePreview = e.target?.result as string; };
+    reader.readAsDataURL(file);
+  }
+
+  removeCommentImage(): void {
+    this.commentImageFile = null;
+    this.commentImagePreview = null;
+  }
+
+  toggleLike(post: Post): void {
+    if (post.isLikedByUser) {
+      this.forumService.unlikePost(post.id).subscribe({
+        next: () => {
+          post.isLikedByUser = false;
+          post.likesCount = (post.likesCount || 1) - 1;
+          if (this.selectedPost && this.selectedPost.id === post.id) {
+            this.selectedPost.isLikedByUser = false;
+            this.selectedPost.likesCount = post.likesCount;
+          }
+        }
+      });
+    } else {
+      this.forumService.likePost(post.id).subscribe({
+        next: () => {
+          post.isLikedByUser = true;
+          post.likesCount = (post.likesCount || 0) + 1;
+          if (this.selectedPost && this.selectedPost.id === post.id) {
+            this.selectedPost.isLikedByUser = true;
+            this.selectedPost.likesCount = post.likesCount;
+          }
+        }
+      });
+    }
+  }
+
+  submitComment(): void {
+    if (!this.selectedPost || !this.newComment.trim()) return;
+    this.submittingComment = true;
+    this.commentViolationError = null;
+    const userId = this.authService.getUserId();
+    if (!userId) { this.submittingComment = false; return; }
+
+    const commentRequest: CommentRequest = {
+      content: this.newComment.trim(),
+      postId: this.selectedPost.id,
+      authorId: userId
+    };
+
+    this.forumService.createComment(commentRequest, this.commentImageFile || undefined).subscribe({
+      next: (comment) => {
+        this.newComment = '';
+        this.commentImageFile = null;
+        this.commentImagePreview = null;
+        this.submittingComment = false;
+        if (this.selectedPost) {
+          if (!this.selectedPost.comments) this.selectedPost.comments = [];
+          this.selectedPost.comments.unshift(comment);
+        }
+        this.comments = this.selectedPost?.comments || [];
+      },
+      error: (err) => {
+        this.submittingComment = false;
+        if (err.status === 422 && err.error?.error === 'CONTENT_VIOLATION') {
+          this.commentViolationError = err.error.message;
+        } else {
+          console.error('Error creating comment:', err);
+        }
+      }
+    });
   }
 
   getTotalComments(): number {
     return this.posts.reduce((s, p) => s + (p.comments?.length || 0), 0);
+  }
+
+  getInitial(name?: string): string {
+    return name ? name.charAt(0).toUpperCase() : '?';
   }
 
   getTotalLikes(): number {
@@ -172,10 +309,6 @@ export class ForumModerationComponent implements OnInit {
     if (!post.comments || post.comments.length === 0) {
       this.loadComments(post.id);
     }
-  }
-
-  openComments(post: Post): void {
-    this.selectedPost = post;
   }
 
   loadComments(postId: number): void {
@@ -193,111 +326,6 @@ export class ForumModerationComponent implements OnInit {
         this.loadingComments = false;
       }
     });
-  }
-
-  toggleLike(post: Post): void {
-    if (post.isLikedByUser) {
-      this.forumService.unlikePost(post.id).subscribe({
-        next: () => {
-          // Update the post in the posts array
-          const postInArray = this.posts.find(p => p.id === post.id);
-          if (postInArray) {
-            postInArray.isLikedByUser = false;
-            postInArray.likesCount = (postInArray.likesCount || 0) - 1;
-          }
-          
-          // Also update selectedPost if it's the same post
-          if (this.selectedPost && this.selectedPost.id === post.id) {
-            this.selectedPost.isLikedByUser = false;
-            this.selectedPost.likesCount = (this.selectedPost.likesCount || 0) - 1;
-          }
-        },
-        error: (err) => {
-          console.error('Error unliking post:', err);
-        }
-      });
-    } else {
-      this.forumService.likePost(post.id).subscribe({
-        next: () => {
-          // Update the post in the posts array
-          const postInArray = this.posts.find(p => p.id === post.id);
-          if (postInArray) {
-            postInArray.isLikedByUser = true;
-            postInArray.likesCount = (postInArray.likesCount || 0) + 1;
-          }
-          
-          // Also update selectedPost if it's the same post
-          if (this.selectedPost && this.selectedPost.id === post.id) {
-            this.selectedPost.isLikedByUser = true;
-            this.selectedPost.likesCount = (this.selectedPost.likesCount || 0) + 1;
-          }
-        },
-        error: (err) => {
-          console.error('Error liking post:', err);
-        }
-      });
-    }
-  }
-
-  submitComment(): void {
-    if (!this.selectedPost || !this.newComment.trim()) {
-      return;
-    }
-
-    this.submittingComment = true;
-    const userId = this.authService.getUserId();
-    if (!userId) {
-      console.error('User not authenticated');
-      this.submittingComment = false;
-      return;
-    }
-    
-    const commentRequest: CommentRequest = {
-      content: this.newComment.trim(),
-      postId: this.selectedPost!.id,
-      authorId: userId
-    };
-
-    this.forumService.createComment(commentRequest).subscribe({
-      next: (comment) => {
-        this.comments.unshift(comment);
-        this.newComment = '';
-        this.submittingComment = false;
-        
-        // Update the post in the posts array
-        const postInArray = this.posts.find(p => p.id === this.selectedPost!.id);
-        if (postInArray) {
-          if (!postInArray.comments) postInArray.comments = [];
-          postInArray.comments.unshift(comment);
-        }
-        
-        // Also update selectedPost
-        if (this.selectedPost) {
-          this.selectedPost.comments = [...(this.selectedPost.comments || []), comment];
-        }
-      },
-      error: (err) => {
-        console.error('Error creating comment:', err);
-        this.submittingComment = false;
-      }
-    });
-  }
-
-  formatTimeAgo(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return 'à l\'instant';
-    if (diffInMinutes < 60) return `il y a ${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''}`;
-    
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `il y a ${diffInHours} heure${diffInHours > 1 ? 's' : ''}`;
-    
-    const diffInDays = Math.floor(diffInHours / 24);
-    if (diffInDays < 7) return `il y a ${diffInDays} jour${diffInDays > 1 ? 's' : ''}`;
-    
-    return date.toLocaleDateString('fr-FR');
   }
 
   backToList(): void {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface LabTestResponse {
   id: number;
@@ -33,8 +34,7 @@ export interface LabTestRequest {
 @Injectable({ providedIn: 'root' })
 export class LabTestService {
 
-  private baseUrl =
-    'http://localhost:8081/springsecurity/api/lab-tests';
+  private baseUrl = `${environment.apiUrl}/api/lab-tests`;
 
   constructor(private http: HttpClient) {}
 

@@ -5,6 +5,9 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { ForumRoutingModule } from './forum-routing.module';
 import { ForumService } from './services/forum.service';
+import { WhatsAppService } from './services/whatsapp.service';
+import { MessagingService } from './services/messaging.service';
+import { NotificationService } from './services/notification.service';
 import { NonPatientGuard } from './guards/non-patient.guard';
 
 import { ForumModerationComponent } from './pages/forum-moderation/forum-moderation.component';
@@ -28,6 +31,9 @@ import { TrendingTopicsComponent } from './components/trending-topics/trending-t
   ],
   providers: [
     ForumService,
+    WhatsAppService,
+    MessagingService,
+    NotificationService,
     NonPatientGuard
   ],
   exports: [

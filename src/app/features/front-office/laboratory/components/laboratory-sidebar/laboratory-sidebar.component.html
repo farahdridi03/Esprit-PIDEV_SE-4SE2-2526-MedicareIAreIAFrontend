@@ -41,6 +41,36 @@
                 </span>
                 Lab Requests
             </li>
+            <li routerLinkActive="active" routerLink="/front/laboratorystaff/alzheimer-analysis/0" style="position:relative;">
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                    </svg>
+                </span>
+                Alzheimer AI
+                <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:#7c3aed;color:white;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;letter-spacing:0.05em;">AI</span>
+            </li>
+
+            <!-- ── Patient History (Alzheimer AI) ── -->
+            <li class="history-toggle" (click)="toggleHistory()">
+                <span class="icon">📈</span>
+                Patient History
+                <span class="history-count" *ngIf="patients.length > 0">{{ patients.length }}</span>
+                <span class="chevron" [class.open]="historyOpen">›</span>
+            </li>
+
+            <div class="patient-list" [class.visible]="historyOpen">
+                <div class="patient-empty" *ngIf="patients.length === 0">
+                    No AI analysis recorded
+                </div>
+                <div class="patient-item" *ngFor="let p of patients" (click)="openHistory(p.patientName)">
+                    <span class="patient-risk">{{ getRiskIcon(p.lastRisk) }}</span>
+                    <div class="patient-info">
+                        <span class="patient-name">{{ p.patientName }}</span>
+                        <span class="patient-meta">{{ p.totalAnalyses }} analysis{{ p.totalAnalyses > 1 ? 'es' : '' }}</span>
+                    </div>
+                </div>
+            </div>
             <li routerLinkActive="active" routerLink="/front/laboratorystaff/lab-results">
                 <span class="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -48,6 +78,14 @@
                     </svg>
                 </span>
                 Lab Results
+            </li>
+            <li routerLinkActive="active" routerLink="/front/laboratorystaff/performance">
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                    </svg>
+                </span>
+                Staff Performance
             </li>
 
             <li routerLinkActive="active" routerLink="/front/laboratorystaff/events">

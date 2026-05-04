@@ -1,0 +1,199 @@
+
+<div class="laboratory-wrapper">
+  <app-laboratorystaff-sidebar></app-laboratorystaff-sidebar>
+
+  <div class="main-body">
+    <app-laboratorystaff-topbar></app-laboratorystaff-topbar>
+
+    <div class="content-area">
+
+      <!-- Header -->
+      <div class="page-header">
+        <div class="header-left">
+          <button class="btn-back" (click)="navigateBack()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
+            </svg>
+          </button>
+          <div>
+            <h1>Historique Alzheimer IA</h1>
+            <p>Évolution du risque pour <strong>{{ patientName }}</strong></p>
+          </div>
+        </div>
+        <div class="ai-badge">🧠 Analyse temporelle · VGG16</div>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading-block" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Chargement de l'historique...</p>
+      </div>
+
+      <!-- Error -->
+      <div class="error-alert" *ngIf="error && !loading">
+        ⚠️ {{ error }}
+        <button (click)="loadHistory()">Réessayer</button>
+      </div>
+
+      <ng-container *ngIf="!loading && !error">
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="history.length === 0">
+          <div class="empty-icon">🧬</div>
+          <h3>Aucune analyse IRM trouvée</h3>
+          <p>{{ patientName }} n'a pas encore d'analyses Alzheimer IA enregistrées.</p>
+          <button class="btn-back-action" (click)="navigateBack()">Retour aux demandes</button>
+        </div>
+
+        <ng-container *ngIf="history.length > 0">
+
+          <!-- Summary row -->
+          <div class="summary-row">
+            <div class="summary-card">
+              <div class="summary-icon">📊</div>
+              <div class="summary-value">{{ history.length }}</div>
+              <div class="summary-label">Analyses effectuées</div>
+            </div>
+            <div class="summary-card" [ngClass]="getRiskClass(history[history.length-1].aiRisk)">
+              <div class="summary-icon">{{ getRiskIcon(history[history.length-1].aiRisk) }}</div>
+              <div class="summary-value">{{ getRiskLabel(history[history.length-1].aiRisk) }}</div>
+              <div class="summary-label">Dernier diagnostic</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-icon"
+                   [class.trend-up]="getTrend()==='up'"
+                   [class.trend-down]="getTrend()==='down'">
+                {{ getTrend() === 'up' ? '📈' : getTrend() === 'down' ? '📉' : '➡️' }}
+              </div>
+              <div class="summary-value">
+                {{ getTrend() === 'up' ? 'Aggravation' : getTrend() === 'down' ? 'Amélioration' : 'Stable' }}
+              </div>
+              <div class="summary-label">Tendance récente</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-icon">📅</div>
+              <div class="summary-value">{{ formatDate(history[0].completedAt) }}</div>
+              <div class="summary-label">Première analyse</div>
+            </div>
+          </div>
+
+          <!-- SVG Risk Evolution Chart -->
+          <div class="chart-card">
+            <div class="chart-title">
+              <h3>Évolution du Risque dans le Temps</h3>
+              <div class="chart-legend">
+                <span class="dot-sain"></span>Sain
+                <span class="dot-surveillance"></span>Surveillance
+                <span class="dot-attention"></span>Attention
+                <span class="dot-urgent"></span>Urgent
+              </div>
+            </div>
+
+            <div class="chart-wrap">
+              <!-- Y axis labels -->
+              <div class="y-axis">
+                <span>URGENT</span>
+                <span>ATTENTION</span>
+                <span>SURV.</span>
+                <span>SAIN</span>
+              </div>
+
+              <!-- SVG chart -->
+              <svg class="risk-svg" [attr.viewBox]="'0 0 100 ' + CHART_HEIGHT" preserveAspectRatio="none">
+                <!-- Grid lines -->
+                <line x1="0" y1="5"  x2="100" y2="5"  class="grid-line"/>
+                <line x1="0" y1="54" x2="100" y2="54" class="grid-line"/>
+                <line x1="0" y1="78" x2="100" y2="78" class="grid-line"/>
+                <line x1="0" y1="162" x2="100" y2="162" class="grid-line"/>
+
+                <!-- Polyline connecting dots -->
+                <polyline
+                  *ngIf="history.length > 1"
+                  [attr.points]="getPolyline()"
+                  class="risk-line"/>
+
+                <!-- Dots -->
+                <circle
+                  *ngFor="let r of history; let i = index"
+                  [attr.cx]="getDotX(i)"
+                  [attr.cy]="getDotY(r.aiRisk)"
+                  r="4"
+                  [ngClass]="'dot-' + (r.aiRisk || 'SAIN').toLowerCase()">
+                  <title>{{ formatDate(r.completedAt) }} — {{ r.aiRisk }}</title>
+                </circle>
+              </svg>
+
+              <!-- X axis dates -->
+              <div class="x-axis">
+                <span *ngFor="let r of history">{{ formatDate(r.completedAt) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline of analyses -->
+          <div class="timeline-card">
+            <h3>Détail des Analyses</h3>
+            <div class="timeline">
+              <div class="timeline-item" *ngFor="let r of history; let i = index; let last = last">
+
+                <!-- connector line -->
+                <div class="timeline-line" *ngIf="!last"></div>
+
+                <!-- dot -->
+                <div class="timeline-dot" [ngClass]="getRiskClass(r.aiRisk)">
+                  {{ getRiskIcon(r.aiRisk) }}
+                </div>
+
+                <!-- card -->
+                <div class="timeline-content" [ngClass]="getRiskClass(r.aiRisk)">
+                  <div class="tc-header">
+                    <div class="tc-date">{{ formatDate(r.completedAt) }}</div>
+                    <div class="tc-badge" [ngClass]="getRiskClass(r.aiRisk)">
+                      {{ getRiskLabel(r.aiRisk) }}
+                    </div>
+                    <div class="tc-index">Analyse #{{ i + 1 }}</div>
+                  </div>
+                  <div class="tc-body">
+                    <div class="tc-row">
+                      <span class="tc-label">Diagnostic IA</span>
+                      <span class="tc-value">{{ r.aiDiagnostic || '—' }}</span>
+                    </div>
+                    <div class="tc-row" *ngIf="r.aiConfidence">
+                      <span class="tc-label">Confiance</span>
+                      <div class="tc-conf">
+                        <div class="conf-bar">
+                          <div class="conf-fill" [style.width.%]="r.aiConfidence"></div>
+                        </div>
+                        <span>{{ r.aiConfidence | number:'1.1-1' }}%</span>
+                      </div>
+                    </div>
+                    <div class="tc-row">
+                      <span class="tc-label">Technicien</span>
+                      <span class="tc-value">{{ r.technicianName || '—' }}</span>
+                    </div>
+                    <div class="tc-row">
+                      <span class="tc-label">Type d'examen</span>
+                      <span class="tc-value">{{ r.testType || '—' }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Follow-up alert banner -->
+                  <div class="followup-banner" *ngIf="needsFollowUp(r.aiRisk) && isLastResult(i)">
+                    <span class="followup-icon">🔄</span>
+                    <div class="followup-text">
+                      <strong>Automatic follow-up scheduled</strong>
+                      <span>If no new analysis is recorded within 7 days, a follow-up request will be created automatically and the doctor will be notified.</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </ng-container>
+      </ng-container>
+
+    </div>
+  </div>
+</div>

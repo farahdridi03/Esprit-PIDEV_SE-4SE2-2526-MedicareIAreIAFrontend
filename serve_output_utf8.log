@@ -1,0 +1,43 @@
+﻿
+> medi-care-ai@0.0.0 start
+> ng serve
+
+[33m>[39m Building...
+[32mÔêÜ[39m Building...
+Application bundle generation failed. [7.970 seconds]
+
+node.exe : [1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG9: Property 'isCollapsed' does not exist on type 
+'LaboratoryStaffSidebarComponent'.[0m [1m[35m[plugin angular-compiler][0m
+Au caractère Ligne:1 : 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([1m[31m[31mX...r-compiler][0m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+    src/app/features/front-office/laboratory/components/laboratory-sidebar/laboratory-sidebar.component.html:1:40:
+[37m      1 Ôöé <div class="sidebar" [class.collapsed]="[32misCollapsed[37m">
+        ÔòÁ                                         [32m~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LaboratoryStaffSidebarComponent.
+
+    src/app/features/front-office/laboratory/components/laboratory-sidebar/laboratory-sidebar.component.ts:12:15:
+[37m      12 Ôöé   templateUrl: [32m'./laboratory-sidebar.component.html'[37m,
+         ÔòÁ                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG9: Property 'toggleSidebar' does not exist on type 
+'LaboratoryStaffSidebarComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/front-office/laboratory/components/laboratory-sidebar/laboratory-sidebar.component.html:2:32:
+[37m      2 Ôöé ...iv class="brand" (click)="[32mtoggleSidebar[37m()" style="cursor: pointe...
+        ÔòÁ                              [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component LaboratoryStaffSidebarComponent.
+
+    src/app/features/front-office/laboratory/components/laboratory-sidebar/laboratory-sidebar.component.ts:12:15:
+[37m      12 Ôöé   templateUrl: [32m'./laboratory-sidebar.component.html'[37m,
+         ÔòÁ                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+Watch mode enabled. Watching for file changes...
