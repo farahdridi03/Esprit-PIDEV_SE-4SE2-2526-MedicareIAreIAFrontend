@@ -27,9 +27,13 @@ export class AuthInterceptor implements HttpInterceptor {
 
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
-                if (error.status === 401 || error.status === 403) {
-                    // Déconnecter l'utilisateur et forcer redirection vers /login
+                if (error.status === 401) {
+                    // Only logout on 401 (Unauthorized) which actually means the token is dead
+                    console.warn('[AuthInterceptor] 401 Unauthorized - Logging out');
                     this.authService.logout();
+                } else if (error.status === 403) {
+                    // 403 means Forbidden (wrong role), we shouldn't necessarily logout
+                    console.error('[AuthInterceptor] 403 Forbidden - Access Denied');
                 }
                 return throwError(() => error);
             })

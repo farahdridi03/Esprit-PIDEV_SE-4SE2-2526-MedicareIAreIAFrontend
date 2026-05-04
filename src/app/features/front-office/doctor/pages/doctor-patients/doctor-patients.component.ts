@@ -2,6 +2,7 @@ import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { AuthService } from '../../../../../services/auth.service';
 import { AppointmentService } from '../../../../../services/appointment.service';
 import { AppointmentDTO } from '../../../../../models/appointment.model';
+import { ConfirmDialogService } from '../../../../../shared/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-doctor-patients',
@@ -18,7 +19,8 @@ export class DoctorPatientsComponent implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private confirmService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -118,14 +120,40 @@ export class DoctorPatientsComponent implements OnInit {
     }
   }
 
-  completeConsultation(app: AppointmentDTO): void {
-    if(confirm('Terminer cette consultation en ligne ?')) {
+  async completeConsultation(app: AppointmentDTO) {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Complete Consultation',
+      message: 'Are you sure you want to complete this consultation?',
+      type: 'warning',
+      confirmText: 'Complete'
+    });
+
+    if(confirmed) {
       this.appointmentService.completeAppointment(app.id).subscribe({
         next: () => {
           const doctorId = this.authService.getUserId();
           if (doctorId) this.loadTodayAppointments(doctorId);
         },
         error: (err) => console.error('Complete error:', err)
+      });
+    }
+  }
+
+  async deleteAppointment(id: number) {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Appointment',
+      message: 'Are you sure you want to delete this appointment?',
+      type: 'danger',
+      confirmText: 'Delete'
+    });
+
+    if (confirmed) {
+      this.appointmentService.deleteAppointment(id).subscribe({
+        next: () => {
+          const doctorId = this.authService.getUserId();
+          if (doctorId) this.loadTodayAppointments(doctorId);
+        },
+        error: (err) => console.error('Delete error:', err)
       });
     }
   }

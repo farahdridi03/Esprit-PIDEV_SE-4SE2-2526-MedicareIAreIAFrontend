@@ -26,9 +26,18 @@ export interface DiaperRecord {
   changedAt: string; // ISO string
 }
 
+export interface BabyReminder {
+  id: number;
+  type: string;
+  title: string;
+  dueDate: string;
+  completed: boolean;
+}
+
 export interface BabyDashboard {
   id: number;
   name: string;
+  birthDate: string;
   ageText: string;
   ageDays: number;
   weightAtBirth: number;
@@ -42,12 +51,14 @@ export interface BabyDashboard {
   nextVaccineDate: string;
   nextCheckupDate: string;
   milestoneProgress: number;
+  gender: string;
   totalSleepSecondsToday?: number;
   weeklySleep?: { day: string, totalSeconds?: number, isToday?: boolean }[];
   diaperTotalToday?: number;
   diaperWetToday?: number;
   diaperDirtyToday?: number;
   diaperSummaryToday?: { total: number, wet: number, dirty: number };
+  activeAlerts?: BabyReminder[];
 }
 
 @Injectable({
@@ -157,6 +168,47 @@ export class BabyCareService {
     );
   }
 
+  updateProfile(babyId: number, profileData: any): Observable<BabyProfile> {
+    const endpoint = `${this.apiUrl}/profile/${babyId}`;
+    
+    const requestBody = {
+      name: profileData.name,
+      birthDate: profileData.birthDate,
+      gender: profileData.gender || 'UNKNOWN',
+      birthWeight: profileData.birthWeight || 0,
+      birthHeight: profileData.birthHeight || 0,
+      photoUrl: profileData.photoUrl,
+      priorities: profileData.priorities || []
+    };
+
+    return this.http.put<any>(endpoint, requestBody).pipe(
+      map((backendProfile: any) => {
+        const profiles = this.getProfiles();
+        const index = profiles.findIndex(p => p.id === babyId);
+        const updatedProfile: BabyProfile = {
+          id: babyId,
+          parentId: backendProfile.patientId || profiles[index]?.parentId,
+          name: profileData.name,
+          birthDate: profileData.birthDate,
+          gender: profileData.gender || 'UNKNOWN',
+          birthWeight: profileData.birthWeight || 0,
+          birthHeight: profileData.birthHeight || 0,
+          photoUrl: profileData.photoUrl,
+          priorities: profileData.priorities || []
+        };
+        
+        if (index !== -1) {
+          profiles[index] = updatedProfile;
+        } else {
+          profiles.push(updatedProfile);
+        }
+        this.saveProfiles(profiles);
+        
+        return updatedProfile;
+      })
+    );
+  }
+
   getProfileByPatientId(patientId: number): Observable<BabyProfile> {
     return this.http.get<any>(`${this.apiUrl}/profile/${patientId}`).pipe(
       map(backendProfile => {
@@ -175,6 +227,31 @@ export class BabyCareService {
         profiles.push(profile);
         this.saveProfiles(profiles);
         return profile;
+      })
+    );
+  }
+
+  getProfilesByPatientId(patientId: number): Observable<BabyProfile[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/profiles/${patientId}`).pipe(
+      map(backendProfiles => {
+        const mappedProfiles = backendProfiles.map(p => ({
+          id: p.id,
+          name: p.name,
+          birthDate: p.birthDate,
+          gender: p.gender,
+          birthWeight: p.birthWeight,
+          birthHeight: p.birthHeight,
+          parentId: p.patientId || patientId,
+          photoUrl: p.photoUrl,
+          priorities: p.preferences?.map((pref: any) => pref.priorityType) || []
+        }));
+        
+        // Update local cache
+        const allProfiles = this.getProfiles().filter(p => p.parentId !== patientId);
+        allProfiles.push(...mappedProfiles);
+        this.saveProfiles(allProfiles);
+        
+        return mappedProfiles;
       })
     );
   }
@@ -199,6 +276,7 @@ export class BabyCareService {
         return {
           id: dash.id,
           name: dash.name,
+          birthDate: dash.birthDate || (profile ? profile.birthDate : ''),
           ageText: dash.age,
           ageDays: ageInDays,
           weightAtBirth: dash.weightAtBirth,
@@ -212,6 +290,7 @@ export class BabyCareService {
           nextVaccineDate: nextV ? new Date(nextV.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No pending',
           nextCheckupDate: dash.nextCheckupDate || 'Apr 12',
           milestoneProgress: dash.milestoneProgress || 0,
+          gender: dash.gender || (profile ? profile.gender : 'Unknown'),
           totalSleepSecondsToday: dash.totalSleepSecondsToday || 0,
           weeklySleep: dash.weeklySleep ? dash.weeklySleep.map((d: any, index: number) => ({
             day: d.day,
@@ -367,6 +446,10 @@ export class BabyCareService {
   markVaccineDone(babyId: number, vaccineName: string): Observable<any> {
     const today = new Date().toISOString().split('T')[0];
     return this.http.post(`${this.apiUrl}/vaccines/${babyId}/administered?name=${encodeURIComponent(vaccineName)}&date=${today}`, {});
+  }
+
+  markVaccineDoneById(babyId: number, vaccineId: number): Observable<any> {
+    return this.http.post(`http://localhost:8081/springsecurity/api/vaccines/mark-done/${babyId}/${vaccineId}`, {});
   }
 
   resetVaccine(babyId: number, vaccineName: string): Observable<any> {
@@ -595,6 +678,31 @@ export class BabyCareService {
 
   deleteDiaper(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/diapers/record/${id}`);
+  }
+
+  downloadReport(babyId: number): Observable<Blob> {
+    const url = `${this.apiUrl}/medical-pdf/${babyId}`;
+    return this.http.get(url, { responseType: 'blob' });
+  }
+
+  getReminders(babyId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/reminders/${babyId}`);
+  }
+
+  deleteReminder(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/reminders/${id}`);
+  }
+
+  deleteAllReminders(parentId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/reminders/all/${parentId}`);
+  }
+
+
+
+  analyzeSkin(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${this.apiUrl}/ai/analyze-skin`, formData);
   }
 
   private getTempStatus(val: string | undefined): string {

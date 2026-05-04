@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ScheduleService } from '../../../../../services/schedule.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { ScheduleException, ExceptionType, TimeSlot } from '../../../../../models/schedule.model';
+import { ConfirmDialogService } from '../../../../../shared/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-doctor-calendar-exceptions',
@@ -23,7 +24,8 @@ export class DoctorCalendarExceptionsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private scheduleService: ScheduleService,
-    private authService: AuthService
+    private authService: AuthService,
+    private confirmService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -90,9 +92,17 @@ export class DoctorCalendarExceptionsComponent implements OnInit {
     });
   }
 
-  deleteException(id: number | undefined): void {
+  async deleteException(id: number | undefined) {
     if (!id) return;
-    if (confirm('Are you sure you want to delete this exception?')) {
+    
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Exception',
+      message: 'Are you sure you want to delete this exception?',
+      type: 'danger',
+      confirmText: 'Delete'
+    });
+
+    if (confirmed) {
       this.scheduleService.deleteException(this.providerId, id).subscribe(() => {
         this.exceptions = this.exceptions.filter(e => e.id !== id);
       });

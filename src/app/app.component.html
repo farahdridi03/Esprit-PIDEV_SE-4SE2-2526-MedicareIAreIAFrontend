@@ -1,1 +1,12 @@
 <router-outlet></router-outlet>
+
+<app-confirm-dialog
+  [isOpen]="modalOpen"
+  [title]="modalData.title || 'Confirmation'"
+  [message]="modalData.message"
+  [confirmText]="modalData.confirmText || 'Confirm'"
+  [cancelText]="modalData.cancelText || 'Cancel'"
+  [type]="modalData.type || 'info'"
+  (confirm)="handleConfirm()"
+  (cancel)="handleCancel()">
+</app-confirm-dialog>

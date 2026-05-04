@@ -417,7 +417,8 @@ export class PatientDoctorDetailComponent implements OnInit {
       },
       error: (err) => {
         console.error('[ERROR] PatientDoctorDetailComponent: Booking failed:', err);
-        alert('Erreur lors de la réservation. Veuillez réessayer.');
+        const errorMessage = err.error?.message || err.error?.error || 'Erreur lors de la réservation. Veuillez réessayer.';
+        alert(errorMessage);
         this.isBooking = false;
       }
     });

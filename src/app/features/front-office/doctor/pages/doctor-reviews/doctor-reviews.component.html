@@ -1,0 +1,144 @@
+<ng-container *ngIf="!isEmbedded; else embeddedTemplate">
+  <div class="doctor-wrapper">
+    <!-- Sidebar -->
+    <app-doctor-sidebar [currentView]="'reviews'"></app-doctor-sidebar>
+
+    <!-- Main Content -->
+    <div class="main-body">
+      <app-doctor-topbar></app-doctor-topbar>
+
+      <div class="content-area">
+        <ng-container *ngTemplateOutlet="reviewsContent"></ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #embeddedTemplate>
+  <div class="embedded-reviews-container">
+    <ng-container *ngTemplateOutlet="reviewsContent"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #reviewsContent>
+  <div class="page-header">
+    <h1>Patient Reviews</h1>
+    <p>Analytics and feedback from your patients</p>
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="summary-cards" *ngIf="!loading && reviews.length > 0">
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-value">{{ averageRating | number:'1.1-1' }}</span>
+        <span class="stat-label">AVG RATING</span>
+      </div>
+      <div class="stat-meta positive">{{ stats.ratingDiff }} this month</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-value">{{ stats.total }}</span>
+        <span class="stat-label">TOTAL REVIEWS</span>
+      </div>
+      <div class="stat-meta positive">+1 this week</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-value">{{ stats.recommendRate }}%</span>
+        <span class="stat-label">RECOMMEND</span>
+      </div>
+      <div class="stat-meta">All patients</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-value">{{ stats.thisMonthCount }}</span>
+        <span class="stat-label">THIS MONTH</span>
+      </div>
+      <div class="stat-meta positive">+1 vs last month</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid" *ngIf="!loading && reviews.length > 0">
+    <!-- Analytics Sidebar -->
+    <aside class="analytics-sidebar">
+      <div class="score-card">
+        <span class="label">OVERALL SCORE</span>
+        <div class="big-score">{{ averageRating | number:'1.1-1' }}</div>
+        <div class="stars-row">
+          <i class="fas fa-star" *ngFor="let s of [1,2,3,4,5]" [class.filled]="s <= averageRating"></i>
+        </div>
+        <span class="sub-label">Based on {{ stats.total }} reviews</span>
+      </div>
+
+      <div class="rating-breakdown">
+        <div class="dist-row" *ngFor="let dist of ratingDistribution">
+          <span class="star-label">{{ dist.stars }}★</span>
+          <div class="progress-bar">
+            <div class="fill" [style.width.%]="dist.percentage"></div>
+          </div>
+          <span class="count-label">{{ dist.count }}</span>
+        </div>
+      </div>
+
+      <div class="trend-section">
+        <span class="label">MONTHLY TREND</span>
+        <div class="mini-chart">
+          <div class="bar" style="height: 30%"><span>Feb</span></div>
+          <div class="bar" style="height: 45%"><span>Mar</span></div>
+          <div class="bar" style="height: 60%"><span>Apr</span></div>
+          <div class="bar" style="height: 85%" class="active"><span>May</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Reviews Feed -->
+    <main class="reviews-feed">
+      <div class="feed-header">
+        <h3>All reviews</h3>
+        <div class="filter-chips">
+          <button [class.active]="selectedFilter === 'all'" (click)="applyFilter('all')">All</button>
+          <button [class.active]="selectedFilter === 5" (click)="applyFilter(5)">5★</button>
+          <button [class.active]="selectedFilter === 4" (click)="applyFilter(4)">4★</button>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && filteredReviews.length === 0" class="empty-filter">
+        <p>No reviews found matching this filter.</p>
+      </div>
+
+      <div class="review-list" *ngIf="!loading && filteredReviews.length > 0">
+        <div class="review-card" *ngFor="let r of filteredReviews">
+          <div class="review-header">
+            <div class="patient-info">
+              <div class="avatar">{{ r.initials }}</div>
+              <div class="meta">
+                <h4>{{ r.patientName }}</h4>
+                <span>{{ timeAgo(r.createdAt) }}</span>
+              </div>
+            </div>
+            <div class="rating-stars">
+              <i class="fas fa-star" *ngFor="let s of [1,2,3,4,5]" [class.active]="s <= r.rating"></i>
+            </div>
+          </div>
+          <p class="review-text">{{ r.comment }}</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Analyzing reviews...</p>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!loading && reviews.length === 0">
+    <div class="empty-icon">★</div>
+    <h2>No reviews yet</h2>
+    <p>Your patients haven't left any feedback yet. Your reviews will appear here once they do.</p>
+  </div>
+</ng-template>

@@ -1,0 +1,91 @@
+<!-- src/app/features/front-office/doctor/components/notification-panel/notification-panel.component.html -->
+
+<div class="notif-panel">
+  <!-- Header -->
+  <div class="panel-header">
+    <div class="header-left">
+      <span class="panel-title">Notifications</span>
+      <span class="unread-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </div>
+    <button class="mark-all-btn" *ngIf="unreadCount > 0" (click)="markAll()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+      </svg>
+      Mark all as read
+    </button>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <button class="tab-btn" [class.active]="filter === 'all'" (click)="switchFilter('all')">All</button>
+    <button class="tab-btn" [class.active]="filter === 'unread'" (click)="switchFilter('unread')">
+      Unread
+      <span class="tab-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="bounce-loader">
+      <span></span><span></span><span></span>
+    </div>
+    <p>Loading notifications…</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && notifications.length === 0">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
+    </svg>
+    <p>{{ filter === 'unread' ? 'No unread notifications' : 'No notifications yet' }}</p>
+  </div>
+
+  <!-- Notifications List -->
+  <div class="notif-list" *ngIf="!loading && notifications.length > 0">
+    <div
+      class="notif-item"
+      [class.unread]="!notif.read"
+      *ngFor="let notif of notifications"
+      (click)="markOne(notif, $event)">
+
+      <!-- Unread pulse dot -->
+      <span class="pulse-dot" *ngIf="!notif.read"></span>
+
+      <!-- Clock icon -->
+      <div class="notif-icon" [class.colored]="!notif.read">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+
+      <!-- Content -->
+      <div class="notif-body">
+        <p class="notif-message">{{ notif.message }}</p>
+        <span class="notif-time">{{ timeAgo(notif.createdAt) }}</span>
+      </div>
+
+      <!-- Mark as read button -->
+      <button
+        class="read-btn"
+        *ngIf="!notif.read"
+        title="Mark as read"
+        (click)="markOne(notif, $event)">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="panel-footer" *ngIf="!loading">
+    <button class="refresh-btn" (click)="loadNotifications()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+      </svg>
+      Refresh
+    </button>
+  </div>
+</div>

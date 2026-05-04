@@ -1,3 +1,5 @@
+// src/app/features/front-office/front-office.module.ts
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +15,8 @@ import { PatientDoctorDetailComponent } from './patient/pages/patient-doctor-det
 import { PatientAppointmentsComponent } from './patient/pages/patient-appointments/patient-appointments.component';
 import { PatientBabyCareComponent } from './patient/pages/patient-baby-care/patient-baby-care.component';
 import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
+import { PatientVaccinationComponent } from './patient/pages/patient-vaccination/patient-vaccination.component';
+import { DoctorReviewsComponent } from './doctor/pages/doctor-reviews/doctor-reviews.component';
 
 // Doctor components
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
@@ -22,12 +26,14 @@ import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-
 import { DoctorCalendarSettingsComponent } from './doctor/pages/doctor-calendar-settings/doctor-calendar-settings.component';
 import { DoctorCalendarExceptionsComponent } from './doctor/pages/doctor-calendar-exceptions/doctor-calendar-exceptions.component';
 import { DoctorCalendarCalendarComponent } from './doctor/pages/doctor-calendar-calendar/doctor-calendar-calendar.component';
+import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
+import { NotificationPanelComponent } from './doctor/components/notification-panel/notification-panel.component';
+import { DashboardStatsComponent } from './doctor/components/dashboard-stats/dashboard-stats.component';
 
 // Layout & Static components
 import { HomeComponent } from './pages/home/home.component';
 import { FrontLayoutComponent } from './layout/front-layout/front-layout.component';
 import { ContactComponent } from './pages/contact/contact.component';
-import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +55,11 @@ import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-p
     ContactComponent,
     DoctorPatientsComponent,
     PatientBabyCareComponent,
-    PatientProfileComponent
+    PatientProfileComponent,
+    NotificationPanelComponent,
+    DoctorReviewsComponent,
+    DashboardStatsComponent,
+    PatientVaccinationComponent
   ],
   imports: [
     CommonModule,
@@ -66,7 +76,8 @@ import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-p
     PatientDoctorDetailComponent,
     PatientAppointmentsComponent,
     PatientBabyCareComponent,
-    PatientProfileComponent
+    PatientProfileComponent,
+    PatientVaccinationComponent
   ]
 })
 export class FrontOfficeModule { }

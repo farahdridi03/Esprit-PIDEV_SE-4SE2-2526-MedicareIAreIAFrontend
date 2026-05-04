@@ -1,0 +1,21 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="onCancel()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header" [ngClass]="type">
+      <div class="icon-circle">
+        <i class="fas" [ngClass]="{
+          'fa-exclamation-triangle': type === 'danger',
+          'fa-exclamation-circle': type === 'warning',
+          'fa-info-circle': type === 'info'
+        }"></i>
+      </div>
+    </div>
+    <div class="modal-body">
+      <h3>{{ title }}</h3>
+      <p>{{ message }}</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="onCancel()">{{ cancelText }}</button>
+      <button class="btn-confirm" [ngClass]="type" (click)="onConfirm()">{{ confirmText }}</button>
+    </div>
+  </div>
+</div>

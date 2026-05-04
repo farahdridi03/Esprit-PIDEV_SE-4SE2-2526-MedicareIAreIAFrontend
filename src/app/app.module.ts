@@ -7,6 +7,8 @@ import { AppComponent } from './app.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import {FormsModule} from '@angular/forms';
 
+import { SharedModule } from './shared/shared.module';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -16,7 +18,7 @@ import {FormsModule} from '@angular/forms';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-
+    SharedModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

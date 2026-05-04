@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BabyCareService, BabyDashboard, BabyProfile } from '../../../../../services/baby-care.service';
+import { PdfService } from '../../../../../services/pdf.service';
 import { AuthService } from '../../../../../services/auth.service';
+import { WebsocketService } from '../../../../../services/websocket.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-patient-baby-care',
@@ -10,9 +12,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class PatientBabyCareComponent implements OnInit {
   activeSection: string = 'dashboard';
   isFirstTime: boolean = false;
+  isEditingProfile: boolean = false;
   isLoading: boolean = true;
   formError: string = '';
-  
+
   // Real Data
   baby: BabyDashboard | null = null;
   vaccineTimeline: any[] = [];
@@ -23,15 +26,15 @@ export class PatientBabyCareComponent implements OnInit {
   editingLogId: number | null = null;
   confirmModalData: { title: string, message: string, onConfirm: () => void } | null = null;
   newDiaper: any = { type: 'WET', rash: false, stoolColor: 'Yellow', stoolTexture: 'Normal', notes: '' };
-  manualSleep: any = { 
-    duration: '', 
-    show: false, 
-    type: 'Nap', 
+  manualSleep: any = {
+    duration: '',
+    show: false,
+    type: 'Nap',
     presets: [30, 60, 90, 120, 180]
   };
   onboardingPhoto: string | null = null;
   Math = Math;
-  
+
   weekData: { day: string, totalSeconds?: number, isToday?: boolean }[] = [
     { day: 'Sun', totalSeconds: 0, isToday: false },
     { day: 'Mon', totalSeconds: 0, isToday: false },
@@ -82,6 +85,7 @@ export class PatientBabyCareComponent implements OnInit {
     { id: 'sleep', label: 'Sleep', icon: 'fas fa-moon' },
     { id: 'diaper', label: 'Diaper', icon: 'fas fa-cloud' },
     { id: 'ai-help', label: 'AI Help', icon: 'fas fa-robot' },
+    { id: 'ai-skin', label: 'AI Skin Doctor', icon: 'fas fa-stethoscope' },
     { id: 'journal', label: 'Journal', icon: 'fas fa-book' }
   ];
 
@@ -108,7 +112,7 @@ export class PatientBabyCareComponent implements OnInit {
       description: 'Breast milk or formula remains primary nutrition. Around 4–6 months, you can begin introducing single-ingredient purées — starting with iron-rich foods. Look for signs of readiness: sitting with support, showing interest in food, losing the tongue-thrust reflex.',
       tags: ['🤱 Breast or Formula First', '1 new food/week'],
       foods: [
-        { 
+        {
           emoji: '🥕', name: 'Carrot', benefit: 'Vitamin A',
           recipe: {
             tag: 'Vitamine A · Doux pour l\'estomac',
@@ -117,7 +121,7 @@ export class PatientBabyCareComponent implements OnInit {
             steps: ['Pèle et coupe en fines rondelles.', 'Cuis à la vapeur 15-20 min jusqu\'à tendreté.', 'Mixe jusqu\'à texture lisse.']
           }
         },
-        { 
+        {
           emoji: '🥦', name: 'Broccoli', benefit: 'Iron + Folate',
           recipe: {
             tag: 'Fer · Système immunitaire',
@@ -126,7 +130,7 @@ export class PatientBabyCareComponent implements OnInit {
             steps: ['Lave bien et coupe en petites fleurettes.', 'Cuis à la vapeur 10-12 min.', 'Mixe en ajoutant de l\'eau de cuisson si besoin.']
           }
         },
-        { 
+        {
           emoji: '🍠', name: 'Sweet potato', benefit: 'Energy',
           recipe: {
             tag: 'Énergie douce · Fibres',
@@ -135,7 +139,7 @@ export class PatientBabyCareComponent implements OnInit {
             steps: ['Pèle et coupe en cubes.', 'Cuis à la vapeur 15 min.', 'Écrase ou mixe finement.']
           }
         },
-        { 
+        {
           emoji: '🍌', name: 'Banana', benefit: 'Potassium',
           recipe: {
             tag: 'Énergie rapide · Digestion',
@@ -144,7 +148,7 @@ export class PatientBabyCareComponent implements OnInit {
             steps: ['Pèle la banane.', 'Écrase-la très finement à la fourchette.', 'Sers immédiatement (tu peux ajouter un peu de lait maternel).']
           }
         },
-        { 
+        {
           emoji: '🍐', name: 'Pear', benefit: 'Digestion',
           recipe: {
             tag: 'Fibres · Aide la digestion',
@@ -153,7 +157,7 @@ export class PatientBabyCareComponent implements OnInit {
             steps: ['Pèle et épépine les poires. Coupe en morceaux.', 'Cuis à la vapeur 5-7 min (ou cru si très mûres).', 'Mixe jusqu\'à texture lisse.']
           }
         },
-        { 
+        {
           emoji: '🥣', name: 'Oat porridge', benefit: 'Iron + Zinc',
           recipe: {
             tag: 'Céréales douces · Satiété',
@@ -207,30 +211,34 @@ export class PatientBabyCareComponent implements OnInit {
 
   constructor(
     private babyService: BabyCareService,
+    private pdfService: PdfService,
     public authService: AuthService,
+    private websocketService: WebsocketService,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   pastDateValidator(control: any): { [key: string]: any } | null {
     if (!control.value) return null;
     const selectedDate = new Date(control.value);
     const today = new Date();
-    today.setHours(0,0,0,0);
+    today.setHours(0, 0, 0, 0);
     return selectedDate > today ? { 'futureDate': true } : null;
   }
 
-  maxOneYearValidator(control: any): { [key: string]: any } | null {
+  maxThreeYearsValidator(control: any): { [key: string]: any } | null {
     if (!control.value) return null;
     const selectedDate = new Date(control.value);
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-    return selectedDate < oneYearAgo ? { 'tooOld': true } : null;
+    const threeYearsAgo = new Date();
+    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+    return selectedDate < threeYearsAgo ? { 'tooOld': true } : null;
   }
+
+
 
   ngOnInit(): void {
     this.onboardingForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      birthDate: ['', [Validators.required, this.pastDateValidator, this.maxOneYearValidator]],
+      birthDate: ['', [Validators.required, this.pastDateValidator, this.maxThreeYearsValidator.bind(this)]],
       gender: ['', Validators.required],
       birthWeight: [null, [Validators.required, Validators.min(0), Validators.max(15)]],
       birthHeight: [null, [Validators.required, Validators.min(0), Validators.max(80)]],
@@ -239,19 +247,38 @@ export class PatientBabyCareComponent implements OnInit {
     this.checkBabyProfile();
     this.onboardingPhoto = localStorage.getItem('onboarding_photo');
 
+    // WebSocket connection for real-time notifications
+    const userId = this.authService.getUserId();
+    if (userId) {
+      this.websocketService.connect(userId);
+      this.websocketService.getNotifications().subscribe(notif => {
+        if (notif && this.baby) {
+          console.log('Real-time notification received, refreshing data...');
+          this.loadAllData(this.baby.id);
+        }
+      });
+    }
+
     this.onboardingForm.valueChanges.subscribe(() => {
       if (this.formError) this.formError = '';
     });
   }
 
+  // --- MULTI-PROFILE SWITCHER ---
+  allBabies: BabyProfile[] = [];
+  showSwitcher: boolean = false;
+
   checkBabyProfile() {
     const userId = this.authService.getUserId();
     if (!userId) return;
 
-    this.babyService.getProfileByPatientId(userId).subscribe({
-      next: (profile: BabyProfile) => {
-        if (profile) {
-          this.loadAllData(); // Use loadAllData to fetch all dashboard related data
+    this.babyService.getProfilesByPatientId(userId).subscribe({
+      next: (profiles: BabyProfile[]) => {
+        this.allBabies = profiles;
+        if (profiles.length > 0) {
+          this.isFirstTime = false;
+          // Load the first baby by default
+          this.loadAllData(profiles[0].id);
         } else {
           this.isFirstTime = true;
           this.isLoading = false;
@@ -264,32 +291,110 @@ export class PatientBabyCareComponent implements OnInit {
     });
   }
 
+  loadAllData(babyId: number) {
+    this.isLoading = true;
+    this.babyService.getDashboard(babyId).subscribe({
+      next: (dash) => {
+        this.baby = dash;
+        if (dash.weeklySleep) {
+          this.weekData = dash.weeklySleep.map((d: any, index: number) => ({
+            ...d,
+            isToday: index === (dash.weeklySleep?.length || 0) - 1
+          }));
+        }
+        this.isLoading = false;
+        this.loadSummaries();
+        this.loadVaccines(babyId);
+        this.loadJournal(babyId);
+        this.loadDiapers(babyId);
+      },
+      error: () => {
+        this.isLoading = false;
+        this.isFirstTime = true;
+      }
+    });
+  }
+
+  switchBaby(babyId: number) {
+    this.showSwitcher = false;
+    if (this.baby?.id === babyId) return;
+    this.loadAllData(babyId);
+  }
+
+  toggleSwitcher() {
+    this.showSwitcher = !this.showSwitcher;
+  }
+  // -----------------------------
+
   saveOnboarding() {
     if (this.onboardingForm.invalid || !this.onboardingPhoto) {
       this.onboardingForm.markAllAsTouched();
-      this.formError = !this.onboardingPhoto 
-        ? "Please add a photo of the baby." 
+      this.formError = !this.onboardingPhoto
+        ? "Please add a photo of the baby."
         : "Please fill in all required fields correctly.";
       return;
     }
-    
+
     const parentId = this.authService.getUserId();
     if (!parentId) return;
 
     this.formError = '';
     const data = { ...this.onboardingForm.value, photoUrl: this.onboardingPhoto };
-    this.babyService.createProfile(parentId, data).subscribe({
-      next: (profile) => {
-        this.isFirstTime = false;
-        this.formError = '';
-        localStorage.removeItem('onboarding_photo');
-        this.loadAllData(); // Use loadAllData after onboarding
-      },
-      error: (err) => {
-        this.formError = "Error creating profile. Please check the fields.";
-        console.error(err);
-      }
+
+    if (this.isEditingProfile && this.baby) {
+      this.babyService.updateProfile(this.baby.id, data).subscribe({
+        next: (profile) => {
+          this.isFirstTime = false;
+          this.isEditingProfile = false;
+          this.formError = '';
+          this.loadAllData(this.baby!.id);
+          this.checkBabyProfile(); // Refresh list
+        },
+        error: (err) => {
+          this.formError = "Error updating profile. Please check the fields.";
+          console.error(err);
+        }
+      });
+    } else {
+      this.babyService.createProfile(parentId, data).subscribe({
+        next: (profile) => {
+          this.isFirstTime = false;
+          this.formError = '';
+          localStorage.removeItem('onboarding_photo');
+          this.checkBabyProfile(); // Refresh list and load the new profile
+        },
+        error: (err) => {
+          this.formError = "Error creating profile. Please check the fields.";
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  editProfile() {
+    if (!this.baby) return;
+    this.isEditingProfile = true;
+    this.isFirstTime = true;
+    this.onboardingPhoto = this.baby.photoUrl || null;
+    
+    // Find priorities for this baby
+    const currentBaby = this.allBabies.find(b => b.id === this.baby?.id);
+    
+    this.onboardingForm.patchValue({
+      name: this.baby.name,
+      birthDate: this.baby.birthDate,
+      gender: this.baby.gender,
+      birthWeight: this.baby.weightAtBirth,
+      birthHeight: this.baby.heightAtBirth,
+      priorities: currentBaby?.priorities || []
     });
+  }
+
+  cancelEditing() {
+    this.isEditingProfile = false;
+    this.isFirstTime = false;
+    this.onboardingForm.reset();
+    this.onboardingPhoto = null;
   }
 
   handlePhotoUpload(event: any, isDashboard: boolean = true): void {
@@ -322,36 +427,76 @@ export class PatientBabyCareComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  loadAllData() {
-    const userId = this.authService.getUserId();
-    if (!userId) return;
-    this.isLoading = true;
 
-    this.babyService.getProfileByPatientId(userId).subscribe({
-      next: (profile) => {
-        this.isFirstTime = false;
-        this.babyService.getDashboard(profile.id).subscribe(dash => {
-          this.baby = dash;
-          if (dash.weeklySleep) {
-            this.weekData = dash.weeklySleep.map((d: any, index: number) => ({
-              ...d,
-              isToday: index === (dash.weeklySleep?.length || 0) - 1
-            }));
-          }
-          this.isLoading = false;
-          this.loadSummaries();
-          this.loadVaccines(profile.id);
-          this.loadJournal(profile.id);
-          this.loadDiapers(profile.id);
-        });
 
-      },
-      error: () => {
-        this.isFirstTime = true;
-        this.isLoading = false;
-      }
+  calculateAge(birthDate: string): string {
+    if (!birthDate) return 'N/A';
+    const birth = new Date(birthDate);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - birth.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 30) return `${diffDays} days old`;
+    const months = Math.floor(diffDays / 30.44);
+    if (months < 12) return `${months} months old`;
+    const years = Math.floor(months / 12);
+    const remMonths = months % 12;
+    return `${years}y ${remMonths}m old`;
+  }
+
+  getBabyPhotoBase64(photoUrl: string): Promise<string> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        canvas.getContext('2d')?.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/jpeg'));
+      };
+      img.onerror = () => resolve(''); // fallback
+      img.src = photoUrl;
     });
   }
+
+  async downloadVaccinationBooklet() {
+    if (!this.baby) return;
+
+    const photoBase64 = this.baby.photoUrl
+      ? await this.getBabyPhotoBase64(this.baby.photoUrl)
+      : '';
+
+    const babyAge = this.calculateAge(this.baby.birthDate);
+    const parentName = this.authService.getUserFullName() || 'Parent';
+    const parentEmail = this.authService.getUserEmail() || '';
+
+    // Map vaccination records for PDF
+    const timeline = this.vaccineTimeline.map(v => ({
+      name: v.name,
+      description: v.recommendedAge, // Using recommended age as description
+      status: v.status as 'done' | 'due' | 'upcoming',
+      milestoneDate: v.dueDate,
+      completedDate: v.administeredDate,
+      dose: v.name.includes('Dose') ? v.name.split('Dose')[1].trim() : '1st'
+    }));
+
+    this.pdfService.generateVaccinationPDF(
+      {
+        name: this.baby.name,
+        ageText: babyAge,
+        gender: this.baby.gender,
+        weightAtBirth: this.baby.weightAtBirth || 0,
+        heightAtBirth: this.baby.heightAtBirth || 0
+      },
+      timeline,
+      photoBase64,
+      parentName,
+      parentEmail
+    );
+  }
+
+
 
   loadSummaries() {
     if (!this.baby) return;
@@ -381,28 +526,28 @@ export class PatientBabyCareComponent implements OnInit {
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
-      this.currentSleepTimer!.elapsed = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      this.currentSleepTimer!.elapsed = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }, 1000);
   }
 
   stopSleepTimer() {
     if (!this.currentSleepTimer || !this.baby) return;
     clearInterval(this.timerInterval);
-    
+
     // Calculate duration in seconds (unified unit)
     const rawDiff = Date.now() - this.currentSleepTimer.startTime;
     const totalSeconds = Math.floor(rawDiff / 1000);
-    
+
     const value = this.formatSleepValue(totalSeconds);
-    const metadata = { 
+    const metadata = {
       totalDurationSeconds: totalSeconds,
-      manual: false 
+      manual: false
     };
 
     this.babyService.addJournalEntry(this.baby.id, 'SLEEP', value, '', metadata)
       .subscribe(() => {
         this.currentSleepTimer = null;
-        this.loadAllData();
+        if (this.baby) this.loadAllData(this.baby.id);
       });
   }
 
@@ -411,7 +556,7 @@ export class PatientBabyCareComponent implements OnInit {
   }
 
   historyFilter: string = 'today';
-  
+
   isToday(timestamp: number): boolean {
     const d = new Date(timestamp);
     const today = new Date();
@@ -434,7 +579,7 @@ export class PatientBabyCareComponent implements OnInit {
   }
 
   selectedLogIds = new Set<number>();
-  
+
   toggleSelectLog(id: number) {
     if (this.selectedLogIds.has(id)) this.selectedLogIds.delete(id);
     else this.selectedLogIds.add(id);
@@ -463,12 +608,12 @@ export class PatientBabyCareComponent implements OnInit {
           count++;
           if (count === idsToDelete.length) {
             this.selectedLogIds.clear();
-            this.loadAllData();
+            if (this.baby) this.loadAllData(this.baby.id);
           }
         });
       });
       // In case of error (simplified)
-      setTimeout(() => { this.selectedLogIds.clear(); this.loadAllData(); }, 1500);
+      setTimeout(() => { this.selectedLogIds.clear(); if (this.baby) this.loadAllData(this.baby.id); }, 1500);
     }
   }
 
@@ -482,7 +627,7 @@ export class PatientBabyCareComponent implements OnInit {
     const h = Math.floor(totalSeconds / 3600);
     const m = Math.floor((totalSeconds % 3600) / 60);
     const s = Math.floor(totalSeconds % 60);
-    
+
     if (h > 0) return `${h}h ${m}min ${s}sec`;
     if (m > 0) return `${m}min ${s}sec`;
     return `${s}sec`;
@@ -521,20 +666,26 @@ export class PatientBabyCareComponent implements OnInit {
       next: (data) => {
         this.vaccineTimeline = data.timeline;
         if (this.baby) {
-           this.baby.milestoneProgress = data.progressPercent;
-           this.baby.nextVaccineName = data.nextVaccine?.name || 'All caught up!';
-           this.baby.nextVaccineDate = data.nextVaccine?.dueDate ? new Date(data.nextVaccine.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No pending';
-           this.baby.aiContextualMessage = data.summaryMessage;
+          this.baby.milestoneProgress = data.progressPercent;
+          this.baby.nextVaccineName = data.nextVaccine?.name || 'All caught up!';
+          this.baby.nextVaccineDate = data.nextVaccine?.dueDate ? new Date(data.nextVaccine.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No pending';
+          this.baby.aiContextualMessage = data.summaryMessage;
         }
       }
     });
   }
 
-  markAsDone(vaccineName: string) {
+  markAsDone(vaccineId: any) {
     if (!this.baby) return;
-    this.babyService.markVaccineDone(this.baby.id, vaccineName).subscribe(() => {
-      this.loadAllData();
-    });
+    if (typeof vaccineId === 'number' || !isNaN(Number(vaccineId))) {
+      this.babyService.markVaccineDoneById(this.baby.id, Number(vaccineId)).subscribe(() => {
+        this.loadAllData(this.baby!.id);
+      });
+    } else {
+      this.babyService.markVaccineDone(this.baby.id, vaccineId).subscribe(() => {
+        this.loadAllData(this.baby!.id);
+      });
+    }
   }
 
   onResetVaccine(v: any) {
@@ -544,7 +695,7 @@ export class PatientBabyCareComponent implements OnInit {
       onConfirm: () => {
         if (!this.baby) return;
         this.babyService.resetVaccine(this.baby.id, v.name).subscribe(() => {
-          this.loadAllData();
+          this.loadAllData(this.baby!.id);
         });
       }
     };
@@ -588,13 +739,13 @@ export class PatientBabyCareComponent implements OnInit {
   showAddEntry: boolean = false;
   journalDate: Date = new Date();
 
-  newEntry: any = { 
-    type: 'FEEDING', 
-    value: '', 
-    notes: '', 
-    subType: 'BREAST', 
-    quantity: 120, 
-    duration: 15, 
+  newEntry: any = {
+    type: 'FEEDING',
+    value: '',
+    notes: '',
+    subType: 'BREAST',
+    quantity: 120,
+    duration: 15,
     side: 'LEFT',
     stoolColor: 'Yellow',
     rash: false,
@@ -659,21 +810,21 @@ export class PatientBabyCareComponent implements OnInit {
       if (this.newEntry.subType === 'BOTTLE') {
         const qty = parseFloat(this.newEntry.quantity);
         if (isNaN(qty) || qty <= 0 || qty > 1000) {
-           this.formError = "Quantity must be between 1 and 1000 ml.";
-           return;
+          this.formError = "Quantity must be between 1 and 1000 ml.";
+          return;
         }
       } else {
         const dur = this.parsedDuration(this.newEntry.duration);
-        if (dur <= 0 || dur > 7200) { 
-           this.formError = "Duration must be between 1 min and 2 hours.";
-           return;
+        if (dur <= 0 || dur > 7200) {
+          this.formError = "Duration must be between 1 min and 2 hours.";
+          return;
         }
       }
     } else if (this.newEntry.type === 'SLEEP') {
       const totalSeconds = this.parsedDuration(this.newEntry.duration);
       if (totalSeconds < 60 || totalSeconds > 86400) {
-          this.formError = "Sleep duration must be between 1 min and 24 hours.";
-          return;
+        this.formError = "Sleep duration must be between 1 min and 24 hours.";
+        return;
       }
     } else if (this.newEntry.type === 'DIAPER') {
       if (!this.newEntry.subType) {
@@ -681,7 +832,7 @@ export class PatientBabyCareComponent implements OnInit {
         return;
       }
     }
-    
+
     // Prepare metadata based on type
     const metadata: any = {};
     if (this.newEntry.type === 'SLEEP') {
@@ -705,23 +856,23 @@ export class PatientBabyCareComponent implements OnInit {
       metadata.rash = this.newEntry.rash;
     }
 
-    const obs = this.editingLogId 
+    const obs = this.editingLogId
       ? this.babyService.updateJournalEntry(this.editingLogId, this.newEntry.type, this.newEntry.value, this.newEntry.notes, metadata, this.baby.id)
       : this.babyService.addJournalEntry(this.baby.id, this.newEntry.type, this.newEntry.value, this.newEntry.notes, metadata);
 
     obs.subscribe({
-        next: () => {
-          this.showAddEntry = false;
-          this.editingLogId = null;
-          this.formError = '';
-          this.resetNewEntry();
-          this.loadAllData();
-        },
-        error: (err) => {
-          this.formError = "Server Error: Unable to save entry.";
-          console.error(err);
-        }
-      });
+      next: () => {
+        this.showAddEntry = false;
+        this.editingLogId = null;
+        this.formError = '';
+        this.resetNewEntry();
+        this.loadAllData(this.baby!.id);
+      },
+      error: (err) => {
+        this.formError = "Server Error: Unable to save entry.";
+        console.error(err);
+      }
+    });
   }
 
   onEditJournalEntry(log: any) {
@@ -729,7 +880,7 @@ export class PatientBabyCareComponent implements OnInit {
     this.newEntry = { ...log, value: log.detail };
     this.activeSection = log.type.toLowerCase();
     if (this.activeSection === 'journal') this.activeSection = 'journal'; // Fallback
-    
+
     // Fallbacks for specific fields
     if (log.type === 'FEEDING') {
       this.newEntry.subType = log.subType || 'BREAST';
@@ -743,12 +894,12 @@ export class PatientBabyCareComponent implements OnInit {
     } else if (log.type === 'TEMPERATURE') {
       this.newEntry.value = log.detail;
     }
-    
+
     // Auto scroll to form
-    const formClass = log.type === 'FEEDING' ? '.log-action-card' : 
-                     (log.type === 'DIAPER' ? '.diaper-log-card' : 
-                     (log.type === 'TEMPERATURE' ? '.premium-log-action-card' : '.log-action-card'));
-    
+    const formClass = log.type === 'FEEDING' ? '.log-action-card' :
+      (log.type === 'DIAPER' ? '.diaper-log-card' :
+        (log.type === 'TEMPERATURE' ? '.premium-log-action-card' : '.log-action-card'));
+
     setTimeout(() => {
       const el = document.querySelector(formClass);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -761,7 +912,7 @@ export class PatientBabyCareComponent implements OnInit {
       message: `Are you sure you want to delete this ${log.title.toLowerCase()} record? This action cannot be undone.`,
       onConfirm: () => {
         this.babyService.deleteJournalEntry(log.id).subscribe(() => {
-          this.loadAllData();
+          this.loadAllData(this.baby!.id);
         });
       }
     };
@@ -786,18 +937,18 @@ export class PatientBabyCareComponent implements OnInit {
   parsedDuration(input: any): number {
     if (typeof input === 'number') return input * 60;
     if (!input) return 0;
-    
+
     const str = input.toLowerCase().trim();
     let totalSec = 0;
-    
+
     const hMatch = str.match(/(\d+)\s*h/);
     const mMatch = str.match(/(?:h\s*)?(\d+)\s*(?:m|min)/) || str.match(/(\d+)\s*(?:m|min)/);
     const sMatch = str.match(/(\d+)\s*(?:s|sec)/);
-    
+
     if (hMatch) totalSec += parseInt(hMatch[1]) * 3600;
     if (mMatch) totalSec += parseInt(mMatch[1]) * 60;
     if (sMatch) totalSec += parseInt(sMatch[1]);
-    
+
     if (totalSec === 0 && /^\d+$/.test(str)) {
       totalSec = parseInt(str) * 60;
     }
@@ -814,44 +965,44 @@ export class PatientBabyCareComponent implements OnInit {
     if (!this.baby) return;
 
     if (totalSeconds < 60 || totalSeconds > 86400) { // between 1 min and 24 hours
-        this.formError = "Sleep duration must be realistic (between 1 minute and 24 hours).";
-        return;
+      this.formError = "Sleep duration must be realistic (between 1 minute and 24 hours).";
+      return;
     }
-    
+
     const value = this.displayDuration(totalSeconds);
-    const metadata = { 
+    const metadata = {
       durationString: this.manualSleep.duration,
       totalDurationSeconds: totalSeconds,
-      manual: true 
+      manual: true
     };
-    
+
     this.babyService.addJournalEntry(this.baby.id, 'SLEEP', value, '', metadata)
       .subscribe({
         next: () => {
           this.manualSleep.show = false;
           this.resetManualSleep();
-          this.loadAllData();
+          this.loadAllData(this.baby!.id);
         },
         error: () => alert('Failed to save sleep log')
       });
   }
 
   resetManualSleep() {
-    this.manualSleep = { 
-      duration: '', 
-      show: false, 
+    this.manualSleep = {
+      duration: '',
+      show: false,
       presets: [30, 60, 90, 120, 180]
     };
   }
 
   resetNewEntry() {
-    this.newEntry = { 
-      type: this.newEntry.type, 
-      value: '', 
-      notes: '', 
-      subType: this.newEntry.type === 'FEEDING' ? 'BREAST' : (this.newEntry.type === 'DIAPER' ? 'WET' : ''), 
-      quantity: 120, 
-      duration: 15, 
+    this.newEntry = {
+      type: this.newEntry.type,
+      value: '',
+      notes: '',
+      subType: this.newEntry.type === 'FEEDING' ? 'BREAST' : (this.newEntry.type === 'DIAPER' ? 'WET' : ''),
+      quantity: 120,
+      duration: 15,
       side: 'LEFT',
       stoolColor: 'Yellow',
       rash: false,
@@ -869,7 +1020,7 @@ export class PatientBabyCareComponent implements OnInit {
   onSubmitDiaper() {
     if (!this.baby) return;
     this.isDiaperSubmitting = true;
-    
+
     const record: any = {
       babyId: this.baby.id,
       diaperType: this.newDiaper.type,
@@ -882,14 +1033,14 @@ export class PatientBabyCareComponent implements OnInit {
 
     if (this.editingDiaperId || (this.editingLogId && this.newEntry.type === 'DIAPER')) {
       const id = this.editingDiaperId || this.editingLogId;
-      const obs = this.editingDiaperId 
-        ? this.babyService.updateDiaper(this.editingDiaperId, record) 
+      const obs = this.editingDiaperId
+        ? this.babyService.updateDiaper(this.editingDiaperId, record)
         : this.babyService.updateJournalEntry(this.editingLogId!, 'DIAPER', this.newDiaper.type, this.newDiaper.notes, {
-            subType: this.newDiaper.type,
-            rash: this.newDiaper.rash,
-            stoolColor: this.newDiaper.stoolColor,
-            stoolTexture: this.newDiaper.stoolTexture
-          }, this.baby.id);
+          subType: this.newDiaper.type,
+          rash: this.newDiaper.rash,
+          stoolColor: this.newDiaper.stoolColor,
+          stoolTexture: this.newDiaper.stoolTexture
+        }, this.baby.id);
 
       obs.subscribe({
         next: () => {
@@ -897,7 +1048,7 @@ export class PatientBabyCareComponent implements OnInit {
           this.editingDiaperId = null;
           this.editingLogId = null;
           this.resetDiaperForm();
-          this.loadAllData();
+          this.loadAllData(this.baby!.id);
         },
         error: () => this.isDiaperSubmitting = false
       });
@@ -906,7 +1057,7 @@ export class PatientBabyCareComponent implements OnInit {
         next: () => {
           this.isDiaperSubmitting = false;
           this.resetDiaperForm();
-          this.loadAllData();
+          this.loadAllData(this.baby!.id);
         },
         error: () => this.isDiaperSubmitting = false
       });
@@ -931,7 +1082,7 @@ export class PatientBabyCareComponent implements OnInit {
       message: 'Are you sure you want to delete this record?',
       onConfirm: () => {
         this.babyService.deleteDiaper(id).subscribe(() => {
-          this.loadAllData();
+          this.loadAllData(this.baby!.id);
         });
       }
     };
@@ -954,7 +1105,7 @@ export class PatientBabyCareComponent implements OnInit {
       message: 'Are you sure you want to delete this sleep record? This action will remove it from your history and charts.',
       onConfirm: () => {
         this.babyService.deleteJournalEntry(log.id).subscribe(() => {
-          this.loadAllData();
+          this.loadAllData(this.baby!.id);
         });
       }
     };
@@ -965,4 +1116,175 @@ export class PatientBabyCareComponent implements OnInit {
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
+  // AI SKIN ANALYSIS
+  skinAnalysisFile: File | null = null;
+  skinAnalysisPreview: string | null = null;
+  skinAnalysisResult: any = null;
+  isSkinAnalyzing: boolean = false;
+  skinAnalysisError: string = '';
+
+  onSkinFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+    this.skinAnalysisError = '';
+    this.skinAnalysisResult = null;
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const img = new Image();
+      img.onload = () => {
+        // Canvas validation
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+        let skinPixels = 0;
+        const totalPixels = canvas.width * canvas.height;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const R = data[i], G = data[i + 1], B = data[i + 2];
+          // Simple skin heuristic
+          if (R > 60 && R > G && R > B && G > 30) skinPixels++;
+        }
+
+        const skinPercent = skinPixels / totalPixels;
+
+        if (skinPercent < 0.15) {
+          this.skinAnalysisError = 'Invalid image. Please upload a close-up photo of the baby\'s affected skin area only.';
+          this.skinAnalysisFile = null;
+          this.skinAnalysisPreview = null;
+          return;
+        }
+
+        // Valid — proceed
+        this.skinAnalysisFile = file;
+        this.skinAnalysisPreview = e.target.result;
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  runSkinAnalysis() {
+    if (!this.skinAnalysisFile) return;
+    this.isSkinAnalyzing = true;
+    this.skinAnalysisError = '';
+    this.babyService.analyzeSkin(this.skinAnalysisFile).subscribe({
+      next: (res) => {
+        this.isSkinAnalyzing = false;
+        if (!res.valid) {
+          this.skinAnalysisError = res.message;
+          this.skinAnalysisResult = null;
+        } else {
+          this.skinAnalysisResult = res;
+          this.skinAnalysisError = '';
+        }
+      },
+      error: (err) => {
+        console.error("[SkinAI] Error:", err);
+        const serverMsg = err.error?.message || err.message;
+        this.skinAnalysisError = `L'analyse a échoué. (${serverMsg})`;
+        this.isSkinAnalyzing = false;
+      }
+    });
+  }
+
+  resetSkinAnalysis() {
+    this.skinAnalysisFile = null;
+    this.skinAnalysisPreview = null;
+    this.skinAnalysisResult = null;
+    this.skinAnalysisError = '';
+  }
+
+  getDiseaseDescription(name: string): string {
+    const data: any = {
+      'Potential Viral Rash (Rubeola/Varicella-like)': 'Multiple red spots or blisters often indicate a viral infection such as Rubeola (Measles) or Varicella (Chickenpox). These usually start on the torso or face and spread.',
+      'Rubeola': 'Measles. A serious viral infection that starts with high fever, cough, and runny nose, followed by a characteristic flat red rash that starts on the face and spreads downward.',
+      'Atopic dermatitis': 'A chronic skin condition that makes the skin red and itchy. It is common in children but can occur at any age.',
+      'Cradle cap': 'Also known as seborrheic dermatitis, it causes crusty or oily scaly patches on a baby\'s scalp. It isn\'t painful or itchy.',
+      'Diaper rash': 'A common form of inflamed skin (dermatitis) that appears as a patchwork of bright red skin on your baby\'s bottom.',
+      'Drool rash': 'Irritation caused by excess saliva on the cheeks, chin, or neck, often during teething.',
+      'HFMD': 'Hand-Foot-and-Mouth Disease. A common viral infection causing sores in the mouth and a rash on the hands and feet.',
+      'Hemangioma': 'A bright red birthmark (strawberry) made up of extra blood vessels in the skin.',
+      'Impetigo': 'A highly contagious bacterial skin infection that causes red sores on the face, especially around the nose and mouth.',
+      'Miliaria': 'Also known as heat rash. Small red bumps caused by blocked sweat ducts during hot, humid weather.',
+      'Pityriasis': 'A benign skin condition that often begins with a large circular patch on the chest or back, followed by smaller patches.',
+      'Varicella': 'Chickenpox. A viral infection causing an itchy, blister-like rash on the skin.'
+    };
+    return data[name] || 'Analysis completed successfully. Please review the recommendations below.';
+  }
+
+  getDiseaseTips(name: string): string[] {
+    const tips: any = {
+      'Potential Viral Rash (Rubeola/Varicella-like)': [
+        'Isolate the baby immediately to prevent spreading.',
+        'Use calamine lotion to soothe itching if present.',
+        'Monitor temperature closely and keep the baby hydrated.',
+        'Consult a pediatrician immediately for a formal diagnosis.'
+      ],
+      'Rubeola': [
+        'Keep the baby in a dim room if light bothers their eyes.',
+        'Give plenty of fluids and monitor high fever.',
+        'Isolate the baby from others for at least 4 days after the rash starts.',
+        'Consult a doctor immediately as measles requires close medical supervision.'
+      ],
+      'Atopic dermatitis': [
+        'Moisturize the skin at least twice a day with fragrance-free creams.',
+        'Use mild, unscented soaps for bathing.',
+        'Choose soft cotton clothing for the baby.',
+        'Keep baby\'s nails short to prevent scratching injuries.'
+      ],
+      'Cradle cap': [
+        'Gently massage the scalp with coconut oil or baby oil.',
+        'Gently brush the scales with a soft-bristled brush during bath time.',
+        'Wash hair with a mild baby shampoo.',
+        'Do not pick or scratch the crusts with your nails.'
+      ],
+      'Diaper rash': [
+        'Change the diaper as soon as it is wet or dirty.',
+        'Leave baby\'s bottom open to the air as much as possible.',
+        'Apply a thick layer of protective zinc oxide cream at each change.',
+        'Gently clean with warm water and soft cotton instead of scented wipes.'
+      ],
+      'Drool rash': [
+        'Gently wipe away saliva with a clean, soft cloth regularly.',
+        'Apply a thin layer of petroleum jelly to create a moisture barrier.',
+        'Use absorbent bibs and change them as soon as they are wet.',
+        'Avoid rubbing the irritated skin.'
+      ],
+      'HFMD': [
+        'Ensure the baby drinks plenty of water to avoid dehydration.',
+        'Offer cold, soft foods (purees, yogurts).',
+        'Wash your hands frequently as it is contagious.',
+        'Disinfect toys and surfaces regularly.'
+      ],
+      'Impetigo': [
+        'Gently clean the infected areas with soap and warm water.',
+        'Consult a pediatrician promptly for antibiotic treatment.',
+        'Cover the sores with loose bandages to prevent spreading.',
+        'Wash baby\'s sheets and clothes separately at high temperatures.'
+      ],
+      'Miliaria': [
+        'Keep the baby cool in a well-ventilated environment.',
+        'Dress them in lightweight cotton clothing.',
+        'Give lukewarm baths (avoid using too much soap).',
+        'Avoid greasy creams that could further block the pores.'
+      ],
+      'Varicella': [
+        'Use calamine lotion to soothe the itching.',
+        'Give lukewarm baths with baking soda or oatmeal.',
+        'Prevent the baby from scratching to avoid scars and infections.',
+        'Monitor the baby\'s temperature closely.'
+      ]
+    };
+    return tips[name] || [
+      'Monitor the progression of the rash.',
+      'Keep the area clean and dry.',
+      'Avoid direct sunlight exposure on the irritated area.',
+      'Consult a doctor if fever appears or if the condition worsens.'
+    ];
+  }
 }

@@ -7,23 +7,28 @@ import { Review } from '../models/review.model';
   providedIn: 'root'
 })
 export class ReviewService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/v1/doctors';
+  private baseUrl = 'http://localhost:8081/springsecurity/api/v1';
 
   constructor(private http: HttpClient) {}
 
   getReviews(doctorId: number): Observable<Review[]> {
-    return this.http.get<Review[]>(`${this.apiUrl}/${doctorId}/reviews`);
+    return this.http.get<Review[]>(`${this.baseUrl}/doctors/${doctorId}/reviews`);
+  }
+
+  getReviewsByDoctor(doctorId: number): Observable<Review[]> {
+    console.log(`[ReviewService] Fetching reviews for doctor ID: ${doctorId}`);
+    return this.http.get<Review[]>(`${this.baseUrl}/doctors/${doctorId}/reviews`);
   }
 
   addReview(doctorId: number, rating: number, comment: string, isAnonymous: boolean): Observable<Review> {
-    return this.http.post<Review>(`${this.apiUrl}/${doctorId}/reviews`, { rating, comment, isAnonymous });
+    return this.http.post<Review>(`${this.baseUrl}/doctors/${doctorId}/reviews`, { rating, comment, isAnonymous });
   }
 
   deleteReview(doctorId: number, reviewId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${doctorId}/reviews/${reviewId}`);
+    return this.http.delete<void>(`${this.baseUrl}/doctors/${doctorId}/reviews/${reviewId}`);
   }
 
   updateReview(doctorId: number, reviewId: number, rating: number, comment: string, isAnonymous: boolean): Observable<Review> {
-    return this.http.put<Review>(`${this.apiUrl}/${doctorId}/reviews/${reviewId}`, { rating, comment, isAnonymous });
+    return this.http.put<Review>(`${this.baseUrl}/doctors/${doctorId}/reviews/${reviewId}`, { rating, comment, isAnonymous });
   }
 }

@@ -1,0 +1,126 @@
+<div class="vaccination-container" *ngIf="!isLoading; else loading">
+  <!-- Header with Summary and Progress -->
+  <header class="vaccine-header">
+    <div class="header-info">
+      <h1 class="serif-title">Carnet de <span class="italic">Vaccination</span></h1>
+      <p>{{ baby?.name }}'s Immunization Journey</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-download" (click)="downloadBooklet()">
+        <i class="fas fa-file-pdf"></i> Download Official Booklet
+      </button>
+    </div>
+  </header>
+
+  <div class="summary-cards">
+    <div class="progress-card">
+      <div class="progress-ring-container">
+        <svg class="progress-ring" width="120" height="120">
+          <circle class="progress-ring-circle-bg" stroke="#e2e8f0" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+          <circle class="progress-ring-circle" stroke="#10b981" stroke-width="8" stroke-linecap="round" fill="transparent" r="52" cx="60" cy="60"
+            [style.strokeDasharray]="326.7" [style.strokeDashoffset]="326.7 * (1 - (vaccineOverview?.progressPercent / 100))"/>
+        </svg>
+        <div class="progress-text">
+          <span class="pct">{{ vaccineOverview?.progressPercent }}%</span>
+          <span class="label">Completed</span>
+        </div>
+      </div>
+      <div class="status-msg">
+        <h4>Current Status</h4>
+        <p>{{ vaccineOverview?.summaryMessage }}</p>
+      </div>
+    </div>
+
+    <div class="next-vaccine-card" *ngIf="vaccineOverview?.nextVaccine">
+      <div class="card-icon"><i class="fas fa-calendar-check"></i></div>
+      <div class="card-content">
+        <span class="label">Next Appointment</span>
+        <h3>{{ vaccineOverview.nextVaccine.name }}</h3>
+        <p>Recommended at {{ vaccineOverview.nextVaccine.recommendedAgeInMonths }} months</p>
+        <div class="due-tag" [class.overdue]="getDaysRemaining(vaccineOverview.nextVaccine.dueDate) < 0">
+          {{ getDaysRemaining(vaccineOverview.nextVaccine.dueDate) < 0 ? 'Overdue' : 'In ' + getDaysRemaining(vaccineOverview.nextVaccine.dueDate) + ' days' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Sections -->
+  <div class="timeline-sections">
+    
+    <!-- OVERDUE SECTION -->
+    <section class="vaccine-section overdue" *ngIf="vaccineOverview?.overdue?.length > 0">
+      <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> Delayed Vaccinations</h2>
+      <div class="vaccine-grid">
+        <div class="vaccine-item overdue" *ngFor="let v of vaccineOverview.overdue">
+          <div class="v-info">
+            <h4>{{ v.name }}</h4>
+            <p>{{ v.description }}</p>
+            <span class="recommended">Was due at {{ v.recommendedAgeInMonths }} months</span>
+          </div>
+          <button class="btn-mark-done" (click)="markAsDone(v.id)">Mark as Done</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DUE NOW SECTION -->
+    <section class="vaccine-section due" *ngIf="vaccineOverview?.dueNow?.length > 0">
+      <h2 class="section-title"><i class="fas fa-clock"></i> Due Now</h2>
+      <div class="vaccine-grid">
+        <div class="vaccine-item due" *ngFor="let v of vaccineOverview.dueNow">
+          <div class="v-info">
+            <h4>{{ v.name }}</h4>
+            <p>{{ v.description }}</p>
+            <span class="recommended">Recommended age: {{ v.recommendedAgeInMonths }} months</span>
+          </div>
+          <button class="btn-mark-done" (click)="markAsDone(v.id)">Mark as Done</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- UPCOMING SECTION -->
+    <section class="vaccine-section upcoming" *ngIf="vaccineOverview?.upcoming?.length > 0">
+      <h2 class="section-title"><i class="fas fa-arrow-right"></i> Future Vaccinations</h2>
+      <div class="vaccine-grid">
+        <div class="vaccine-item upcoming" *ngFor="let v of vaccineOverview.upcoming">
+          <div class="v-info">
+            <h4>{{ v.name }}</h4>
+            <p>{{ v.description }}</p>
+            <span class="recommended">Expected at {{ v.recommendedAgeInMonths }} months</span>
+          </div>
+          <div class="status-tag">Upcoming</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DONE SECTION -->
+    <section class="vaccine-section completed" *ngIf="vaccineOverview?.done?.length > 0">
+      <h2 class="section-title"><i class="fas fa-check-circle"></i> Completed Vaccinations</h2>
+      <table class="done-table">
+        <thead>
+          <tr>
+            <th>Vaccine</th>
+            <th>Date Administered</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of vaccineOverview.done">
+            <td>
+              <strong>{{ v.name }}</strong>
+              <small>{{ v.description }}</small>
+            </td>
+            <td>{{ v.dateAdministered | date:'mediumDate' }}</td>
+            <td><span class="done-badge">Completed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading vaccination records...</p>
+  </div>
+</ng-template>

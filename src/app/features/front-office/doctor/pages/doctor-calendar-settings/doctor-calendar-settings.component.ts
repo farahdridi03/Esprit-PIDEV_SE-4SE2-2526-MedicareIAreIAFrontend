@@ -14,6 +14,9 @@ import { formatDate } from '@angular/common';
 export class DoctorCalendarSettingsComponent implements OnInit {
   @Output() navigateToCalendar = new EventEmitter<void>();
 
+  readonly MIN_HOUR = 9;
+  readonly MAX_HOUR = 17;
+
   scheduleForm!: FormGroup;
   providerId!: number;
   isLoading = false;
@@ -62,12 +65,8 @@ export class DoctorCalendarSettingsComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
     
-    console.log(`[DEBUG] Initializing load for providerId: ${this.providerId}`);
-    
-    // In this view, we now load the SPECIFIC WEEK exceptions instead of the generic template
     this.scheduleService.getExceptions(this.providerId).subscribe({
       next: (exceptions) => {
-        console.log('[DEBUG] Exceptions Loaded:', exceptions);
         this.populateForm(exceptions);
         this.isLoading = false;
       },
@@ -78,7 +77,6 @@ export class DoctorCalendarSettingsComponent implements OnInit {
       }
     });
 
-    // We also fetch specific slots to see if things are already in DB
     this.availabilityService.getAvailabilitiesByDoctor(this.providerId).subscribe({
       next: (slots) => {
         console.log('[DEBUG] Backend Availabilities found:', slots);
@@ -119,36 +117,126 @@ export class DoctorCalendarSettingsComponent implements OnInit {
 
   createTimeSlotFormGroup(slot?: any): FormGroup {
     return this.fb.group({
-      id: [slot?.id || null], // Keep track of DB ID
+      id: [slot?.id || null],
       startTime: [slot?.startTime || '09:00', Validators.required],
       endTime: [slot?.endTime || '12:00', Validators.required],
       mode: [slot?.mode || 'OFFICE', Validators.required]
-    });
+    }, { validators: this.timeRangeValidator });
+  }
+
+  timeRangeValidator(group: FormGroup): { [key: string]: any } | null {
+    const start = group.get('startTime')?.value;
+    const end = group.get('endTime')?.value;
+    if (start && end && start >= end) {
+      return { 'invalidRange': true };
+    }
+    return null;
+  }
+
+  isPastDay(date: Date | undefined): boolean {
+    if (!date) return false;
+    const today = new Date();
+    const dayDate = new Date(date);
+    dayDate.setHours(0, 0, 0, 0);
+    const todayMidnight = new Date(today);
+    todayMidnight.setHours(0, 0, 0, 0);
+
+    if (dayDate.getTime() < todayMidnight.getTime()) return true;
+
+    if (dayDate.getTime() === todayMidnight.getTime()) {
+      return today.getHours() >= this.MAX_HOUR;
+    }
+
+    return false;
+  }
+
+  isValidSlot(slot: any): boolean {
+    if (!slot.startTime || !slot.endTime) return false;
+    const [h1, m1] = slot.startTime.split(':').map(Number);
+    const [h2, m2] = slot.endTime.split(':').map(Number);
+    return (h1 * 60 + m1) < (h2 * 60 + m2);
+  }
+
+  getSlotError(slot: any): string | null {
+    if (!slot.startTime || !slot.endTime) return null;
+    const [sh, sm] = slot.startTime.split(':').map(Number);
+    const [eh, em] = slot.endTime.split(':').map(Number);
+    const startMins = sh * 60 + sm;
+    const endMins = eh * 60 + em;
+
+    if (eh > 17 || (eh === 17 && em > 0)) {
+      return "End time cannot exceed 17:00 (maximum allowed hour).";
+    }
+    if (endMins === 0) {
+      return "Please select a valid end time (max 17:00).";
+    }
+    if (endMins <= startMins) {
+      return "End time must be after start time.";
+    }
+    return null;
+  }
+
+  isWithinAllowedHours(slot: any): boolean {
+    if (!slot.startTime || !slot.endTime) return false;
+    const [sh, sm] = slot.startTime.split(':').map(Number);
+    const [eh, em] = slot.endTime.split(':').map(Number);
+    
+    const isStartValid = sh >= this.MIN_HOUR;
+    const isEndValid = eh < this.MAX_HOUR || (eh === this.MAX_HOUR && em === 0);
+    
+    return isStartValid && isEndValid;
+  }
+
+  hasSlotError(dayIndex: number, slotIndex: number): boolean {
+    const slot = this.timeSlots(dayIndex).at(slotIndex);
+    
+    const isInvalidRange = !this.isValidSlot(slot.value);
+    const isOutsideHours = !this.isWithinAllowedHours(slot.value);
+    
+    return (slot.invalid || isInvalidRange || isOutsideHours) && (slot.dirty || slot.touched);
   }
 
   addTimeSlot(dayIndex: number): void {
+    const dayControl = this.days.at(dayIndex);
+    const date = this.getDateForDay(dayControl.get('dayOfWeek')?.value);
+    
+    if (this.isPastDay(date)) return;
+
     const timeSlots = this.timeSlots(dayIndex);
-    timeSlots.push(this.createTimeSlotFormGroup());
+    const startTime = '09:00';
+    const endTime = '17:00';
+    
+    timeSlots.push(this.fb.group({
+      id: [null],
+      startTime: [startTime, Validators.required],
+      endTime: [endTime, Validators.required],
+      mode: ['OFFICE', Validators.required]
+    }));
+  }
+
+  private addOneHour(time: string): string {
+    const [h, m] = time.split(':').map(Number);
+    const newH = (h + 1) % 24;
+    return `${String(newH).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
   }
 
   removeTimeSlot(dayIndex: number, slotIndex: number): void {
+    const date = this.getDateForDay(this.days.at(dayIndex).get('dayOfWeek')?.value);
+    if (this.isPastDay(date)) return;
     this.timeSlots(dayIndex).removeAt(slotIndex);
   }
 
   toggleDay(dayIndex: number): void {
     const dayControl = this.days.at(dayIndex).get('active');
+    const date = this.getDateForDay(this.days.at(dayIndex).get('dayOfWeek')?.value);
+    if (this.isPastDay(date)) return;
     dayControl?.setValue(!dayControl.value);
   }
 
   getDayName(dayOfWeek: string): string {
     const names: Record<string, string> = {
-      MONDAY: 'Monday',
-      TUESDAY: 'Tuesday',
-      WEDNESDAY: 'Wednesday',
-      THURSDAY: 'Thursday',
-      FRIDAY: 'Friday',
-      SATURDAY: 'Saturday',
-      SUNDAY: 'Sunday'
+      MONDAY: 'Monday', TUESDAY: 'Tuesday', WEDNESDAY: 'Wednesday',
+      THURSDAY: 'Thursday', FRIDAY: 'Friday', SATURDAY: 'Saturday', SUNDAY: 'Sunday'
     };
     return names[dayOfWeek] || dayOfWeek;
   }
@@ -156,7 +244,7 @@ export class DoctorCalendarSettingsComponent implements OnInit {
   generateWeek(baseDate: Date): void {
     const startOfWeek = new Date(baseDate);
     const day = startOfWeek.getDay();
-    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday
+    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
     startOfWeek.setDate(diff);
 
     this.daysInWeek = [];
@@ -183,16 +271,36 @@ export class DoctorCalendarSettingsComponent implements OnInit {
       return;
     }
 
+    const formDays = this.scheduleForm.value.days;
+    
+    const hasInvalidHours = formDays.some((d: any) => 
+      d.active && d.timeSlots.some((s: any) => !this.isWithinAllowedHours(s))
+    );
+
+    if (hasInvalidHours) {
+      this.errorMessage = "All slots must be between 09:00 and 17:00.";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const hasInvalidSlot = formDays.some((d: any) => 
+      d.active && d.timeSlots.some((s: any) => !this.isValidSlot(s))
+    );
+
+    if (hasInvalidSlot) {
+      this.errorMessage = "Please fix invalid time slots before saving.";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     this.isSaving = true;
     this.successMessage = '';
     this.errorMessage = '';
 
     const weekDays: any[] = [];
-    const weekStartDate = this.formatDateStr(this.daysInWeek[0]); // Lundi
+    const weekStartDate = this.formatDateStr(this.daysInWeek[0]);
 
-    const formDays = this.scheduleForm.value.days;
     formDays.forEach((day: any, i: number) => {
-      // N'envoyer SEULEMENT que les jours actifs
       if (day.active) {
         const dateStr = this.formatDateStr(this.daysInWeek[i]);
         weekDays.push({
@@ -207,14 +315,10 @@ export class DoctorCalendarSettingsComponent implements OnInit {
       }
     });
 
-    console.log('[DEBUG] Saving clean schedule specific week:', weekDays);
-
     this.scheduleService.saveSpecificWeek(this.providerId, weekStartDate, weekDays).subscribe({
       next: () => {
-        this.successMessage = 'Your schedule has been successfully saved (for this specific week only).';
+        this.successMessage = 'Your schedule has been successfully saved.';
         this.isSaving = false;
-        
-        // Wait briefly to let the user see the success message, then redirect
         setTimeout(() => {
           this.successMessage = '';
           this.navigateToCalendar.emit();
@@ -222,10 +326,17 @@ export class DoctorCalendarSettingsComponent implements OnInit {
       },
       error: (err) => {
         console.error('[ERROR] Failed to save schedule', err);
-        this.errorMessage = 'An error occurred while saving. Please check the server console for errors.';
+        this.errorMessage = 'An error occurred while saving.';
         this.isSaving = false;
       }
     });
+  }
+
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
   }
 
   getDateForDay(dayOfWeek: string): Date | undefined {

@@ -116,6 +116,13 @@ $text-light: #6b7280;
                 &.confirm { background: #16a34a; color: #fff; &:hover { background: #15803d; } }
                 &.start { background: #2563eb; color: #fff; &:hover { background: #1d4ed8; } }
                 &.live { background: #10b981; color: #fff; &:hover { background: #059669; } }
+                &.delete { 
+                    background: transparent; 
+                    color: #ef4444; 
+                    padding: 8px;
+                    font-size: 1.1rem;
+                    &:hover { background: #fef2f2; } 
+                }
             }
             .notes-preview { font-size: 1.2rem; cursor: help; opacity: 0.6; }
         }

@@ -18,6 +18,44 @@
     </div>
 
     <div class="topbar-right">
+        <!-- Notification Bell -->
+        <div class="notif-wrapper">
+            <button class="bell-btn" (click)="togglePanel()" [class.active]="panelOpen" title="Notifications">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+                <span class="notif-badge" *ngIf="unreadCount > 0">
+                    {{ unreadCount > 9 ? '9+' : unreadCount }}
+                </span>
+            </button>
+
+            <!-- Simple Notification Dropdown -->
+            <div class="notif-dropdown" *ngIf="panelOpen">
+                <div class="notif-header">
+                    <h3>Notifications</h3>
+                    <button class="clear-all-btn" *ngIf="notifications.length > 0" (click)="clearAll()">Clear all</button>
+                </div>
+                <div class="notif-list">
+                    <div class="notif-item" *ngFor="let n of notifications">
+                        <div class="notif-icon" [ngClass]="n.reminderType">
+                            <i class="fas" [ngClass]="n.reminderType === 'VACCINE' ? 'fa-syringe' : 'fa-baby-bottle'"></i>
+                        </div>
+                        <div class="notif-content">
+                            <p class="notif-title">{{ n.title }}</p>
+                            <span class="notif-time">{{ n.dueDate | date:'shortTime' }}</span>
+                        </div>
+                        <button class="delete-btn" (click)="deleteNotification(n.id, $event)" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="no-notif" *ngIf="notifications.length === 0">
+                        No new notifications
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="user-profile">
             <div class="avatar">{{ initials || 'U' }}</div>

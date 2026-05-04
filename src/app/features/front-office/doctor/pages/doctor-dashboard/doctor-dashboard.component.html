@@ -17,21 +17,21 @@
                     </div>
 
                     <div class="banner-stats">
-                        <div class="stat-card">
+                        <div class="stat-card" style="cursor: pointer" (click)="goToPatients()">
                             <div class="stat-icon"><i class="fas fa-users"></i></div>
                             <div class="stat-data">
                                 <div class="value">{{ totalPatientsCount }}</div>
                                 <div class="label">Total Patients</div>
                             </div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-card" style="cursor: pointer" (click)="goToCalendar()">
                             <div class="stat-icon highlight-yellow"><i class="fas fa-calendar-check"></i></div>
                             <div class="stat-data">
                                 <div class="value">{{ todayAppointments.length }}</div>
                                 <div class="label">Today's Appointments</div>
                             </div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-card" style="cursor: pointer" (click)="goToReviews()">
                             <div class="stat-icon highlight-purple"><i class="fas fa-star-half-alt"></i></div>
                             <div class="stat-data">
                                 <div class="value">{{ getPendingReviews() }}</div>
@@ -107,6 +107,14 @@
                 </div>
             </div>
 
+            <!-- Advanced Statistics Section -->
+            <div class="advanced-stats-section" *ngIf="currentView === 'overview'">
+                <div class="section-header">
+                    <h3>Advanced Statistics</h3>
+                </div>
+                <app-dashboard-stats></app-dashboard-stats>
+            </div>
+
             <!-- Main Calendar View -->
             <div class="calendar-main-view" *ngIf="currentView === 'calendar'">
                 <app-doctor-calendar-calendar></app-doctor-calendar-calendar>
@@ -120,6 +128,67 @@
             <!-- Calendar Exceptions View -->
             <div class="calendar-exceptions-view" *ngIf="currentView === 'exceptions'">
                 <app-doctor-calendar-exceptions></app-doctor-calendar-exceptions>
+            </div>
+
+            <!-- Notifications View -->
+            <div class="notifications-view" *ngIf="currentView === 'notifications'">
+                <div class="section-header">
+                    <div class="header-left">
+                        <h2>Notifications <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }} New</span></h2>
+                        <div class="bulk-actions" *ngIf="notifications.length > 0">
+                            <label class="select-all">
+                                <input type="checkbox" [checked]="isAllSelected()" (change)="toggleSelectAll()">
+                                <span>Select All</span>
+                            </label>
+                            <button class="btn-delete-selected" *ngIf="selectedNotifications.size > 0" (click)="deleteSelected()">
+                                <i class="fas fa-trash-alt"></i> Delete ({{ selectedNotifications.size }})
+                            </button>
+                            <button class="btn-delete-all" (click)="deleteAllNotifications()">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                    <button class="refresh-btn" (click)="loadNotifications(authService.getUserId()!)">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                
+                <div class="notifications-list">
+                    <div class="notification-card" *ngFor="let notif of notifications" 
+                         [class.unread]="!notif.read"
+                         [class.selected]="selectedNotifications.has(notif.id)">
+                        
+                        <div class="notif-selection">
+                            <input type="checkbox" [checked]="selectedNotifications.has(notif.id)" (change)="toggleSelection(notif.id)">
+                        </div>
+
+                        <div class="notif-icon">
+                            <i class="fas" [ngClass]="notif.read ? 'fa-envelope-open' : 'fa-envelope'"></i>
+                        </div>
+                        <div class="notif-content">
+                            <p class="notif-message">{{ notif.message }}</p>
+                            <span class="notif-time">{{ notif.createdAt | date:'medium' }}</span>
+                        </div>
+                        <div class="notif-actions">
+                            <button class="btn-mark-read" *ngIf="!notif.read" (click)="markNotificationAsRead(notif)">
+                                Mark as Read
+                            </button>
+                            <button class="btn-delete-single" (click)="deleteNotification(notif.id, $event)" title="Delete">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="empty-state" *ngIf="notifications.length === 0">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>You have no notifications at the moment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews View -->
+            <div class="reviews-view" *ngIf="currentView === 'reviews'">
+                <app-doctor-reviews [isEmbedded]="true"></app-doctor-reviews>
             </div>
 
         </div>

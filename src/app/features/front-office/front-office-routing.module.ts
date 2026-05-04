@@ -13,6 +13,8 @@ import { PatientAppointmentsComponent } from './patient/pages/patient-appointmen
 import { DoctorPatientsComponent } from './doctor/pages/doctor-patients/doctor-patients.component';
 import { PatientBabyCareComponent } from './patient/pages/patient-baby-care/patient-baby-care.component';
 import { PatientProfileComponent } from './patient/pages/patient-profile/patient-profile.component';
+import { PatientVaccinationComponent } from './patient/pages/patient-vaccination/patient-vaccination.component';
+import { DoctorReviewsComponent } from './doctor/pages/doctor-reviews/doctor-reviews.component';
 
 
 const routes: Routes = [
@@ -55,6 +57,12 @@ const routes: Routes = [
     data: { roles: ['PATIENT'] }
   },
   {
+    path: 'patient/baby-care/vaccination',
+    component: PatientVaccinationComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['PATIENT'] }
+  },
+  {
     path: 'patient/profile',
     component: PatientProfileComponent,
     canActivate: [AuthGuard],
@@ -78,6 +86,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['DOCTOR'] }
   },
+  {
+    path: 'doctor/reviews',
+    component: DoctorReviewsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['DOCTOR'] }
+  },
+
   {
     path: 'nutritionist',
     loadChildren: () =>

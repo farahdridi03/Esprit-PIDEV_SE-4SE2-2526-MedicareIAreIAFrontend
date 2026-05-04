@@ -1,0 +1,154 @@
+<div class="stats-container" *ngIf="!isLoading; else loadingTpl">
+    <!-- Top KPI Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon attendance"><i class="fas fa-check-circle"></i></div>
+            <div class="kpi-info">
+                <span class="label">Attendance Rate</span>
+                <span class="value">{{ stats?.attendanceRate }}%</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon noshow"><i class="fas fa-user-slash"></i></div>
+            <div class="kpi-info">
+                <span class="label">No-Show Rate</span>
+                <span class="value">{{ stats?.noShowRate }}%</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon revenue"><i class="fas fa-coins"></i></div>
+            <div class="kpi-info">
+                <span class="label">Total Est. Revenue</span>
+                <span class="value">{{ (stats?.inPersonCount! + stats?.onlineCount!) * 50 }} TND</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts-main-grid">
+        <!-- Main Line Chart -->
+        <div class="chart-card span-2">
+            <h3>Appointment Trends (Current Year)</h3>
+            <div class="canvas-wrapper" [class.hidden]="stats?.appointmentsByMonth?.length === 0">
+                <canvas #appointmentChart></canvas>
+            </div>
+            <div *ngIf="stats?.appointmentsByMonth?.length === 0" class="empty-chart-msg">
+                <i class="fas fa-chart-line"></i>
+                <p>No appointment data for this year</p>
+            </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="chart-card donut-card">
+            <h3>Consultation types</h3>
+            <div class="donut-content">
+                <div class="canvas-wrapper small donut-wrapper">
+                    <canvas #typeChart></canvas>
+                    <div class="donut-center">
+                        <span class="total-num">{{ stats?.onlineCount! + stats?.inPersonCount! }}</span>
+                        <span class="total-label">total</span>
+                    </div>
+                </div>
+                <div class="donut-legend-side">
+                    <div class="legend-row">
+                        <div class="legend-header">
+                            <span class="dot inperson"></span>
+                            <span class="name">In-Person</span>
+                        </div>
+                        <div class="legend-stats">
+                            <span class="count">{{ stats?.inPersonCount }}</span>
+                            <span class="percent">{{ getPercentage(stats?.inPersonCount!) }}% of consultations</span>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="legend-row">
+                        <div class="legend-header">
+                            <span class="dot online"></span>
+                            <span class="name">Online</span>
+                        </div>
+                        <div class="legend-stats">
+                            <span class="count">{{ stats?.onlineCount }}</span>
+                            <span class="percent">{{ getPercentage(stats?.onlineCount!) }}% of consultations</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Bar Chart -->
+        <div class="chart-card">
+            <h3>Monthly Revenue (TND)</h3>
+            <div class="canvas-wrapper" [class.hidden]="stats?.revenueByMonth?.length === 0">
+                <canvas #revenueChart></canvas>
+            </div>
+            <div *ngIf="stats?.revenueByMonth?.length === 0" class="empty-chart-msg">
+                <i class="fas fa-chart-bar"></i>
+                <p>No revenue data for this year</p>
+            </div>
+        </div>
+
+        <!-- Top Patients List -->
+        <div class="chart-card span-2 patient-visits-card">
+            <div class="section-header">
+                <h3>Patient visits</h3>
+                <span class="count-badge">{{ stats?.topPatients?.length || 0 }} patients</span>
+            </div>
+            <div class="patients-list">
+                <div class="patient-item-wrapper" *ngFor="let p of stats?.topPatients">
+                    <div class="patient-item" (click)="togglePatient(p.patientName)" [class.active]="selectedPatientName === p.patientName">
+                        <div class="patient-avatar" [style.background]="getAvatarColor(p.patientName)">
+                            {{ p.patientName.substring(0, 1).toUpperCase() }}
+                        </div>
+                        <div class="patient-info-main">
+                            <span class="name">{{ p.patientName }}</span>
+                            <span class="last-visit">Last visit: {{ p.lastVisit | date:'MMM d, yyyy' }}</span>
+                        </div>
+                        <div class="visit-progress-area">
+                            <div class="progress-container">
+                                <div class="progress-bar" [style.width.%]="(p.totalVisits / getMaxVisits()) * 100"></div>
+                            </div>
+                            <div class="visit-count">
+                                <span class="num">{{ p.totalVisits }}</span>
+                                <span class="lbl">visits</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Expanded Details -->
+                    <div class="patient-details-expanded" *ngIf="selectedPatientName === p.patientName">
+                        <div class="detail-grid">
+                            <div class="detail-box online">
+                                <span class="val">{{ p.onlineVisits || 0 }}</span>
+                                <span class="lbl">Online Consultations</span>
+                            </div>
+                            <div class="detail-box in-person">
+                                <span class="val">{{ p.inPersonVisits || 0 }}</span>
+                                <span class="lbl">In-Person Visits</span>
+                            </div>
+                        </div>
+
+                        <!-- Appointment History Dates -->
+                        <div class="visit-history">
+                            <h4>Appointment History</h4>
+                            <div class="dates-grid">
+                                <div class="date-chip" *ngFor="let date of p.allVisitDates">
+                                    <i class="far fa-calendar-alt"></i>
+                                    {{ date | date:'MMM d, yyyy - HH:mm' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="stats?.topPatients?.length === 0" class="empty-state">
+                    No data available
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingTpl>
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Calculating statistics...</p>
+    </div>
+</ng-template>

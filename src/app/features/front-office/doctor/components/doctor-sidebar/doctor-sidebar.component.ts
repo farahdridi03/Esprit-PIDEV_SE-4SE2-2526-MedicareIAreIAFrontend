@@ -7,12 +7,12 @@ import { AuthService } from '../../../../../services/auth.service';
   styleUrls: ['./doctor-sidebar.component.scss']
 })
 export class DoctorSidebarComponent {
-  @Input() currentView: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients' = 'calendar';
-  @Output() viewChange = new EventEmitter<'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients'>();
+  @Input() currentView: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients' | 'notifications' | 'reviews' = 'calendar';
+  @Output() viewChange = new EventEmitter<'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients' | 'notifications' | 'reviews'>();
 
   constructor(private authService: AuthService) { }
 
-  setView(view: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients') {
+  setView(view: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients' | 'notifications' | 'reviews') {
     this.viewChange.emit(view);
   }
 

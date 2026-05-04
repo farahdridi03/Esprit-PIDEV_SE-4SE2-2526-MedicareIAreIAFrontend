@@ -16,12 +16,12 @@
 
     <div class="onboarding-content">
       <div class="onboarding-header">
-        <button class="btn-back">
+        <button class="btn-back" (click)="cancelEditing()">
           <i class="fas fa-chevron-left" style="color: #4a7c74"></i>
         </button>
         <div class="title-group">
-          <h1 class="serif-title">BABY'S PROFILE</h1>
-          <p class="subtitle">Visible only to your care network</p>
+          <h1 class="serif-title">{{ isEditingProfile ? 'EDIT PROFILE' : 'BABY\'S PROFILE' }}</h1>
+          <p class="subtitle">{{ isEditingProfile ? 'Update baby\'s information' : 'Visible only to your care network' }}</p>
         </div>
       </div>
 
@@ -46,48 +46,72 @@
 
       <div class="onboarding-form" [formGroup]="onboardingForm">
 
-        <div class="premium-field" [class.field-error]="onboardingForm.get('name')?.invalid && onboardingForm.get('name')?.touched">
+        <div class="premium-field"
+          [class.field-error]="onboardingForm.get('name')?.invalid && onboardingForm.get('name')?.touched">
           <label>Baby's Name</label>
           <input type="text" formControlName="name" placeholder="E.g. Sofia">
-          <span class="error-text" *ngIf="onboardingForm.get('name')?.hasError('required') && onboardingForm.get('name')?.touched">This field is required</span>
-          <span class="error-text" *ngIf="onboardingForm.get('name')?.hasError('minlength') && onboardingForm.get('name')?.touched">Name must be at least 2 characters</span>
+          <span class="error-text"
+            *ngIf="onboardingForm.get('name')?.hasError('required') && onboardingForm.get('name')?.touched">This field
+            is required</span>
+          <span class="error-text"
+            *ngIf="onboardingForm.get('name')?.hasError('minlength') && onboardingForm.get('name')?.touched">Name must
+            be at least 2 characters</span>
         </div>
 
-        <div class="premium-field" [class.field-error]="onboardingForm.get('birthDate')?.invalid && onboardingForm.get('birthDate')?.touched">
+        <div class="premium-field"
+          [class.field-error]="onboardingForm.get('birthDate')?.invalid && onboardingForm.get('birthDate')?.touched">
           <label>Date of birth</label>
           <input type="date" formControlName="birthDate">
-          <span class="error-text" *ngIf="onboardingForm.get('birthDate')?.hasError('required') && onboardingForm.get('birthDate')?.touched">Date is required</span>
-          <span class="error-text" *ngIf="onboardingForm.get('birthDate')?.hasError('futureDate') && onboardingForm.get('birthDate')?.touched">Date cannot be in the future</span>
-          <span class="error-text" *ngIf="onboardingForm.get('birthDate')?.hasError('tooOld') && onboardingForm.get('birthDate')?.touched">Max 1 year old (App is for babies)</span>
+          <span class="error-text"
+            *ngIf="onboardingForm.get('birthDate')?.hasError('required') && onboardingForm.get('birthDate')?.touched">Date
+            is required</span>
+          <span class="error-text"
+            *ngIf="onboardingForm.get('birthDate')?.hasError('futureDate') && onboardingForm.get('birthDate')?.touched">Date
+            cannot be in the future</span>
+          <span class="error-text"
+            *ngIf="onboardingForm.get('birthDate')?.hasError('tooOld') && onboardingForm.get('birthDate')?.touched">Max
+            3 years old (App is for babies & toddlers)</span>
         </div>
 
-        <div class="premium-field has-icon" [class.field-error]="onboardingForm.get('gender')?.invalid && onboardingForm.get('gender')?.touched">
+        <div class="premium-field has-icon"
+          [class.field-error]="onboardingForm.get('gender')?.invalid && onboardingForm.get('gender')?.touched">
           <label>Gender</label>
           <select formControlName="gender">
             <option value="" disabled selected>Select gender</option>
             <option value="MALE">Boy</option>
             <option value="FEMALE">Girl</option>
           </select>
-          <span class="error-text" *ngIf="onboardingForm.get('gender')?.invalid && onboardingForm.get('gender')?.touched">Please select a gender</span>
+          <span class="error-text"
+            *ngIf="onboardingForm.get('gender')?.invalid && onboardingForm.get('gender')?.touched">Please select a
+            gender</span>
           <i class="fas fa-chevron-down field-icon" style="color: #4a7c74;"></i>
         </div>
 
         <div class="form-row" style="display: flex; gap: 15px;">
-          <div class="premium-field" style="flex: 1;" [class.field-error]="onboardingForm.get('birthWeight')?.invalid && onboardingForm.get('birthWeight')?.touched">
+          <div class="premium-field" style="flex: 1;"
+            [class.field-error]="onboardingForm.get('birthWeight')?.invalid && onboardingForm.get('birthWeight')?.touched">
             <label>Weight (kg)</label>
             <input type="number" step="0.1" formControlName="birthWeight" placeholder="3.2">
-            <span class="error-text" *ngIf="onboardingForm.get('birthWeight')?.hasError('required') && onboardingForm.get('birthWeight')?.touched">Required</span>
-            <span class="error-text" *ngIf="(onboardingForm.get('birthWeight')?.hasError('min') || onboardingForm.get('birthWeight')?.hasError('max')) && onboardingForm.get('birthWeight')?.touched">Invalid (0-15kg)</span>
+            <span class="error-text"
+              *ngIf="onboardingForm.get('birthWeight')?.hasError('required') && onboardingForm.get('birthWeight')?.touched">Required</span>
+            <span class="error-text"
+              *ngIf="(onboardingForm.get('birthWeight')?.hasError('min') || onboardingForm.get('birthWeight')?.hasError('max')) && onboardingForm.get('birthWeight')?.touched">Invalid
+              (0-15kg)</span>
           </div>
-          <div class="premium-field" style="flex: 1;" [class.field-error]="onboardingForm.get('birthHeight')?.invalid && onboardingForm.get('birthHeight')?.touched">
+          <div class="premium-field" style="flex: 1;"
+            [class.field-error]="onboardingForm.get('birthHeight')?.invalid && onboardingForm.get('birthHeight')?.touched">
             <label>Height (cm)</label>
             <input type="number" formControlName="birthHeight" placeholder="50">
-            <span class="error-text" *ngIf="onboardingForm.get('birthHeight')?.hasError('required') && onboardingForm.get('birthHeight')?.touched">Required</span>
-            <span class="error-text" *ngIf="(onboardingForm.get('birthHeight')?.hasError('min') || onboardingForm.get('birthHeight')?.hasError('max')) && onboardingForm.get('birthHeight')?.touched">Invalid (0-80cm)</span>
+            <span class="error-text"
+              *ngIf="onboardingForm.get('birthHeight')?.hasError('required') && onboardingForm.get('birthHeight')?.touched">Required</span>
+            <span class="error-text"
+              *ngIf="(onboardingForm.get('birthHeight')?.hasError('min') || onboardingForm.get('birthHeight')?.hasError('max')) && onboardingForm.get('birthHeight')?.touched">Invalid
+              (0-80cm)</span>
           </div>
         </div>
 
-        <div class="priority-section" style="margin-top: 1.5rem;" [class.field-error]="onboardingForm.get('priorities')?.invalid && onboardingForm.get('priorities')?.touched">
+        <div class="priority-section" style="margin-top: 1.5rem;"
+          [class.field-error]="onboardingForm.get('priorities')?.invalid && onboardingForm.get('priorities')?.touched">
           <label style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px; display: block;">What
             matters most?</label>
           <div class="priority-chips">
@@ -102,16 +126,23 @@
             <span class="p-chip" [class.active]="onboardingForm.get('priorities')?.value?.includes('self-care')"
               (click)="togglePriority('self-care')">💝 Self-care</span>
           </div>
-          <span class="error-text" *ngIf="onboardingForm.get('priorities')?.invalid && onboardingForm.get('priorities')?.touched">Please choose at least one priority</span>
+          <span class="error-text"
+            *ngIf="onboardingForm.get('priorities')?.invalid && onboardingForm.get('priorities')?.touched">Please choose
+            at least one priority</span>
         </div>
 
         <div class="form-error-banner" *ngIf="formError">
-           <i class="fas fa-exclamation-circle"></i> {{ formError }}
+          <i class="fas fa-exclamation-circle"></i> {{ formError }}
         </div>
 
-        <button class="btn-premium-continue" (click)="saveOnboarding()">
-          Save & Continue
-        </button>
+        <div class="onboarding-actions" style="display: flex; gap: 10px;">
+          <button class="btn-premium-continue" (click)="saveOnboarding()" style="flex: 1;">
+            {{ isEditingProfile ? 'Update Profile' : 'Save & Continue' }}
+          </button>
+          <button *ngIf="isEditingProfile" class="btn-cancel-onboarding" (click)="cancelEditing()" style="background: #e2e8f0; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 600; color: #475569; cursor: pointer;">
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -153,8 +184,8 @@
       <!-- Immersive Content Area -->
       <main class="content-area centered-layout">
         <div class="page-container">
-          <div class="back-dashboard-top" [routerLink]="['/front/patient/dashboard']" 
-               style="display: flex; align-items: center; gap: 6px; color: #4a7c74; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">
+          <div class="back-dashboard-top" [routerLink]="['/front/patient/dashboard']"
+            style="display: flex; align-items: center; gap: 6px; color: #4a7c74; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
           </div>
 
@@ -162,10 +193,36 @@
           <header class="page-header-banner" *ngIf="activeSection !== 'onboarding' && activeSection !== 'sleep'">
             <div class="greeting-row">
               <h1 class="serif-title">Hello, <span class="italic">{{ userName }}</span></h1>
-              <div class="baby-meta-pill">
-                <span class="baby-name">{{ baby.name }}</span>
-                <span class="divider"></span>
-                <span class="baby-age">{{ baby.ageText }}</span>
+              <div style="display: flex; gap: 10px; align-items: center;">
+
+                <!-- PROFILE SWITCHER -->
+                <div class="baby-switcher" *ngIf="allBabies.length > 0">
+                  <div class="current-baby-pill" (click)="toggleSwitcher()" [class.active]="showSwitcher">
+                    <img [src]="baby.photoUrl || defaultBabyAvatar" class="baby-avatar">
+                    <div class="baby-info-mini">
+                      <span class="name">{{ baby.name }}</span>
+                      <span class="age">{{ baby.ageText }}</span>
+                    </div>
+                    <i class="fas fa-chevron-down switcher-chevron" [class.rotated]="showSwitcher"></i>
+                  </div>
+
+                  <div class="switcher-dropdown" [class.show]="showSwitcher">
+                    <div class="dropdown-header">Your Babies</div>
+                    <div class="dropdown-item" *ngFor="let b of allBabies" [class.active]="b.id === baby.id" (click)="switchBaby(b.id)">
+                      <img [src]="b.photoUrl || defaultBabyAvatar" class="baby-avatar">
+                      <div class="baby-info">
+                        <span class="name">{{ b.name }}</span>
+                        <span class="age">{{ calculateAge(b.birthDate) }}</span>
+                      </div>
+                      <i class="fas fa-check check-icon" *ngIf="b.id === baby.id"></i>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="add-baby-btn" (click)="isFirstTime = true; showSwitcher = false">
+                      <div class="icon-plus"><i class="fas fa-plus"></i></div>
+                      <span>Add another baby</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </header>
@@ -193,9 +250,12 @@
                   <div class="details">
                     <h2 class="serif-title">{{ baby.name }}</h2>
                     <span class="age-badge">{{ baby.ageText }}</span>
-                    <div class="meta">
+                    <div class="meta" style="display: flex; align-items: center; gap: 15px;">
                       <span>Birth Weight <strong>{{ baby.weightAtBirth }}kg</strong></span>
                       <span>Birth Height <strong>{{ baby.heightAtBirth }}cm</strong></span>
+                      <button class="btn-edit-profile-mini" (click)="editProfile()" style="background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); padding: 6px 15px; border-radius: 20px; color: white; font-size: 12px; font-weight: 700; cursor: pointer; backdrop-filter: blur(4px); transition: all 0.3s ease;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                      </button>
                     </div>
                   </div>
 
@@ -203,6 +263,24 @@
                     <div class="label">Next Checkup</div>
                     <div class="val serif-title">{{ baby.nextCheckupDate }}</div>
                   </div>
+                </div>
+              </div>
+
+              <!-- FEEDING ALERTS -->
+              <div class="alerts-container" *ngIf="baby.activeAlerts && baby.activeAlerts.length > 0">
+                <div class="alert-banner feeding-alert animate-shake" *ngFor="let alert of baby.activeAlerts">
+                  <div class="alert-icon"><i class="fas fa-bell"></i></div>
+                  <div class="alert-content">
+                    <h4 class="alert-title">{{ alert.title }}</h4>
+                    <p class="alert-message">
+                      <ng-container *ngIf="alert.type === 'FEEDING'">Bébé n'a pas mangé depuis 3 heures. C'est l'heure du repas !</ng-container>
+                      <ng-container *ngIf="alert.type === 'VACCINE'">Il est temps de faire vacciner votre bébé pour assurer sa protection.</ng-container>
+                      <ng-container *ngIf="alert.type !== 'FEEDING' && alert.type !== 'VACCINE'">Rappel important pour la santé de votre bébé.</ng-container>
+                    </p>
+                  </div>
+                  <button class="btn-log-feeding" (click)="setSection('feeding')">
+                    Enregistrer repas <i class="fas fa-arrow-right"></i>
+                  </button>
                 </div>
               </div>
 
@@ -257,70 +335,79 @@
                   </div>
                 </div>
               </div>
-
             </div>
 
-            <!-- Vaccination View -->
+            <!-- Vaccination View (Premium) -->
             <div class="section-container" *ngIf="activeSection === 'vaccination'">
-              <div class="timeline-card">
-                <header>
-                  <h2 class="serif-text">Vaccination <span class="italic">Timeline</span></h2>
-                  <p>{{ baby.name }}'s personalized immunization schedule</p>
-                </header>
-
-                <div class="progress-ring">
-                  <div class="pct-circle">{{ baby.milestoneProgress }}%</div>
-                  <div class="info">
-                    <h4>{{ baby.milestoneProgress >= 100 ? 'All scheduled vaccines completed! 🌟' : 'Immunization
-                      Journey' }}</h4>
-                    <p *ngIf="baby.milestoneProgress < 100">{{ baby.name }} is on track. Next: {{ baby.nextVaccineName
-                      }}.</p>
-                    <p *ngIf="baby.milestoneProgress >= 100">Congratulations! {{ baby.name }} is fully protected for
-                      this stage.</p>
+              <div class="vaccination-dashboard-premium">
+                <!-- Summary Header -->
+                <div class="v-summary-banner">
+                  <div class="progress-ring-box">
+                    <svg class="ring" width="100" height="100">
+                      <circle class="ring-bg" stroke="#f1f5f9" stroke-width="8" fill="transparent" r="42" cx="50"
+                        cy="50" />
+                      <circle class="ring-fill" stroke="#10b981" stroke-width="8" stroke-linecap="round"
+                        fill="transparent" r="42" cx="50" cy="50" [style.strokeDasharray]="263.8"
+                        [style.strokeDashoffset]="263.8 * (1 - (baby.milestoneProgress / 100))" />
+                    </svg>
+                    <div class="ring-text">
+                      <span class="val">{{ baby.milestoneProgress }}%</span>
+                    </div>
+                  </div>
+                  <div class="summary-text">
+                    <h2 class="serif-title">Protection <span class="italic">Status</span></h2>
+                    <p>{{ baby.aiContextualMessage }}</p>
+                    <button class="btn-download-booklet" (click)="downloadVaccinationBooklet()">
+                      <i class="fas fa-file-pdf"></i> Download Official Booklet
+                    </button>
                   </div>
                 </div>
 
-                <div class="timeline">
-                  <div class="timeline-step" *ngFor="let v of vaccineTimeline"
-                    [class.locked]="!v.isClickable && v.status !== 'done'">
-                    <div class="marker" [class.done]="v.status === 'done'" [class.due]="v.status === 'due'"
-                      [class.locked]="!v.isClickable && v.status !== 'done'">
-                      <i class="fas fa-lock" *ngIf="!v.isClickable && v.status !== 'done'"></i>
-                    </div>
-                    <div class="step-label">
-                      {{ v.milestoneLabel }}
-                      <span class="badge" [class.done]="v.status === 'done'" [class.upcoming]="v.status === 'upcoming'"
-                        [class.due]="v.status === 'due'">
-                        {{ v.badge }}
-                      </span>
-                    </div>
-                    <div class="vaccine-item-card" [class.upcoming]="v.status === 'upcoming'"
-                      [class.due]="v.status === 'due'" [class.locked]="!v.isClickable && v.status !== 'done'">
-                      <div class="card-header">
-                        <h5 [class.strikethrough]="v.status === 'done'">{{ v.name }} — {{ v.description }}</h5>
-                        <button *ngIf="v.isClickable && v.status === 'due'" class="btn-mark-done"
-                          (click)="markAsDone(v.name)">
-                          <i class="fas fa-check"></i> Mark Done
-                        </button>
-                        <button *ngIf="v.status === 'done'" class="btn-mark-undo" (click)="onResetVaccine(v)">
-                          <i class="fas fa-undo"></i> Undo
-                        </button>
-                        <span class="lock-label" *ngIf="!v.isClickable && v.status !== 'done'">
-                          <i class="fas fa-lock-alt"></i> {{ v.unlockMessage }}
-                        </span>
-                      </div>
-                      <p>{{ v.detail }}</p>
-                      <div class="item-footer">
-                        <span class="status-tag" [class.done]="v.status === 'done'"
-                          [class.upcoming]="v.status === 'upcoming'" [class.due]="v.status === 'due'">
-                          {{ v.status === 'done' ? '✓ Done' : (v.status === 'due' ? '⏰ Due' : (v.isClickable ? '📅
-                          Available' : '🔒 Locked')) }}
-                        </span>
-                        <span class="date">{{ v.status === 'done' ? v.completedDate : v.milestoneDate }}</span>
-                      </div>
-                    </div>
+                <!-- Next Appointment Card -->
+                <div class="next-v-card" *ngIf="baby.nextVaccineName !== 'All caught up!'">
+                  <div class="icon-wrap"><i class="fas fa-clock"></i></div>
+                  <div class="info">
+                    <span class="label">NEXT VACCINATION</span>
+                    <h3>{{ baby.nextVaccineName }}</h3>
+                    <p>Scheduled for {{ baby.nextVaccineDate }}</p>
                   </div>
+                </div>
 
+                <!-- Detailed Lists -->
+                <div class="v-lists">
+                  <!-- Overdue / Due Now -->
+                  <section class="v-list-group" *ngIf="vaccineTimeline.length > 0">
+                    <h3 class="group-title">Immunization Timeline</h3>
+                    <div class="v-grid">
+                      <div class="v-card-item" *ngFor="let v of vaccineTimeline" [class.is-done]="v.status === 'done'"
+                        [class.is-overdue]="v.status === 'due' && v.badge.includes('Overdue')">
+                        <div class="v-card-body">
+                          <div class="v-main">
+                            <div class="v-marker" [class.done]="v.status === 'done'">
+                              <i class="fas" [class.fa-check]="v.status === 'done'"
+                                [class.fa-syringe]="v.status !== 'done'"></i>
+                            </div>
+                            <div class="v-details">
+                              <h4>{{ v.name }}</h4>
+                              <p>{{ v.description }}</p>
+                              <span class="v-age">{{ v.milestoneLabel }} &middot; {{ v.milestoneDate }}</span>
+                            </div>
+                          </div>
+                          <div class="v-actions">
+                            <span class="status-badge" [class.done]="v.status === 'done'"
+                              [class.overdue]="v.status === 'due' && v.badge.includes('Overdue')"
+                              [class.upcoming]="v.status === 'upcoming'">
+                              {{ v.badge }}
+                            </span>
+                            <button *ngIf="v.isClickable && v.status === 'due'" class="btn-mark-done-premium"
+                              (click)="markAsDone(v.id)">
+                              Mark Done
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
                 </div>
               </div>
             </div>
@@ -411,7 +498,9 @@
                 <div class="log-controls">
                   <div class="control-group" *ngIf="newEntry.subType === 'BOTTLE'">
                     <label>Amount (ml)</label>
-                    <input type="number" [(ngModel)]="newEntry.quantity" (ngModelChange)="formError = ''" class="control-input" [class.input-error]="formError && (newEntry.quantity > 1000 || newEntry.quantity <= 0)">
+                    <input type="number" [(ngModel)]="newEntry.quantity" (ngModelChange)="formError = ''"
+                      class="control-input"
+                      [class.input-error]="formError && (newEntry.quantity > 1000 || newEntry.quantity <= 0)">
                   </div>
                   <ng-container *ngIf="newEntry.subType === 'BREAST'">
                     <div class="control-group">
@@ -423,12 +512,16 @@
                     </div>
                     <div class="control-group">
                       <label>Duration (mins)</label>
-                      <input type="number" [(ngModel)]="newEntry.duration" (ngModelChange)="formError = ''" class="control-input" [class.input-error]="formError && (newEntry.duration > 7200 || newEntry.duration <= 0)" placeholder="e.g. 15">
+                      <input type="number" [(ngModel)]="newEntry.duration" (ngModelChange)="formError = ''"
+                        class="control-input"
+                        [class.input-error]="formError && (newEntry.duration > 7200 || newEntry.duration <= 0)"
+                        placeholder="e.g. 15">
                     </div>
                   </ng-container>
                 </div>
 
-                <div class="error-text" *ngIf="formError && activeSection === 'feeding'" style="margin: -10px 0 15px 0; text-align: center;">
+                <div class="error-text" *ngIf="formError && activeSection === 'feeding'"
+                  style="margin: -10px 0 15px 0; text-align: center;">
                   <i class="fas fa-exclamation-circle"></i> {{ formError }}
                 </div>
 
@@ -437,7 +530,8 @@
                     (click)="newEntry.type = 'FEEDING'; newEntry.value = newEntry.subType === 'BOTTLE' ? (newEntry.quantity + 'ml') : (newEntry.side + ' side, ' + newEntry.duration + 'm'); submitJournalEntry()">
                     {{ editingLogId ? 'Update Log' : 'Log Feeding' }}
                   </button>
-                  <button *ngIf="editingLogId" class="btn-cancel-round" (click)="cancelJournalEdit()" style="background: #64748b; width: 100px;">Cancel</button>
+                  <button *ngIf="editingLogId" class="btn-cancel-round" (click)="cancelJournalEdit()"
+                    style="background: #64748b; width: 100px;">Cancel</button>
                 </div>
               </div>
 
@@ -468,10 +562,9 @@
               <div class="gentle-foods-section">
                 <div class="section-label">GENTLE FIRST FOODS</div>
                 <div class="foods-grid">
-                  <div class="food-card" *ngFor="let food of feedingGuides[activeAgeTab].foods" 
-                       [class.selected-food]="selectedFood === food"
-                       (click)="selectedFood = selectedFood === food ? null : food"
-                       style="cursor: pointer;">
+                  <div class="food-card" *ngFor="let food of feedingGuides[activeAgeTab].foods"
+                    [class.selected-food]="selectedFood === food"
+                    (click)="selectedFood = selectedFood === food ? null : food" style="cursor: pointer;">
                     <div class="food-emoji">{{ food.emoji }}</div>
                     <div class="food-name">{{ food.name }}</div>
                     <div class="food-benefit">{{ food.benefit }}</div>
@@ -609,10 +702,13 @@
                             {{ p < 60 ? p + ' min' : (p/60) + 'h' + (p%60 !==0 ? ' ' + (p%60) : '' ) }} </button>
                         </div>
                         <div class="duration-input-wrap">
-                          <input type="text" [(ngModel)]="manualSleep.duration" class="main-duration-input" 
+                          <input type="text" [(ngModel)]="manualSleep.duration" class="main-duration-input"
                             [class.input-error]="formError && manualSleep.show" placeholder="e.g. 1h 30m">
-                          <div class="duration-hint" *ngIf="parsedManualSeconds > 0 && !(formError && manualSleep.show)">= {{ displayDuration(parsedManualSeconds) }}</div>
-                          <div class="error-text" style="font-size: 11px; margin-top: 4px;" *ngIf="formError && manualSleep.show">{{ formError }}</div>
+                          <div class="duration-hint"
+                            *ngIf="parsedManualSeconds > 0 && !(formError && manualSleep.show)">= {{
+                            displayDuration(parsedManualSeconds) }}</div>
+                          <div class="error-text" style="font-size: 11px; margin-top: 4px;"
+                            *ngIf="formError && manualSleep.show">{{ formError }}</div>
                         </div>
                       </div>
 
@@ -642,7 +738,7 @@
                     <div class="bar-col" *ngFor="let day of weekData">
                       <div class="bar-val">{{ displayChartDuration(day.totalSeconds || 0) }}</div>
                       <div class="bar" [style.height.%]="Math.max(((day.totalSeconds || 0) / (16 * 3600)) * 100, 8)"
-                           [class.today]="day.isToday"></div>
+                        [class.today]="day.isToday"></div>
                       <div class="bar-lbl">{{ day.day }}</div>
                     </div>
                   </div>
@@ -667,19 +763,23 @@
 
                 <div class="history-actions-bar" *ngIf="getFilteredSleepLogs().length > 0">
                   <button class="action-btn-v2" (click)="toggleSelectAll()">
-                    <i class="far" [class.fa-check-square]="selectedLogIds.size === getFilteredSleepLogs().length" [class.fa-square]="selectedLogIds.size !== getFilteredSleepLogs().length"></i>
+                    <i class="far" [class.fa-check-square]="selectedLogIds.size === getFilteredSleepLogs().length"
+                      [class.fa-square]="selectedLogIds.size !== getFilteredSleepLogs().length"></i>
                     {{ selectedLogIds.size === getFilteredSleepLogs().length ? 'Deselect All' : 'Select All' }}
                   </button>
-                  <button class="action-btn-v2 delete-all" *ngIf="selectedLogIds.size > 0" (click)="deleteSelectedLogs()">
+                  <button class="action-btn-v2 delete-all" *ngIf="selectedLogIds.size > 0"
+                    (click)="deleteSelectedLogs()">
                     <i class="fas fa-trash-alt"></i> Delete Selected ({{ selectedLogIds.size }})
                   </button>
                 </div>
 
                 <ng-container *ngFor="let log of getFilteredSleepLogs()">
-                  <div class="sleep-history-item" [class.is-selected]="isLogSelected(log.id)" (click)="toggleSelectLog(log.id)">
+                  <div class="sleep-history-item" [class.is-selected]="isLogSelected(log.id)"
+                    (click)="toggleSelectLog(log.id)">
                     <div class="item-left">
                       <div class="action-checkbox">
-                        <i class="fas" [class.fa-check-circle]="isLogSelected(log.id)" [class.fa-circle]="!isLogSelected(log.id)"></i>
+                        <i class="fas" [class.fa-check-circle]="isLogSelected(log.id)"
+                          [class.fa-circle]="!isLogSelected(log.id)"></i>
                       </div>
                       <div class="dot-indicator"></div>
                       <div class="history-label">{{ log.sleepType || 'Nap' }}</div>
@@ -753,9 +853,11 @@
                 <div style="display: flex; gap: 10px;">
                   <button class="btn-save-round" (click)="onSubmitDiaper()" [disabled]="isDiaperSubmitting"
                     style="flex: 1;">
-                    {{ isDiaperSubmitting ? 'Saving...' : (editingDiaperId || editingLogId ? 'Update Diaper' : 'Log Diaper Change') }}
+                    {{ isDiaperSubmitting ? 'Saving...' : (editingDiaperId || editingLogId ? 'Update Diaper' : 'Log
+                    Diaper Change') }}
                   </button>
-                  <button *ngIf="editingDiaperId || editingLogId" class="btn-save-round" (click)="resetDiaperForm(); editingLogId = null;"
+                  <button *ngIf="editingDiaperId || editingLogId" class="btn-save-round"
+                    (click)="resetDiaperForm(); editingLogId = null;"
                     style="background: #64748b; width: 100px;">Cancel</button>
                 </div>
               </div>
@@ -797,7 +899,7 @@
 
             <!-- Premium Health View -->
             <div class="section-container premium-health-section" *ngIf="activeSection === 'health'">
-              
+
               <!-- Health Hero Header -->
               <div class="premium-health-hero">
                 <div class="hero-bg-accent"></div>
@@ -836,8 +938,10 @@
                   <div class="vital-body">
                     <div class="vital-label">Guidance</div>
                     <div class="vital-insight-text">
-                      <span *ngIf="summaries.health.status === 'Normal'">{{ baby.name }}'s last reading was perfectly normal. Keep ensuring they are comfortable and well hydrated!</span>
-                      <span *ngIf="summaries.health.status !== 'Normal'">Elevated temperature detected. Please monitor {{ baby.name }} closely and consult a pediatrician if symptoms persist.</span>
+                      <span *ngIf="summaries.health.status === 'Normal'">{{ baby.name }}'s last reading was perfectly
+                        normal. Keep ensuring they are comfortable and well hydrated!</span>
+                      <span *ngIf="summaries.health.status !== 'Normal'">Elevated temperature detected. Please monitor
+                        {{ baby.name }} closely and consult a pediatrician if symptoms persist.</span>
                     </div>
                   </div>
                 </div>
@@ -859,11 +963,14 @@
                       <input type="text" [(ngModel)]="newEntry.value" class="premium-input" placeholder="e.g. 37.2">
                       <span class="input-suffix">°C</span>
                     </div>
-                    <p class="error-text" *ngIf="formError" style="margin-top: 10px; font-weight: 600;">{{ formError }}</p>
-                    <button class="btn-premium-action health-btn" (click)="newEntry.type = 'TEMPERATURE'; submitJournalEntry()" [disabled]="!newEntry.value">
-                       {{ editingLogId ? 'Update Record' : 'Save Record' }} <i class="fas fa-arrow-right"></i>
+                    <p class="error-text" *ngIf="formError" style="margin-top: 10px; font-weight: 600;">{{ formError }}
+                    </p>
+                    <button class="btn-premium-action health-btn"
+                      (click)="newEntry.type = 'TEMPERATURE'; submitJournalEntry()" [disabled]="!newEntry.value">
+                      {{ editingLogId ? 'Update Record' : 'Save Record' }} <i class="fas fa-arrow-right"></i>
                     </button>
-                    <button *ngIf="editingLogId && newEntry.type === 'TEMPERATURE'" class="btn-cancel-round" (click)="cancelJournalEdit()" style="margin-top: 10px; width: 100%;">Cancel Edit</button>
+                    <button *ngIf="editingLogId && newEntry.type === 'TEMPERATURE'" class="btn-cancel-round"
+                      (click)="cancelJournalEdit()" style="margin-top: 10px; width: 100%;">Cancel Edit</button>
                   </div>
                 </div>
               </div>
@@ -899,7 +1006,8 @@
                   Sleep</button>
                 <button class="j-tab" [class.active]="journalFilter === 'DIAPER'"
                   (click)="setJournalFilter('DIAPER')">💧 Diaper</button>
-                <button class="j-tab" [class.active]="journalFilter === 'TEMPERATURE'" (click)="setJournalFilter('TEMPERATURE')">🌡️
+                <button class="j-tab" [class.active]="journalFilter === 'TEMPERATURE'"
+                  (click)="setJournalFilter('TEMPERATURE')">🌡️
                   Temp</button>
               </div>
 
@@ -934,6 +1042,130 @@
                 <div class="empty-journal" *ngIf="filteredLogs.length === 0">
                   <div class="empty-icon">📋</div>
                   <p>No entries yet for this filter.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Skin Doctor Section -->
+            <div class="section-container" *ngIf="activeSection === 'ai-skin'">
+              <div class="ai-hero-header">
+                <div class="ai-hero-content">
+                  <span class="premium-badge"><i class="fas fa-sparkles"></i> AI POWERED</span>
+                  <h2>Baby Skin Doctor</h2>
+                  <p>Advanced dermatological analysis for your baby's skin health. Upload a photo for instant diagnostic support and professional care tips.</p>
+                </div>
+                <div class="ai-hero-icon">
+                  <i class="fas fa-user-md-chat"></i>
+                </div>
+              </div>
+
+              <div class="analysis-workspace">
+                <!-- Upload State -->
+                <div class="upload-container" *ngIf="!skinAnalysisPreview" (click)="skinFileInput.click()">
+                  <div class="upload-glass-card">
+                    <div class="upload-icon-wrapper">
+                      <i class="fas fa-camera-retro"></i>
+                    </div>
+                    <h3>Analyze Skin Condition</h3>
+                    <p>Tap to upload or take a clear photo of the affected area</p>
+                    <div class="upload-limits">
+                      <span><i class="fas fa-check-circle"></i> High Resolution</span>
+                      <span><i class="fas fa-lock"></i> 100% Secure</span>
+                    </div>
+                  </div>
+                  <input #skinFileInput type="file" (change)="onSkinFileSelected($event)" accept="image/*" hidden>
+                </div>
+
+                <!-- Result State -->
+                <div class="analysis-result-layout" *ngIf="skinAnalysisPreview">
+                  <!-- Image Preview Column -->
+                  <div class="preview-column">
+                    <div class="image-box">
+                      <img [src]="skinAnalysisPreview" alt="Skin Preview">
+                      <div class="image-overlay" *ngIf="isSkinAnalyzing">
+                        <div class="scanner-line"></div>
+                        <span>Analyzing...</span>
+                      </div>
+                    </div>
+                    <div class="preview-actions">
+                      <button class="btn-primary-gradient" *ngIf="!skinAnalysisResult" (click)="runSkinAnalysis()" [disabled]="isSkinAnalyzing">
+                        <i class="fas" [ngClass]="isSkinAnalyzing ? 'fa-spinner fa-spin' : 'fa-microscope'"></i>
+                        {{ isSkinAnalyzing ? 'Scanning Tissue...' : 'Start Diagnosis' }}
+                      </button>
+                      <button class="btn-outline" (click)="resetSkinAnalysis()" [disabled]="isSkinAnalyzing">
+                        <i class="fas fa-times"></i> {{ skinAnalysisResult ? 'New Analysis' : 'Cancel' }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Details Column -->
+                  <div class="details-column">
+                    <!-- Error State -->
+                    <div class="error-toast animate-in" *ngIf="skinAnalysisError">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      <div class="error-msg">
+                        <strong>Analysis Failed</strong>
+                        <span>{{ skinAnalysisError }}</span>
+                      </div>
+                    </div>
+
+                    <!-- Result Data -->
+                    <div class="result-data-card animate-in" *ngIf="skinAnalysisResult">
+                      <div class="diagnosis-header">
+                        <div class="diag-label">DETECTED CONDITION</div>
+                        <div class="diag-header-row">
+                            <h1 class="diag-title">{{ skinAnalysisResult.prediction }}</h1>
+                            <div class="confidence-badge" [class.high]="skinAnalysisResult.confidence > 70" [class.medium]="skinAnalysisResult.confidence <= 70 && skinAnalysisResult.confidence > 40">
+                                <i class="fas fa-check-circle"></i> {{ skinAnalysisResult.confidence }}% Confidence
+                            </div>
+                        </div>
+
+                        <div class="confidence-bar-wrap">
+                            <div class="confidence-bar-bg">
+                                <div class="confidence-bar-fill" [style.width.%]="skinAnalysisResult.confidence"></div>
+                            </div>
+                        </div>
+                      </div>
+
+                      <div class="info-tabs">
+
+                        <div class="info-tab-content care-tips">
+                          <label><i class="fas fa-hand-holding-heart"></i> Professional Care Recommendations</label>
+                          <div class="tips-grid">
+                            <div class="tip-item" *ngFor="let tip of getDiseaseTips(skinAnalysisResult.prediction)">
+                              <i class="fas fa-chevron-right"></i>
+                              <span>{{ tip }}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Top 3 Results -->
+                        <div class="top-possibilities" *ngIf="skinAnalysisResult.top3 && skinAnalysisResult.top3.length > 1">
+                            <label><i class="fas fa-list-ol"></i> Top Possibilities</label>
+                            <div class="possibility-list">
+                                <div class="possibility-item" *ngFor="let item of skinAnalysisResult.top3; let i = index" [class.active]="i === 0">
+                                    <div class="p-name">{{ item.disease }}</div>
+                                    <div class="p-conf-bar">
+                                        <div class="p-conf-fill" [style.width.%]="item.confidence"></div>
+                                    </div>
+                                    <div class="p-percent">{{ item.confidence }}%</div>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+
+                      <div class="medical-disclaimer">
+                        <i class="fas fa-user-md"></i>
+                        <p><strong>Medical Disclaimer:</strong> This AI tool provides informational support based on visual patterns. It is not a replacement for professional medical advice. Always consult your pediatrician for a formal diagnosis and treatment plan.</p>
+                      </div>
+                    </div>
+
+                    <!-- Placeholder for analysis -->
+                    <div class="analysis-placeholder" *ngIf="!skinAnalysisResult && !skinAnalysisError && !isSkinAnalyzing">
+                      <i class="fas fa-stethoscope"></i>
+                      <p>Click "Start Diagnosis" to begin the AI scan</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

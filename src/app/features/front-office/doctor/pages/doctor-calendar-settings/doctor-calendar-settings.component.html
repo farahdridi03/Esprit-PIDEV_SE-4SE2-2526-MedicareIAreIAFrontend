@@ -1,113 +1,136 @@
 <div class="calendar-settings-container">
-  <div class="header-section">
-      <h2>Update Specific Week</h2>
-      <p>Configure your slots for this week only. Only these specific days will be affected.</p>
-    </div>
-    
-    <div class="date-navigator">
-      <button class="nav-btn" type="button" (click)="prevWeek()">‹</button>
+  <!-- Header Card -->
+  <div class="header-card">
+    <button class="nav-btn-square prev" type="button" (click)="prevWeek()"></button>
+    <div class="week-info">
+      <span class="calendar-icon">📅</span>
       <span class="current-range">Week of {{ daysInWeek[0] | date:'dd MMM' }} to {{ daysInWeek[6] | date:'dd MMM yyyy' }}</span>
-      <button class="nav-btn" type="button" (click)="nextWeek()">›</button>
     </div>
+    <button class="nav-btn-square next" type="button" (click)="nextWeek()"></button>
+  </div>
 
-    <div class="header-icon">🗓️</div>
+  <p class="subtitle-text">Configure your availability for this week. Toggle a day to add time slots.</p>
 
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
-    <p>Loading your schedule...</p>
+    <p>Loading schedule...</p>
   </div>
 
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    <span class="icon">⚠️</span> {{ errorMessage }}
-  </div>
-
-  <div *ngIf="successMessage" class="alert alert-success">
-    <span class="icon">✅</span> {{ successMessage }}
-  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
 
   <form *ngIf="!isLoading" [formGroup]="scheduleForm" (ngSubmit)="saveSchedule()">
     <div class="days-list" formArrayName="days">
       <div *ngFor="let day of days.controls; let dIndex = index" [formGroupName]="dIndex" 
-           class="day-card" [class.inactive]="!day.get('active')?.value">
+           class="day-card" 
+           [class.active-day]="day.get('active')?.value"
+           [class.past-day]="isPastDay(getDateForDay(day.get('dayOfWeek')?.value))">
         
         <!-- Day Header -->
         <div class="day-header" (click)="toggleDay(dIndex)">
-          <div class="toggle-switch">
-            <input type="checkbox" formControlName="active" (click)="$event.stopPropagation()">
-            <span class="slider"></span>
+          <div class="day-main-info">
+            <div class="toggle-switch" 
+                 [class.on]="day.get('active')?.value"
+                 [class.disabled]="isPastDay(getDateForDay(day.get('dayOfWeek')?.value))">
+              <input type="checkbox" formControlName="active" (click)="$event.stopPropagation()" 
+                     [attr.disabled]="isPastDay(getDateForDay(day.get('dayOfWeek')?.value)) ? true : null">
+              <span class="slider"></span>
+            </div>
+            <div class="day-text">
+              <div class="day-title-row">
+                <h3 class="day-name">
+                  {{ getDayName(day.get('dayOfWeek')?.value) }}
+                  <span class="lock-icon" *ngIf="isPastDay(getDateForDay(day.get('dayOfWeek')?.value))">🔒</span>
+                </h3>
+                <ng-container *ngIf="getDateForDay(day.get('dayOfWeek')?.value) as dayDate">
+                  <span class="today-badge" *ngIf="isToday(dayDate)">today</span>
+                </ng-container>
+              </div>
+              
+              <p class="day-date-subtext">
+                {{ getDateForDay(day.get('dayOfWeek')?.value) | date:'EEE, MMM dd' }}
+              </p>
+              
+              <!-- Summary of slots when active -->
+              <p class="day-summary" *ngIf="day.get('active')?.value && timeSlots(dIndex).length > 0">
+                <span *ngFor="let slot of timeSlots(dIndex).value; let last=last">
+                  {{ slot.startTime }} - {{ slot.endTime }} · 
+                  {{ slot.mode === 'ONLINE' ? 'Online' : slot.mode === 'OFFICE' ? 'In Clinic' : 'Both' }}{{ !last ? ', ' : '' }}
+                </span>
+              </p>
+            </div>
           </div>
-          <div class="day-info">
-            <h3 class="day-name">
-              {{ getDayName(day.get('dayOfWeek')?.value) }}
-              <small *ngIf="getDateForDay(day.get('dayOfWeek')?.value) as d">
-                ({{ d | date:'dd MMM' }})
-              </small>
-            </h3>
-            <span class="status-badge" [class.off]="!day.get('active')?.value">
-              {{ day.get('active')?.value ? 'Available' : 'Unavailable' }}
+          <div class="day-status">
+            <span class="status-badge" 
+                  [class.status-available]="day.get('active')?.value && !isPastDay(getDateForDay(day.get('dayOfWeek')?.value))"
+                  [class.status-past]="isPastDay(getDateForDay(day.get('dayOfWeek')?.value))">
+              {{ isPastDay(getDateForDay(day.get('dayOfWeek')?.value)) ? 'Past' : (day.get('active')?.value ? 'Available' : 'Unavailable') }}
             </span>
           </div>
         </div>
 
-        <!-- Time Slots (Only visible if day is active) -->
-        <div class="time-slots-container" *ngIf="day.get('active')?.value" formArrayName="timeSlots">
+        <!-- Time Slots Container -->
+        <div class="time-slots-container" *ngIf="day.get('active')?.value && !isPastDay(getDateForDay(day.get('dayOfWeek')?.value))" formArrayName="timeSlots">
+          <h4 class="slots-label">TIME SLOTS</h4>
+          <div class="slots-hint">Allowed hours: 09:00 – 17:00</div>
+          
           <div *ngFor="let slot of timeSlots(dIndex).controls; let sIndex = index" 
-               [formGroupName]="sIndex" class="time-slot-row">
+               [formGroupName]="sIndex" class="time-slot-wrapper">
+
             
-            <div class="input-group">
-              <label>Start</label>
-              <div class="time-input-wrapper">
-                <span class="time-icon">🕒</span>
-                <input type="time" formControlName="startTime" required>
+            <div class="time-slot-row">
+              <div class="input-group">
+                <label>Start</label>
+                <div class="time-input-box">
+                  <input type="time" formControlName="startTime" min="09:00" max="17:00">
+                  <span class="clock-icon">🕒</span>
+                </div>
               </div>
-            </div>
-            
-            <div class="time-separator">
-              <div class="dot"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
-            </div>
-            
-            <div class="input-group">
-              <label>End</label>
-              <div class="time-input-wrapper">
-                <span class="time-icon">🕒</span>
-                <input type="time" formControlName="endTime" required>
+              
+              <div class="arrow-separator">→</div>
+              
+              <div class="input-group">
+                <label>End</label>
+                <div class="time-input-box">
+                  <input type="time" formControlName="endTime" min="09:00" max="17:00">
+                  <span class="clock-icon">🕒</span>
+                </div>
               </div>
+
+              <div class="input-group">
+                <label>Mode</label>
+                <div class="mode-select-box">
+                  <select formControlName="mode">
+                    <option value="OFFICE">In Clinic</option>
+                    <option value="ONLINE">Online</option>
+                    <option value="BOTH">Both</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="button" class="btn-remove-square" (click)="removeTimeSlot(dIndex, sIndex)" 
+                      *ngIf="timeSlots(dIndex).length > 1">
+              </button>
             </div>
 
-            <div class="input-group mode-group">
-              <label>Mode</label>
-              <div class="custom-select-wrapper">
-                <select formControlName="mode">
-                  <option value="OFFICE">In Clinic 🏢</option>
-                  <option value="ONLINE">Online 💻</option>
-                  <option value="BOTH">Both 🔄</option>
-                </select>
-                <span class="select-arrow">▼</span>
-              </div>
+            <!-- Validation Messages -->
+            <div class="slot-error" *ngIf="getSlotError(slot.value)">
+              {{ getSlotError(slot.value) }}
             </div>
-
-            <button type="button" class="btn-remove" (click)="removeTimeSlot(dIndex, sIndex)" 
-                    *ngIf="timeSlots(dIndex).length > 1" title="Delete this slot">
-              <span class="trash-icon">🗑️</span>
-            </button>
           </div>
           
-          <div class="add-slot-wrapper">
-            <button type="button" class="btn-add-slot" (click)="addTimeSlot(dIndex)">
-              <span class="plus-icon">+</span> Add time slot
-            </button>
-          </div>
+          <button type="button" class="btn-add-slot-full" (click)="addTimeSlot(dIndex)">
+            <span class="plus-sign">+</span> Add time slot
+          </button>
         </div>
-        
       </div>
     </div>
 
-    <div class="actions-footer">
-      <button type="submit" class="btn-save" [class.loading]="isSaving" [disabled]="scheduleForm.invalid || isSaving">
-        <span *ngIf="!isSaving">Save schedule</span>
-        <span *ngIf="isSaving">Saving...</span>
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+      <button type="button" class="btn-discard" (click)="loadSchedule()">Discard</button>
+      <button type="submit" class="btn-save-changes" [disabled]="scheduleForm.invalid || isSaving">
+        {{ isSaving ? 'Saving...' : 'Save changes' }}
       </button>
     </div>
   </form>

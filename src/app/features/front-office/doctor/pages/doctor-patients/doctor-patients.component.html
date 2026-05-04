@@ -75,6 +75,9 @@
                                     <button class="btn-action live" (click)="openMeeting(app.meetingLink)">Join Live</button>
                                     <button class="btn-action confirm" style="background:#ef4444;" (click)="completeConsultation(app)">End</button>
                                 </div>
+                                <button class="btn-action delete" (click)="deleteAppointment(app.id)" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                                 <div class="notes-preview" *ngIf="app.notes" [title]="app.notes">📝</div>
                             </div>
                         </div>
