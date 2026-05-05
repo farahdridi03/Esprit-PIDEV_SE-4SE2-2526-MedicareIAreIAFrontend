@@ -81,7 +81,7 @@ export class LabResultFormComponent implements OnInit {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
     this.http.get<any[]>(
-      'http://localhost:8081/springsecurity/api/lab-requests/status/PENDING',
+      'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/lab-requests/status/PENDING',
       { headers }
     ).subscribe({
       next: (data) => { this.pendingRequests = data; },

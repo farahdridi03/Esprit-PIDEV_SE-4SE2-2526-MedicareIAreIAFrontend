@@ -6,7 +6,7 @@ import { LaboratoryResponseDTO } from '../models/laboratory.model';
 describe('LaboratoryService', () => {
     let service: LaboratoryService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'http://localhost:8081/springsecurity/api/laboratories/me';
+    const apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/laboratories/me';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

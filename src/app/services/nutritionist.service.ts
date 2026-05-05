@@ -7,7 +7,7 @@ import { NutritionistRequestDTO, NutritionistResponseDTO } from '../models/nutri
     providedIn: 'root'
 })
 export class NutritionistService {
-    private readonly apiUrl = 'http://localhost:8081/springsecurity/api/nutritionists';
+    private readonly apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/nutritionists';
 
     constructor(private http: HttpClient) { }
 

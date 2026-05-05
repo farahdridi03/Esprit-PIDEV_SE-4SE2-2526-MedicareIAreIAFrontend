@@ -7,7 +7,7 @@ import { DeliveryAgency, DeliveryAgent } from '../models/pharmacy.model';
   providedIn: 'root'
 })
 export class DeliveryService {
-  private readonly baseUrl = 'http://localhost:8081/springsecurity/api/pharmacy/deliveries';
+  private readonly baseUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/deliveries';
 
   constructor(private http: HttpClient) { }
 

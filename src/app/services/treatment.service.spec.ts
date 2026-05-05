@@ -6,7 +6,7 @@ import { MOCK_PATIENT_ME } from '../testing/mocks/medical-record.mock';
 describe('TreatmentService', () => {
     let service: TreatmentService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'http://localhost:8081/springsecurity/treatment';
+    const apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/treatment';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

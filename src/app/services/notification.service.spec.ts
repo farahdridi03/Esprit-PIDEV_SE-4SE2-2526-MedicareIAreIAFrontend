@@ -6,7 +6,7 @@ import { NotificationResponseDTO, NotificationType } from '../models/notificatio
 describe('NotificationService', () => {
     let service: NotificationService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/notifications';
+    const apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/notifications';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

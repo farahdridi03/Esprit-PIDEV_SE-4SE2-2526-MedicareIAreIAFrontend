@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PredictionService {
-  private readonly baseUrl = 'http://localhost:8081/springsecurity/api/predict';
+  private readonly baseUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/predict';
 
   constructor(private http: HttpClient) { }
 

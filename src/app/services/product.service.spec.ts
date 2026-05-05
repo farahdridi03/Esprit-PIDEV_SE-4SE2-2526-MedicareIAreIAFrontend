@@ -6,7 +6,7 @@ import { ProductResponseDTO } from '../models/pharmacy.model';
 describe('ProductService', () => {
     let service: ProductService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'http://localhost:8081/springsecurity/api/products';
+    const apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/products';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

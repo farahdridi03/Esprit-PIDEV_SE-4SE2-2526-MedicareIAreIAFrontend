@@ -24,7 +24,7 @@ import { AssignmentResultDTO, ProviderScoreDTO } from '../models/pharmacy-order.
   providedIn: 'root'
 })
 export class HomecareService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/homecare';
+  private apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/homecare';
 
   constructor(private http: HttpClient) { }
 

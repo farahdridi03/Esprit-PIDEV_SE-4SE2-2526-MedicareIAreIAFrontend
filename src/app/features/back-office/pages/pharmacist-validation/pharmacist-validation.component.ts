@@ -138,7 +138,7 @@ export class PharmacistValidationComponent implements OnInit {
       if (url.startsWith('http')) {
         window.open(url, '_blank');
       } else {
-        this.selectedDocument = 'http://localhost:8081/springsecurity/uploads/' + url;
+        this.selectedDocument = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/uploads/' + url;
         window.open(this.selectedDocument, '_blank');
       }
     } else {

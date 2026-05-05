@@ -26,7 +26,7 @@ export interface PerformanceReport {
 })
 export class LabStaffPerformanceComponent implements OnInit {
 
-  private readonly API = 'http://localhost:8081/springsecurity/api/lab-staff/performance';
+  private readonly API = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/lab-staff/performance';
 
   report: PerformanceReport | null = null;
   loading = false;

@@ -7,7 +7,7 @@ import { Diagnosis } from '../models/medical-records.model';
   providedIn: 'root'
 })
 export class DiagnosisService {
-  private readonly apiUrl = 'http://localhost:8081/springsecurity/diagnosis';
+  private readonly apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/diagnosis';
 
   constructor(private http: HttpClient) { }
 

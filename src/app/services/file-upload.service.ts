@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FileUploadService {
-  private readonly apiUrl = 'http://localhost:8081/springsecurity/api/upload';
+  private readonly apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/upload';
 
   constructor(private http: HttpClient) { }
 

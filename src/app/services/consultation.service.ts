@@ -7,7 +7,7 @@ import { Consultation } from '../models/medical-records.model';
   providedIn: 'root'
 })
 export class ConsultationService {
-  private readonly apiUrl = 'http://localhost:8081/springsecurity/consultation';
+  private readonly apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/consultation';
 
   constructor(private http: HttpClient) { }
 

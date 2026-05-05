@@ -25,7 +25,7 @@ export interface DoctorProfile {
   providedIn: 'root'
 })
 export class DoctorService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/v1/doctors';
+  private apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/v1/doctors';
 
   constructor(private http: HttpClient) {}
 
@@ -49,12 +49,12 @@ export class DoctorService {
     // date should be 'YYYY-MM-DD'
     const from = `${date}T00:00:00`;
     const to = `${date}T23:59:59`;
-    return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/v1/providers/${doctorId}/availabilities?from=${from}&to=${to}`);
+    return this.http.get<any[]>(`https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/v1/providers/${doctorId}/availabilities?from=${from}&to=${to}`);
   }
 
   getMonthAvailabilities(doctorId: number, fromDate: string, toDate: string): Observable<any[]> {
     const from = `${fromDate}T00:00:00`;
     const to = `${toDate}T23:59:59`;
-    return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/v1/providers/${doctorId}/availabilities?from=${from}&to=${to}`);
+    return this.http.get<any[]>(`https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/v1/providers/${doctorId}/availabilities?from=${from}&to=${to}`);
   }
 }

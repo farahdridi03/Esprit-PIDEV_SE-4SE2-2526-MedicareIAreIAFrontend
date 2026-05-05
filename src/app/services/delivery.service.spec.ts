@@ -6,7 +6,7 @@ import { DeliveryStatus } from '../models/delivery.model';
 describe('DeliveryService', () => {
   let service: DeliveryService;
   let httpMock: HttpTestingController;
-  const baseUrl = 'http://localhost:8081/springsecurity/api/pharmacy/deliveries';
+  const baseUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/deliveries';
 
   beforeEach(() => {
     TestBed.configureTestingModule({

@@ -37,7 +37,7 @@ export class HomecareRequestListComponent implements OnInit, OnDestroy {
   }
 
   connectWebSocket(): void {
-    const socket = new SockJS('http://localhost:8081/springsecurity/ws');
+    const socket = new SockJS('https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/ws');
     this.stompClient = new Client({
       webSocketFactory: () => socket as any,
       reconnectDelay: 5000,

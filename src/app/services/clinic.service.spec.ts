@@ -6,7 +6,7 @@ import { ClinicResponseDTO, ClinicUpdateRequestDTO } from '../models/clinic.mode
 describe('ClinicService', () => {
     let service: ClinicService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'http://localhost:8081/springsecurity/api/clinics';
+    const apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/clinics';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

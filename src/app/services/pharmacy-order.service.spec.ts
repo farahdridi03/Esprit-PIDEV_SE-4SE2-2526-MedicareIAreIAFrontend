@@ -11,7 +11,7 @@ import {
 describe('PharmacyOrderService', () => {
   let service: PharmacyOrderService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/orders';
+  const apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/orders';
 
   beforeEach(() => {
     TestBed.configureTestingModule({

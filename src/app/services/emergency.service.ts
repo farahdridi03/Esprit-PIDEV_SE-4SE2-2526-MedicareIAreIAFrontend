@@ -17,7 +17,7 @@ export interface EmergencyAlertResponse {
 
 @Injectable({ providedIn: 'root' })
 export class EmergencyService {
-  private base = 'http://localhost:8081/springsecurity/api';
+  private base = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api';
 
   constructor(private http: HttpClient) {}
 

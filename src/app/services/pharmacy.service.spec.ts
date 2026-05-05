@@ -6,7 +6,7 @@ import { PharmacyResponseDTO, PharmacyStockResponseDTO } from '../models/pharmac
 describe('PharmacyService', () => {
     let service: PharmacyService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/pharmacies';
+    const apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/pharmacies';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

@@ -7,7 +7,7 @@ import { HealthyRecipe, MealPlan, GroceryItem, FoodDiary, DailyHealthReport } fr
     providedIn: 'root'
 })
 export class NutritionService {
-    private readonly baseUrl = 'http://localhost:8081/springsecurity/api';
+    private readonly baseUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api';
 
     constructor(private http: HttpClient) { }
 

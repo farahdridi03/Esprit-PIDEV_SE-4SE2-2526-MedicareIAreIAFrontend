@@ -56,7 +56,7 @@ export interface BabyDashboard {
 export class BabyCareService {
   private STORAGE_KEY_PROFILES = 'fbc_profiles';
   private STORAGE_KEY_JOURNAL = 'fbc_journal';
-  private apiUrl = 'http://localhost:8081/springsecurity/api/baby-care';
+  private apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/baby-care';
   
   constructor(private http: HttpClient) {}
 

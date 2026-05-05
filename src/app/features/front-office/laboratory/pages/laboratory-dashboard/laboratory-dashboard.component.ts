@@ -15,7 +15,7 @@ import { AuthService } from '../../../../../services/auth.service';
 export class LaboratoryStaffDashboardComponent implements OnInit {
 
 
-  private readonly API = 'http://localhost:8081/springsecurity/api/lab-narrator';
+  private readonly API = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/lab-narrator';
 
   firstName         = 'Staff';
   fullName          = '';

@@ -6,8 +6,8 @@ import { UserRequestDTO, UserResponseDTO } from '../models/user.model';
 describe('UserService', () => {
     let service: UserService;
     let httpMock: HttpTestingController;
-    const baseUrlLegacy = 'http://localhost:8081/springsecurity/user';
-    const apiUrl = 'http://localhost:8081/springsecurity/api/users';
+    const baseUrlLegacy = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/user';
+    const apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/users';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

@@ -26,8 +26,8 @@ export interface UserProfile {
     providedIn: 'root'
 })
 export class UserService {
-    private readonly baseUrlLegacy = 'http://localhost:8081/springsecurity/user';
-    private readonly apiUrl = 'http://localhost:8081/springsecurity/api/users';
+    private readonly baseUrlLegacy = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/user';
+    private readonly apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/users';
 
     private profileSubject = new BehaviorSubject<UserResponseDTO | null>(null);
     profile$ = this.profileSubject.asObservable();

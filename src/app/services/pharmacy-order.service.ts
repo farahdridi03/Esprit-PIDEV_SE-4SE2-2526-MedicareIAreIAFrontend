@@ -17,7 +17,7 @@ import {
   providedIn: 'root'
 })
 export class PharmacyOrderService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/orders';
+  private apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/orders';
 
   constructor(private http: HttpClient) {}
 

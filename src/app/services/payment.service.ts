@@ -8,7 +8,7 @@ import { PaymentRequestDTO, PaymentResponseDTO } from '../models/payment.model';
   providedIn: 'root'
 })
 export class PaymentService {
-  private apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/payments';
+  private apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/payments';
 
   constructor(private http: HttpClient) { }
 

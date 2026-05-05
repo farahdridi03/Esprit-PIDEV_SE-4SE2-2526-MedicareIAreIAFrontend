@@ -6,7 +6,7 @@ import { PaymentRequestDTO, PaymentResponseDTO } from '../models/payment.model';
 describe('PaymentService', () => {
   let service: PaymentService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'http://localhost:8081/springsecurity/api/pharmacy/payments';
+  const apiUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/pharmacy/payments';
 
   beforeEach(() => {
     TestBed.configureTestingModule({

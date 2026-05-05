@@ -6,7 +6,7 @@ import { MOCK_GOALS, MOCK_PLANS, MOCK_TRACKINGS } from '../testing/mocks/lifesty
 describe('LifestyleService', () => {
   let service: LifestyleService;
   let httpMock: HttpTestingController;
-  const baseUrl = 'http://localhost:8081/springsecurity/api';
+  const baseUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api';
 
   beforeEach(() => {
     TestBed.configureTestingModule({

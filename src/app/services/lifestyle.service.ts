@@ -7,7 +7,7 @@ import { LifestyleGoal, LifestylePlan, ProgressTracking } from '../models/lifest
     providedIn: 'root'
 })
 export class LifestyleService {
-    private readonly baseUrl = 'http://localhost:8081/springsecurity/api';
+    private readonly baseUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api';
 
     constructor(private http: HttpClient) { }
 

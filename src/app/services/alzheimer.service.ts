@@ -6,7 +6,7 @@ import { LabResultResponse } from './lab-result.service';
 @Injectable({ providedIn: 'root' })
 export class AlzheimerService {
 
-  private baseUrl = 'http://localhost:8081/springsecurity/api/alzheimer';
+  private baseUrl = 'https://medicareaipi-cpb5b9gmfmgbaeg7.swedencentral-01.azurewebsites.net/springsecurity/api/alzheimer';
 
   constructor(private http: HttpClient) {}
 
