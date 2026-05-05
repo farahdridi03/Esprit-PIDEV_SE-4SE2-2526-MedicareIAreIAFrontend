@@ -4,6 +4,47 @@
 
 MEDICARE AI est une application web innovante dédiée à la gestion des services de santé.
 Elle permet de centraliser les données médicales, de faciliter l’accès aux soins et d’optimiser la prise de décision médicale grâce à l’intégration de l’intelligence artificielle.
+The goal of this project is to improve healthcare accessibility using a digital platform with AI integration.
+
+---
+
+## 🎯 Project Objectives
+
+- Digitize medical appointment management
+- Provide an intuitive user experience for patients and doctors
+- Integrate AI-based assistance for medical support
+- Ensure secure authentication and data handling
+
+## 📂 Architecture
+
+The project follows a modular frontend architecture:
+src/
+├── app/
+│ ├── core/ # Services, guards, interceptors
+│ ├── shared/ # Shared components & utilities
+│ ├── features/ # Main modules (auth, appointments, etc.)
+│ ├── pages/ # Pages views
+│ └── models/ # Interfaces & classes
+├── assets/
+└── environments/
+
+## 🚀 Installation & Setup
+
+### 1. Clone repository
+```bash
+git clone https://github.com/farahdridi03/Esprit-PIDEV_SE-4SE2-2526-MedicareIAreIAFrontend.git
+
+2. Move to project directory
+cd Esprit-PIDEV_SE-4SE2-2526-MedicareIAreIAFrontend
+
+Install dependencies
+npm install
+4. Run application
+npm start
+
+Application runs on:
+
+http://localhost:4200
 
 🚀 Fonctionnalités
 
