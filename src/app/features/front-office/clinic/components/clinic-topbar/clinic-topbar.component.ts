@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { EmergencyService, EmergencyAlertResponse } from '../../../../../services/emergency.service';
-import { AmbulanceService } from '../../../../../services/ambulance.service';
 import { WebSocketNotificationService, WsNotification } from '../../../../../services/websocket-notification.service';
 
 @Component({
@@ -29,7 +28,6 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private authService: AuthService,
     private emergencyService: EmergencyService,
-    private ambulanceService: AmbulanceService,
     private wsNotif: WebSocketNotificationService
   ) {}
 
@@ -98,54 +96,20 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
     this.dispatchingAlertId = alertData.id;
     this.dispatchMessage = '';
 
-    this.ambulanceService.getAll().subscribe({
-      next: (ambulances) => {
-        const available = ambulances.filter(
-          a => a.status !== 'ON_DUTY' && a.status !== 'EN_TRAVAIL'
-        );
-
-        if (available.length === 0) {
-          this.dispatchMessage = '⚠️ No ambulance available. All are currently on duty.';
-          this.dispatchSuccess = false;
-          this.dispatchingAlertId = null;
-          return;
-        }
-
-        const ambulance = available[0];
-
-        this.ambulanceService.update(ambulance.id, {
-          clinicId: ambulance.clinicId,
-          currentLat: alertData.latitude,
-          currentLng: alertData.longitude,
-          licensePlate: ambulance.licensePlate,
-          status: 'ON_DUTY'
-        }).subscribe({
-          next: () => {
-            this.emergencyService.updateAlertStatus(alertData.id, 'RESOLVED').subscribe({
-              next: () => {
-                this.notifications = this.notifications.filter(a => a.id !== alertData.id);
-                const plate = ambulance.licensePlate || `#${ambulance.id}`;
-                this.dispatchMessage = `✅ Ambulance ${plate} dispatched successfully. Alert resolved.`;
-                this.dispatchSuccess = true;
-                this.dispatchingAlertId = null;
-                setTimeout(() => { this.dispatchMessage = ''; }, 4000);
-              },
-              error: () => {
-                this.dispatchMessage = '⚠️ Ambulance dispatched but failed to resolve alert.';
-                this.dispatchSuccess = false;
-                this.dispatchingAlertId = null;
-              }
-            });
-          },
-          error: () => {
-            this.dispatchMessage = '❌ Failed to dispatch ambulance. Please try again.';
-            this.dispatchSuccess = false;
-            this.dispatchingAlertId = null;
-          }
-        });
+    // Appel unique au backend : Haversine + choix ambulance + mise à jour statuts
+    this.emergencyService.autoDispatch(alertData.id).subscribe({
+      next: (result) => {
+        this.notifications = this.notifications.filter(a => a.id !== alertData.id);
+        this.dispatchMessage =
+          `✅ Ambulance ${result.ambulanceLicensePlate} dispatched` +
+          ` (${result.distanceKm} km) → ${result.clinicName}`;
+        this.dispatchSuccess = true;
+        this.dispatchingAlertId = null;
+        setTimeout(() => { this.dispatchMessage = ''; }, 5000);
       },
-      error: () => {
-        this.dispatchMessage = '❌ Could not load ambulances.';
+      error: (err) => {
+        const msg = err?.error?.message || err?.message || 'Unknown error';
+        this.dispatchMessage = `❌ Dispatch failed: ${msg}`;
         this.dispatchSuccess = false;
         this.dispatchingAlertId = null;
       }

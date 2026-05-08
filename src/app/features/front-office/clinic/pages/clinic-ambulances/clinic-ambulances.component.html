@@ -42,13 +42,44 @@
                 placeholder="e.g. AMB-001"
                 required />
             </div>
-            
+
             <div class="form-group">
               <label for="status">Status</label>
               <select id="status" [(ngModel)]="form.status" name="status">
                 <option value="AVAILABLE">AVAILABLE</option>
                 <option value="ON_DUTY">ON DUTY</option>
               </select>
+            </div>
+
+            <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:12px; margin-bottom:12px;">
+              <div style="font-size:0.82rem; font-weight:700; color:#166534; margin-bottom:8px;">
+                📍 GPS Position (required for auto-dispatch)
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="currentLat" style="font-size:0.8rem;">Latitude</label>
+                  <input
+                    id="currentLat"
+                    type="number"
+                    step="0.0001"
+                    [(ngModel)]="form.currentLat"
+                    name="currentLat"
+                    placeholder="e.g. 36.8189" />
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="currentLng" style="font-size:0.8rem;">Longitude</label>
+                  <input
+                    id="currentLng"
+                    type="number"
+                    step="0.0001"
+                    [(ngModel)]="form.currentLng"
+                    name="currentLng"
+                    placeholder="e.g. 10.1658" />
+                </div>
+              </div>
+              <div style="font-size:0.75rem; color:#6b7280; margin-top:6px;">
+                💡 Tunis centre : 36.8189, 10.1658 — Sfax : 34.7406, 10.7603
+              </div>
             </div>
 
             <div class="modal-actions">

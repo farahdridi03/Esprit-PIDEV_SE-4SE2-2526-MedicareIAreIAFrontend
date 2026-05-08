@@ -12,6 +12,8 @@ export interface WsNotification {
   read:         boolean;
 }
 
+const ADMIN_STORAGE_KEY = 'ws_admin_notifications';
+
 @Injectable({ providedIn: 'root' })
 export class WebSocketNotificationService implements OnDestroy {
 
@@ -20,8 +22,8 @@ export class WebSocketNotificationService implements OnDestroy {
   private client!: Client;
   private connected = false;
 
-  // Notifications admin
-  private adminNotifs = new BehaviorSubject<WsNotification[]>([]);
+  // Notifications admin — initialisées depuis localStorage
+  private adminNotifs = new BehaviorSubject<WsNotification[]>(this.loadAdminFromStorage());
   adminNotifications$ = this.adminNotifs.asObservable();
 
   // Notifications patient
@@ -99,8 +101,11 @@ export class WebSocketNotificationService implements OnDestroy {
         (msg: IMessage) => {
           this.zone.run(() => {
             const notif: WsNotification = { ...JSON.parse(msg.body), read: false };
-            const current = this.adminNotifs.value;
-            this.adminNotifs.next([notif, ...current].slice(0, 50));
+            // Éviter les doublons (même id déjà présent)
+            const current = this.adminNotifs.value.filter(n => n.id !== notif.id);
+            const updated = [notif, ...current].slice(0, 50);
+            this.adminNotifs.next(updated);
+            this.saveAdminToStorage(updated);
           });
         }
       );
@@ -147,6 +152,22 @@ export class WebSocketNotificationService implements OnDestroy {
     });
   }
 
+  /** Publier un message vers le serveur (ex: /app/admin/notify) */
+  publish(destination: string, body: object): void {
+    this.waitForConnection(() => {
+      this.client.publish({ destination, body: JSON.stringify(body) });
+    });
+  }
+
+  /** Ajouter manuellement une notification admin (ex: depuis REST fallback) */
+  addAdminNotification(notif: WsNotification): void {
+    const current = this.adminNotifs.value;
+    if (current.some(n => n.id === notif.id)) return; // éviter doublon
+    const updated = [notif, ...current].slice(0, 50);
+    this.adminNotifs.next(updated);
+    this.saveAdminToStorage(updated);
+  }
+
   unsubscribeAdmin(): void {
     this.adminSub?.unsubscribe();
     this.adminSub = null;
@@ -167,6 +188,7 @@ export class WebSocketNotificationService implements OnDestroy {
   markAdminRead(): void {
     const updated = this.adminNotifs.value.map(n => ({ ...n, read: true }));
     this.adminNotifs.next(updated);
+    this.saveAdminToStorage(updated);
   }
 
   markPatientRead(): void {
@@ -174,7 +196,10 @@ export class WebSocketNotificationService implements OnDestroy {
     this.patientNotifs.next(updated);
   }
 
-  clearAdmin(): void { this.adminNotifs.next([]); }
+  clearAdmin(): void {
+    this.adminNotifs.next([]);
+    localStorage.removeItem(ADMIN_STORAGE_KEY);
+  }
   clearPatient(): void { this.patientNotifs.next([]); }
 
   get adminUnreadCount(): number {
@@ -183,6 +208,21 @@ export class WebSocketNotificationService implements OnDestroy {
 
   get patientUnreadCount(): number {
     return this.patientNotifs.value.filter(n => !n.read).length;
+  }
+
+  // ─── Persistence localStorage ─────────────────────────────────────────────
+
+  private loadAdminFromStorage(): WsNotification[] {
+    try {
+      const raw = localStorage.getItem(ADMIN_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }
+
+  private saveAdminToStorage(notifs: WsNotification[]): void {
+    try {
+      localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(notifs));
+    } catch {}
   }
 
   /** Attend que la connexion STOMP soit active avant d'exécuter callback */

@@ -458,12 +458,6 @@ export class DonationsComponent implements OnInit {
     } else {
       this.donationService.createAidRequest(reqDto).subscribe({
         next: () => {
-          // 🔔 Notify admin
-          this.notificationService.addNotification(
-            'Nouvelle demande d\'aide',
-            `${this.currentUserName || 'Un patient'} a soumis une nouvelle demande d'aide.`,
-            'aid_request'
-          );
           this.closeRequestModal();
           this.loadMyRequests();
         },

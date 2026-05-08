@@ -61,12 +61,12 @@ export class ClinicAmbulancesComponent implements OnInit {
 
   openAddForm() {
     this.editingId = null;
-    this.form = { 
-      clinicId: this.authService.getUserId(), 
-      licensePlate: '', 
-      currentLat: 0, 
-      currentLng: 0, 
-      status: 'AVAILABLE' 
+    this.form = {
+      clinicId: this.authService.getUserId(),
+      licensePlate: '',
+      currentLat: 36.8189,   // Tunis par défaut
+      currentLng: 10.1658,
+      status: 'AVAILABLE'
     };
     this.showForm = true;
   }
