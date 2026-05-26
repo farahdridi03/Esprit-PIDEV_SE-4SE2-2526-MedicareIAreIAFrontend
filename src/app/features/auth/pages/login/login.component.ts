@@ -61,21 +61,42 @@ export class LoginComponent {
     }
 
     const cleanRole = role.replace(/^ROLE_/, '').toUpperCase();
+    let targetRoute = '/front';
 
-    const routes: { [key: string]: string } = {
-      'ADMIN': '/admin/dashboard',
-      'DOCTOR': '/front/doctor/dashboard',
-      'PATIENT': '/front/patient/dashboard',
-      'NUTRITIONIST': '/front/nutritionist/dashboard',
-      'LABORATORY_STAFF': '/front/laboratorystaff/dashboard',
-      'LABORATORYSTAFF': '/front/laboratorystaff/dashboard',
-      'PHARMACIST': '/front/pharmacist/dashboard',
-      'CLINIC': '/front/clinic/dashboard',
-      'HOME_CARE_PROVIDER': '/front/home-care',
-      'VISITOR': '/front',
-    };
-
-    let targetRoute = routes[cleanRole] ?? '/front';
+    switch (cleanRole) {
+      case 'ADMIN':
+        targetRoute = '/admin/dashboard';
+        break;
+      case 'DOCTOR':
+        targetRoute = '/front/doctor/dashboard';
+        break;
+      case 'PATIENT':
+        targetRoute = '/front/patient/dashboard';
+        break;
+      case 'NUTRITIONIST':
+        targetRoute = '/front/nutritionist/dashboard';
+        break;
+      case 'LABORATORY':
+      case 'LABORATORY_STAFF':
+      case 'LABORATORYSTAFF':
+        targetRoute = '/front/laboratorystaff/dashboard';
+        break;
+      case 'PHARMACIST':
+        targetRoute = '/front/pharmacist/dashboard';
+        break;
+      case 'CLINIC':
+        targetRoute = '/front/clinic/dashboard';
+        break;
+      case 'HOME_CARE_PROVIDER':
+      case 'HOME_CARE':
+        targetRoute = '/front/home-care/provider-dashboard';
+        break;
+      case 'VISITOR':
+      default:
+        console.warn('Unknown or unspecific role, defaulting to /front:', cleanRole);
+        targetRoute = '/front';
+        break;
+    }
 
     console.log('Target route identified:', targetRoute);
     this.router.navigate([targetRoute]).then(success => {

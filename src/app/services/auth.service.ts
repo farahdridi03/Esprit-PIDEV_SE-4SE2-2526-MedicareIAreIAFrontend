@@ -37,39 +37,44 @@ export class AuthService {
         );
     }
 
-    register(payload: RegisterRequest): Observable<string> {
-        return this.http.post(
-            `${this.baseUrl}/register`,
-            payload,
-            { responseType: 'text' }
-        ) as Observable<string>;
+    // The backend now expects multipart/form-data
+    register(formData: FormData): Observable<string> {
+        return this.http.post(`${this.baseUrl}/register`, formData, { responseType: 'text' }) as Observable<string>;
     }
 
     logout(): void {
         localStorage.removeItem(this.TOKEN_KEY);
         localStorage.removeItem('currentUser');
         this.authStatusSubject.next(false);
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/front']);
     }
 
     getToken(): string | null {
         return localStorage.getItem(this.TOKEN_KEY);
     }
 
-    // ✅ Unified — now just uses the main User ID
-    getPatientId(): number {
-        return this.getUserId() || 0;
-    }
-
-    isAuthenticated(): boolean {
+    getUserId(): number | null {
         const token = this.getToken();
-        if (!token) return false;
+        if (!token) return null;
+
         try {
             const decoded: any = jwtDecode(token);
-            const currentTime = Math.floor(Date.now() / 1000);
-            return decoded.exp > currentTime;
+            if (decoded.id) return decoded.id;
+            if (decoded.userId) return decoded.userId;
+            return null;
         } catch (error) {
-            return false;
+            return null;
+        }
+    }
+
+    getUserEmail(): string | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.sub || decoded.email || null;
+        } catch (error) {
+            return null;
         }
     }
 
@@ -97,61 +102,19 @@ export class AuthService {
         }
     }
 
-    getUserEmail(): string | null {
-        const token = this.getToken();
-        if (!token) return null;
-        try {
-            const decoded: any = jwtDecode(token);
-            return decoded.sub || decoded.email || null;
-        } catch (error) {
-            return null;
-        }
-    }
-    getHomeCareServices(): Observable<any[]> {
-        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
-    }
-
-    getUserId(): number | null {
-        const token = this.getToken();
-        if (!token) return null;
-
-        try {
-            const decoded: any = jwtDecode(token);
-            const userId = decoded.id || decoded.userId || decoded.providerId;
-            return userId ? parseInt(userId, 10) : null;
-        } catch (error) {
-            return null;
-        }
-    }
-
-    getUserGender(): string {
-        const token = this.getToken();
-        if (!token) return 'UNKNOWN';
-        try {
-            const decoded: any = jwtDecode(token);
-            return decoded.gender || 'UNKNOWN';
-        } catch (error) {
-            return 'UNKNOWN';
-        }
-    }
-
-    getParentRole() {
-        const gender = this.getUserGender();
-        if (gender === 'FEMALE') {
-            return { label: 'Maman', badge: 'MAMA' };
-        } else if (gender === 'MALE') {
-            return { label: 'Papa', badge: 'PAPA' };
-        }
-        return { label: 'Parent', badge: 'PARENT' };
-    }
-
     getUserFullName(): string | null {
         const token = this.getToken();
         if (!token) return null;
+
         try {
             const decoded: any = jwtDecode(token);
-            const name = decoded.fullName || decoded.fullname || decoded.name;
-            if (name) return name;
+            const name = decoded.fullName || decoded.fullname || decoded.name || decoded.username || decoded.preferred_username;
+            if (name && typeof name === 'string') return name;
+
+            if (decoded.firstName || decoded.lastName) {
+                return `${decoded.firstName || ''} ${decoded.lastName || ''}`.trim();
+            }
+
             const sub = decoded.sub || decoded.email;
             if (sub && sub.includes('@')) {
                 return sub.split('@')[0];
@@ -161,6 +124,27 @@ export class AuthService {
             return null;
         }
     }
+
+    isAuthenticated(): boolean {
+        const token = this.getToken();
+        if (!token) return false;
+        try {
+            const decoded: any = jwtDecode(token);
+            const currentTime = Math.floor(Date.now() / 1000);
+            return decoded.exp > currentTime;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    getHomeCareServices(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8081/springsecurity/api/home-care-services`);
+    }
+
+    getPatientId(): number {
+        return this.getUserId() || 0;
+    }
+
     forgotPassword(email: string): Observable<string> {
         return this.http.post(
             `${this.baseUrl}/forgot-password`,
@@ -186,21 +170,24 @@ export class AuthService {
         } catch { return null; }
     }
 
-    getFullName(): string | null {
+    getUserGender(): string {
         const token = this.getToken();
-        if (!token) return null;
+        if (!token) return 'UNKNOWN';
         try {
             const decoded: any = jwtDecode(token);
-            return decoded.fullName ?? null;
-        } catch { return null; }
+            return decoded.gender || 'UNKNOWN';
+        } catch (error) {
+            return 'UNKNOWN';
+        }
     }
 
-    getRole(): string | null {
-        const token = this.getToken();
-        if (!token) return null;
-        try {
-            const decoded: any = jwtDecode(token);
-            return decoded.role ?? null;
-        } catch { return null; }
+    getParentRole() {
+        const gender = this.getUserGender();
+        if (gender === 'FEMALE') {
+            return { label: 'Maman', badge: 'MAMA' };
+        } else if (gender === 'MALE') {
+            return { label: 'Papa', badge: 'PAPA' };
+        }
+        return { label: 'Parent', badge: 'PARENT' };
     }
 }

@@ -1,0 +1,875 @@
+﻿
+> medi-care-ai@0.0.0 build
+> ng build
+
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+Application bundle generation failed. [4.809 seconds]
+
+node.exe : 
+[1m[31m[31mX [41;31m[
+[41;97mERROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (  
+  [1m[31m[31mX...r-co   
+ mpiler][0m:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+
+    src/app/features/front
+-office/clinic/clinic.modu
+le.ts:29:4:
+[37m      29 Ôöé     
+[32mLayoutModule[37m
+         ÔòÁ     
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996007: The 
+Component 
+'DoctorSidebarComponent' 
+is declared by more than 
+one NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:10:13:
+[37m      10 Ôöé export 
+class [32mDoctorSidebarCo
+mponent[37m implements 
+OnInit {
+         ÔòÁ              
+[32m~~~~~~~~~~~~~~~~~~~~~
+~[0m
+
+  
+'DoctorSidebarComponent' 
+is listed in the 
+declarations of the 
+NgModule 'LayoutModule'.
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:27:4:
+[37m      27 Ôöé     [32
+mDoctorSidebarComponent[3
+7m,
+         ÔòÁ     [32m~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+  
+'DoctorSidebarComponent' 
+is listed in the 
+declarations of the 
+NgModule 
+'FrontOfficeModule'.
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:105:4:
+[37m      105 Ôöé     [3
+2mDoctorSidebarComponent[
+37m,
+          ÔòÁ     [32m~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996008: Component 
+DoctorTopbarComponent is 
+standalone, and cannot be 
+declared in an NgModule. 
+Did you mean to import it 
+instead?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:106:4:
+[37m      106 Ôöé     [3
+2mDoctorTopbarComponent[3
+7m,
+          ÔòÁ     [32m~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:122:4:
+[37m      122 Ôöé     [3
+2mLifestyleSharedModule[3
+7m,
+          ÔòÁ     [32m~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:124:4:
+[37m      124 Ôöé     
+[32mLayoutModule[37m,
+          ÔòÁ     
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 
+'toggleNotifPanel' does 
+not exist on type 'HomeCar
+eTopbarComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.html:
+22:53:
+[37m      22 Ôöé ...class
+="notification-container" 
+(click)="[32mtoggleNotifP
+anel[37m($event)">
+         ÔòÁ              
+                          
+    
+[32m~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+HomeCareTopbarComponent.
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.ts:10
+:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./home-
+care-topbar.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'showNotifPanel' 
+does not exist on type 'Ho
+meCareTopbarComponent'.[0
+m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.html:
+31:54:
+[37m      31 Ôöé 
+...ication-dropdown" *ngIf
+="[32mshowNotifPanel[37m
+" 
+(click)="$event.stopPr...
+         ÔòÁ              
+               
+[32m~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+HomeCareTopbarComponent.
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.ts:10
+:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./home-
+care-topbar.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'markAllAsRead' 
+does not exist on type 'Ho
+meCareTopbarComponent'.[0
+m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.html:
+34:52:
+[37m      34 Ôöé 
+...lass="mark-all" (click)
+="[32mmarkAllAsRead[37m(
+)">Marquer tout comme 
+lu...
+         ÔòÁ              
+               
+[32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+HomeCareTopbarComponent.
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.ts:10
+:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./home-
+care-topbar.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'markAsRead' 
+does not exist on type 'Ho
+meCareTopbarComponent'.[0
+m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.html:
+43:34:
+[37m      43 Ôöé         
+                 (click)="
+[32mmarkAsRead[37m(n)">
+         ÔòÁ              
+                     
+[32m~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+HomeCareTopbarComponent.
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.ts:10
+:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./home-
+care-topbar.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 
+'getNotificationIcon' 
+does not exist on type 'Ho
+meCareTopbarComponent'.[0
+m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.html:
+44:50:
+[37m      44 Ôöé ...    
+<div class="item-icon">{{ 
+[32mgetNotificationIcon[
+37m(n.type) }}</div>
+         ÔòÁ              
+                    [32m~
+~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+HomeCareTopbarComponent.
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.ts:10
+:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./home-
+care-topbar.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/home-car
+e.module.ts:53:8:
+[37m      53 Ôöé         
+[32mLayoutModule[37m
+         ÔòÁ         
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996007: The 
+Component 'LaboratoryStaff
+SidebarComponent' is 
+declared by more than one 
+NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/laboratory/compone
+nts/laboratory-sidebar/lab
+oratory-sidebar.component.
+ts:10:13:
+[37m      10 Ôöé export 
+class [32mLaboratoryStaff
+SidebarComponent[37m 
+implements OnInit {
+         ÔòÁ              
+[32m~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~[0m
+
+  'LaboratoryStaffSidebarC
+omponent' is listed in 
+the declarations of the 
+NgModule 'LayoutModule'.
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:29:4:
+[37m      29 Ôöé     [32
+mLaboratoryStaffSidebarCom
+ponent[37m,
+         ÔòÁ     [32m~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~[0m
+
+  'LaboratoryStaffSidebarC
+omponent' is listed in 
+the declarations of the 
+NgModule 
+'LaboratoryStaffModule'.
+
+    src/app/features/front
+-office/laboratory/laborat
+ory.module.ts:42:8:
+[37m      42 Ôöé         
+[32mLaboratoryStaffSideba
+rComponent[37m,
+         ÔòÁ         [32m
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996008: Component 
+PharmacistTopbarComponent 
+is standalone, and cannot 
+be declared in an 
+NgModule. Did you mean to 
+import it instead?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:28:4:
+[37m      28 Ôöé     [32
+mPharmacistTopbarComponent
+[37m,
+         ÔòÁ     [32m~~~~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-992011: The 
+component 'LaboratoryTopba
+rComponent' appears in 
+'imports', but is not 
+standalone and cannot be 
+imported directly.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:43:4:
+[37m      43 Ôöé     [32
+mLaboratoryTopbarComponent
+[37m,
+         ÔòÁ     [32m~~~~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+  It's declared in the 
+'LaboratoryStaffModule' 
+NgModule, but is not 
+exported. Consider 
+exporting it and 
+importing the NgModule 
+instead.
+
+    src/app/features/front
+-office/laboratory/laborat
+ory.module.ts:61:13:
+[37m      61 Ôöé export 
+class [32mLaboratoryStaff
+Module[37m { }
+         ÔòÁ              
+[32m~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996004: Can't be 
+exported from this 
+NgModule, as it must be 
+imported first[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:55:4:
+[37m      55 Ôöé     [32
+mPharmacistTopbarComponent
+[37m,
+         ÔòÁ     [32m~~~~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996004: Can't be 
+exported from this 
+NgModule, as it must be 
+either declared by this 
+NgModule, or imported 
+here via its NgModule 
+first[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:59:4:
+[37m      59 Ôöé     [32
+mLaboratoryTopbarComponent
+[37m,
+         ÔòÁ     [32m~~~~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: NgModule 
+"import" field contains a 
+cycle[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:66:13:
+[37m      66 Ôöé export 
+class 
+[32mLayoutModule[37m { }
+         ÔòÁ              
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-topbar/
+nutritionist-topbar.compon
+ent.ts:19:0:
+[37m      19 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-topbar/
+nutritionist-topbar.compon
+ent.ts:33:0:
+[37m      33 Ôöé 
+[32m=======[37m
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-topbar/
+nutritionist-topbar.compon
+ent.ts:49:0:
+[37m      49 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/nutri
+tionist.module.ts:74:8:
+[37m      74 Ôöé         
+[32mLifestyleSharedModule
+[37m,
+         ÔòÁ         [32m
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/nutri
+tionist.module.ts:76:8:
+[37m      76 Ôöé         
+[32mLayoutModule[37m
+         ÔòÁ         
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2554: Expected 2 
+arguments, but got 1.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/components
+/password-modal/password-m
+odal.component.ts:40:21:
+[37m      40 Ôöé     this
+.userService.[32mchangePa
+ssword[37m(request).subsc
+ribe({
+         ÔòÁ              
+        
+[32m~~~~~~~~~~~~~~[0m
+
+  An argument for 
+'passwordData' was not 
+provided.
+
+    src/app/services/user.
+service.ts:130:40:
+[37m      130 Ôöé 
+...ssword(id: number | 
+string, 
+[32mpasswordData: 
+any[37m): 
+Observable<any> {
+          ÔòÁ             
+                   
+[32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG5002: Opening tag 
+":svg:path" not 
+terminated.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/components
+/sidebar/sidebar.component
+.html:95:24:
+[37m      95 Ôöé ...     
+         [32m<path 
+stroke-linecap="round" str
+oke-linejoin="round"[37m
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+SidebarComponent.
+
+    src/app/features/front
+-office/patient/components
+/sidebar/sidebar.component
+.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./sideb
+ar.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG5002: Unexpected 
+closing tag ":svg:svg". 
+It may happen when the 
+tag has already been 
+closed by another tag. 
+For more info see https://
+www.w3.org/TR/html5/syntax
+.html#closing-elements-tha
+t-have-implied-end-tags[0
+m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/components
+/sidebar/sidebar.component
+.html:105:20:
+[37m      105 Ôöé        
+             
+[32m</svg>[37m
+          ÔòÁ             
+        [32m~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+SidebarComponent.
+
+    src/app/features/front
+-office/patient/components
+/sidebar/sidebar.component
+.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./sideb
+ar.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG5002: Unexpected 
+closing tag "span". It 
+may happen when the tag 
+has already been closed 
+by another tag. For more 
+info see https://www.w3.or
+g/TR/html5/syntax.html#clo
+sing-elements-that-have-im
+plied-end-tags[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/components
+/sidebar/sidebar.component
+.html:106:16:
+[37m      106 Ôöé        
+         [32m</span>[37m
+          ÔòÁ             
+    [32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+SidebarComponent.
+
+    src/app/features/front
+-office/patient/components
+/sidebar/sidebar.component
+.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./sideb
+ar.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG1: 
+Property 'router' is 
+private and only 
+accessible within class 
+'TopbarComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/components
+/topbar/topbar.component.h
+tml:70:52:
+[37m      70 Ôöé 
+...ass="dropdown-item" (cl
+ick)="[32mrouter[37m.nav
+igate(['/front/patient/p..
+.
+         ÔòÁ              
+                   
+[32m~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+TopbarComponent.
+
+    src/app/features/front
+-office/patient/components
+/topbar/topbar.component.t
+s:16:15:
+[37m      16 Ôöé   
+templateUrl: [32m'./topba
+r.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/lifestyle-
+shared.module.ts:15:4:
+[37m      15 Ôöé     
+[32mLayoutModule[37m
+         ÔòÁ     
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/pharmac
+ist.module.ts:34:4:
+[37m      34 Ôöé     
+[32mLayoutModule[37m
+         ÔòÁ     
+[32m~~~~~~~~~~~~[0m
+
+[39m[22m

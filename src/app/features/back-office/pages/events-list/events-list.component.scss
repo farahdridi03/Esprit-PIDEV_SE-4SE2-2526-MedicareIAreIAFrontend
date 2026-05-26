@@ -1,0 +1,25 @@
+.ucell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    img {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid #eee;
+    }
+
+    .mav {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: #f0f4f8;
+        font-weight: 600;
+        color: #4a5568;
+    }
+}

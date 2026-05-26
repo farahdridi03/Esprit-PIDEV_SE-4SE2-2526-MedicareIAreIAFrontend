@@ -1,0 +1,396 @@
+<div class="dashboard-wrapper">
+    <app-patient-sidebar></app-patient-sidebar>
+
+    <div class="main-body">
+        <app-patient-topbar></app-patient-topbar>
+
+        <div class="content-area">
+            <div class="order-detail-main-content">
+
+                <!-- Header Banner -->
+                <div class="welcome-banner">
+                    <div class="banner-content">
+                        <div class="banner-text">
+                            <h1>Order Details #{{ orderId }}</h1>
+                            <p *ngIf="order">Tracking and summary of your medication order.</p>
+                        </div>
+                        <div class="banner-actions" *ngIf="order && !isLoading">
+                            <button class="action-btn white shadow" (click)="downloadInvoice()">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                                Facture PDF
+                            </button>
+                            <button *ngIf="(order.status === 'VALIDATED' || order.status === 'PAYMENT_PENDING') && !existingPayment" class="action-btn primary shadow" (click)="openPaymentModal()">
+                                Payer maintenant
+                            </button>
+                            <button *ngIf="order.status === 'PENDING'" class="action-btn danger shadow" (click)="openCancelModal()">
+                                Annuler
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back Action -->
+                <div class="page-nav">
+                    <button class="back-link" (click)="goBack()">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Retour aux commandes
+                    </button>
+                </div>
+
+                <!-- Loading State -->
+                <div class="states-wrapper" *ngIf="isLoading">
+                    <div class="info-card center">
+                        <div class="spinner"></div>
+                        <p>Loading order details...</p>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div class="states-wrapper" *ngIf="error && !isLoading">
+                    <div class="info-card center error">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="state-icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <p>{{ error }}</p>
+                        <button class="action-btn outline mt-3" (click)="loadOrderDetails()">Retry</button>
+                    </div>
+                </div>
+
+                <!-- Tracking Stepper -->
+                <div class="tracking-stepper" *ngIf="order && order.deliveryType === 'HOME_DELIVERY' && order.status !== 'CANCELLED' && order.status !== 'REJECTED'">
+                    <!-- Step 1: Commandée -->
+                    <div class="step" [class.completed]="order.status !== 'PENDING'" [class.active]="order.status === 'PENDING'">
+                        <div class="step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <div class="step-label">Commandée</div>
+                    </div>
+
+                    <!-- Step 2: Payée (ou validée si pas de paiement requis) -->
+                    <div class="step" [class.completed]="['PAID', 'ASSIGNING', 'ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.status)" [class.active]="['VALIDATED', 'PAYMENT_PENDING'].includes(order.status)">
+                        <div class="step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            </svg>
+                        </div>
+                        <div class="step-label">Payée</div>
+                    </div>
+
+                    <!-- Step 3: Préparée / Livreur assigné -->
+                    <div class="step" [class.completed]="['ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.status)" [class.active]="['PAID', 'ASSIGNING'].includes(order.status)">
+                        <div class="step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                            </svg>
+                        </div>
+                        <div class="step-label">Préparée</div>
+                    </div>
+
+                    <!-- Step 4: En transit -->
+                    <div class="step" [class.completed]="['OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.status)" [class.active]="['ASSIGNED', 'PICKED_UP'].includes(order.status)">
+                        <div class="step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1" />
+                            </svg>
+                        </div>
+                        <div class="step-label">En route</div>
+                    </div>
+
+                    <!-- Step 5: Livrée -->
+                    <div class="step" [class.completed]="order.status === 'DELIVERED'" [class.active]="order.status === 'OUT_FOR_DELIVERY'">
+                        <div class="step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <div class="step-label">Livrée</div>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="order-content" *ngIf="!isLoading && order">
+                    
+                    <div class="info-grid">
+                        <!-- General Info -->
+                        <div class="detail-card">
+                            <div class="card-header">
+                                <div class="icon-circle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h3>General</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="data-row">
+                                    <span class="label">Date:</span>
+                                    <span class="value">{{ order.createdAt | date:'medium' }}</span>
+                                </div>
+                                <div class="data-row">
+                                    <span class="label">Status:</span>
+                                    <span class="status-badge" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+                                </div>
+                                <div class="data-row">
+                                    <span class="label">Pharmacy:</span>
+                                    <span class="value">{{ order.pharmacyName || 'N/A' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Info -->
+                        <div class="detail-card">
+                            <div class="card-header">
+                                <div class="icon-circle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1" />
+                                    </svg>
+                                </div>
+                                <h3>Delivery</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="data-row">
+                                    <span class="label">Type:</span>
+                                    <span class="value">{{ order.deliveryType || 'PICKUP' }}</span>
+                                </div>
+                                <div class="data-row">
+                                    <span class="label">Address:</span>
+                                    <span class="value">{{ order.deliveryAddress }}</span>
+                                </div>
+                                <div class="data-row">
+                                    <span class="label">Deadline:</span>
+                                    <span class="value">{{ order.scheduledDeliveryDate ? (order.scheduledDeliveryDate | date:'mediumDate') : 'As soon as possible' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Info -->
+                        <div class="detail-card" *ngIf="existingPayment">
+                            <div class="card-header">
+                                <div class="icon-circle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
+                                </div>
+                                <h3>Payment</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="data-row">
+                                    <span class="label">Method:</span>
+                                    <span class="value">{{ existingPayment.method }}</span>
+                                </div>
+                                <div class="data-row">
+                                    <span class="label">Status:</span>
+                                    <span class="status-badge" [ngClass]="existingPayment.status.toLowerCase()">{{ existingPayment.status }}</span>
+                                </div>
+                                <div class="data-row" *ngIf="existingPayment.transactionId">
+                                    <span class="label">Transaction:</span>
+                                    <span class="value small">{{ existingPayment.transactionId }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prescription (if any) -->
+                        <div class="detail-card full-width" *ngIf="order.prescriptionImageUrl">
+                            <div class="card-header">
+                                <div class="icon-circle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <h3>Attached Prescription</h3>
+                            </div>
+                            <div class="card-body prescription-container">
+                                <a [href]="order.prescriptionImageUrl" target="_blank" class="prescription-link">
+                                    <img [src]="order.prescriptionImageUrl" alt="Ordonnance">
+                                    <div class="img-overlay">
+                                        <span>Click to enlarge</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WebSocket Live Tracking -->
+                    <div class="tracking-section card" *ngIf="delivery">
+                        <div class="card-header">
+                            <div class="live-indicator">
+                                <span class="dot"></span>
+                                LIVE TRACKING
+                            </div>
+                            <h3>Delivery Location</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="tracking-meta">
+                                <div class="meta-item">\n                                    <span class="label">Courier</span>
+                                    <span class="value">{{ delivery.agencyName }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="label">Status</span>
+                                    <span class="value highlight">{{ delivery.status }}</span>
+                                </div>
+                                <div class="meta-item" *ngIf="delivery.estimatedArrival">
+                                    <span class="label">Expected arrival</span>
+                                    <span class="value time">{{ delivery.estimatedArrival | date:'shortTime' }}</span>
+                                </div>
+                            </div>
+
+                            <div class="live-map">
+                                <div class="delivery-marker" [style.left.%]="delivery.currentLng ? (50 + (delivery.currentLng % 1) * 10) : 45" [style.top.%]="delivery.currentLat ? (50 + (delivery.currentLat % 1) * 10) : 45">
+                                    <div class="marker-pin">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="marker-label">Courier position</div>
+                                </div>
+                                <div class="map-status">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" [class.pulse]="delivery.currentLat">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                                    </svg>
+                                    <span>{{ delivery.currentLat ? 'Position updated in real time' : 'Waiting for GPS signal...' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items Table -->
+                    <div class="items-section card">
+                        <div class="card-header">
+                            <h3>Order Contents</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Medication</th>
+                                        <th class="center">Quantity</th>
+                                        <th class="right">Unit Price</th>
+                                        <th class="right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of order.items">
+                                        <td class="name-cell">{{ item.productName || 'Medication ID: ' + item.productId }}</td>
+                                        <td class="center">{{ item.quantity }}</td>
+                                        <td class="right">{{ (item.price / item.quantity) | currency:'TND':'symbol' }}</td>
+                                        <td class="right font-bold">{{ item.price | currency:'TND':'symbol' }}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="right label-cell">TOTAL</td>
+                                        <td class="right total-cell">{{ order.totalPrice | currency:'TND':'symbol' }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Payment Modal -->
+                <div class="dashboard-modal-overlay" *ngIf="showPaymentModal">
+                    <div class="dashboard-modal">
+                        <div class="modal-head">
+                            <h3>Choose payment method</h3>
+                            <button class="close-btn" (click)="closePaymentModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="success-state" *ngIf="paymentSuccess">
+                                <div class="success-icon-circle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <h3>Payment successful!</h3>
+                                <p>Your order has been updated successfully.</p>
+                            </div>
+
+                            <ng-container *ngIf="!paymentSuccess">
+                                <p>Select your preferred payment method for order <strong>#{{ orderId }}</strong> :</p>
+                                
+                                <div class="payment-methods-grid">
+                                    <div class="method-option" [class.active]="selectedPaymentMethod === 'STRIPE'" (click)="onPaymentMethodSelect('STRIPE')">
+                                        <div class="method-icon">💳</div>
+                                        <div class="method-info">
+                                            <span class="name">Card Payment (Stripe)</span>
+                                            <span class="desc">Secured by Stripe</span>
+                                        </div>
+                                        <div class="check-mark" *ngIf="selectedPaymentMethod === 'STRIPE'">✓</div>
+                                    </div>
+
+                                    <div class="method-option" [class.active]="selectedPaymentMethod === 'D17'" (click)="onPaymentMethodSelect('D17')">
+                                        <div class="method-icon">📱</div>
+                                        <div class="method-info">
+                                            <span class="name">D17 (Tunisia)</span>
+                                            <span class="desc">Mobile wallet</span>
+                                        </div>
+                                        <div class="check-mark" *ngIf="selectedPaymentMethod === 'D17'">✓</div>
+                                    </div>
+
+                                    <div class="method-option" [class.active]="selectedPaymentMethod === 'CASH_ON_DELIVERY'" (click)="onPaymentMethodSelect('CASH_ON_DELIVERY')">
+                                        <div class="method-icon">💵</div>
+                                        <div class="method-info">
+                                            <span class="name">Cash on Delivery</span>
+                                            <span class="desc">Pay in cash</span>
+                                        </div>
+                                        <div class="check-mark" *ngIf="selectedPaymentMethod === 'CASH_ON_DELIVERY'">✓</div>
+                                    </div>
+                                </div>
+
+                                <!-- Stripe Card Element -->
+                                <div class="stripe-card-container" [hidden]="selectedPaymentMethod !== 'STRIPE' || isProcessingPayment">
+                                    <label for="card-element">Card Information</label>
+                                    <div id="card-element">
+                                        <!-- A Stripe Element will be inserted here. -->
+                                    </div>
+                                    <div id="card-errors" role="alert"></div>
+                                </div>
+
+                                <div class="payment-processing-status" *ngIf="isProcessingPayment">
+                                    <div class="btn-spinner big"></div>
+                                    <p>Processing payment...</p>
+                                    <span class="small">Please don't close this window.</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div class="modal-foot" *ngIf="!paymentSuccess">
+                            <button class="action-btn outline" (click)="closePaymentModal()" [disabled]="isProcessingPayment">Annuler</button>
+                            <button class="action-btn primary" (click)="processPayment()" [disabled]="isProcessingPayment">
+                                <span *ngIf="!isProcessingPayment">Confirmer et Payer</span>
+                                <div *ngIf="isProcessingPayment" class="btn-spinner"></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cancel Modal -->
+                <div class="dashboard-modal-overlay" *ngIf="showCancelModal">
+                    <div class="dashboard-modal">
+                        <div class="modal-head">
+                            <h3>Cancel order</h3>
+                            <button class="close-btn" (click)="closeCancelModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to cancel this order? Please provide the reason below:</p>
+                            <textarea [(ngModel)]="cancelReason" placeholder="Reason for cancellation..." class="modal-textarea"></textarea>
+                        </div>
+                        <div class="modal-foot">
+                            <button class="action-btn outline" (click)="closeCancelModal()">Back</button>
+                            <button class="action-btn danger" [disabled]="!cancelReason" (click)="confirmCancel()">Confirm cancellation</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

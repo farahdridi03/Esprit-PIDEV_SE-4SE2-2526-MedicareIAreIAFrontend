@@ -1,0 +1,166 @@
+<div class="availability-dashboard">
+    <app-home-care-sidebar></app-home-care-sidebar>
+
+    <div class="main-body">
+        <app-home-care-topbar></app-home-care-topbar>
+
+        <div class="content-area">
+            <div class="dashboard-header">
+                <div class="title-section">
+                    <h1>Planning & Availability</h1>
+                    <p class="subtitle">Define your regular working hours and manage your exceptions (leave, appointments).</p>
+                </div>
+                <div class="header-actions d-flex align-items-center gap-3">
+                    <div class="weekly-stats-chip" *ngIf="weeklyTotalHours > 0">
+                        <i class="bi bi-clock-history"></i>
+                        <span><strong>{{ weeklyTotalHours }}h</strong> / week</span>
+                    </div>
+                    <button class="action-btn outline" (click)="loadData()">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Error Alert -->
+            <div class="alert alert-danger mb-3 d-flex align-items-center justify-content-between animation-fade-in" *ngIf="error">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>{{ error }}</span>
+                </div>
+                <button class="btn-close" (click)="error = ''"></button>
+            </div>
+
+            <!-- Success Alert -->
+            <div class="alert alert-success mb-3 d-flex align-items-center justify-content-between animation-fade-in" *ngIf="successMessage">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>{{ successMessage }}</span>
+                </div>
+                <button class="btn-close" (click)="successMessage = ''"></button>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Left Column: Calendar -->
+                <div class="calendar-section">
+                    <div class="glass-card calendar-card">
+                        <div class="calendar-header">
+                            <div class="current-month">
+                                <h2>{{ viewDate | date:'MMMM yyyy' }}</h2>
+                            </div>
+                            <div class="nav-controls">
+                                <button class="nav-btn" (click)="prevMonth()" title="Previous month">
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+                                <button class="nav-btn today" (click)="viewDate = getNow(); generateCalendar()">Today</button>
+                                <button class="nav-btn" (click)="nextMonth()" title="Next month">
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-grid-container">
+                            <div class="weekday-labels">
+                                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                            </div>
+                            <div class="days-grid">
+                                <div *ngFor="let day of calendarDays" 
+                                     class="calendar-day" 
+                                     [class.other-month]="!day.isCurrentMonth"
+                                     [class.today]="isToday(day.date)"
+                                     (click)="handleDayClick(day)">
+                                    <span class="day-number">{{ day.date | date:'d' }}</span>
+                                    <div class="day-events">
+                                        <div *ngFor="let event of day.events" 
+                                             class="event-badge" 
+                                             [ngClass]="event.type.toLowerCase()"
+                                             [title]="event.title">
+                                            <span class="dot"></span>
+                                            <span class="event-text">{{ event.title }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="calendar-legend">
+                            <div class="legend-item"><span class="dot available"></span> Available</div>
+                            <div class="legend-item"><span class="dot request"></span> Request</div>
+                            <div class="legend-item"><span class="dot blocked"></span> Blocked</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Settings -->
+                <div class="settings-section">
+                    <!-- Weekly Rules -->
+                    <div class="glass-card settings-card">
+                        <div class="card-header">
+                            <div class="d-flex flex-column">
+                                <h3>Schedules & Rules</h3>
+                                <span class="text-muted small" *ngIf="isExceptionMode">Configuration for {{ availabilityForm.get('specificDate')?.value }}</span>
+                            </div>
+                            <button class="btn-premium py-2 px-3" (click)="showForm = !showForm; isExceptionMode = false" [style.background]="isExceptionMode ? 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)' : ''">
+                                <i class="bi" [ngClass]="showForm ? 'bi-dash-lg' : 'bi-plus-lg'"></i>
+                                <span>{{ showForm ? 'Close' : (isExceptionMode ? 'Exception' : 'Add') }}</span>
+                            </button>
+                        </div>
+
+                        <div class="add-slot-form" *ngIf="showForm">
+                            <form [formGroup]="availabilityForm" (ngSubmit)="addAvailability()">
+                                <div class="form-group">
+                                    <label>Day</label>
+                                    <select formControlName="dayOfWeek" class="modern-select">
+                                        <option *ngFor="let day of daysOfWeek" [value]="day.value">{{ day.label }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Start</label>
+                                        <input type="time" formControlName="startTime" class="modern-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>End</label>
+                                        <input type="time" formControlName="endTime" class="modern-input">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-premium w-100 py-3 mt-3" [disabled]="isSubmitting">
+                                    {{ isSubmitting ? 'Adding...' : 'Add time slot' }}
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="slots-list">
+                            <div class="empty-state" *ngIf="availabilities.length === 0 && !showForm">
+                                <i class="bi bi-calendar-plus"></i>
+                                <p>No weekly schedule defined.</p>
+                                <button class="btn-create-first" (click)="showForm = true">Set my hours</button>
+                            </div>
+                             <div class="slot-item" *ngFor="let slot of availabilities" [class.is-exception]="slot.specificDate">
+                                <div class="slot-info">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="day">{{ slot.specificDate ? (slot.specificDate | date:'dd MMM') : getDayName(slot.dayOfWeek) }}</span>
+                                        <span class="badge bg-soft-warning text-warning tiny-badge" *ngIf="slot.specificDate">Exception</span>
+                                    </div>
+                                    <span class="time">{{ slot.startTime }} - {{ slot.endTime }}</span>
+                                </div>
+                                <button class="btn-cancel-slot" (click)="deleteSlot(slot.id)" title="Delete this slot">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    <span>Cancel</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Global Spinner -->
+<div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner-container">
+        <div class="medical-spinner"></div>
+        <p>Loading your schedule...</p>
+    </div>
+</div>

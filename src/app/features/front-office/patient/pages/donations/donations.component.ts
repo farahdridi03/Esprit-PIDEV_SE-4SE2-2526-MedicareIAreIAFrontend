@@ -176,9 +176,12 @@ export class DonationsComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
+      this.currentDonation.imageContentType = file.type;
       const reader = new FileReader();
       reader.onload = () => {
-        this.currentDonation.imageData = reader.result as string;
+        const result = reader.result as string;
+        // Strip prefix for backend storage (expects raw base64)
+        this.currentDonation.imageData = result.split(',')[1];
       };
       reader.readAsDataURL(file);
     }
@@ -310,12 +313,22 @@ export class DonationsComponent implements OnInit {
     const video = this.cameraVideoRef?.nativeElement;
     const canvas = this.cameraCanvasRef?.nativeElement;
     if (!video || !canvas) return;
+
+    // Ensure the video has data before drawing
+    if (video.videoWidth === 0) return;
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    canvas.getContext('2d')!.drawImage(video, 0, 0);
-    this.currentDonation.imageData = canvas.toDataURL('image/jpeg', 0.85);
-    this.photoTaken = true;
-    this.stopCamera();
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.drawImage(video, 0, 0);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      // Strip prefix: "data:image/jpeg;base64,..."
+      this.currentDonation.imageData = dataUrl.split(',')[1];
+      this.currentDonation.imageContentType = 'image/jpeg';
+      this.photoTaken = true;
+      this.stopCamera();
+    }
   }
 
   retakePhoto(): void {

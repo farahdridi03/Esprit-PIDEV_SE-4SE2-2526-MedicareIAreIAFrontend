@@ -12,6 +12,15 @@ export interface UpdateProfileRequest {
     profileImage?: string;
 }
 
+export interface UserProfile {
+    id?: number;
+    fullName?: string;
+    email?: string;
+    roles?: string[];
+    pharmacyId?: number;
+    [key: string]: any;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -24,10 +33,12 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-
-
     updateProfile(request: UpdateProfileRequest & { role?: string }): Observable<any> {
         return this.http.put(`${this.apiUrl}/profile`, request);
+    }
+
+    updateUserProfile(id: number | string, profileData: any): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/${id}`, profileData);
     }
 
     create(dto: UserRequestDTO): Observable<UserResponseDTO> {
@@ -100,16 +111,11 @@ export class UserService {
         }
     }
 
-    /**
-     * Directly push a full or partial profile update into the stream.
-     * Use this after saving the patient profile so the topbar photo updates immediately.
-     */
     setProfile(partial: Partial<UserResponseDTO>): void {
         const current = this.profileSubject.getValue();
         if (current) {
             this.profileSubject.next({ ...current, ...partial });
         } else {
-            // Build from token and merge
             const base = this.buildProfileFromToken();
             if (base) {
                 this.profileSubject.next({ ...base, ...partial });
@@ -121,7 +127,7 @@ export class UserService {
         this.getProfile().subscribe();
     }
 
-    changePassword(request: any): Observable<any> {
-        return this.http.put(`${this.baseUrlLegacy}/change-password`, request);
+    changePassword(id: number | string, passwordData: any): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${id}/change-password`, passwordData);
     }
 }

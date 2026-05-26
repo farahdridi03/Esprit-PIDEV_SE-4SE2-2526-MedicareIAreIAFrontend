@@ -1,0 +1,3018 @@
+﻿
+> medi-care-ai@0.0.0 build
+> ng build
+
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+Application bundle generation failed. [6.252 seconds]
+
+node.exe : 
+[1m[31m[31mX [41;31m[
+[41;97mERROR[41;31m][0m 
+[1mNG9: Property 
+'currentView' does not 
+exist on type 'DoctorSideb
+arComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (  
+  [1m[31m[31mX...r-co   
+ mpiler][0m:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.html:17:32:
+[37m      17 Ôöé ...     
+ <li [class.active]="[32m
+currentView[37m === 
+'overview'" routerLin...
+         ÔòÁ              
+                
+[32m~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorSidebarComponent.
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-sidebar.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'setView' does 
+not exist on type 'DoctorS
+idebarComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.html:17:143:
+[37m      17 Ôöé 
+...queryParams]="{ view: 
+'overview' }" (click)="[3
+2msetView[37m('overview')
+">
+         ÔòÁ              
+                          
+         [32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorSidebarComponent.
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-sidebar.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'currentView' 
+does not exist on type 'Do
+ctorSidebarComponent'.[0m
+ [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.html:27:32:
+[37m      27 Ôöé ...     
+ <li [class.active]="[32m
+currentView[37m === 
+'calendar'" routerLin...
+         ÔòÁ              
+                
+[32m~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorSidebarComponent.
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-sidebar.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'setView' does 
+not exist on type 'DoctorS
+idebarComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.html:27:143:
+[37m      27 Ôöé 
+...queryParams]="{ view: 
+'calendar' }" (click)="[3
+2msetView[37m('calendar')
+">
+         ÔòÁ              
+                          
+         [32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorSidebarComponent.
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-sidebar.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'currentView' 
+does not exist on type 'Do
+ctorSidebarComponent'.[0m
+ [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.html:37:32:
+[37m      37 Ôöé ...     
+ <li [class.active]="[32m
+currentView[37m === 
+'settings'" routerLin...
+         ÔòÁ              
+                
+[32m~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorSidebarComponent.
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-sidebar.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'setView' does 
+not exist on type 'DoctorS
+idebarComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.html:37:143:
+[37m      37 Ôöé 
+...queryParams]="{ view: 
+'settings' }" (click)="[3
+2msetView[37m('settings')
+">
+         ÔòÁ              
+                          
+         [32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorSidebarComponent.
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-sidebar.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'currentView' 
+does not exist on type 'Do
+ctorSidebarComponent'.[0m
+ [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.html:47:32:
+[37m      47 Ôöé ...     
+ <li [class.active]="[32m
+currentView[37m === 
+'exceptions'" routerL...
+         ÔòÁ              
+                
+[32m~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorSidebarComponent.
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-sidebar.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'setView' does 
+not exist on type 'DoctorS
+idebarComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.html:47:147:
+[37m      47 Ôöé 
+...yParams]="{ view: 
+'exceptions' }" (click)="
+[32msetView[37m('exceptio
+ns')">
+         ÔòÁ              
+                          
+       [32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorSidebarComponent.
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-sidebar.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'currentView' since it 
+isn't a known property of 
+'app-doctor-sidebar'.
+1. If 
+'app-doctor-sidebar' is 
+an Angular component and 
+it has 'currentView' 
+input, then verify that 
+it is part of this module.
+2. If 
+'app-doctor-sidebar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this message.
+3. To allow any property 
+add 'NO_ERRORS_SCHEMA' to 
+the '@NgModule.schemas' 
+of this component.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.html:3:24:
+[37m      3 Ôöé 
+...app-doctor-sidebar [32
+m[currentView]="currentVie
+w"[37m 
+(viewChange)="set...
+        ÔòÁ               
+        [32m~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorDashboardComponent.
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-dashboard.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG5: 
+Argument of type 'Event' 
+is not assignable to 
+parameter of type 
+'"overview" | "settings" 
+| "exceptions" | 
+"calendar" | 
+"patients"'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.html:3:74:
+[37m      3 Ôöé 
+...="currentView" (viewCha
+nge)="setView([32m$event
+[37m)"></app-doctor-sideba
+r>
+        ÔòÁ               
+                          
+[32m~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorDashboardComponent.
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-dashboard.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG7: 
+This comparison appears 
+to be unintentional 
+because the types 
+'"overview"' and 
+'"calendar"' have no 
+overlap.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.html:122:51:
+[37m      122 Ôöé ...iv c
+lass="calendar-main-view" 
+*ngIf="[32mcurrentView 
+=== 'calendar'[37m">
+          ÔòÁ             
+                          
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorDashboardComponent.
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-dashboard.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG7: 
+This comparison appears 
+to be unintentional 
+because the types 
+'"overview"' and 
+'"settings"' have no 
+overlap.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.html:127:55:
+[37m      127 Ôöé ...lass
+="calendar-settings-view" 
+*ngIf="[32mcurrentView 
+=== 'settings'[37m">
+          ÔòÁ             
+                          
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorDashboardComponent.
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-dashboard.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG7: 
+This comparison appears 
+to be unintentional 
+because the types 
+'"overview"' and 
+'"exceptions"' have no 
+overlap.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.html:132:57:
+[37m      132 Ôöé ...="ca
+lendar-exceptions-view" 
+*ngIf="[32mcurrentView 
+=== 'exceptions'[37m">
+          ÔòÁ             
+                          
+[32m~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorDashboardComponent.
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-dashboard/doctor-dashboa
+rd.component.ts:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./docto
+r-dashboard.component.html
+'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'currentView' since it 
+isn't a known property of 
+'app-doctor-sidebar'.
+1. If 
+'app-doctor-sidebar' is 
+an Angular component and 
+it has 'currentView' 
+input, then verify that 
+it is part of this module.
+2. If 
+'app-doctor-sidebar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this message.
+3. To allow any property 
+add 'NO_ERRORS_SCHEMA' to 
+the '@NgModule.schemas' 
+of this component.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-patients/doctor-patients
+.component.html:3:24:
+[37m      3 Ôöé 
+...app-doctor-sidebar [32
+m[currentView]="'patients'
+"[37m></app-doctor-sideba
+r>
+        ÔòÁ               
+        [32m~~~~~~~~~~~~~
+~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DoctorPatientsComponent.
+
+    src/app/features/front
+-office/doctor/pages/docto
+r-patients/doctor-patients
+.component.ts:12:15:
+[37m      12 Ôöé   
+templateUrl: [32m'./docto
+r-patients.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996008: Component L
+aboratoryStaffSidebarCompo
+nent is standalone, and 
+cannot be declared in an 
+NgModule. Did you mean to 
+import it instead?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/laboratory/laborat
+ory.module.ts:42:8:
+[37m      42 Ôöé         
+[32mLaboratoryStaffSideba
+rComponent[37m,
+         ÔòÁ         [32m
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996008: Component 
+LaboratoryTopbarComponent 
+is standalone, and cannot 
+be declared in an 
+NgModule. Did you mean to 
+import it instead?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/laboratory/laborat
+ory.module.ts:43:8:
+[37m      43 Ôöé         
+[32mLaboratoryTopbarCompo
+nent[37m
+         ÔòÁ         [32m
+~~~~~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG1: 
+Property 'router' is 
+private and only 
+accessible within class 
+'TopbarComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/components
+/topbar/topbar.component.h
+tml:70:52:
+[37m      70 Ôöé 
+...ass="dropdown-item" (cl
+ick)="[32mrouter[37m.nav
+igate(['/front/patient/p..
+.
+         ÔòÁ              
+                   
+[32m~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+TopbarComponent.
+
+    src/app/features/front
+-office/patient/components
+/topbar/topbar.component.t
+s:16:15:
+[37m      16 Ôöé   
+templateUrl: [32m'./topba
+r.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/dash
+board/dashboard.component.
+html:4:4:
+[37m      4 Ôöé     [32m
+<app-patient-sidebar>[37m
+</app-patient-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DashboardComponent.
+
+    src/app/features/front
+-office/patient/pages/dash
+board/dashboard.component.
+ts:9:15:
+[37m      9 Ôöé   
+templateUrl: [32m'./dashb
+oard.component.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/dash
+board/dashboard.component.
+html:10:8:
+[37m      10 Ôöé         
+[32m<app-patient-topbar>
+[37m</app-patient-topbar>
+         ÔòÁ         [32m
+~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DashboardComponent.
+
+    src/app/features/front
+-office/patient/pages/dash
+board/dashboard.component.
+ts:9:15:
+[37m      9 Ôöé   
+templateUrl: [32m'./dashb
+oard.component.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+html:4:6:
+[37m      4 Ôöé       
+[32m<app-patient-sidebar 
+*ngSwitchCase="'PATIENT'">
+[37m</app-patient-...
+        ÔòÁ       [32m~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DonationsComponent.
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./donat
+ions.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+html:11:6:
+[37m      11 Ôöé       
+[32m<app-patient-sidebar 
+*ngSwitchDefault>[37m</ap
+p-patient-sidebar>
+         ÔòÁ       [32m~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DonationsComponent.
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./donat
+ions.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+html:18:10:
+[37m      18 Ôöé         
+  
+[32m<app-patient-topbar *
+ngSwitchCase="'PATIENT'">
+[37m</app-pati...
+         ÔòÁ           [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DonationsComponent.
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./donat
+ions.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 'app-laborator
+ystaff-topbar' is not a 
+known element:
+1. If 'app-laboratorystaff
+-topbar' is an Angular 
+component, then verify 
+that it is part of this 
+module.
+2. If 'app-laboratorystaff
+-topbar' is a Web 
+Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+html:22:10:
+[37m      22 Ôöé         
+  [32m<app-laboratorystaf
+f-topbar *ngSwitchCase="'L
+ABORATORY_S[37m...
+         ÔòÁ           [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DonationsComponent.
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./donat
+ions.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+html:25:10:
+[37m      25 Ôöé         
+  
+[32m<app-patient-topbar *
+ngSwitchDefault>[37m</app
+-patient-topbar>
+         ÔòÁ           [3
+2m~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+DonationsComponent.
+
+    src/app/features/front
+-office/patient/pages/dona
+tions/donations.component.
+ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./donat
+ions.component.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/emer
+gency/emergency.component.
+html:2:4:
+[37m      2 Ôöé     [32m
+<app-patient-sidebar>[37m
+</app-patient-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+EmergencyComponent.
+
+    src/app/features/front
+-office/patient/pages/emer
+gency/emergency.component.
+ts:28:17:
+[37m      28 Ôöé     
+templateUrl: [32m'./emerg
+ency.component.html'[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/emer
+gency/emergency.component.
+html:5:8:
+[37m      5 Ôöé         
+[32m<app-patient-topbar>[
+37m</app-patient-topbar>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+EmergencyComponent.
+
+    src/app/features/front
+-office/patient/pages/emer
+gency/emergency.component.
+ts:28:17:
+[37m      28 Ôöé     
+templateUrl: [32m'./emerg
+ency.component.html'[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/lab-
+requests/lab-request-form/
+lab-request-form.component
+.html:3:2:
+[37m      3 Ôöé   [32m<a
+pp-patient-sidebar>[37m</
+app-patient-sidebar>
+        ÔòÁ   [32m~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+LabRequestFormComponent.
+
+    src/app/features/front
+-office/patient/pages/lab-
+requests/lab-request-form/
+lab-request-form.component
+.ts:9:15:
+[37m      9 Ôöé   
+templateUrl: [32m'./lab-r
+equest-form.component.html
+'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/lab-
+requests/lab-request-form/
+lab-request-form.component
+.html:8:4:
+[37m      8 Ôöé     [32m
+<app-patient-topbar>[37m<
+/app-patient-topbar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+LabRequestFormComponent.
+
+    src/app/features/front
+-office/patient/pages/lab-
+requests/lab-request-form/
+lab-request-form.component
+.ts:9:15:
+[37m      9 Ôöé   
+templateUrl: [32m'./lab-r
+equest-form.component.html
+'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/lab-
+requests/lab-requests.comp
+onent.html:3:2:
+[37m      3 Ôöé   [32m<a
+pp-patient-sidebar>[37m</
+app-patient-sidebar>
+        ÔòÁ   [32m~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+LabRequestsComponent.
+
+    src/app/features/front
+-office/patient/pages/lab-
+requests/lab-requests.comp
+onent.ts:13:15:
+[37m      13 Ôöé   
+templateUrl: [32m'./lab-r
+equests.component.html'[3
+7m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/lab-
+requests/lab-requests.comp
+onent.html:8:4:
+[37m      8 Ôöé     [32m
+<app-patient-topbar>[37m<
+/app-patient-topbar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+LabRequestsComponent.
+
+    src/app/features/front
+-office/patient/pages/lab-
+requests/lab-requests.comp
+onent.ts:13:15:
+[37m      13 Ôöé   
+templateUrl: [32m'./lab-r
+equests.component.html'[3
+7m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/life
+style-detail/lifestyle-det
+ail.component.html:2:4:
+[37m      2 Ôöé     
+[32m<app-patient-sidebar 
+*ngIf="userRole === 'PATIE
+NT'">[37m</app-patie...
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+LifestyleDetailComponent.
+
+    src/app/features/front
+-office/patient/pages/life
+style-detail/lifestyle-det
+ail.component.ts:9:15:
+[37m      9 Ôöé   
+templateUrl: [32m'./lifes
+tyle-detail.component.html
+'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/life
+style-detail/lifestyle-det
+ail.component.html:6:8:
+[37m      6 Ôöé         
+[32m<app-patient-topbar 
+*ngIf="userRole === 'PATIE
+NT'">[37m</app-pa...
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  Error occurs in the 
+template of component 
+LifestyleDetailComponent.
+
+    src/app/features/front
+-office/patient/pages/life
+style-detail/lifestyle-det
+ail.component.ts:9:15:
+[37m      9 Ôöé   
+templateUrl: [32m'./lifes
+tyle-detail.component.html
+'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/life
+style-form/lifestyle-form.
+component.html:2:4:
+[37m      2 Ôöé     [32m
+<app-patient-sidebar>[37m
+</app-patient-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+LifestyleFormComponent.
+
+    src/app/features/front
+-office/patient/pages/life
+style-form/lifestyle-form.
+component.ts:13:15:
+[37m      13 Ôöé   
+templateUrl: [32m'./lifes
+tyle-form.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/life
+style-form/lifestyle-form.
+component.html:4:8:
+[37m      4 Ôöé         
+[32m<app-patient-topbar>[
+37m</app-patient-topbar>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+LifestyleFormComponent.
+
+    src/app/features/front
+-office/patient/pages/life
+style-form/lifestyle-form.
+component.ts:13:15:
+[37m      13 Ôöé   
+templateUrl: [32m'./lifes
+tyle-form.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/life
+style-list/lifestyle-list.
+component.html:2:4:
+[37m      2 Ôöé     [32m
+<app-patient-sidebar>[37m
+</app-patient-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+LifestyleListComponent.
+
+    src/app/features/front
+-office/patient/pages/life
+style-list/lifestyle-list.
+component.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./lifes
+tyle-list.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/life
+style-list/lifestyle-list.
+component.html:4:8:
+[37m      4 Ôöé         
+[32m<app-patient-topbar>[
+37m</app-patient-topbar>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+LifestyleListComponent.
+
+    src/app/features/front
+-office/patient/pages/life
+style-list/lifestyle-list.
+component.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./lifes
+tyle-list.component.html'
+[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/life
+style-wellness/lifestyle-w
+ellness.component.html:3:4
+:
+[37m      3 Ôöé     [32m
+<app-patient-sidebar>[37m
+</app-patient-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Life
+styleWellnessComponent.
+
+    src/app/features/front
+-office/patient/pages/life
+style-wellness/lifestyle-w
+ellness.component.ts:10:15
+:
+[37m      10 Ôöé   
+templateUrl: [32m'./lifes
+tyle-wellness.component.ht
+ml'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/life
+style-wellness/lifestyle-w
+ellness.component.html:8:8
+:
+[37m      8 Ôöé         
+[32m<app-patient-topbar>[
+37m</app-patient-topbar>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Life
+styleWellnessComponent.
+
+    src/app/features/front
+-office/patient/pages/life
+style-wellness/lifestyle-w
+ellness.component.ts:10:15
+:
+[37m      10 Ôöé   
+templateUrl: [32m'./lifes
+tyle-wellness.component.ht
+ml'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/medi
+cal-record/medical-record.
+component.html:3:4:
+[37m      3 Ôöé     [32m
+<app-patient-sidebar>[37m
+</app-patient-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+MedicalRecordComponent.
+
+    src/app/features/front
+-office/patient/pages/medi
+cal-record/medical-record.
+component.ts:42:17:
+[37m      42 Ôöé     
+templateUrl: [32m'./medic
+al-record.component.html'
+[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/medi
+cal-record/medical-record.
+component.html:8:8:
+[37m      8 Ôöé         
+[32m<app-patient-topbar>[
+37m</app-patient-topbar>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+MedicalRecordComponent.
+
+    src/app/features/front
+-office/patient/pages/medi
+cal-record/medical-record.
+component.ts:42:17:
+[37m      42 Ôöé     
+templateUrl: [32m'./medic
+al-record.component.html'
+[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-appointments/patient-a
+ppointments.component.html
+:2:2:
+[37m      2 Ôöé   [32m<a
+pp-patient-sidebar>[37m</
+app-patient-sidebar>
+        ÔòÁ   [32m~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entAppointmentsComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-appointments/patient-a
+ppointments.component.ts:8
+:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./patie
+nt-appointments.component.
+html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-appointments/patient-a
+ppointments.component.html
+:5:4:
+[37m      5 Ôöé     [32m
+<app-patient-topbar>[37m<
+/app-patient-topbar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entAppointmentsComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-appointments/patient-a
+ppointments.component.ts:8
+:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./patie
+nt-appointments.component.
+html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-doctor-detail/patient-
+doctor-detail.component.ht
+ml:2:2:
+[37m      2 Ôöé   [32m<a
+pp-patient-sidebar>[37m</
+app-patient-sidebar>
+        ÔòÁ   [32m~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entDoctorDetailComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-doctor-detail/patient-
+doctor-detail.component.ts
+:14:15:
+[37m      14 Ôöé   
+templateUrl: [32m'./patie
+nt-doctor-detail.component
+.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-doctor-detail/patient-
+doctor-detail.component.ht
+ml:4:4:
+[37m      4 Ôöé     [32m
+<app-patient-topbar>[37m<
+/app-patient-topbar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entDoctorDetailComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-doctor-detail/patient-
+doctor-detail.component.ts
+:14:15:
+[37m      14 Ôöé   
+templateUrl: [32m'./patie
+nt-doctor-detail.component
+.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-doctors-list/patient-d
+octors-list.component.html
+:2:2:
+[37m      2 Ôöé   [32m<a
+pp-patient-sidebar>[37m</
+app-patient-sidebar>
+        ÔòÁ   [32m~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entDoctorsListComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-doctors-list/patient-d
+octors-list.component.ts:7
+:15:
+[37m      7 Ôöé   
+templateUrl: [32m'./patie
+nt-doctors-list.component.
+html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-doctors-list/patient-d
+octors-list.component.html
+:4:4:
+[37m      4 Ôöé     [32m
+<app-patient-topbar>[37m<
+/app-patient-topbar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entDoctorsListComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-doctors-list/patient-d
+octors-list.component.ts:7
+:15:
+[37m      7 Ôöé   
+templateUrl: [32m'./patie
+nt-doctors-list.component.
+html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-nutritionist-detail/pa
+tient-nutritionist-detail.
+component.html:2:2:
+[37m      2 Ôöé   [32m<a
+pp-patient-sidebar>[37m</
+app-patient-sidebar>
+        ÔòÁ   [32m~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entNutritionistDetailCompo
+nent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-nutritionist-detail/pa
+tient-nutritionist-detail.
+component.ts:14:15:
+[37m      14 Ôöé   
+templateUrl: [32m'./patie
+nt-nutritionist-detail.com
+ponent.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-nutritionist-detail/pa
+tient-nutritionist-detail.
+component.html:4:4:
+[37m      4 Ôöé     [32m
+<app-patient-topbar>[37m<
+/app-patient-topbar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entNutritionistDetailCompo
+nent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-nutritionist-detail/pa
+tient-nutritionist-detail.
+component.ts:14:15:
+[37m      14 Ôöé   
+templateUrl: [32m'./patie
+nt-nutritionist-detail.com
+ponent.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-nutritionists-list/pat
+ient-nutritionists-list.co
+mponent.html:2:2:
+[37m      2 Ôöé   [32m<a
+pp-patient-sidebar>[37m</
+app-patient-sidebar>
+        ÔòÁ   [32m~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entNutritionistsListCompon
+ent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-nutritionists-list/pat
+ient-nutritionists-list.co
+mponent.ts:7:15:
+[37m      7 Ôöé   
+templateUrl: [32m'./patie
+nt-nutritionists-list.comp
+onent.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-nutritionists-list/pat
+ient-nutritionists-list.co
+mponent.html:4:4:
+[37m      4 Ôöé     [32m
+<app-patient-topbar>[37m<
+/app-patient-topbar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entNutritionistsListCompon
+ent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-nutritionists-list/pat
+ient-nutritionists-list.co
+mponent.ts:7:15:
+[37m      7 Ôöé   
+templateUrl: [32m'./patie
+nt-nutritionists-list.comp
+onent.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-profile-edit/patient-p
+rofile-edit.component.html
+:2:4:
+[37m      2 Ôöé     [32m
+<app-patient-sidebar>[37m
+</app-patient-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entProfileEditComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-profile-edit/patient-p
+rofile-edit.component.ts:9
+:15:
+[37m      9 Ôöé   
+templateUrl: [32m'./patie
+nt-profile-edit.component.
+html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-profile-edit/patient-p
+rofile-edit.component.html
+:5:8:
+[37m      5 Ôöé         
+[32m<app-patient-topbar>[
+37m</app-patient-topbar>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entProfileEditComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-profile-edit/patient-p
+rofile-edit.component.ts:9
+:15:
+[37m      9 Ôöé   
+templateUrl: [32m'./patie
+nt-profile-edit.component.
+html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-profile-settings/patie
+nt-profile-settings.compon
+ent.html:2:4:
+[37m      2 Ôöé     [32m
+<app-patient-sidebar>[37m
+</app-patient-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entProfileSettingsComponen
+t.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-profile-settings/patie
+nt-profile-settings.compon
+ent.ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./patie
+nt-profile-settings.compon
+ent.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-profile-settings/patie
+nt-profile-settings.compon
+ent.html:5:8:
+[37m      5 Ôöé         
+[32m<app-patient-topbar>[
+37m</app-patient-topbar>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entProfileSettingsComponen
+t.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-profile-settings/patie
+nt-profile-settings.compon
+ent.ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./patie
+nt-profile-settings.compon
+ent.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-sidebar' is 
+not a known element:
+1. If 
+'app-patient-sidebar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-sidebar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-record-list/patient-re
+cord-list.component.html:2
+:4:
+[37m      2 Ôöé     [32m
+<app-patient-sidebar>[37m
+</app-patient-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entRecordListComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-record-list/patient-re
+cord-list.component.ts:8:1
+5:
+[37m      8 Ôöé   
+templateUrl: [32m'./patie
+nt-record-list.component.h
+tml'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-patient-topbar' is 
+not a known element:
+1. If 
+'app-patient-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-patient-topbar' is a 
+Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-record-list/patient-re
+cord-list.component.html:4
+:8:
+[37m      4 Ôöé         
+[32m<app-patient-topbar>[
+37m</app-patient-topbar>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Pati
+entRecordListComponent.
+
+    src/app/features/front
+-office/patient/pages/pati
+ent-record-list/patient-re
+cord-list.component.ts:8:1
+5:
+[37m      8 Ôöé   
+templateUrl: [32m'./patie
+nt-record-list.component.h
+tml'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 
+'toggleNotifPanel' does 
+not exist on type 'Pharmac
+istTopbarComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:23:53:
+[37m      23 Ôöé ...class
+="notification-container" 
+(click)="[32mtoggleNotifP
+anel[37m($event)">
+         ÔòÁ              
+                          
+    
+[32m~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'unreadCount' 
+does not exist on type 'Ph
+armacistTopbarComponent'.
+[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:28:43:
+[37m      28 Ôöé ...span 
+class="badge" *ngIf="[32m
+unreadCount[37m > 0">{{ 
+unreadCount }}</s...
+         ÔòÁ              
+                
+[32m~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'unreadCount' 
+does not exist on type 'Ph
+armacistTopbarComponent'.
+[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:28:63:
+[37m      28 Ôöé ...pan 
+class="badge" 
+*ngIf="unreadCount > 
+0">{{ 
+[32munreadCount[37m 
+}}</span>
+         ÔòÁ              
+                          
+         
+[32m~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'showNotifPanel' 
+does not exist on type 'Ph
+armacistTopbarComponent'.
+[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:32:54:
+[37m      32 Ôöé 
+...ication-dropdown" *ngIf
+="[32mshowNotifPanel[37m
+" 
+(click)="$event.stopPr...
+         ÔòÁ              
+               
+[32m~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'markAllAsRead' 
+does not exist on type 'Ph
+armacistTopbarComponent'.
+[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:35:52:
+[37m      35 Ôöé 
+...lass="mark-all" (click)
+="[32mmarkAllAsRead[37m(
+)">Marquer tout comme 
+lu...
+         ÔòÁ              
+               
+[32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'notifications' 
+does not exist on type 'Ph
+armacistTopbarComponent'.
+[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:38:32:
+[37m      38 Ôöé ...     
+        <div *ngIf="[32mn
+otifications[37m.length 
+=== 0" class="no-...
+         ÔòÁ              
+               
+[32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'notifications' 
+does not exist on type 'Ph
+armacistTopbarComponent'.
+[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:41:42:
+[37m      41 Ôöé         
+            <div 
+*ngFor="let n of 
+[32mnotifications[37m"
+         ÔòÁ              
+                          
+   [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'markAsRead' 
+does not exist on type 'Ph
+armacistTopbarComponent'.
+[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:44:34:
+[37m      44 Ôöé         
+                 (click)="
+[32mmarkAsRead[37m(n)">
+         ÔòÁ              
+                     
+[32m~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 
+'getNotificationIcon' 
+does not exist on type 'Ph
+armacistTopbarComponent'.
+[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:45:50:
+[37m      45 Ôöé ...    
+<div class="item-icon">{{ 
+[32mgetNotificationIcon[
+37m(n.type) }}</div>
+         ÔòÁ              
+                    [32m~
+~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m

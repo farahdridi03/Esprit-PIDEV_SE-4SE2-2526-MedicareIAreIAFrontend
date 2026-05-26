@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { EmergencyService, EmergencyAlertResponse } from '../../../../../services/emergency.service';
 import { AmbulanceService, AmbulanceResponse } from '../../../../../services/ambulance.service';
@@ -10,8 +10,9 @@ import { AmbulanceService, AmbulanceResponse } from '../../../../../services/amb
   styleUrls: ['./clinic-dashboard.component.scss']
 })
 export class ClinicDashboardComponent implements OnInit {
-  firstName: string = 'Clinic';
-  initials: string = 'C';
+  fullName: string = '';
+  firstName: string = '';
+  initials: string = '';
 
   alerts: EmergencyAlertResponse[] = [];
   ambulances: AmbulanceResponse[] = [];
@@ -25,11 +26,18 @@ export class ClinicDashboardComponent implements OnInit {
     private ambulanceService: AmbulanceService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => { if (user?.fullName) this.setNames(user.fullName); },
-      error: (err) => console.error('Error fetching clinic profile', err)
+      next: (user: UserProfile) => {
+        if (user && user.fullName) {
+          this.fullName = user.fullName;
+          this.setNames(user.fullName);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error fetching clinic profile', err);
+      }
     });
 
     // Load recent emergency alerts
@@ -58,15 +66,18 @@ export class ClinicDashboardComponent implements OnInit {
 
   private loadUserInfo() {
     const fullName = this.authService.getUserFullName();
-    if (fullName) this.setNames(fullName);
+    if (fullName) {
+      this.fullName = fullName;
+      this.setNames(fullName);
+    }
   }
 
   private setNames(fullName: string) {
     if (!fullName) return;
-    const parts = fullName.split(' ');
+    const parts = fullName.trim().split(/\s+/);
     this.firstName = parts[0];
     this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
-    if (!this.initials) this.initials = this.firstName[0].toUpperCase();
+    if (!this.initials && this.firstName) this.initials = this.firstName[0].toUpperCase();
   }
 
   get ambulancesWithGpsCount(): number {

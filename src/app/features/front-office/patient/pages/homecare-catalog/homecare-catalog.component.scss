@@ -1,0 +1,189 @@
+$primary-green: #0e7c66;
+$text-dark: #111827;
+$text-light: #6b7280;
+$bg-light: #f9fafb;
+$border-color: #e5e7eb;
+
+// Layout
+.dashboard-wrapper {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: $bg-light;
+}
+
+.main-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    background-color: $bg-light;
+}
+
+.order-list-main-content {
+    padding: 2rem;
+    font-family: 'Inter', sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+// Welcome Banner
+.welcome-banner {
+    background-color: $primary-green;
+    border-radius: 16px;
+    padding: 2.5rem;
+    color: white;
+    margin-bottom: 2rem;
+
+    .banner-text {
+        h1 { font-size: 2rem; font-weight: 700; margin: 0 0 0.5rem 0; }
+        p { margin: 0; opacity: 0.9; font-size: 1rem; }
+    }
+}
+
+// Actions
+.page-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 2rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+
+    svg { width: 20px; height: 20px; }
+
+    &.primary { background-color: $primary-green; color: white; &:hover { background-color: darken($primary-green, 5%); } }
+    &.secondary { background-color: white; color: $text-dark; border: 1px solid $border-color; &:hover { background-color: lighten($border-color, 5%); } }
+    &.outline { background-color: transparent; color: $primary-green; border: 1px solid $primary-green; &:hover { background-color: rgba($primary-green, 0.05); } }
+    &.full-width { width: 100%; }
+}
+
+// Services Grid
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.service-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid $border-color;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+
+    .icon-wrapper {
+        width: 48px;
+        height: 48px;
+        background-color: rgba($primary-green, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $primary-green;
+
+        img, svg { width: 24px; height: 24px; }
+    }
+
+    .category-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        background-color: #f3f4f6;
+        color: $text-light;
+        border-radius: 99px;
+    }
+}
+
+.service-body {
+    flex: 1;
+
+    h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.25rem;
+        color: $text-dark;
+    }
+
+    .desc {
+        color: $text-light;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .details {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: $primary-green;
+        }
+
+        .duration {
+            font-size: 0.85rem;
+            color: $text-light;
+            background-color: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+    }
+}
+
+// States
+.states-wrapper { padding: 4rem 0; }
+.info-card {
+    background: white; border-radius: 16px; padding: 4rem 2rem; text-align: center; border: 1px solid $border-color;
+    .state-icon { width: 64px; height: 64px; margin-bottom: 1.5rem; color: $text-light; opacity: 0.4; }
+    h3 { margin: 0 0 0.5rem 0; color: $text-dark; }
+    p { color: $text-light; margin: 0; }
+}
+
+.spinner {
+    width: 40px; height: 40px; border: 3px solid rgba($primary-green, 0.1); border-top-color: $primary-green; border-radius: 50%; margin: 0 auto 1.5rem; animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+    .order-list-main-content { padding: 1rem; }
+    .services-grid { grid-template-columns: 1fr; }
+}

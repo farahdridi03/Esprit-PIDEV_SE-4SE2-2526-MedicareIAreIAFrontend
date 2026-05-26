@@ -34,6 +34,6 @@ export class AuthGuard implements CanActivate {
         }
 
         // Not authenticated
-        return this.router.createUrlTree(['/auth/login']);
+        return this.router.createUrlTree(['/auth/login'], { queryParams: { returnUrl: state.url } });
     }
 }

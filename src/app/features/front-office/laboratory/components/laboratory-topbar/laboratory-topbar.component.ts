@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { CommonModule } from '@angular/common';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
-    selector: 'app-laboratorystaff-topbar',
-    templateUrl: './laboratory-topbar.component.html',
-    styleUrls: ['./laboratory-topbar.component.scss']
+  selector: 'app-laboratorystaff-topbar',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './laboratory-topbar.component.html',
+  styleUrls: ['./laboratory-topbar.component.scss']
 })
-export class LaboratoryStaffTopbarComponent implements OnInit {
+export class LaboratoryTopbarComponent implements OnInit {
   firstName: string = 'Staff';
   initials: string = 'L';
   photo: string | null = null;
@@ -17,14 +20,14 @@ export class LaboratoryStaffTopbarComponent implements OnInit {
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserProfile) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
-        this.photo = (user as any).photo || null;
+        this.photo = (user as any).photo || (user as any).profileImage || null;
       },
-      error: (err) => {
-        console.error('Error fetching laboratory staff profile', err);
+      error: (err: any) => {
+        console.error('Error fetching laboratory profile', err);
       }
     });
   }
@@ -40,6 +43,9 @@ export class LaboratoryStaffTopbarComponent implements OnInit {
     });
     // Trigger initial load if not already loaded
     this.userService.refreshProfile();
+    
+    const fullName = this.authService.getUserFullName();
+    if (fullName) this.setNames(fullName);
   }
 
   private setNames(fullName: string) {

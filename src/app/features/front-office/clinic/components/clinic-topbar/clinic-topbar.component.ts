@@ -1,11 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { CommonModule } from '@angular/common';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { EmergencyService, EmergencyAlertResponse } from '../../../../../services/emergency.service';
 import { AmbulanceService } from '../../../../../services/ambulance.service';
 
 @Component({
   selector: 'app-clinic-topbar',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './clinic-topbar.component.html',
   styleUrls: ['./clinic-topbar.component.scss']
 })
@@ -32,13 +35,15 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadUserInfo();
     this.userService.getProfile().subscribe({
-      next: (user) => {
+      next: (user: UserProfile) => {
         if (user && user.fullName) {
           this.setNames(user.fullName);
         }
         this.photo = (user as any).photo || (user as any).profileImage || null;
       },
-      error: (err) => console.error('Error fetching clinic profile', err)
+      error: (err: any) => {
+        console.error('Error fetching clinic profile', err);
+      }
     });
 
     this.checkAlerts();
@@ -123,6 +128,10 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
             this.dispatchingAlertId = null;
           }
         });
+      },
+      error: () => {
+        this.dispatchMessage = '❌ Service error.';
+        this.dispatchingAlertId = null;
       }
     });
   }
@@ -146,6 +155,6 @@ export class ClinicTopbarComponent implements OnInit, OnDestroy {
     const parts = fullName.trim().split(/\s+/);
     this.firstName = parts[0];
     this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
-    if (!this.initials) this.initials = this.firstName[0].toUpperCase();
+    if (!this.initials) this.initials = (this.firstName && this.firstName.length > 0) ? this.firstName[0].toUpperCase() : 'C';
   }
 }

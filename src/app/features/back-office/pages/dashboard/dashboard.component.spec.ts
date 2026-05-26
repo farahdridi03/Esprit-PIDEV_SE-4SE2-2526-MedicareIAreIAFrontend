@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+<<<<<<< HEAD
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -7,6 +8,16 @@ import { of } from 'rxjs';
 import { DashboardComponent } from './dashboard.component';
 import { UserService } from '../../../../services/user.service';
 import { AuthService } from '../../../../services/auth.service';
+=======
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { DashboardComponent } from './dashboard.component';
+import { TestingModule } from '../../../../testing/testing.module';
+
+// Mock Chart.js
+(window as any).Chart = class {
+  constructor(ctx: any, config: any) { }
+};
+>>>>>>> aziz
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -22,6 +33,7 @@ describe('DashboardComponent', () => {
     };
 
     await TestBed.configureTestingModule({
+<<<<<<< HEAD
       imports: [HttpClientTestingModule, RouterTestingModule],
       declarations: [DashboardComponent],
       schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
@@ -41,6 +53,13 @@ describe('DashboardComponent', () => {
         }
       ]
     }).compileComponents();
+=======
+      declarations: [DashboardComponent],
+      imports: [TestingModule],
+      schemas: [NO_ERRORS_SCHEMA]
+    })
+      .compileComponents();
+>>>>>>> aziz
 
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;

@@ -1,0 +1,3362 @@
+﻿
+> medi-care-ai@0.0.0 build
+> ng build
+
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+Application bundle generation failed. [4.304 seconds]
+
+node.exe : 
+[1m[31m[31mX [41;31m[
+[41;97mERROR[41;31m][0m 
+[1mTS-996002: 
+'LayoutModule' does not 
+appear to be an NgModule 
+class.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (  
+  [1m[31m[31mX...r-co   
+ mpiler][0m:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+
+    src/app/features/front
+-office/clinic/clinic.modu
+le.ts:29:4:
+[37m      29 Ôöé     
+[32mLayoutModule[37m
+         ÔòÁ     
+[32m~~~~~~~~~~~~[0m
+
+  Is it missing an 
+@NgModule annotation?
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:78:13:
+[37m      78 Ôöé export 
+class 
+[32mLayoutModule[37m { }
+         ÔòÁ              
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'routerLinkActiveOptions' 
+since it isn't a known 
+property of 'li'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/components/
+clinic-sidebar/clinic-side
+bar.component.html:17:42:
+[37m      17 Ôöé 
+...e="active" [32m[router
+LinkActiveOptions]="{exact
+: true}"[37m 
+routerLink...
+         ÔòÁ              
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+ClinicSidebarComponent.
+
+    src/app/features/front
+-office/clinic/components/
+clinic-sidebar/clinic-side
+bar.component.ts:7:15:
+[37m      7 Ôöé   
+templateUrl: [32m'./clini
+c-sidebar.component.html'
+[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 'date'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/components/
+clinic-topbar/clinic-topba
+r.component.html:77:53:
+[37m      77 Ôöé ...     
+                 {{ 
+alert.createdAt | 
+[32mdate[37m:'MMM d, 
+h:mm a' }}
+         ÔòÁ              
+                          
+       [32m~~~~[0m
+
+  Error occurs in the 
+template of component 
+ClinicTopbarComponent.
+
+    src/app/features/front
+-office/clinic/components/
+clinic-topbar/clinic-topba
+r.component.ts:14:15:
+[37m      14 Ôöé   
+templateUrl: [32m'./clini
+c-topbar.component.html'[
+37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/components/
+clinic-topbar/clinic-topba
+r.component.ts:0:0:
+[37m      0 Ôöé 
+[32m[37m
+        ÔòÁ [32m^[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/components/
+clinic-topbar/clinic-topba
+r.component.ts:4:0:
+[37m      4 Ôöé 
+[32m=======[37m
+        ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/components/
+clinic-topbar/clinic-topba
+r.component.ts:7:0:
+[37m      7 Ôöé 
+[32m>>>>>>>[37m aziz
+        ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2304: Cannot find 
+name 'UserProfile'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/components/
+clinic-topbar/clinic-topba
+r.component.ts:40:19:
+[37m      40 Ôöé       
+next: (user: 
+[32mUserProfile[37m) => 
+{
+         ÔòÁ              
+      [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/components/
+clinic-topbar/clinic-topba
+r.component.ts:46:0:
+[37m      46 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/components/
+clinic-topbar/clinic-topba
+r.component.ts:132:0:
+[37m      132 Ôöé 
+[32m=======[37m
+          ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/components/
+clinic-topbar/clinic-topba
+r.component.ts:135:0:
+[37m      135 Ôöé 
+[32m>>>>>>>[37m aziz
+          ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:30:0:
+[37m      30 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:33:0:
+[37m      33 Ôöé 
+[32m=======[37m
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:40:0:
+[37m      40 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:69:0:
+[37m      69 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2339: Property 
+'firstName' does not 
+exist on type 'ClinicDashb
+oardComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:76:9:
+[37m      76 Ôöé     
+this.[32mfirstName[37m 
+= parts[0];
+         ÔòÁ          
+[32m~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2339: Property 
+'initials' does not exist 
+on type 'ClinicDashboardCo
+mponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:77:9:
+[37m      77 Ôöé     
+this.[32minitials[37m = 
+parts.map(n => n ? n[0] : 
+'').join('').toUpper...
+         ÔòÁ          
+[32m~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2339: Property 
+'initials' does not exist 
+on type 'ClinicDashboardCo
+mponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:78:14:
+[37m      78 Ôöé     if (
+!this.[32minitials[37m) 
+this.initials = this.first
+Name[0].toUpperC...
+         ÔòÁ              
+ [32m~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2339: Property 
+'initials' does not exist 
+on type 'ClinicDashboardCo
+mponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:78:29:
+[37m      78 Ôöé     if 
+(!this.initials) 
+this.[32minitials[37m = 
+this.firstName[0].toUpperC
+...
+         ÔòÁ              
+                
+[32m~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2339: Property 
+'firstName' does not 
+exist on type 'ClinicDashb
+oardComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:78:45:
+[37m      78 Ôöé ... 
+(!this.initials) 
+this.initials = this.[32m
+firstName[37m[0].toUpperC
+ase();
+         ÔòÁ              
+                          
+   [32m~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:79:0:
+[37m      79 Ôöé 
+[32m=======[37m
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/clinic/pages/clini
+c-dashboard/clinic-dashboa
+rd.component.ts:81:0:
+[37m      81 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:0:0:
+[37m      0 Ôöé 
+[32m[37m
+        ÔòÁ [32m^[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:3:0:
+[37m      3 Ôöé 
+[32m=======[37m
+        ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:5:0:
+[37m      5 Ôöé 
+[32m>>>>>>>[37m aziz
+        ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:14:0:
+[37m      14 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:20:0:
+[37m      20 Ôöé 
+[32m=======[37m
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-sidebar/doctor-side
+bar.component.ts:38:0:
+[37m      38 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-topbar/doctor-topba
+r.component.ts:19:0:
+[37m      19 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-topbar/doctor-topba
+r.component.ts:34:0:
+[37m      34 Ôöé 
+[32m=======[37m
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/doctor/components/
+doctor-topbar/doctor-topba
+r.component.ts:50:0:
+[37m      50 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996008: Component 
+EventDetailComponent is 
+standalone, and cannot be 
+declared in an NgModule. 
+Did you mean to import it 
+instead?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:115:4:
+[37m      115 Ôöé     [3
+2mEventDetailComponent[37
+m,
+          ÔòÁ     [32m~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996008: Component 
+PatientEventsComponent is 
+standalone, and cannot be 
+declared in an NgModule. 
+Did you mean to import it 
+instead?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:116:4:
+[37m      116 Ôöé     [3
+2mPatientEventsComponent[
+37m,
+          ÔòÁ     [32m~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996008: Component 
+SidebarComponent is 
+standalone, and cannot be 
+declared in an NgModule. 
+Did you mean to import it 
+instead?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:117:4:
+[37m      117 Ôöé     [3
+2mSidebarComponent[37m,
+          ÔòÁ     
+[32m~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996008: Component 
+TopbarComponent is 
+standalone, and cannot be 
+declared in an NgModule. 
+Did you mean to import it 
+instead?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:118:4:
+[37m      118 Ôöé     
+[32mTopbarComponent[37m
+          ÔòÁ     
+[32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:126:4:
+[37m      126 Ôöé     [3
+2mLifestyleSharedModule[3
+7m,
+          ÔòÁ     [32m~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: 
+'LayoutModule' does not 
+appear to be an NgModule 
+class.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/front-office.modul
+e.ts:128:4:
+[37m      128 Ôöé     
+[32mLayoutModule[37m
+          ÔòÁ     
+[32m~~~~~~~~~~~~[0m
+
+  Is it missing an 
+@NgModule annotation?
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:78:13:
+[37m      78 Ôöé export 
+class 
+[32mLayoutModule[37m { }
+         ÔòÁ              
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 'date'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.html:
+48:69:
+[37m      48 Ôöé ...   
+<span 
+class="item-time">{{ 
+n.createdAt | 
+[32mdate[37m:'short' 
+}}</span>
+         ÔòÁ              
+                          
+        [32m~~~~[0m
+
+  Error occurs in the 
+template of component 
+HomeCareTopbarComponent.
+
+    src/app/features/front
+-office/home-care/componen
+ts/home-care-topbar/home-c
+are-topbar.component.ts:11
+:17:
+[37m      11 Ôöé     
+templateUrl: [32m'./home-
+care-topbar.component.html
+'[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/home-car
+e.module.ts:4:0:
+[37m      4 Ôöé 
+[32m<<<<<<<[37m HEAD
+        ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mUnexpected "<<"[0m
+
+    src/app/features/front
+-office/home-care/home-car
+e.module.ts:4:0:
+[37m      4 Ôöé 
+[32m<<[37m<<<<< HEAD
+        ÔòÁ [32m~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/home-car
+e.module.ts:6:0:
+[37m      6 Ôöé 
+[32m=======[37m
+        ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/home-car
+e.module.ts:12:0:
+[37m      12 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/home-car
+e.module.ts:48:0:
+[37m      48 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: 
+'LayoutModule' does not 
+appear to be an NgModule 
+class.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/home-car
+e.module.ts:54:8:
+[37m      54 Ôöé         
+[32mLayoutModule[37m
+         ÔòÁ         
+[32m~~~~~~~~~~~~[0m
+
+  Is it missing an 
+@NgModule annotation?
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:78:13:
+[37m      78 Ôöé export 
+class 
+[32mLayoutModule[37m { }
+         ÔòÁ              
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/home-car
+e.module.ts:56:0:
+[37m      56 Ôöé 
+[32m=======[37m
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/home-car
+e.module.ts:71:0:
+[37m      71 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-home-care-sidebar' 
+is not a known element:
+1. If 
+'app-home-care-sidebar' 
+is an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-home-care-sidebar' 
+is a Web Component then 
+add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+html:2:4:
+[37m      2 Ôöé     [32m
+<app-home-care-sidebar>[3
+7m</app-home-care-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderAvailabilityComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./provi
+der-availability.component
+.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-home-care-topbar' is 
+not a known element:
+1. If 
+'app-home-care-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-home-care-topbar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+html:5:8:
+[37m      5 Ôöé         
+[32m<app-home-care-topbar>
+[37m</app-home-care-topba
+r>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderAvailabilityComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./provi
+der-availability.component
+.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 'date'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+html:48:50:
+[37m      48 Ôöé ...     
+                   <h2>{{ 
+viewDate | 
+[32mdate[37m:'MMMM 
+yyyy' }}</h2>
+         ÔòÁ              
+                          
+      [32m~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderAvailabilityComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./provi
+der-availability.component
+.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 'date'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+html:71:75:
+[37m      71 Ôöé ...     
+    <span 
+class="day-number">{{ 
+day.date | 
+[32mdate[37m:'d' 
+}}</span>
+         ÔòÁ              
+                          
+            [32m~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderAvailabilityComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./provi
+der-availability.component
+.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'ngClass' since it isn't 
+a known property of 
+'div'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+html:75:45:
+[37m      75 Ôöé ...     
+                         
+[32m[ngClass]="event.type.
+toLowerCase()"[37m
+         ÔòÁ              
+                    [32m~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderAvailabilityComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./provi
+der-availability.component
+.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'ngClass' since it isn't 
+a known property of 
+'i'.[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+html:103:46:
+[37m      103 Ôöé 
+...lass="bi" 
+[32m[ngClass]="showForm 
+? 'bi-dash-lg' : 
+'bi-plus-lg'"[37m></i>
+          ÔòÁ             
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderAvailabilityComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./provi
+der-availability.component
+.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'formGroup' since it 
+isn't a known property of 
+'form'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+html:109:34:
+[37m      109 Ôöé ...    
+      <form [32m[formGrou
+p]="availabilityForm"[37m
+ (ngSubmit)="add...
+          ÔòÁ             
+       [32m~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderAvailabilityComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./provi
+der-availability.component
+.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 'date'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+html:141:102:
+[37m      141 Ôöé 
+...cDate ? 
+(slot.specificDate | 
+[32mdate[37m:'dd MMM') 
+: getDayName(slot....
+          ÔòÁ             
+                    
+[32m~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderAvailabilityComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-availability/provid
+er-availability.component.
+ts:8:15:
+[37m      8 Ôöé   
+templateUrl: [32m'./provi
+der-availability.component
+.html'[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-home-care-sidebar' 
+is not a known element:
+1. If 
+'app-home-care-sidebar' 
+is an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-home-care-sidebar' 
+is a Web Component then 
+add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.html:2
+:4:
+[37m      2 Ôöé     [32m
+<app-home-care-sidebar>[3
+7m</app-home-care-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderDashboardComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.ts:11:
+15:
+[37m      11 Ôöé   
+templateUrl: [32m'./provi
+der-dashboard.component.ht
+ml'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-home-care-topbar' is 
+not a known element:
+1. If 
+'app-home-care-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-home-care-topbar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.html:5
+:8:
+[37m      5 Ôöé         
+[32m<app-home-care-topbar>
+[37m</app-home-care-topba
+r>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderDashboardComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.ts:11:
+15:
+[37m      11 Ôöé   
+templateUrl: [32m'./provi
+der-dashboard.component.ht
+ml'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'ngClass' since it isn't 
+a known property of 
+'span'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.html:4
+0:63:
+[37m      40 Ôöé 
+...badge-status" [32m[ngC
+lass]="req.status.toLowerC
+ase()"[37m>{{ 
+req.statu...
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderDashboardComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.ts:11:
+15:
+[37m      11 Ôöé   
+templateUrl: [32m'./provi
+der-dashboard.component.ht
+ml'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 'date'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.html:4
+7:106:
+[37m      47 Ôöé ...dar3 
+me-1"></i> {{ 
+req.requestedDateTime | 
+[32mdate[37m:'medium' 
+}}</span>
+         ÔòÁ              
+                          
+       [32m~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderDashboardComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.ts:11:
+15:
+[37m      11 Ôöé   
+templateUrl: [32m'./provi
+der-dashboard.component.ht
+ml'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'routerLink' since it 
+isn't a known property of 
+'button'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.html:6
+9:67:
+[37m      69 Ôöé 
+...details-btn" [32m[rout
+erLink]="['/front/home-car
+e/requests', 
+req.id]"[37m>
+         ÔòÁ              
+   [32m~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderDashboardComponent.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-dashboard/provider-
+dashboard.component.ts:11:
+15:
+[37m      11 Ôöé   
+templateUrl: [32m'./provi
+der-dashboard.component.ht
+ml'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-home-care-sidebar' 
+is not a known element:
+1. If 
+'app-home-care-sidebar' 
+is an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-home-care-sidebar' 
+is a Web Component then 
+add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:2:4:
+[37m      2 Ôöé     [32m
+<app-home-care-sidebar>[3
+7m</app-home-care-sidebar>
+        ÔòÁ     [32m~~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8001: 
+'app-home-care-topbar' is 
+not a known element:
+1. If 
+'app-home-care-topbar' is 
+an Angular component, 
+then verify that it is 
+part of this module.
+2. If 
+'app-home-care-topbar' is 
+a Web Component then add 
+'CUSTOM_ELEMENTS_SCHEMA' 
+to the 
+'@NgModule.schemas' of 
+this component to 
+suppress this 
+message.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:5:8:
+[37m      5 Ôöé         
+[32m<app-home-care-topbar>
+[37m</app-home-care-topba
+r>
+        ÔòÁ         [32m~
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:16:101:
+[37m      16 Ôöé ... 
+<span *ngIf="requestDetail
+s">#{{ requestDetails.[32
+mid[37m }}</span></h2>
+         ÔòÁ              
+                          
+             [32m~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:29:89:
+[37m      29 Ôöé 
+...ss="mb-1 fw-bold 
+text-dark">{{ requestDetai
+ls.[32mservice[37m.name 
+}}</h4>
+         ÔòÁ              
+                          
+          [32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:30:79:
+[37m      30 Ôöé 
+...ted">{{ requestDetails.
+[32mrequestedDateTime[37
+m | date:'fullDate' }} 
+a...
+         ÔòÁ              
+             
+[32m~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 'date'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:30:99:
+[37m      30 Ôöé ...stDet
+ails.requestedDateTime | 
+[32mdate[37m:'fullDate' 
+}} at {{ requestD...
+         ÔòÁ              
+                    
+[32m~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:30:139:
+[37m      30 Ôöé ...} at 
+{{ requestDetails.[32mreq
+uestedDateTime[37m | 
+date:'shortTime' }}<...
+         ÔòÁ              
+             
+[32m~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 'date'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:30:159:
+[37m      30 Ôöé ...t {{ 
+requestDetails.requestedDa
+teTime | [32mdate[37m:'s
+hortTime' }}</span>
+         ÔòÁ              
+                          
+    [32m~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'ngClass' since it isn't 
+a known property of 
+'span'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:33:36:
+[37m      33 Ôöé         
+                          
+  [32m[ngClass]="{[37m
+         ÔòÁ              
+                       
+[32m~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:34:70:
+[37m      34 Ôöé 
+...badge-amber': requestDe
+tails.[32mstatus[37m 
+=== 'PENDING' || 
+requestDet...
+         ÔòÁ              
+                   
+[32m~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:34:109:
+[37m      34 Ôöé 
+...ails.status === 
+'PENDING' || requestDetail
+s.[32mstatus[37m === 
+'ACCEPTED',
+         ÔòÁ              
+                          
+        [32m~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:35:68:
+[37m      35 Ôöé ...     
+        'badge-sky': reque
+stDetails.[32mstatus[37m
+ === 'IN_PROGRESS',
+         ÔòÁ              
+                          
+     [32m~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:36:72:
+[37m      36 Ôöé ...     
+      'badge-emerald': req
+uestDetails.[32mstatus[3
+7m === 'COMPLETED',
+         ÔòÁ              
+                          
+       [32m~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:37:69:
+[37m      37 Ôöé ...     
+          'badge-rose': re
+questDetails.[32mstatus[
+37m === 'CANCELLED'
+         ÔòÁ              
+                          
+        [32m~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:39:54:
+[37m      39 Ôöé ...     
+                      {{ r
+equestDetails.[32mstatus
+[37m | titlecase }}
+         ÔòÁ              
+                          
+         [32m~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 
+'titlecase'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:39:63:
+[37m      39 Ôöé ...     
+                      {{ 
+requestDetails.status | 
+[32mtitlecase[37m }}
+         ÔòÁ              
+                          
+                  
+[32m~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:48:62:
+[37m      48 Ôöé ...     
+     {{ requestDetails.[3
+2mpatient[37m?.fullName?.
+charAt(0) || 'P' }}
+         ÔòÁ              
+                  
+[32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:51:87:
+[37m      51 Ôöé ...6 
+class="mb-0 fw-bold">{{ re
+questDetails.[32mpatient
+[37m?.fullName }}</h6>
+         ÔòÁ              
+                          
+     [32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:52:93:
+[37m      52 Ôöé 
+...lass="text-muted 
+small">{{ requestDetails.
+[32mpatient[37m?.email 
+}}</span>
+         ÔòÁ              
+                          
+      [32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:63:82:
+[37m      63 Ôöé ...     
+  <span 
+class="fw-medium">{{ reque
+stDetails.[32maddress[37
+m }}</span>
+         ÔòÁ              
+                          
+             
+[32m~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:70:89:
+[37m      70 Ôöé ...b-0 
+fst-italic 
+text-muted">"{{ requestDet
+ails.[32mpatientNotes[37
+m }}"</p>
+         ÔòÁ              
+                          
+          
+[32m~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG2: 
+Object is possibly 
+'undefined'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:75:78:
+[37m      75 Ôöé ...p 
+class="mb-0 
+fst-italic">"{{ requestDet
+ails.[32mproviderNotes[3
+7m }}"</p>
+         ÔòÁ              
+                          
+         
+[32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'formGroup' since it 
+isn't a known property of 
+'form'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:147:22:
+[37m      147 Ôöé ...    
+        <form [32m[formGr
+oup]="completeForm"[37m 
+(ngSubmit)="submi...
+          ÔòÁ             
+         [32m~~~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'ngClass' since it isn't 
+a known property of 
+'textarea'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.html:152:28:
+[37m      152 Ôöé ...    
+      [32m[ngClass]="{'is
+-invalid': completeForm.ge
+t('provider[37m...
+          ÔòÁ             
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~[0m
+
+  Error occurs in the 
+template of component Prov
+iderRequestDetailComponent
+.
+
+    src/app/features/front
+-office/home-care/pages/pr
+ovider-request-detail/prov
+ider-request-detail.compon
+ent.ts:10:15:
+[37m      10 Ôöé   
+templateUrl: [32m'./provi
+der-request-detail.compone
+nt.html'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/laboratory/compone
+nts/laboratory-topbar/labo
+ratory-topbar.component.ts
+:33:0:
+[37m      33 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/laboratory/compone
+nts/laboratory-topbar/labo
+ratory-topbar.component.ts
+:44:0:
+[37m      44 Ôöé 
+[32m=======[37m
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/laboratory/compone
+nts/laboratory-topbar/labo
+ratory-topbar.component.ts
+:47:0:
+[37m      47 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: 
+'LayoutModule' does not 
+appear to be an NgModule 
+class.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/laboratory/laborat
+ory.module.ts:49:8:
+[37m      49 Ôöé         
+[32mLayoutModule[37m,
+         ÔòÁ         
+[32m~~~~~~~~~~~~[0m
+
+  Is it missing an 
+@NgModule annotation?
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:78:13:
+[37m      78 Ôöé export 
+class 
+[32mLayoutModule[37m { }
+         ÔòÁ              
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2724: '"../patient/c
+omponents/sidebar/sidebar.
+component"' has no 
+exported member named 'Pat
+ientSidebarComponent'. 
+Did you mean 
+'SidebarComponent'?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:7:9:
+[37m      7 Ôöé import { 
+[32mPatientSidebarCompone
+nt[37m } from '../patient
+/components/side...
+        ÔòÁ          [32m
+~~~~~~~~~~~~~~~~~~~~~~~[0
+m
+
+  'SidebarComponent' is 
+declared here.
+
+    src/app/features/front
+-office/patient/components
+/sidebar/sidebar.component
+.ts:14:13:
+[37m      14 Ôöé export 
+class [32mSidebarComponen
+t[37m implements OnInit {
+         ÔòÁ              
+[32m~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2724: '"../laborator
+y/components/laboratory-to
+pbar/laboratory-topbar.com
+ponent"' has no exported 
+member named 'LaboratorySt
+affTopbarComponent'. Did 
+you mean 'LaboratoryTopbar
+Component'?[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:28:9:
+[37m      28 Ôöé import 
+{ [32mLaboratoryStaffTopb
+arComponent[37m } from 
+'../laboratory/comp...
+         ÔòÁ          [32
+m~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~[0m
+
+  'LaboratoryTopbarCompone
+nt' is declared here.
+
+    src/app/features/front
+-office/laboratory/compone
+nts/laboratory-topbar/labo
+ratory-topbar.component.ts
+:10:13:
+[37m      10 Ôöé export 
+class [32mLaboratoryTopba
+rComponent[37m 
+implements OnInit {
+         ÔòÁ              
+[32m~~~~~~~~~~~~~~~~~~~~~
+~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-991010: Value at 
+position 0 in the 
+NgModule.declarations of 
+LayoutModule is not a 
+reference
+  Value could not be 
+determined 
+statically.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:37:16:
+[37m      37 Ôöé   
+declarations: [32m[[37m
+         ÔòÁ              
+   [32m^[0m
+
+  Unknown reference.
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:38:4:
+[37m      38 Ôöé     [32
+mPatientSidebarComponent[
+37m,
+         ÔòÁ     [32m~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'isCollapsed' 
+does not exist on type 'Nu
+tritionistSidebarComponent
+'.[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.html:1:40:
+[37m      1 Ôöé <div 
+class="sidebar" [class.col
+lapsed]="[32misCollapsed
+[37m">
+        ÔòÁ               
+                          
+[32m~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Nutr
+itionistSidebarComponent.
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:11:17:
+[37m      11 Ôöé     
+templateUrl: [32m'./nutri
+tionist-sidebar.component.
+html'[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m [1mNG9: 
+Property 'toggleSidebar' 
+does not exist on type 'Nu
+tritionistSidebarComponent
+'.[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.html:2:32:
+[37m      2 Ôöé ...iv 
+class="brand" (click)="[3
+2mtoggleSidebar[37m()" 
+style="cursor: pointe...
+        ÔòÁ               
+               
+[32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Nutr
+itionistSidebarComponent.
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:11:17:
+[37m      11 Ôöé     
+templateUrl: [32m'./nutri
+tionist-sidebar.component.
+html'[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'queryParams' since it 
+isn't a known property of 
+'li'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.html:17:103:
+[37m      17 Ôöé 
+...st/dashboard" 
+[32m[queryParams]="{ 
+view: 'overview' }"[37m 
+(click)="set...
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Nutr
+itionistSidebarComponent.
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:11:17:
+[37m      11 Ôöé     
+templateUrl: [32m'./nutri
+tionist-sidebar.component.
+html'[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'queryParams' since it 
+isn't a known property of 
+'li'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.html:27:103:
+[37m      27 Ôöé 
+...st/dashboard" 
+[32m[queryParams]="{ 
+view: 'calendar' }"[37m 
+(click)="set...
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Nutr
+itionistSidebarComponent.
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:11:17:
+[37m      11 Ôöé     
+templateUrl: [32m'./nutri
+tionist-sidebar.component.
+html'[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'queryParams' since it 
+isn't a known property of 
+'li'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.html:37:103:
+[37m      37 Ôöé 
+...st/dashboard" 
+[32m[queryParams]="{ 
+view: 'settings' }"[37m 
+(click)="set...
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Nutr
+itionistSidebarComponent.
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:11:17:
+[37m      11 Ôöé     
+templateUrl: [32m'./nutri
+tionist-sidebar.component.
+html'[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'queryParams' since it 
+isn't a known property of 
+'li'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.html:47:105:
+[37m      47 Ôöé 
+...t/dashboard" 
+[32m[queryParams]="{ 
+view: 'exceptions' 
+}"[37m (click)="se...
+         ÔòÁ              
+   [32m~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component Nutr
+itionistSidebarComponent.
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:11:17:
+[37m      11 Ôöé     
+templateUrl: [32m'./nutri
+tionist-sidebar.component.
+html'[37m,
+         ÔòÁ              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:0:0:
+[37m      0 Ôöé 
+[32m[37m
+        ÔòÁ [32m^[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:3:0:
+[37m      3 Ôöé 
+[32m=======[37m
+        ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:5:0:
+[37m      5 Ôöé 
+[32m>>>>>>>[37m aziz
+        ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:14:0:
+[37m      14 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:20:0:
+[37m      20 Ôöé 
+[32m=======[37m
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-sidebar
+/nutritionist-sidebar.comp
+onent.ts:38:0:
+[37m      38 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-topbar/
+nutritionist-topbar.compon
+ent.ts:19:0:
+[37m      19 Ôöé 
+[32m<<<<<<<[37m HEAD
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-topbar/
+nutritionist-topbar.compon
+ent.ts:33:0:
+[37m      33 Ôöé 
+[32m=======[37m
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS1185: Merge 
+conflict marker 
+encountered.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/compo
+nents/nutritionist-topbar/
+nutritionist-topbar.compon
+ent.ts:49:0:
+[37m      49 Ôöé 
+[32m>>>>>>>[37m aziz
+         ÔòÁ 
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: This 
+import contains errors, 
+which may affect 
+components that depend on 
+this NgModule.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/nutri
+tionist.module.ts:74:8:
+[37m      74 Ôöé         
+[32mLifestyleSharedModule
+[37m,
+         ÔòÁ         [32m
+~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: 
+'LayoutModule' does not 
+appear to be an NgModule 
+class.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/nutritionist/nutri
+tionist.module.ts:76:8:
+[37m      76 Ôöé         
+[32mLayoutModule[37m
+         ÔòÁ         
+[32m~~~~~~~~~~~~[0m
+
+  Is it missing an 
+@NgModule annotation?
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:78:13:
+[37m      78 Ôöé export 
+class 
+[32mLayoutModule[37m { }
+         ÔòÁ              
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8002: Can't bind to 
+'formGroup' since it 
+isn't a known property of 
+'form'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/components
+/password-modal/password-m
+odal.component.html:8:14:
+[37m      8 Ôöé         
+<form [32m[formGroup]="pa
+sswordForm"[37m 
+(ngSubmit)="onSubmit()">
+        ÔòÁ               
+[32m~~~~~~~~~~~~~~~~~~~~~
+~~~~~[0m
+
+  Error occurs in the 
+template of component 
+PasswordModalComponent.
+
+    src/app/features/front
+-office/patient/components
+/password-modal/password-m
+odal.component.ts:7:15:
+[37m      7 Ôöé   
+templateUrl: [32m'./passw
+ord-modal.component.html'
+[37m,
+        ÔòÁ               
+ [32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2554: Expected 2 
+arguments, but got 1.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/components
+/password-modal/password-m
+odal.component.ts:40:21:
+[37m      40 Ôöé     this
+.userService.[32mchangePa
+ssword[37m(request).subsc
+ribe({
+         ÔòÁ              
+        
+[32m~~~~~~~~~~~~~~[0m
+
+  An argument for 
+'passwordData' was not 
+provided.
+
+    src/app/services/user.
+service.ts:130:40:
+[37m      130 Ôöé 
+...ssword(id: number | 
+string, 
+[32mpasswordData: 
+any[37m): 
+Observable<any> {
+          ÔòÁ             
+                   
+[32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: 
+'LayoutModule' does not 
+appear to be an NgModule 
+class.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/patient/lifestyle-
+shared.module.ts:15:4:
+[37m      15 Ôöé     
+[32mLayoutModule[37m
+         ÔòÁ     
+[32m~~~~~~~~~~~~[0m
+
+  Is it missing an 
+@NgModule annotation?
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:78:13:
+[37m      78 Ôöé export 
+class 
+[32mLayoutModule[37m { }
+         ÔòÁ              
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mNG8004: No pipe found 
+with name 'date'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ht
+ml:49:69:
+[37m      49 Ôöé ...   
+<span 
+class="item-time">{{ 
+n.createdAt | 
+[32mdate[37m:'short' 
+}}</span>
+         ÔòÁ              
+                          
+        [32m~~~~[0m
+
+  Error occurs in the 
+template of component 
+PharmacistTopbarComponent.
+
+    src/app/features/front
+-office/pharmacist/compone
+nts/pharmacist-topbar/phar
+macist-topbar.component.ts
+:11:15:
+[37m      11 Ôöé   
+templateUrl: [32m'./pharm
+acist-topbar.component.htm
+l'[37m,
+         ÔòÁ              
+  [32m~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS-996002: 
+'LayoutModule' does not 
+appear to be an NgModule 
+class.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/front
+-office/pharmacist/pharmac
+ist.module.ts:34:4:
+[37m      34 Ôöé     
+[32mLayoutModule[37m
+         ÔòÁ     
+[32m~~~~~~~~~~~~[0m
+
+  Is it missing an 
+@NgModule annotation?
+
+    src/app/features/front
+-office/layout/layout.modu
+le.ts:78:13:
+[37m      78 Ôöé export 
+class 
+[32mLayoutModule[37m { }
+         ÔòÁ              
+[32m~~~~~~~~~~~~[0m
+
+[39m[22m

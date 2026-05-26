@@ -8,7 +8,10 @@ export interface UserResponseDTO {
     birthDate?: string;
     photo?: string;
     profileImage?: string;
+    pharmacyId?: number;
+    pharmacyName?: string;
 }
+
 
 export interface UserRequestDTO {
     fullName: string;

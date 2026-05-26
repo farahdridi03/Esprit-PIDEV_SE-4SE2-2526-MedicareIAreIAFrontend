@@ -1,0 +1,167 @@
+$primary-green: #0e7c66;
+$text-dark: #111827;
+$text-light: #6b7280;
+$bg-light: #f9fafb;
+$border-color: #e5e7eb;
+
+// Layout
+.dashboard-wrapper {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: $bg-light;
+}
+
+.main-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    background-color: $bg-light;
+}
+
+.order-list-main-content {
+    padding: 2rem;
+    font-family: 'Inter', sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+// Welcome Banner
+.welcome-banner {
+    background-color: $primary-green;
+    border-radius: 16px;
+    padding: 2.5rem;
+    color: white;
+    margin-bottom: 2rem;
+
+    .banner-text {
+        h1 { font-size: 2rem; font-weight: 700; margin: 0 0 0.5rem 0; }
+        p { margin: 0; opacity: 0.9; font-size: 1rem; }
+    }
+}
+
+// Actions
+.page-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+
+    svg { width: 20px; height: 20px; }
+
+    &.primary { background-color: $primary-green; color: white; &:hover { background-color: darken($primary-green, 5%); } }
+    &.secondary { background-color: white; color: $text-dark; border: 1px solid $border-color; &:hover { background-color: $bg-light; } }
+    &.outline { background-color: transparent; color: $primary-green; border: 1px solid $primary-green; &:hover { background-color: rgba($primary-green, 0.05); } }
+    &.btn-sm { padding: 0.5rem 0.75rem; font-size: 0.85rem; border-radius: 8px; }
+}
+
+// Card Wrapper
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 0;
+    border: 1px solid $border-color;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+// Table
+.table-responsive {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    
+    thead th {
+        background-color: #f8fafc;
+        padding: 1rem 1.5rem;
+        text-align: left;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: $text-light;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid $border-color;
+    }
+
+    tbody td {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.95rem;
+        color: $text-dark;
+    }
+
+    .clickable-row {
+        cursor: pointer;
+        transition: background-color 0.2s;
+        &:hover { background-color: #f8fafc; }
+    }
+
+    .id-col { font-weight: 700; color: $primary-green; }
+    .service-col { font-weight: 600; }
+    .price-col { font-weight: 700; }
+    
+    .actions-col {
+        text-align: right;
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+}
+
+// Badges
+.status-badge {
+    padding: 0.35rem 0.85rem;
+    border-radius: 99px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    
+    &.badge-warning { background-color: #fef3c7; color: #92400e; } // PENDING
+    &.badge-primary { background-color: #dbeafe; color: #1e40af; } // ACCEPTED
+    &.badge-info { background-color: #e0f2fe; color: #075985; } // IN_PROGRESS
+    &.badge-success { background-color: #dcfce7; color: #166534; } // COMPLETED
+    &.badge-danger { background-color: #fee2e2; color: #991b1b; } // CANCELLED
+    &.badge-secondary { background-color: #f3f4f6; color: #374151; }
+}
+
+// States
+.states-wrapper { padding: 4rem 0; }
+.info-card {
+    background: white; border-radius: 16px; padding: 4rem 2rem; text-align: center; border: 1px solid $border-color;
+    .state-icon { width: 64px; height: 64px; margin-bottom: 1.5rem; color: $text-light; opacity: 0.4; }
+    h3 { margin: 0 0 0.5rem 0; color: $text-dark; }
+    p { color: $text-light; margin: 0; }
+}
+
+.spinner {
+    width: 40px; height: 40px; border: 3px solid rgba($primary-green, 0.1); border-top-color: $primary-green; border-radius: 50%; margin: 0 auto 1.5rem; animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+    .order-list-main-content { padding: 1rem; }
+    .page-actions { flex-direction: column; gap: 1rem; align-items: stretch; }
+    .welcome-banner { padding: 1.5rem; }
+}

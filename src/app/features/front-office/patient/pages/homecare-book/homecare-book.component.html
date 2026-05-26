@@ -1,0 +1,409 @@
+<div class="dashboard-wrapper">
+    <app-patient-sidebar></app-patient-sidebar>
+
+    <div class="main-body">
+        <app-patient-topbar></app-patient-topbar>
+
+        <div class="content-area p-0">
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" *ngIf="isLoadingSlots">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+
+            <div class="booking-premium-layout">
+                <!-- Hero Header -->
+                <div class="hero-service-header">
+                    <div class="container-fluid px-4 py-5">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-4">
+                            <div class="hero-text text-white">
+
+                                <h1 class="display-5 fw-bold mb-0">{{ serviceDetails?.name }}</h1>
+                                <p class="lead opacity-75 mb-0" *ngIf="serviceDetails">{{ serviceDetails.category }} •
+                                    {{ serviceDetails.durationMinutes }} min</p>
+                            </div>
+                            <div class="price-pill-lg">
+                                <span class="label">Starting from</span>
+                                <span class="value">{{ serviceDetails?.price }} TND</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid px-4 mt-n4">
+                    <!-- UI Cleared of Stepper per User Request -->
+
+                    <div class="states-wrapper" *ngIf="isLoading || error">
+                        <div class="info-card center" *ngIf="isLoading">
+                            <div class="spinner"></div>
+                            <p>Loading booking details...</p>
+                        </div>
+
+                        <div class="info-card center error" *ngIf="error">
+                            <p>{{ error }}</p>
+                            <button class="btn btn-primary outline mt-3" routerLink="/front/patient/homecare">Return to
+                                Catalog</button>
+                        </div>
+                    </div>
+
+                    <div class="booking-container shadow-sm p-4 bg-white rounded-4"
+                        *ngIf="!isLoading && !error && serviceDetails">
+
+                        <!-- STEP 1: All Providers Grid -->
+                        <div class="step-provider-select animate-fade-in" *ngIf="currentStep === 'PROVIDER_SELECT'">
+
+                            <div class="row g-4">
+                                <div class="col-md-6 col-lg-4" *ngFor="let p of availableProviders">
+                                    <div
+                                        class="glass-provider-card p-0 h-100 d-flex flex-column border rounded-4 transition-all overflow-hidden">
+                                        <div class="p-4 flex-grow-1 d-flex flex-column">
+                                            <div class="d-flex align-items-center gap-3 mb-3">
+                                                <div class="service-icon-logo bg-soft-primary text-primary rounded-pill d-flex align-items-center justify-content-center"
+                                                    style="width: 54px; height: 54px;">
+                                                    <i class="bi bi-house-heart" style="font-size: 1.6rem;"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h5 class="mb-0 fw-bold text-dark">{{ p.fullName }}</h5>
+                                                    <div class="rating-stars text-warning small">
+                                                        <i class="bi bi-star-fill"></i> {{ p.averageRating.toFixed(1) }}
+                                                        <span class="text-muted ms-1">({{ p.totalReviews }} reviews)</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <p class="bio-preview text-muted small flex-grow-1 mb-4 lh-base">
+                                                {{ p.bio || 'Qualified healthcare professional dedicated to quality home care.' | slice:0:120 }}...
+                                            </p>
+
+                                            <div class="d-grid gap-2 mt-auto">
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-profile-refined flex-grow-1"
+                                                        (click)="viewProviderProfile(p.id)">
+                                                        Profile
+                                                    </button>
+                                                    <button class="btn btn-book-refined flex-grow-1"
+                                                        (click)="selectProviderAndNext(p.id)">
+                                                        Book
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 text-center py-5" *ngIf="availableProviders.length === 0">
+                                    <div class="mb-3 display-1 text-light"><i class="bi bi-people"></i></div>
+                                    <h4 class="text-muted">No providers available for this service.</h4>
+                                    <button class="btn btn-outline-primary mt-3"
+                                        routerLink="/front/patient/homecare">Back to catalog</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Booking Form -->
+                        <div class="step-booking-form animate-fade-in"
+                            *ngIf="currentStep === 'BOOKING_FORM' && bookingForm.get('providerId')?.value">
+                            <div
+                                class="form-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-5 gap-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <button
+                                        class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center"
+                                        style="width: 32px; height: 32px;" (click)="backToProviders()">
+                                        <i class="bi bi-arrow-left"></i>
+                                    </button>
+                                    <h2 class="mb-0">Your appointment details</h2>
+                                </div>
+                                <div class="badge bg-soft-primary text-primary p-2 px-3 rounded-pill">
+                                    Service: {{ serviceDetails.name }}
+                                </div>
+                            </div>
+
+                            <div class="row g-4">
+                                <div class="col-lg-8">
+                                    <div class="form-card">
+                                        <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+                                            <div class="row mb-4">
+
+
+                                                <!-- ✅ ALERT MESSAGE FOR BLOCKED/INVALID DATES -->
+                                                <div class="col-12 mb-4" *ngIf="showDateAlert && dateAlertMessage">
+                                                    <div [ngClass]="'alert alert-' + dateAlertType + ' alert-dismissible fade show d-flex align-items-center shadow-sm'"
+                                                        role="alert" style="border-left: 4px solid;"
+                                                        [style.border-left-color]="dateAlertType === 'danger' ? '#dc3545' : '#ffc107'">
+                                                        <div class="flex-grow-1">
+                                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                                <i *ngIf="dateAlertType === 'danger'"
+                                                                    class="bi bi-exclamation-triangle-fill"
+                                                                    style="font-size: 1.5rem; color: #dc3545;"></i>
+                                                                <i *ngIf="dateAlertType === 'warning'"
+                                                                    class="bi bi-exclamation-circle-fill"
+                                                                    style="font-size: 1.5rem; color: #ffc107;"></i>
+                                                                <strong style="font-size: 1.1rem;">
+                                                                    {{ dateAlertType === 'danger' ? 'Date not available' : 'Caution' }}
+                                                                </strong>
+                                                            </div>
+                                                            <p class="mb-0"
+                                                                [style.color]="dateAlertType === 'danger' ? '#721c24' : '#856404'">
+                                                                {{ dateAlertMessage }}
+                                                            </p>
+                                                        </div>
+                                                        <button type="button" class="btn-close"
+                                                            (click)="showDateAlert = false"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold d-flex align-items-center gap-2">
+                                                        <i class="bi bi-calendar-event text-primary"></i> 1. Intervention date <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="date" class="form-control rounded-3"
+                                                        formControlName="requestedDate" [min]="minDate" [max]="maxDate"
+                                                        [ngClass]="{'is-invalid': bookingForm.get('requestedDate')?.invalid && (bookingForm.get('requestedDate')?.dirty || bookingForm.get('requestedDate')?.touched) || (showDateAlert && dateAlertType === 'danger')}">
+
+                                                    <!-- ✅ Date Error Message -->
+                                                    <div *ngIf="dateErrorMessage && !showDateAlert" class="mt-2">
+                                                        <small class="text-danger d-block">
+                                                            <i class="bi bi-exclamation-circle me-1"></i> {{
+                                                            dateErrorMessage }}
+                                                        </small>
+                                                    </div>
+
+                                                    <!-- ✅ Show blocked dates in red with better styling -->
+                                                    <div *ngIf="blockedProviderDates && blockedProviderDates.length > 0"
+                                                        class="mt-3 p-3 bg-light rounded border border-danger"
+                                                        style="border-left: 4px solid #dc3545;">
+                                                        <p class="small text-danger mb-2 fw-bold">
+                                                            <i class="bi bi-calendar-x me-2"></i>
+                                                            Unavailable days for this provider:
+                                                        </p>
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            <span *ngFor="let blockedDate of blockedProviderDates"
+                                                                class="badge bg-danger text-white"
+                                                                style="font-size: 0.85rem; padding: 0.5rem 0.75rem;">
+                                                                {{ blockedDate | date: 'EEE dd/MM/yyyy' | uppercase }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mt-3" *ngIf="suggestedDates.length > 0">
+                                                        <p class="small text-muted mb-2"><i
+                                                                class="bi bi-magic me-1"></i> Suggested dates:</p>
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            <button type="button" *ngFor="let sugg of suggestedDates"
+                                                                class="btn btn-sm btn-outline-primary py-1 px-3 rounded-pill tiny-btn"
+                                                                [class.active]="bookingForm.get('requestedDate')?.value === sugg.date"
+                                                                (click)="selectSuggestedDate(sugg.date)">
+                                                                {{ sugg.label }}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold d-flex align-items-center gap-2">
+                                                        <i class="bi bi-clock text-primary"></i> 2. Arrival time
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="slots-container mt-2"
+                                                        *ngIf="availableSlotsSlices.length > 0; else noSlots">
+                                                        <div class="slots-grid-refined">
+                                                            <button type="button"
+                                                                *ngFor="let slot of availableSlotsSlices"
+                                                                class="slot-pill-refined"
+                                                                [class.active]="selectedSlotTime === slot.time"
+                                                                (click)="selectSlot(slot.time)">
+                                                                {{ slot.label }}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <ng-template #noSlots>
+                                                        <div
+                                                            class="alert alert-info py-3 small d-flex align-items-center gap-2 rounded-3">
+                                                            <i class="bi bi-info-circle-fill"></i>
+                                                            Choose a date to see available times.
+                                                        </div>
+                                                    </ng-template>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-4">
+                                                <label class="form-label fw-bold d-flex align-items-center gap-2">
+                                                    <i class="bi bi-geo-alt text-primary"></i> 3. Intervention address <span class="text-danger">*</span>
+                                                </label>
+                                                <textarea class="form-control rounded-3" rows="3"
+                                                    formControlName="address"
+                                                    [ngClass]="{'is-invalid': f['address'].invalid && (f['address'].dirty || f['address'].touched)}"
+                                                    placeholder="Street, city, postal code..."></textarea>
+                                                <div *ngIf="f['address'].invalid && (f['address'].dirty || f['address'].touched)" class="invalid-feedback">
+                                                    <div *ngIf="f['address'].errors?.['required']">L'adresse est obligatoire.</div>
+                                                    <div *ngIf="f['address'].errors?.['minlength']">L'adresse doit faire au moins 10 caractères.</div>
+                                                    <div *ngIf="f['address'].errors?.['maxlength']">L'adresse ne peut pas dépasser 500 caractères.</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-4">
+                                                <label class="form-label fw-bold d-flex align-items-center gap-2">
+                                                    <i class="bi bi-pencil-square text-primary"></i> 4. Notes for provider
+                                                </label>
+                                                <textarea class="form-control rounded-3" rows="2"
+                                                    formControlName="patientNotes"
+                                                    [ngClass]="{'is-invalid': f['patientNotes'].invalid && (f['patientNotes'].dirty || f['patientNotes'].touched)}"
+                                                    placeholder="Details about your health status or home access..."></textarea>
+                                                <div *ngIf="f['patientNotes'].invalid && (f['patientNotes'].dirty || f['patientNotes'].touched)" class="invalid-feedback">
+                                                    <div *ngIf="f['patientNotes'].errors?.['maxlength']">Les notes ne peuvent pas dépasser 1000 caractères.</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-end pt-4">
+                                                <button type="submit"
+                                                    class="btn btn-primary rounded-pill px-5 py-3 shadow-sm d-flex align-items-center gap-2"
+                                                    [disabled]="isSubmitting || bookingForm.invalid">
+                                                    CONFIRM <i class="bi bi-check2-circle mb-0"
+                                                        style="font-size: 1.2rem;"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="sticky-top" style="top: 100px;">
+                                        <div
+                                            class="selected-provider-card border rounded-4 p-4 text-center bg-white shadow-sm mb-4 position-relative overflow-hidden">
+                                            <div class="bg-soft-primary position-absolute top-0 start-0 w-100"
+                                                style="height: 60px; z-index: 0;"></div>
+                                            <div class="position-relative" style="z-index: 1;">
+                                                <div class="avatar-lg mx-auto mb-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-lg border border-4 border-white"
+                                                    style="width: 70px; height: 70px; font-size: 1.5rem;">
+                                                    {{ selectedProviderName.charAt(0) }}
+                                                </div>
+                                                <h5 class="fw-bold mb-1">{{ selectedProviderName }}</h5>
+                                                <div class="badge bg-warning text-dark mb-3"><i
+                                                        class="bi bi-star-fill"></i> {{
+                                                    selectedProviderRating.toFixed(1) }}</div>
+                                                <p class="text-muted small mb-3">Selected provider</p>
+                                                <button
+                                                    class="btn btn-sm btn-light text-primary fw-bold rounded-pill px-3"
+                                                    (click)="backToProviders()">
+                                                    <i class="bi bi-arrow-left-right me-1"></i> Change
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="service-details-card shadow-lg overflow-hidden position-relative">
+                                            <div class="bg-circle-decoration"></div>
+                                            <h5 class="position-relative">Financial summary</h5>
+
+                                            <div class="item-row position-relative">
+                                                <span>Service amount</span>
+                                                <span class="fw-bold">{{ serviceDetails.price }} TND</span>
+                                            </div>
+
+                                            <div class="item-row position-relative">
+                                                <span>Travel fees</span>
+                                                <span class="fw-bold">Included</span>
+                                            </div>
+
+                                            <hr class="position-relative">
+
+                                            <div class="total-row position-relative">
+                                                <span class="h6 mb-0">Total to pay</span>
+                                                <span class="h4 mb-0 fw-bold">{{ serviceDetails.price }} TND</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Provider Profile Modal -->
+    <div class="book-modal-backdrop fade show" *ngIf="showProfileModal" (click)="closeProfileModal()"></div>
+    <div class="book-modal fade show d-block" *ngIf="showProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content profile-modal-content border-0 shadow-lg">
+                <div class="modal-header-hero position-relative">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content p-5 text-center position-relative">
+                        <button type="button" class="btn-close btn-close-white position-absolute end-0 top-0 m-4"
+                            (click)="closeProfileModal()"></button>
+                        <div class="service-logo-lg mb-3 shadow-lg mx-auto">
+                            <i class="bi bi-house-heart"></i>
+                        </div>
+                        <h2 class="text-white fw-bold mb-1">{{ selectedProviderProfile?.fullName }}</h2>
+                        <div class="d-flex justify-content-center gap-3 mt-2">
+                            <span class="badge bg-white text-primary p-2 px-3 rounded-pill shadow-sm small">
+                                <i class="bi bi-star-fill text-warning me-1"></i> {{
+                                selectedProviderProfile?.averageRating?.toFixed(1) }} / 5.0
+                            </span>
+                            <span
+                                class="badge bg-white bg-opacity-25 text-white p-2 px-3 rounded-pill backdrop-blur small">
+                                {{ selectedProviderProfile?.totalReviews }} avis vérifiés
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-body p-4 bg-light" style="max-height: 55vh; overflow-y: auto;">
+                    <div class="row g-4">
+                        <div class="col-md-5">
+                            <div class="profile-section-card h-100 p-4 bg-white rounded-4 shadow-sm border-0">
+                                <h6 class="text-uppercase tiny-text text-muted fw-bold mb-3 ls-1">ABOUT</h6>
+                                <p class="text-dark small lh-base mb-4">{{ selectedProviderProfile?.bio || 'This
+                                    healthcare professional is highly qualified for home interventions.' }}
+                                </p>
+
+                                <h6 class="text-uppercase tiny-text text-muted fw-bold mb-3 ls-1">SPECIALTIES</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-soft-primary text-primary p-2 px-3 rounded-pill tiny-text"
+                                        *ngFor="let s of selectedProviderProfile?.specialties">
+                                        {{ s.name }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="profile-section-card p-4 bg-white rounded-4 shadow-sm border-0">
+                                <h6 class="text-uppercase tiny-text text-muted fw-bold mb-3 ls-1">LATEST PATIENT REVIEWS
+                                </h6>
+
+                                <div class="reviews-minimal-list">
+                                    <div *ngIf="!selectedProviderProfile?.reviews?.length"
+                                        class="text-center py-4 text-muted small fst-italic">
+                                        No reviews to display at this time.
+                                    </div>
+
+                                    <div class="review-item-minimal p-3 mb-2 rounded-3 border-start border-primary border-4"
+                                        *ngFor="let r of selectedProviderProfile?.reviews">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span class="fw-bold small">{{ r.patientName }}</span>
+                                            <div class="tiny-stars text-warning">
+                                                <i class="bi bi-star-fill" *ngFor="let s of [1,2,3,4,5]"
+                                                    [style.display]="s <= r.rating ? 'inline' : 'none'"></i>
+                                            </div>
+                                        </div>
+                                        <p class="very-small text-muted mb-0">"{{ r.comment || 'Recommended intervention.'
+                                            }}"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="modal-footer border-0 p-4 bg-white rounded-bottom-4 shadow-top justify-content-center gap-3">
+                    <button type="button" class="btn btn-profile-refined px-4"
+                        (click)="$event.stopPropagation(); closeProfileModal()">Later</button>
+                    <button type="button" class="btn btn-book-refined px-5" *ngIf="selectedProviderProfile"
+                        (click)="$event.stopPropagation(); selectProviderAndNext(selectedProviderProfile.id)">
+                        CHOOSE THIS PROVIDER
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,76 @@
+<div class="page-header">
+    <div>
+        <h1>Event <em>Management</em></h1>
+        <p>Manage all medical events, conferences, and seminars</p>
+    </div>
+    <button class="btn-primary" (click)="createEvent()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Create Event
+    </button>
+</div>
+
+<div class="panel">
+    <div class="panel-head">
+        <div class="panel-title">All Events</div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <input type="text" class="role-filter" placeholder="Search events..." [(ngModel)]="searchTerm" (input)="applyFilters()">
+            <select class="role-filter" [(ngModel)]="typeFilter" (change)="applyFilters()">
+                <option value="ALL">All Types</option>
+                <option value="ONLINE">Online</option>
+                <option value="PHYSICAL">Physical</option>
+            </select>
+            <button class="panel-action" (click)="loadEvents()">Refresh ⭮</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loader">Loading events...</div>
+
+    <table class="tbl" *ngIf="!loading && filteredEvents.length > 0">
+        <thead>
+            <tr>
+                <th>Event Info</th>
+                <th>Type / Date</th>
+                <th>Location / Platform</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let ev of filteredEvents">
+                <td>
+                    <div class="ucell">
+                        <div class="mav ma1" *ngIf="!ev.imageUrl">{{ ev.title.substring(0,2).toUpperCase() }}</div>
+                        <img *ngIf="ev.imageUrl" [src]="getImageUrl(ev.imageUrl)" alt="Event cover photo">
+                        <div>
+                            <div class="cn">{{ ev.title }}</div>
+                            <div class="cs">{{ ev.description | slice:0:30 }}...</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="chip" [ngClass]="ev.eventType === 'ONLINE' ? 'ck-teal' : 'ck-indigo'">{{ ev.eventType }}</span><br/>
+                    <span style="font-size: 0.85rem; color: #666;">{{ ev.date | date:'medium' }}</span>
+                </td>
+                <td>
+                    <div class="cn" *ngIf="ev.eventType === 'PHYSICAL'">
+                        📍 {{ ev.venueName }}<br/>
+                        <span class="cs">{{ ev.city }}, {{ ev.country }}</span>
+                    </div>
+                    <div class="cn" *ngIf="ev.eventType === 'ONLINE'">
+                        💻 {{ ev.platformName }}<br/>
+                    </div>
+                </td>
+                <td style="text-align: right;">
+                    <button class="action-btn" (click)="viewRegistrations(ev.id)">Registrations</button>
+                    <button class="action-btn text-indigo" (click)="editEvent(ev.id)">Edit</button>
+                    <button class="action-btn text-rose" (click)="deleteEvent(ev.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && filteredEvents.length === 0" class="no-data">
+        No events found matching your criteria.
+    </div>
+</div>

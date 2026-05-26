@@ -1,12 +1,18 @@
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { UserService } from '../../../../../services/user.service';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { PatientService } from '../../../../../services/patient.service';
-import { NotificationService, AppNotification } from '../../../../../services/notification.service';
+import { NotificationService } from '../../../../../services/notification.service';
+import { NotificationResponseDTO } from '../../../../../models/notification.model';
+import { DeliveryTrackingService } from '../../../../../services/delivery-tracking.service';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-patient-topbar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.scss']
 })
@@ -17,18 +23,22 @@ export class TopbarComponent implements OnInit, OnDestroy {
   currentUserId: number | null = null;
 
   // Notifications
-  notifications: AppNotification[] = [];
+  notifications: any[] = [];
   unreadCount = 0;
   showDropdown = false;
+  showNotifications = false;
   
   private pollInterval: any;
   private profileSub?: Subscription;
+  private notifSub?: Subscription;
 
   constructor(
     private userService: UserService,
-    private authService: AuthService,
+    public authService: AuthService,
     private patientService: PatientService,
-    private notifService: NotificationService,
+    private notificationService: NotificationService,
+    private deliveryTrackingService: DeliveryTrackingService,
+    public router: Router,
     private elRef: ElementRef
   ) {}
 
@@ -49,10 +59,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
       }
     });
 
-    // 3. Start Notification Polling
-    this.startPolling();
-
-    // 4. Fetch Patient Profile specifically for the photo
+    // 3. Fetch Patient Profile specifically for the photo
     this.patientService.getMe().subscribe({
       next: (patient) => {
         if (patient) {
@@ -63,11 +70,37 @@ export class TopbarComponent implements OnInit, OnDestroy {
       },
       error: () => {}
     });
+
+    // 4. Notifications Setup
+    if (this.currentUserId) {
+      const email = this.authService.getUserEmail();
+      
+      // Initial load via service
+      this.notificationService.getNotifications(this.currentUserId).subscribe();
+
+      // Subscription to reactive streams
+      this.notifSub = this.notificationService.notifications$.subscribe(notifs => {
+        this.notifications = notifs;
+      });
+      this.notificationService.unreadCount$.subscribe(count => {
+        this.unreadCount = count;
+      });
+
+      // WebSocket for real-time
+      if (email) {
+        this.deliveryTrackingService.connectToUserNotifications(email);
+      }
+
+      // Polling as fallback/legacy support if needed
+      this.startPolling();
+    }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.pollInterval) clearInterval(this.pollInterval);
-    this.profileSub?.unsubscribe();
+    if (this.profileSub) this.profileSub.unsubscribe();
+    if (this.notifSub) this.notifSub.unsubscribe();
+    this.deliveryTrackingService.disconnect();
   }
 
   private setNames(fullName: string) {
@@ -82,32 +115,70 @@ export class TopbarComponent implements OnInit, OnDestroy {
   private startPolling(): void {
     if (this.currentUserId) {
       this.refreshNotifs();
-      this.pollInterval = setInterval(() => this.refreshNotifs(), 3000);
+      this.pollInterval = setInterval(() => this.refreshNotifs(), 30000); // Polling less frequently if WebSocket is active
     }
   }
 
   private refreshNotifs(): void {
     if (!this.currentUserId) return;
-    this.notifications = this.notifService.getPatientNotifications(this.currentUserId);
-    this.unreadCount = this.notifications.filter(n => !n.read).length;
+    // Trigger the reactive stream update in NotificationService
+    this.notificationService.getNotifications(this.currentUserId).subscribe();
   }
+
 
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
   }
 
-  markAllRead(): void {
+  toggleNotifications(event: MouseEvent) {
+    event.stopPropagation();
+    this.showNotifications = !this.showNotifications;
+  }
+
+  markAsRead(notification: any) {
+    if (notification.isRead || notification.read) return;
+    this.notificationService.markAsRead(notification.id, this.currentUserId || undefined).subscribe({
+      next: () => {
+        notification.isRead = true;
+        notification.read = true;
+        this.unreadCount = Math.max(0, this.unreadCount - 1);
+      }
+    });
+  }
+
+
+  markAllAsRead() {
     if (this.currentUserId) {
-      this.notifService.markPatientNotificationsRead(this.currentUserId);
-      this.refreshNotifs();
+      this.notificationService.markAllAsRead(this.currentUserId).subscribe({
+        next: () => {
+          this.notifications.forEach(n => {
+            n.isRead = true;
+            n.read = true;
+          });
+          this.unreadCount = 0;
+        }
+      });
     }
   }
 
-  clearAll(): void {
-    if (this.currentUserId) {
-      this.notifService.clearPatientNotifications(this.currentUserId);
-      this.refreshNotifs();
+  navigateToRelated(notification: any) {
+    this.markAsRead(notification);
+    this.showNotifications = false;
+    this.showDropdown = false;
+
+    if (notification.orderId) {
+      if (notification.type?.includes('ORDER') || notification.type?.includes('DELIVERY') || notification.type?.includes('PAYMENT')) {
+        this.router.navigate(['/front/patient/pharmacy-orders', notification.orderId]);
+      }
     }
+  }
+
+  getNotificationIcon(type: string): string {
+    if (!type) return '🔔';
+    if (type.includes('VALIDATED') || type.includes('CONFIRMED')) return '✅';
+    if (type.includes('DELIVERY')) return '🚚';
+    if (type.includes('CANCELLED') || type.includes('REJECTED')) return '❌';
+    return '🔔';
   }
 
   timeAgo(date: Date | string): string {
@@ -125,6 +196,11 @@ export class TopbarComponent implements OnInit, OnDestroy {
   onClickOutside(event: MouseEvent): void {
     if (!this.elRef.nativeElement.contains(event.target)) {
       this.showDropdown = false;
+      this.showNotifications = false;
     }
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

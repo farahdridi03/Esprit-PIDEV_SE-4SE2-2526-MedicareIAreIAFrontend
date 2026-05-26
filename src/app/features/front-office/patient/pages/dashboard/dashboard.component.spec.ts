@@ -1,6 +1,7 @@
 
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+<<<<<<< HEAD
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
@@ -22,11 +23,20 @@ import { AppointmentDTO } from '../../../../../models/appointment.model';
 import { UserService } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 >>>>>>> origin/frontVersion1
+=======
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { of } from 'rxjs';
+import { DashboardComponent } from './dashboard.component';
+import { TestingModule } from '../../../../../testing/testing.module';
+import { UserService } from '../../../../../services/user.service';
+import { AuthService } from '../../../../../services/auth.service';
+>>>>>>> aziz
 
 describe('DashboardComponent', () => {
 
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
+<<<<<<< HEAD
 <<<<<<< HEAD
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let userServiceSpy: jasmine.SpyObj<UserService>;
@@ -86,9 +96,35 @@ describe('DashboardComponent', () => {
     })
     .compileComponents();
 >>>>>>> origin/frontVersion1
+=======
+  let userServiceMock: jasmine.SpyObj<UserService>;
+  let authServiceMock: jasmine.SpyObj<AuthService>;
+
+  beforeEach(async () => {
+    userServiceMock = jasmine.createSpyObj('UserService', ['getProfile']);
+    authServiceMock = jasmine.createSpyObj('AuthService', ['getUserFullName']);
+
+    userServiceMock.getProfile.and.returnValue(of({ fullName: 'John Doe' } as any));
+    authServiceMock.getUserFullName.and.returnValue('John Doe');
+
+    await TestBed.configureTestingModule({
+      declarations: [DashboardComponent],
+      imports: [TestingModule],
+      providers: [
+        { provide: UserService, useValue: userServiceMock },
+        { provide: AuthService, useValue: authServiceMock }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    })
+      .compileComponents();
+>>>>>>> aziz
 
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   it('should create', () => {

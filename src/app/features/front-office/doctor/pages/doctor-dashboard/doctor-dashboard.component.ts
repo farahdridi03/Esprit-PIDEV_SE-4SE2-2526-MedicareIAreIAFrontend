@@ -1,17 +1,22 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { AppointmentService } from '../../../../../services/appointment.service';
 import { AppointmentDTO } from '../../../../../models/appointment.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+export type DoctorView = 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients';
 
 @Component({
   selector: 'app-doctor-dashboard',
   templateUrl: './doctor-dashboard.component.html',
   styleUrls: ['./doctor-dashboard.component.scss']
 })
-export class DoctorDashboardComponent implements OnInit {
-  currentView: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients' = 'overview';
+export class DoctorDashboardComponent implements OnInit, OnDestroy {
+  currentView: DoctorView = 'overview';
   firstName: string = '';
+  fullName: string = '';
   todayAppointments: AppointmentDTO[] = [];
   allAppointments: AppointmentDTO[] = [];
   isLoadingAppointments: boolean = true;
@@ -24,20 +29,24 @@ export class DoctorDashboardComponent implements OnInit {
   monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+  private profileSub?: Subscription;
+
   constructor(
     private cdr: ChangeDetectorRef,
-    private authService: AuthService,
+    private userService: UserService,
+    public authService: AuthService,
     private appointmentService: AppointmentService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    const fullName = this.authService.getUserFullName() || 'Docteur';
+    const rawFullName = this.authService.getUserFullName() || 'Docteur';
+    this.fullName = rawFullName;
     // Clean name handling
-    this.firstName = (fullName.toLowerCase().startsWith('dr') || fullName.toLowerCase().startsWith('dr.')) 
-                     ? fullName.split(' ').slice(1).join(' ') 
-                     : fullName;
+    this.firstName = (rawFullName.toLowerCase().startsWith('dr') || rawFullName.toLowerCase().startsWith('dr.')) 
+                     ? rawFullName.split(' ').slice(1).join(' ') 
+                     : rawFullName;
     
     // Listen for query params to switch internal views
     this.route.queryParams.subscribe(params => {
@@ -54,6 +63,25 @@ export class DoctorDashboardComponent implements OnInit {
       this.selectedDateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       this.loadDashboardData(doctorId);
     }
+
+    this.loadUserInfo();
+    this.userService.getProfile().subscribe({
+      next: (user: UserProfile) => {
+        if (user && user.fullName) {
+            this.fullName = user.fullName;
+            this.firstName = (user.fullName.toLowerCase().startsWith('dr') || user.fullName.toLowerCase().startsWith('dr.')) 
+                             ? user.fullName.split(' ').slice(1).join(' ') 
+                             : user.fullName;
+        }
+      },
+      error: (err: any) => {
+        console.error('Error fetching doctor profile', err);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.profileSub) this.profileSub.unsubscribe();
   }
 
   loadDashboardData(doctorId: number): void {
@@ -155,7 +183,7 @@ export class DoctorDashboardComponent implements OnInit {
      return this.allAppointments.filter(a => a.status === 'COMPLETED').length % 7;
   }
 
-  setView(view: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients') {
+  setView(view: DoctorView) {
     this.currentView = view;
     // Update URL without full reload
     this.router.navigate([], {
@@ -164,5 +192,18 @@ export class DoctorDashboardComponent implements OnInit {
       queryParamsHandling: 'merge'
     });
     this.cdr.detectChanges();
+  }
+
+  private loadUserInfo() {
+    const fullName = this.authService.getUserFullName();
+    if (fullName) this.fullName = fullName;
+    this.profileSub = this.userService.profile$.subscribe(user => {
+      if (user && user.fullName) {
+        this.fullName = user.fullName;
+        this.firstName = (user.fullName.toLowerCase().startsWith('dr') || user.fullName.toLowerCase().startsWith('dr.')) 
+                         ? user.fullName.split(' ').slice(1).join(' ') 
+                         : user.fullName;
+      }
+    });
   }
 }

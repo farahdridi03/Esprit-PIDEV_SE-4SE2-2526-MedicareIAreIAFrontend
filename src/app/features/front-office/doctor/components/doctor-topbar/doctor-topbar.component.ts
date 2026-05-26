@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../../services/user.service';
+import { CommonModule } from '@angular/common';
+import { UserService, UserProfile } from '../../../../../services/user.service';
 import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
   selector: 'app-doctor-topbar',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './doctor-topbar.component.html',
   styleUrls: ['./doctor-topbar.component.scss']
 })
@@ -16,7 +19,17 @@ export class DoctorTopbarComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserInfo();
-    // The profile endpoint is optional/missing on backend, names are loaded from authService token
+    this.userService.getProfile().subscribe({
+      next: (user: UserProfile) => {
+        if (user && user.fullName) {
+          this.setNames(user.fullName);
+        }
+        this.photo = (user as any).photo || (user as any).profileImage || null;
+      },
+      error: (err: any) => {
+        console.error('Error fetching doctor profile', err);
+      }
+    });
   }
 
   private loadUserInfo() {
@@ -30,6 +43,9 @@ export class DoctorTopbarComponent implements OnInit {
     });
     // Trigger initial load if not already loaded
     this.userService.refreshProfile();
+    
+    const fullName = this.authService.getUserFullName();
+    if (fullName) this.setNames(fullName);
   }
 
   private setNames(fullName: string) {

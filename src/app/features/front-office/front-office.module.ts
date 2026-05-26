@@ -27,6 +27,10 @@ import { PatientProfileSettingsComponent } from './patient/pages/patient-profile
 import { PatientProfileEditComponent } from './patient/pages/patient-profile-edit/patient-profile-edit.component';
 import { LabRequestsComponent } from './patient/pages/lab-requests/lab-requests.component';
 import { LabRequestFormComponent } from './patient/pages/lab-requests/lab-request-form/lab-request-form.component';
+import { PharmacyComponent } from './patient/pages/pharmacy/pharmacy.component';
+import { PharmacyOrderCreateComponent } from './patient/pages/pharmacy-order-create/pharmacy-order-create.component';
+import { PharmacyOrderListComponent } from './patient/pages/pharmacy-order-list/pharmacy-order-list.component';
+import { PharmacyOrderDetailComponent } from './patient/pages/pharmacy-order-detail/pharmacy-order-detail.component';
 
 // Doctor components
 import { DoctorDashboardComponent } from './doctor/pages/doctor-dashboard/doctor-dashboard.component';
@@ -43,11 +47,24 @@ import { DoctorPatientConsultationsComponent } from './doctor/pages/doctor-patie
 import { DoctorPatientTreatmentsComponent } from './doctor/pages/doctor-patient-treatments/doctor-patient-treatments.component';
 import { DoctorPatientPrescriptionsComponent } from './doctor/pages/doctor-patient-prescriptions/doctor-patient-prescriptions.component';
 import { DoctorPatientDiagnosesComponent } from './doctor/pages/doctor-patient-diagnoses/doctor-patient-diagnoses.component';
+import { DoctorSidebarComponent } from './doctor/components/doctor-sidebar/doctor-sidebar.component';
+import { DoctorTopbarComponent } from './doctor/components/doctor-topbar/doctor-topbar.component';
 
 // Layout & Static components
 import { HomeComponent } from './pages/home/home.component';
 import { FrontLayoutComponent } from './layout/front-layout/front-layout.component';
 import { ContactComponent } from './pages/contact/contact.component';
+import { SidebarComponent } from './patient/components/sidebar/sidebar.component';
+import { TopbarComponent } from './patient/components/topbar/topbar.component';
+import { CourierDashboardComponent } from './delivery/pages/courier-dashboard/courier-dashboard.component';
+import { HomecareCatalogComponent } from './patient/pages/homecare-catalog/homecare-catalog.component';
+import { HomecareRequestListComponent } from './patient/pages/homecare-request-list/homecare-request-list.component';
+import { HomecareBookComponent } from './patient/pages/homecare-book/homecare-book.component';
+import { HomecareReviewComponent } from './patient/pages/homecare-review/homecare-review.component';
+import { EventDetailComponent } from './pages/event-detail/event-detail.component';
+import { PatientEventsComponent } from './pages/patient-events/patient-events.component';
+import { LaboratoryStaffSidebarComponent } from './laboratory/components/laboratory-sidebar/laboratory-sidebar.component';
+import { LaboratoryTopbarComponent } from './laboratory/components/laboratory-topbar/laboratory-topbar.component';
 
 @NgModule({
   declarations: [
@@ -85,7 +102,15 @@ import { ContactComponent } from './pages/contact/contact.component';
     DoctorPatientDiagnosesComponent,
     HomeComponent,
     FrontLayoutComponent,
-    ContactComponent
+    ContactComponent,
+    PharmacyComponent,
+    PharmacyOrderListComponent,
+    PharmacyOrderDetailComponent,
+    CourierDashboardComponent,
+    HomecareCatalogComponent,
+    HomecareRequestListComponent,
+    HomecareBookComponent,
+    HomecareReviewComponent
   ],
   imports: [
     CommonModule,
@@ -95,7 +120,16 @@ import { ContactComponent } from './pages/contact/contact.component';
     ReactiveFormsModule,
     LifestyleSharedModule,
     ProviderCalendarSharedModule,
-    LayoutModule
+    LayoutModule,
+    EventDetailComponent,
+    PatientEventsComponent,
+    SidebarComponent,
+    TopbarComponent,
+    DoctorSidebarComponent,
+    DoctorTopbarComponent,
+    LaboratoryStaffSidebarComponent,
+    LaboratoryTopbarComponent,
+    PharmacyOrderCreateComponent
   ],
   exports: [
     DashboardComponent,
@@ -108,7 +142,9 @@ import { ContactComponent } from './pages/contact/contact.component';
     PatientProfileComponent,
     DoctorDashboardComponent,
     DoctorProfileComponent,
-    DoctorPatientsComponent
+    DoctorPatientsComponent,
+    HomeComponent,
+    ContactComponent
   ]
 })
 export class FrontOfficeModule { }

@@ -3,6 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 import { PatientSidebarComponent } from './sidebar.component';
@@ -18,6 +19,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { SidebarComponent } from './sidebar.component';
 import { AuthService } from '../../../../../services/auth.service';
+=======
+import { SidebarComponent } from './sidebar.component';
+import { TestingModule } from '../../../../../testing/testing.module';
+>>>>>>> aziz
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -29,6 +34,7 @@ describe('SidebarComponent', () => {
     mockAuthService = jasmine.createSpyObj('AuthService', ['logout']);
 
     await TestBed.configureTestingModule({
+<<<<<<< HEAD
 <<<<<<< HEAD
       imports: [HttpClientTestingModule],
       declarations: [PatientSidebarComponent],
@@ -44,8 +50,13 @@ describe('SidebarComponent', () => {
 
 
 >>>>>>> origin/frontVersion1
+=======
+      declarations: [SidebarComponent],
+      imports: [TestingModule],
+      schemas: [NO_ERRORS_SCHEMA]
+>>>>>>> aziz
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(PatientSidebarComponent);
     component = fixture.componentInstance;
@@ -55,6 +66,7 @@ describe('SidebarComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+<<<<<<< HEAD
 
 <<<<<<< HEAD
   it('should call authService.logout on logout()', () => {
@@ -67,4 +79,6 @@ describe('SidebarComponent', () => {
     expect(mockAuthService.logout).toHaveBeenCalled();
 >>>>>>> origin/frontVersion1
   });
+=======
+>>>>>>> aziz
 });

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../../../services/user.service';
+import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
   selector: 'app-password-modal',
@@ -13,7 +14,7 @@ export class PasswordModalComponent {
   loading = false;
   errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  constructor(private fb: FormBuilder, private userService: UserService, private authService: AuthService) {
     this.passwordForm = this.fb.group({
       currentPassword: ['', Validators.required],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -22,8 +23,9 @@ export class PasswordModalComponent {
   }
 
   passwordMatchValidator(g: FormGroup) {
-    return g.get('newPassword')?.value === g.get('confirmPassword')?.value
-      ? null : { 'mismatch': true };
+    const newPassword = g.get('newPassword')?.value;
+    const confirmPassword = g.get('confirmPassword')?.value;
+    return newPassword === confirmPassword ? null : { 'mismatch': true };
   }
 
   onSubmit() {
@@ -37,7 +39,14 @@ export class PasswordModalComponent {
       newPassword: this.passwordForm.value.newPassword
     };
 
-    this.userService.changePassword(request).subscribe({
+    const userId = this.authService.getUserId();
+    if (!userId) {
+      this.loading = false;
+      this.errorMessage = "User session not found.";
+      return;
+    }
+
+    this.userService.changePassword(userId, request).subscribe({
       next: () => {
         this.loading = false;
         alert('Password updated successfully');

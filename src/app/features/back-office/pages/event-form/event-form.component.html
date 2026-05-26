@@ -1,0 +1,208 @@
+<div class="page-header">
+    <div>
+        <h1>{{ isEditMode ? 'Edit' : 'Create' }} <em>Event</em></h1>
+        <p>Schedule a new medical conference or webinar</p>
+    </div>
+    <button class="action-btn"
+        style="background:#fff; border:1px solid #ddd; padding:8px 16px; border-radius:4px; cursor:pointer;"
+        routerLink="/admin/events">
+        ← Back to Events
+    </button>
+</div>
+
+<div class="panel">
+    <div class="panel-head">
+        <div class="panel-title">Event Details</div>
+    </div>
+
+    <div class="loader" *ngIf="loading">Processing...</div>
+
+    <div class="form-container" *ngIf="!loading">
+        <div *ngIf="globalError" class="form-error-summary">
+            {{ globalError }}
+        </div>
+        <form [formGroup]="eventForm" (ngSubmit)="saveEvent()">
+
+            <div class="form-grid">
+                <!-- Basic Info -->
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Event Title *</label>
+                    <input type="text" formControlName="title" placeholder="e.g. Annual Medical Summit"
+                        [ngClass]="{'is-invalid': eventForm.get('title')?.invalid && (eventForm.get('title')?.dirty || eventForm.get('title')?.touched)}">
+                    <span class="error-message"
+                        *ngIf="eventForm.get('title')?.errors?.['required'] && eventForm.get('title')?.touched">Title is
+                        required.</span>
+                    <span class="error-message" *ngIf="eventForm.get('title')?.errors?.['serverError']">{{
+                        eventForm.get('title')?.errors?.['serverError'] }}</span>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Description *</label>
+                    <textarea formControlName="description" rows="5" placeholder="Tell the attendees what to expect from this event..."
+                              [ngClass]="{'is-invalid': eventForm.get('description')?.invalid && (eventForm.get('description')?.dirty || eventForm.get('description')?.touched)}"></textarea>
+                    <span class="error-message"
+                        *ngIf="eventForm.get('description')?.errors?.['required'] && eventForm.get('description')?.touched">Description
+                        is required.</span>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Event Cover Image</label>
+                    <div class="image-upload-container">
+                        <div class="preview-area" *ngIf="imagePreview">
+                            <img [src]="imagePreview" alt="Event preview">
+                            <button type="button" class="remove-btn" (click)="removePreview()">Remove Image</button>
+                        </div>
+                        <div class="upload-controls" *ngIf="!imagePreview">
+                            <div class="file-drop" (click)="fileInput.click()">
+                                <i class="upload-icon">📁</i>
+                                <span>
+                                    Pick a cover photo
+                                    <small>Click to browse and upload</small>
+                                </span>
+                                <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Date & Time *</label>
+                    <input type="datetime-local" formControlName="date"
+                        [ngClass]="{'is-invalid': eventForm.get('date')?.invalid && (eventForm.get('date')?.dirty || eventForm.get('date')?.touched)}">
+                    <span class="error-message"
+                        *ngIf="eventForm.get('date')?.errors?.['required'] && eventForm.get('date')?.touched">Date is
+                        required.</span>
+                    <span class="error-message" *ngIf="eventForm.get('date')?.errors?.['serverError']">{{
+                        eventForm.get('date')?.errors?.['serverError'] }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Event Type *</label>
+                    <select formControlName="eventType"
+                        [ngClass]="{'is-invalid': eventForm.get('eventType')?.invalid && (eventForm.get('eventType')?.dirty || eventForm.get('eventType')?.touched)}">
+                        <option value="PHYSICAL">Physical (In-Person)</option>
+                        <option value="ONLINE">Online (Virtual)</option>
+                    </select>
+                    <span class="error-message"
+                        *ngIf="eventForm.get('eventType')?.errors?.['required'] && eventForm.get('eventType')?.touched">Event
+                        type is required.</span>
+                    <span class="error-message" *ngIf="eventForm.get('eventType')?.errors?.['serverError']">{{
+                        eventForm.get('eventType')?.errors?.['serverError'] }}</span>
+                </div>
+            </div>
+
+            <!-- PHYSICAL FIELDS -->
+            <div *ngIf="eventForm.get('eventType')?.value === 'PHYSICAL'"
+                style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+                <h4 style="margin-bottom: 1rem; color: #0e7c66;">📍 Location Details</h4>
+                <div class="form-grid">
+                    <div class="form-group" style="grid-column: span 2; position: relative;">
+                        <label>Venue Name *</label>
+                        <input type="text" formControlName="venueName" (input)="onVenueInput($event)" 
+                            placeholder="e.g. Grand Hotel Conference Center or Clinic Name"
+                            [ngClass]="{'is-invalid': eventForm.get('venueName')?.invalid && (eventForm.get('venueName')?.dirty || eventForm.get('venueName')?.touched)}">
+                        
+                        <!-- Autocomplete Suggestions -->
+                        <div class="autocomplete-dropdown" *ngIf="venueSuggestions.length > 0">
+                            <div class="suggestion-item" *ngFor="let suggestion of venueSuggestions" (click)="selectVenue(suggestion)">
+                                <div class="suggestion-title">{{ suggestion.display_name.split(',')[0] }}</div>
+                                <div class="suggestion-address">{{ suggestion.display_name }}</div>
+                            </div>
+                        </div>
+
+                        <div class="loading-venue" *ngIf="searchingVenue">Searching locations...</div>
+
+                        <span class="error-message"
+                            *ngIf="eventForm.get('venueName')?.errors?.['required'] && eventForm.get('venueName')?.touched">Venue
+                            name is required.</span>
+                    </div>
+
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Address *</label>
+                        <input type="text" formControlName="address" placeholder="e.g. 123 Healthcare Ave, Medical District"
+                            [ngClass]="{'is-invalid': eventForm.get('address')?.invalid && (eventForm.get('address')?.dirty || eventForm.get('address')?.touched)}">
+                        <span class="error-message"
+                            *ngIf="eventForm.get('address')?.errors?.['required'] && eventForm.get('address')?.touched">Address
+                            is required.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Country *</label>
+                        <select formControlName="country"
+                            [ngClass]="{'is-invalid': eventForm.get('country')?.invalid && (eventForm.get('country')?.dirty || eventForm.get('country')?.touched)}">
+                            <option value="">-- Choose Country --</option>
+                            <option *ngFor="let c of countries" [value]="c">{{ c }}</option>
+                        </select>
+                        <span class="error-message"
+                            *ngIf="eventForm.get('country')?.errors?.['required'] && eventForm.get('country')?.touched">Country
+                            is required.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>City *</label>
+                        <select formControlName="city"
+                                [ngClass]="{'is-invalid': eventForm.get('city')?.invalid && (eventForm.get('city')?.dirty || eventForm.get('city')?.touched)}">
+                            <option value="">-- Choose City --</option>
+                            <option *ngFor="let c of citiesByCountryMap[eventForm.get('country')?.value] || []" [value]="c">
+                                {{ c }}
+                            </option>
+                        </select>
+                        <span class="error-message"
+                              *ngIf="eventForm.get('city')?.errors?.['required'] && eventForm.get('city')?.touched">City is required.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Postal Code</label>
+                        <input type="text" formControlName="postalCode">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Maximum Capacity</label>
+                        <input type="number" formControlName="capacity" placeholder="e.g. 500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONLINE FIELDS -->
+            <div *ngIf="eventForm.get('eventType')?.value === 'ONLINE'"
+                style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+                <h4 style="margin-bottom: 1rem; color: #4f46e5;">💻 Virtual Meeting Details</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Platform Name *</label>
+                        <input type="text" formControlName="platformName" placeholder="Zoom, Google Meet, Teams..."
+                            [ngClass]="{'is-invalid': eventForm.get('platformName')?.invalid && (eventForm.get('platformName')?.dirty || eventForm.get('platformName')?.touched)}">
+                        <span class="error-message"
+                            *ngIf="eventForm.get('platformName')?.errors?.['required'] && eventForm.get('platformName')?.touched">Platform
+                            name is required.</span>
+                        <span class="error-message" *ngIf="eventForm.get('platformName')?.errors?.['serverError']">{{
+                            eventForm.get('platformName')?.errors?.['serverError'] }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Meeting Link *</label>
+                        <input type="url" formControlName="meetingLink" placeholder="https://zoom.us/j/123..."
+                            [ngClass]="{'is-invalid': eventForm.get('meetingLink')?.invalid && (eventForm.get('meetingLink')?.dirty || eventForm.get('meetingLink')?.touched)}">
+                        <span class="error-message"
+                            *ngIf="eventForm.get('meetingLink')?.errors?.['required'] && eventForm.get('meetingLink')?.touched">Meeting
+                            link is required.</span>
+                        <span class="error-message" *ngIf="eventForm.get('meetingLink')?.errors?.['serverError']">{{
+                            eventForm.get('meetingLink')?.errors?.['serverError'] }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Meeting Password (Optional)</label>
+                        <input type="text" formControlName="meetingPassword">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" routerLink="/admin/events">Cancel</button>
+                <button type="submit" class="btn-primary" [disabled]="eventForm.invalid || loading">
+                    {{ isEditMode ? 'Update Event' : 'Create Event' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

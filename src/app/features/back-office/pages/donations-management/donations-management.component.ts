@@ -129,11 +129,12 @@ export class DonationsManagementComponent implements OnInit {
         }).subscribe({
             next: () => {
                 // 🔔 Notify Patient
-                if (this.selectedReq && this.selectedReq.patientId) {
+                const recipientId = this.selectedReq?.patientId || (this.selectedReq as any)?.patient?.id;
+                if (recipientId) {
                     this.notificationService.addPatientNotification(
-                        this.selectedReq.patientId,
+                        recipientId,
                         'Request Approved 🎉',
-                        `Good news! A donation has been assigned to your aid request (Req #${this.selectedReq.id}).`,
+                        `Good news! A donation has been assigned to your aid request (Req #${this.selectedReq?.id}).`,
                         'info'
                     );
                 }

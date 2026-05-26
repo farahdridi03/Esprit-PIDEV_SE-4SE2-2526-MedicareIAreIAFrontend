@@ -1,18 +1,41 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../../../services/auth.service';
+import { SidebarService } from '../../../../../services/sidebar.service';
+
+export type DoctorView = 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients';
 
 @Component({
   selector: 'app-doctor-sidebar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './doctor-sidebar.component.html',
   styleUrls: ['./doctor-sidebar.component.scss']
 })
-export class DoctorSidebarComponent {
-  @Input() currentView: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients' = 'calendar';
-  @Output() viewChange = new EventEmitter<'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients'>();
+export class DoctorSidebarComponent implements OnInit {
+  @Input() currentView: DoctorView = 'overview';
+  @Output() viewChange = new EventEmitter<DoctorView>();
+  
+  isCollapsed = false;
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private sidebarService: SidebarService
+  ) {}
 
-  setView(view: 'overview' | 'settings' | 'exceptions' | 'calendar' | 'patients') {
+  ngOnInit(): void {
+    this.sidebarService.isCollapsed$.subscribe(
+      collapsed => this.isCollapsed = collapsed
+    );
+  }
+
+  toggleSidebar(): void {
+    this.sidebarService.toggle();
+  }
+
+  setView(view: DoctorView): void {
+    this.currentView = view;
     this.viewChange.emit(view);
   }
 

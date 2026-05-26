@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
-import { NotificationService, AppNotification } from '../../../../services/notification.service';
+import { NotificationService } from '../../../../services/notification.service';
 import { UserService } from '../../../../services/user.service';
 import { AuthService } from '../../../../services/auth.service';
+import { NotificationResponseDTO } from '../../../../models/notification.model';
+import { DeliveryTrackingService } from '../../../../services/delivery-tracking.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-topbar',
@@ -16,16 +19,21 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
   photo: string | null = null;
 
   // Notifications
-  notifications: AppNotification[] = [];
+  notifications: NotificationResponseDTO[] = [];
   unreadCount = 0;
+  showNotifications = false;
   showDropdown = false;
-  private sub!: Subscription;
+  
+  private notifSub!: Subscription;
+  private profileSub?: Subscription;
 
   constructor(
-    private notifService: NotificationService,
+    private notificationService: NotificationService,
     private elRef: ElementRef,
     private userService: UserService,
-    private authService: AuthService
+    public authService: AuthService,
+    private deliveryTrackingService: DeliveryTrackingService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -35,20 +43,38 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
       next: (user) => {
         if (user) {
           if (user.fullName) this.setNames(user.fullName);
-          this.photo = user.photo || user.profileImage || null;
+          this.photo = (user as any).photo || user.profileImage || null;
         }
       }
     });
 
     // 2. Notifications Setup
-    this.sub = this.notifService.notifications$.subscribe(notifs => {
-      this.notifications = notifs;
-      this.unreadCount = notifs.filter(n => !n.read).length;
-    });
+    const userId = this.authService.getUserId();
+    const email = this.authService.getUserEmail();
+
+    if (userId) {
+        // Initial load
+        this.notificationService.getNotifications(userId).subscribe();
+        
+        // Subscribe to reactive streams
+        this.notifSub = this.notificationService.notifications$.subscribe(notifs => {
+            this.notifications = notifs;
+        });
+        this.notificationService.unreadCount$.subscribe(count => {
+            this.unreadCount = count;
+        });
+
+        // WebSocket for real-time
+        if (email) {
+            this.deliveryTrackingService.connectToUserNotifications(email);
+        }
+    }
   }
 
   ngOnDestroy(): void {
-    this.sub?.unsubscribe();
+    if (this.notifSub) this.notifSub.unsubscribe();
+    if (this.profileSub) this.profileSub.unsubscribe();
+    this.deliveryTrackingService.disconnect();
   }
 
   // --- User Name Helpers ---
@@ -57,39 +83,69 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
     if (fullName) {
       this.setNames(fullName);
     }
-    this.userService.profile$.subscribe(user => {
+    this.profileSub = this.userService.profile$.subscribe(user => {
       if (user) {
         if (user.fullName) this.setNames(user.fullName);
-        this.photo = user.photo || user.profileImage || null;
+        this.photo = (user as any).photo || user.profileImage || null;
       }
     });
   }
 
   private setNames(fullName: string) {
     if (!fullName) return;
-    const parts = fullName.split(' ');
+    const parts = fullName.trim().split(/\s+/);
     this.firstName = parts[0];
     this.initials = parts.map(n => n ? n[0] : '').join('').toUpperCase();
-    if (!this.initials) this.initials = this.firstName[0].toUpperCase();
+    if (!this.initials) this.initials = this.firstName[0]?.toUpperCase() || 'A';
   }
 
   // --- Notification Helpers ---
-  toggleDropdown(): void {
-    this.showDropdown = !this.showDropdown;
+  toggleNotifications(event: MouseEvent): void {
+      event.stopPropagation();
+      this.showNotifications = !this.showNotifications;
+      if (this.showNotifications) this.showDropdown = false;
   }
 
-  markAllRead(): void {
-    this.notifService.markAllRead();
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown;
+    if (this.showDropdown) this.showNotifications = false;
+  }
+
+  markAsRead(notification: NotificationResponseDTO): void {
+      if (notification.isRead || (notification as any).read) return;
+      this.notificationService.markAsRead(notification.id).subscribe({
+          next: () => {
+              notification.isRead = true;
+              this.unreadCount = Math.max(0, this.unreadCount - 1);
+          }
+      });
+  }
+
+  markAllAsRead(): void {
+    const userId = this.authService.getUserId();
+    if (userId) {
+      this.notificationService.markAllAsRead(userId).subscribe();
+    }
   }
 
   clearAll(): void {
-    this.notifService.clearAll();
+    this.notificationService.clearAll();
   }
 
-  getIcon(type: AppNotification['type']): string {
-    if (type === 'aid_request') return '🤝';
-    if (type === 'warning') return '⚠️';
-    return 'ℹ️';
+  navigateToRelated(notification: NotificationResponseDTO): void {
+      this.markAsRead(notification);
+      this.showNotifications = false;
+      
+      if (notification.type === 'REG_REQ') {
+          this.router.navigate(['/admin/validations']);
+      }
+  }
+
+  getNotificationIcon(type: string): string {
+      if (type === 'REG_REQ') return '👨‍⚕️';
+      if (type === 'aid_request') return '🤝';
+      if (type === 'warning') return '⚠️';
+      return '🔔';
   }
 
   timeAgo(date: Date | string): string {
@@ -106,7 +162,13 @@ export class AdminTopbarComponent implements OnInit, OnDestroy {
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {
     if (!this.elRef.nativeElement.contains(event.target)) {
+      this.showNotifications = false;
       this.showDropdown = false;
     }
+  }
+
+  logout(): void {
+      this.authService.logout();
+      this.router.navigate(['/auth/login']);
   }
 }

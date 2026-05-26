@@ -10,120 +10,127 @@
             <!-- Welcome Banner -->
             <div class="welcome-banner">
                 <div class="banner-text">
+
                     <h1>Welcome back, {{ firstName || 'Clinic' }}! 👋</h1>
                     <p>Manage your clinic operations, emergency alerts, and ambulance fleet.</p>
-                </div>
 
-                <div class="banner-stats">
-                    <div class="stat-card">
-                        <div class="label">🚨 Active Alerts</div>
-                        <div class="value">{{ loadingAlerts ? '...' : alerts.length }}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">🚑 Ambulances</div>
-                        <div class="value">{{ loadingAmbulances ? '...' : ambulances.length }}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">📍 With GPS</div>
-                        <div class="value">{{ loadingAmbulances ? '...' : ambulancesWithGpsCount }}</div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Main Dashboard Grid -->
-            <div class="dashboard-grid">
-
-                <!-- Left Column: Ambulances List -->
-                <div class="left-column">
-                    <div class="section-card schedule-section">
-                        <div class="section-header">
-                            <h3>🚑 Ambulance Fleet</h3>
-                            <a routerLink="/front/clinic/ambulances">View All →</a>
+                    <div class="banner-stats">
+                        <div class="stat-card">
+                            <div class="label">🚨 Active Alerts</div>
+                            <div class="value">{{ loadingAlerts ? '...' : alerts.length }}</div>
                         </div>
-
-                        <div *ngIf="loadingAmbulances" class="mini-loading">
-                            <span class="dots">Loading...</span>
+                        <div class="stat-card">
+                            <div class="label">🚑 Ambulances</div>
+                            <div class="value">{{ loadingAmbulances ? '...' : ambulances.length }}</div>
                         </div>
-
-                        <div *ngIf="!loadingAmbulances && ambulances.length === 0" class="empty-mini">
-                            <p>No ambulances registered yet.</p>
-                            <a routerLink="/front/clinic/ambulances" class="add-link">+ Add ambulance</a>
-                        </div>
-
-                        <div class="schedule-table-wrapper" *ngIf="!loadingAmbulances && ambulances.length > 0">
-                            <table class="schedule-table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>License Plate</th>
-                                        <th>Status</th>
-                                        <th>GPS Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let amb of ambulances">
-                                        <td class="time">{{ amb.id }}</td>
-                                        <td>
-                                            <div class="patient">
-                                                <div class="name">{{ amb.licensePlate }}</div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span [style.background]="(amb.status === 'ON_DUTY' || amb.status === 'EN_TRAVAIL') ? '#dc2626' : '#10b981'" style="font-size: 0.65rem; padding: 2px 8px; border-radius: 12px; color: white; vertical-align: middle; font-weight: bold; display: inline-block;">
-                                                {{ amb.status === 'ON_DUTY' || amb.status === 'EN_TRAVAIL' ? 'ON DUTY' : 'AVAILABLE' }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="status-badge" [class]="(amb.currentLat && amb.currentLng) ? 'completed' : 'pending'">
-                                                {{ (amb.currentLat && amb.currentLng) ? '📍 Active' : 'No GPS' }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="stat-card">
+                            <div class="label">📍 With GPS</div>
+                            <div class="value">{{ loadingAmbulances ? '...' : ambulancesWithGpsCount }}</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column: Emergency Alerts -->
-                <div class="right-column">
-                    <div class="section-card alerts-section">
-                        <div class="section-header">
-                            <h3>🚨 Emergency Alerts</h3>
-                            <span *ngIf="!loadingAlerts && alerts.length > 0" class="badge-count">{{ alerts.length }} active</span>
-                        </div>
+                <!-- Main Dashboard Grid -->
+                <div class="dashboard-grid">
 
-                        <div *ngIf="loadingAlerts" class="mini-loading">
-                            <span class="dots">Loading...</span>
-                        </div>
+                    <!-- Left Column: Ambulances List -->
 
-                        <div *ngIf="!loadingAlerts && alerts.length === 0" class="empty-mini">
-                            <p>✅ No active alerts</p>
-                        </div>
+                    <!-- Left Column (2/3): Today's Schedule -->
 
-                        <div class="alerts-list" *ngIf="!loadingAlerts && alerts.length > 0">
-                            <div
-                                *ngFor="let alert of alerts"
-                                class="alert-item"
-                                [class]="getSeverityClass(alert.severity)"
-                                routerLink="/front/clinic/emergency">
-                                <div class="alert-icon">{{ getSeverityIcon(alert.severity) }}</div>
-                                <div class="alert-content">
-                                    <div class="alert-title">{{ alert.patientName || 'Unknown patient' }}</div>
-                                    <p>Severity: <strong>{{ alert.severity }}</strong> — {{ alert.status }}</p>
-                                    <span class="time">{{ formatDate(alert.createdAt) }}</span>
-                                </div>
+                    <div class="left-column">
+                        <div class="section-card schedule-section">
+                            <div class="section-header">
+                                <h3>🚑 Ambulance Fleet</h3>
+                                <a routerLink="/front/clinic/ambulances">View All →</a>
+                            </div>
+
+                            <div *ngIf="loadingAmbulances" class="mini-loading">
+                                <span class="dots">Loading...</span>
+                            </div>
+
+                            <div *ngIf="!loadingAmbulances && ambulances.length === 0" class="empty-mini">
+                                <p>No ambulances registered yet.</p>
+                                <a routerLink="/front/clinic/ambulances" class="add-link">+ Add ambulance</a>
+                            </div>
+
+                            <div class="schedule-table-wrapper" *ngIf="!loadingAmbulances && ambulances.length > 0">
+                                <table class="schedule-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>License Plate</th>
+                                            <th>Status</th>
+                                            <th>GPS Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let amb of ambulances">
+                                            <td class="time">{{ amb.id }}</td>
+                                            <td>
+                                                <div class="patient">
+                                                    <div class="name">{{ amb.licensePlate }}</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    [style.background]="(amb.status === 'ON_DUTY' || amb.status === 'EN_TRAVAIL') ? '#dc2626' : '#10b981'"
+                                                    style="font-size: 0.65rem; padding: 2px 8px; border-radius: 12px; color: white; vertical-align: middle; font-weight: bold; display: inline-block;">
+                                                    {{ amb.status === 'ON_DUTY' || amb.status === 'EN_TRAVAIL' ? 'ON
+                                                    DUTY' : 'AVAILABLE' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="status-badge"
+                                                    [class]="(amb.currentLat && amb.currentLng) ? 'completed' : 'pending'">
+                                                    {{ (amb.currentLat && amb.currentLng) ? '📍 Active' : 'No GPS'
+                                                    }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                    </div>
 
-                        <div *ngIf="!loadingAlerts" class="view-all-link">
-                            <a routerLink="/front/clinic/emergency">View all emergency alerts →</a>
+                    <!-- Right Column: Emergency Alerts -->
+                    <div class="right-column">
+                        <div class="section-card alerts-section">
+                            <div class="section-header">
+                                <h3>🚨 Emergency Alerts</h3>
+                                <span *ngIf="!loadingAlerts && alerts.length > 0" class="badge-count">{{
+                                    alerts.length }} active</span>
+                            </div>
+
+                            <div *ngIf="loadingAlerts" class="mini-loading">
+                                <span class="dots">Loading...</span>
+                            </div>
+
+                            <div *ngIf="!loadingAlerts && alerts.length === 0" class="empty-mini">
+                                <p>✅ No active alerts</p>
+                            </div>
+
+                            <div class="alerts-list" *ngIf="!loadingAlerts && alerts.length > 0">
+                                <div *ngFor="let alert of alerts" class="alert-item"
+                                    [class]="getSeverityClass(alert.severity)" routerLink="/front/clinic/emergency">
+                                    <div class="alert-icon">{{ getSeverityIcon(alert.severity) }}</div>
+                                    <div class="alert-content">
+                                        <div class="alert-title">{{ alert.patientName || 'Unknown patient' }}</div>
+                                        <p>Severity: <strong>{{ alert.severity }}</strong> — {{ alert.status }}</p>
+                                        <span class="time">{{ formatDate(alert.createdAt) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="!loadingAlerts" class="view-all-link">
+                                <a routerLink="/front/clinic/emergency">View all emergency alerts →</a>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
             </div>
-
         </div>
     </div>
-</div>

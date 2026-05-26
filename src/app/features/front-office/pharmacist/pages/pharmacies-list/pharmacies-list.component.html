@@ -1,0 +1,163 @@
+<div class="page-header">
+    <div>
+        <h1>Pharmacy <em>Management</em></h1>
+        <p>Manage list of partner pharmacies across locations</p>
+    </div>
+    <button class="btn-pharma-primary" *ngIf="viewState === 'list'" (click)="viewAdd()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Add Pharmacy
+    </button>
+</div>
+
+<!-- List View -->
+<div class="panel" *ngIf="viewState === 'list'">
+    <div class="panel-head">
+        <div class="panel-title">All Pharmacies</div>
+        <button class="panel-action" (click)="refresh()">Refresh List ⭮</button>
+    </div>
+
+    <!-- Loader -->
+    <div *ngIf="loading" class="loader">Loading pharmacies...</div>
+
+    <table class="tbl" *ngIf="!loading && pharmacies.length > 0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Pharmacy Details</th>
+                <th>Contact info</th>
+                <th>Location</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of pharmacies">
+                <td>{{ p.id }}</td>
+                <td>
+                    <div class="ucell">
+                        <div class="mav ma1">{{ p.name.substring(0,2).toUpperCase() }}</div>
+                        <div>
+                            <div class="cn">{{ p.name }}</div>
+                            <div class="cs">{{ p.address }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="cn">{{ p.email }}</div>
+                    <div class="cs">{{ p.phoneNumber }}</div>
+                </td>
+                <td>
+                    <div class="cs">Lat: {{ p.locationLat }}</div>
+                    <div class="cs">Lng: {{ p.locationLng }}</div>
+                </td>
+                <td style="text-align: right;">
+                    <button class="action-btn text-pharma" (click)="viewEdit(p)">Edit</button>
+                    <button class="action-btn text-rose" (click)="deletePharmacy(p.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && pharmacies.length === 0" class="no-data">
+        No pharmacies found.
+    </div>
+</div>
+
+<!-- Add/Edit View -->
+<div class="panel" *ngIf="viewState !== 'list'">
+    <div class="panel-head">
+        <div class="panel-title">{{ viewState === 'add' ? 'Create New Pharmacy' : 'Edit Pharmacy' }}</div>
+        <button class="panel-action text-rose" (click)="cancelForm()">Cancel ✕</button>
+    </div>
+
+    <div class="form-container">
+        <div *ngIf="globalError" class="form-error-summary">
+            {{ globalError }}
+        </div>
+
+        <form (ngSubmit)="savePharmacy()" #pharmacyForm="ngForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Pharmacy Name *</label>
+                    <input type="text" [(ngModel)]="formModel.name" name="name" required placeholder="Health Plus"
+                        #nameCtrl="ngModel"
+                        [ngClass]="{'is-invalid': (nameCtrl.invalid && nameCtrl.touched) || fieldErrors['name']}">
+                    <span class="error-message" *ngIf="nameCtrl.errors?.['required'] && nameCtrl.touched">Pharmacy name
+                        is
+                        required.</span>
+                    <span class="error-message" *ngIf="fieldErrors['name']">{{ fieldErrors['name'] }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" [(ngModel)]="formModel.email" name="email" required
+                        pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="contact@healthplus.com"
+                        #emailCtrl="ngModel"
+                        [ngClass]="{'is-invalid': (emailCtrl.invalid && emailCtrl.touched) || fieldErrors['email']}">
+                    <span class="error-message" *ngIf="emailCtrl.errors?.['required'] && emailCtrl.touched">Email is
+                        required.</span>
+                    <span class="error-message" *ngIf="emailCtrl.errors?.['pattern'] && emailCtrl.touched">Please enter
+                        a valid
+                        email.</span>
+                    <span class="error-message" *ngIf="fieldErrors['email']">{{ fieldErrors['email'] }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="text" [(ngModel)]="formModel.phoneNumber" name="phoneNumber" required
+                        pattern="^[0-9+\-\s]+$" #phoneCtrl="ngModel"
+                        [ngClass]="{'is-invalid': (phoneCtrl.invalid && phoneCtrl.touched) || fieldErrors['phoneNumber']}">
+                    <span class="error-message" *ngIf="phoneCtrl.errors?.['required'] && phoneCtrl.touched">Phone number
+                        is
+                        required.</span>
+                    <span class="error-message" *ngIf="phoneCtrl.errors?.['pattern'] && phoneCtrl.touched">Invalid phone
+                        format.</span>
+                    <span class="error-message" *ngIf="fieldErrors['phoneNumber']">{{ fieldErrors['phoneNumber']
+                        }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Address *</label>
+                    <input type="text" [(ngModel)]="formModel.address" name="address" required #addressCtrl="ngModel"
+                        [ngClass]="{'is-invalid': (addressCtrl.invalid && addressCtrl.touched) || fieldErrors['address']}">
+                    <span class="error-message" *ngIf="addressCtrl.errors?.['required'] && addressCtrl.touched">Address
+                        is
+                        required.</span>
+                    <span class="error-message" *ngIf="fieldErrors['address']">{{ fieldErrors['address']
+                        }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Latitude *</label>
+                    <input type="number" step="any" [(ngModel)]="formModel.locationLat" name="locationLat" required
+                        #latCtrl="ngModel"
+                        [ngClass]="{'is-invalid': (latCtrl.invalid && latCtrl.touched) || fieldErrors['locationLat']}">
+                    <span class="error-message" *ngIf="latCtrl.errors?.['required'] && latCtrl.touched">Latitude
+                        is required.</span>
+                    <span class="error-message" *ngIf="fieldErrors['locationLat']">{{ fieldErrors['locationLat']
+                        }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Longitude *</label>
+                    <input type="number" step="any" [(ngModel)]="formModel.locationLng" name="locationLng" required
+                        #lngCtrl="ngModel"
+                        [ngClass]="{'is-invalid': (lngCtrl.invalid && lngCtrl.touched) || fieldErrors['locationLng']}">
+                    <span class="error-message" *ngIf="lngCtrl.errors?.['required'] && lngCtrl.touched">Longitude is
+                        required.</span>
+                    <span class="error-message" *ngIf="fieldErrors['locationLng']">{{ fieldErrors['locationLng']
+                        }}</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" (click)="cancelForm()">Cancel</button>
+                <button type="submit" class="btn-pharma-primary" [disabled]="pharmacyForm.invalid || loading">
+                    <span *ngIf="loading">Saving...</span>
+                    <span *ngIf="!loading">{{ viewState === 'add' ? 'Create Pharmacy' : 'Save Changes' }}</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

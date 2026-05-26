@@ -15,8 +15,13 @@ import { AppointmentManagementComponent } from './pages/appointment-management/a
 import { LaboratoryListComponent } from './pages/laboratory-list/laboratory-list.component';
 import { LaboratoryFormComponent } from './pages/laboratory-form/laboratory-form.component';
 import { EmergencyManagementComponent } from './pages/emergency-management/emergency-management.component';
+import { PharmacistValidationComponent } from './pages/pharmacist-validation/pharmacist-validation.component';
+import { AdminProvidersComponent } from './pages/admin-providers/admin-providers.component';
+import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.component';
+import { EventsListComponent } from './pages/events-list/events-list.component';
+import { EventFormComponent } from './pages/event-form/event-form.component';
+import { EventRegistrationsComponent } from './pages/event-registrations/event-registrations.component';
 import { ForumModule } from '../../forum/forum.module';
-
 
 @NgModule({
   declarations: [
@@ -29,7 +34,13 @@ import { ForumModule } from '../../forum/forum.module';
     AppointmentManagementComponent,
     LaboratoryListComponent,
     LaboratoryFormComponent,
-    EmergencyManagementComponent
+    EmergencyManagementComponent,
+    PharmacistValidationComponent,
+    AdminProvidersComponent,
+    AdminRequestsComponent,
+    EventFormComponent,
+    EventRegistrationsComponent,
+    EventsListComponent
   ],
   imports: [
     CommonModule,

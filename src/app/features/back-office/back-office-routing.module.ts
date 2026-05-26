@@ -10,9 +10,14 @@ import { AppointmentManagementComponent } from './pages/appointment-management/a
 import { LaboratoryListComponent } from './pages/laboratory-list/laboratory-list.component';
 import { LaboratoryFormComponent } from './pages/laboratory-form/laboratory-form.component';
 import { EmergencyManagementComponent } from './pages/emergency-management/emergency-management.component';
-
 import { ForumModerationComponent } from '../../forum/pages/forum-moderation/forum-moderation.component';
 
+import { PharmacistValidationComponent } from './pages/pharmacist-validation/pharmacist-validation.component';
+import { AdminProvidersComponent } from './pages/admin-providers/admin-providers.component';
+import { AdminRequestsComponent } from './pages/admin-requests/admin-requests.component';
+import { EventsListComponent } from './pages/events-list/events-list.component';
+import { EventFormComponent } from './pages/event-form/event-form.component';
+import { EventRegistrationsComponent } from './pages/event-registrations/event-registrations.component';
 
 const routes: Routes = [
   {
@@ -24,9 +29,14 @@ const routes: Routes = [
       { path: 'donations', component: DonationsManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'appointments', component: AppointmentManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'emergency', component: EmergencyManagementComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-      { path: 'events', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'forum', component: ForumModerationComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-      { path: 'home-care', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'validations', component: PharmacistValidationComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'homecare-providers', component: AdminProvidersComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'homecare-requests', component: AdminRequestsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events', component: EventsListComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/new', component: EventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/edit/:id', component: EventFormComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+      { path: 'events/:id/registrations', component: EventRegistrationsComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
       { path: 'profile', component: DashboardComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
 
       {
